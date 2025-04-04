@@ -1,0 +1,50 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.exclude": {
+			"**/site/": true,
+			"**/.vscode": true,
+			"**/.vs": true,
+			"**/*.code-workspace": true,
+			"**/build": true,
+			"**/*.i90": true, 
+			"**/*.u2d": true,
+			"**/*.fdz": true,
+			"**/*.sln": true,
+			"**/*.vfproj": true,
+			"**/*.vcxproj": true,
+			"**/*.user": true,
+			"**/*.mod": true, 
+			"**/bin/": true, 
+			"**/obj/": true,
+			"**/docs/": true,
+			"**/node_modules/": true,
+			"**/package-lock.json": true
+		},
+		"python.analysis.fixAll" : ["source.unusedImports"],
+		"code-runner.defaultLanguage": "fortran",
+		"cSpell.words": [],
+        "terminal.integrated.profiles.windows": {
+            "Intel Prompt": {
+                "path": [
+                    "${env:windir}\\System32\\cmd.exe"
+                ],
+                "args": ["/K",
+                         ".\\.vscode\\intel.cmd"],
+                "icon": "terminal-cmd"
+            }
+        },
+        "terminal.integrated.defaultProfile.windows": "Intel Prompt",
+		"fortran.linter.compiler": "gfortran",
+		"fortran.linter.extraArgs": [
+			"-warn all,noexternal",
+			"-warn truncated_source"
+		  ],
+		"fortran.formatting.formatter": "fprettify",
+		"fortran.preferredCase": "lowercase"
+	}
+}

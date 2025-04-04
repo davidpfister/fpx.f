@@ -1,0 +1,32 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../src"
+		}
+	],
+	"settings": {
+		"files.exclude": {
+			"**/.gitignore": true,
+			"**/.vscode": true,
+			"**/*.code-workspace": true,
+			"**/obj": true,
+			"**/html": true,
+			"**/node_modules": true,
+			"**/bin": true,
+			"**/*.json": true,
+			"**/*.rc": true,
+			"**/*.aps": true, 
+			"**/*.h": true, 
+			"**/*.u2d": true, 
+			"**/*.mod": true,
+			"**/*.fdz": true,
+			"**/*.smod": true,
+			"**/*.vfproj": true, 
+			"**/*.i90": true
+		},
+		"code-runner.defaultLanguage": "Powershell"
+	}
+}
