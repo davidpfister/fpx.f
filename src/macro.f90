@@ -4,33 +4,30 @@ module fpx_macro
     implicit none; private
 
     public :: expand_macros,    &
-              macros,           &
-              num_macros
+              is_defined
 
     type, public :: macro_t
-        character(len=:), allocatable :: name
-        character(len=:), allocatable :: value
-        character(len=MAX_LINE_LEN), allocatable :: params(:)
+        character(:), allocatable :: name
+        character(:), allocatable :: value
+        character(MAX_LINE_LEN), allocatable :: params(:)
         integer :: num_params
         logical :: is_variadic ! New flag for variadic macros
     end type macro_t
 
-    type(macro_t), allocatable :: macros(:)
-
-    integer :: num_macros = 0
-
     contains
 
-    recursive function expand_macros(line) result(expanded)
-        character(len=*), intent(in) :: line
-        character(len=:), allocatable :: expanded, args_str, temp, va_args, token1, token2, btoken1, atoken2
-        character(len=MAX_LINE_LEN) :: arg_values(MAX_PARAMS)
+    recursive function expand_macros(line, macros) result(expanded)
+        character(*), intent(in)    :: line
+        type(macro_t), intent(in)   :: macros(:)
+        !private
+        character(:), allocatable :: expanded, args_str, temp, va_args, token1, token2, btoken1, atoken2
+        character(MAX_LINE_LEN) :: arg_values(MAX_PARAMS)
         integer :: i, pos, start, end_pos, paren_level, arg_start, arg_count, j, macro_start, macro_end, k, token1_start, token2_stop
         logical :: param_used(MAX_PARAMS)  ! Track which parameters are consumed by ##
 
         expanded = line
         print *, "Initial expanded: '", trim(expanded), "'"
-        do i = 1, num_macros
+        do i = 1, size(macros)
             pos = 1
             do while (pos > 0)
             pos = index(expanded, trim(macros(i)%name))
@@ -185,7 +182,7 @@ module fpx_macro
                     end if
 
                     print *, "Before recursive call, temp: '", trim(temp), "'"
-                    temp = expand_macros(temp)  ! Only for nested macros
+                    temp = expand_macros(temp, macros)  ! Only for nested macros
                     print *, "After recursive call, temp: '", trim(temp), "'"
                     print *, "Prefix: '", trim(expanded(:macro_start-1)), "'"
                     print *, "Temp: '", trim(temp), "'"
@@ -197,11 +194,25 @@ module fpx_macro
                 temp = trim(macros(i)%value)
                 macro_end = start - 1
                 expanded = trim(expanded(:macro_start-1) // trim(temp) // expanded(macro_end+1:))
-                expanded = expand_macros(expanded)
+                expanded = expand_macros(expanded, macros)
                 print *, "Simple macro expanded: '", trim(expanded), "'"
                 end if
             end if
             end do
+        end do
+    end function
+
+    logical function is_defined(name, macros) result(res)
+        character(*), intent(in)    :: name
+        type(macro_t), intent(in)   :: macros(:)
+        !private 
+        integer :: i
+        res = .false.
+        do i = 1, size(macros)
+            if (trim(macros(i)%name) == trim(name)) then
+                res = .true.
+                exit
+            end if
         end do
     end function
 end module

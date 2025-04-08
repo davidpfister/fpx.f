@@ -3,9 +3,9 @@ program test
         use, intrinsic :: iso_fortran_env, only: stdout => output_unit, &
                                                  stderr => error_unit, &
                                                  stdin => input_unit
-#ifdef _WIN32
-        call preprocess_file('input.in', 'output.c')
+#ifdef _FPM
+        call preprocess_file('tests/input.in', 'tests/output.out')
 #else
-        call preprocess_file('tests/input.in', 'output.c')
+        call preprocess_file('input.in', 'output.out')
 #endif
 end program
