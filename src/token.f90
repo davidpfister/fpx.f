@@ -4,9 +4,7 @@ module fpx_token
 
     implicit none; private
 
-    public ::   tokenize,           &
-                starts_with,        &
-                evaluate_expression, &
+    public ::   evaluate_expression, &
                 parse_expression
 
     enum, bind(c)
@@ -29,7 +27,7 @@ module fpx_token
 
     logical function evaluate_expression(expr, macros) result(res)
         character(*), intent(in)    :: expr
-        type(macro_t), intent(in)       :: macros(:)
+        type(macro_t), intent(in)   :: macros(:)
         !private
         type(token_t), allocatable :: tokens(:)
         integer :: num_tokens, pos, result
@@ -244,11 +242,6 @@ module fpx_token
             val = 0
             pos = pos + 1
         end if
-    end function
-
-    logical function starts_with(str, prefix) result(res)
-        character(len=*), intent(in) :: str, prefix
-        res = (index(trim(str), trim(prefix)) == 1)
     end function
 
     subroutine tokenize(expr, tokens, num_tokens)

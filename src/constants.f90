@@ -4,6 +4,8 @@
 module fpx_constants
     implicit none; private
 
+    public :: starts_with
+
     !> @brief Maximum allowed line length in characters, set to 1024 to handle large input strings or files
     integer, parameter, public :: MAX_LINE_LEN = 1024
 
@@ -18,5 +20,12 @@ module fpx_constants
 
     !> @brief Maximum number of parameters in a signature, set to 10 to ensure manageable interfaces
     integer, parameter, public :: MAX_PARAMS = 10
+
+    contains
+
+    logical function starts_with(str, prefix) result(res)
+        character(len=*), intent(in) :: str, prefix
+        res = (index(trim(str), trim(prefix)) == 1)
+    end function
 
 end module
