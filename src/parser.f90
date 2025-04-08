@@ -50,17 +50,21 @@ contains
             else
                 continued_line = trim(adjustl(line))
             end if
+            
+            if (len_trim(continued_line) == 0) cycle
 
-            ! Check for line break with '\\'
-          if (len_trim(continued_line) > 1 .and. continued_line(len_trim(continued_line) - 1:len_trim(continued_line)) == '\\') then
-                in_continuation = .true.
-                continued_line = continued_line(:len_trim(continued_line) - 2)//new_line('A') ! Strip '\\'
-                write (output_unit, '(A)') '' ! Add extra newline for line break
-                ! Check for line continuation with '\'
-          else if (len_trim(continued_line) > 0 .and. continued_line(len_trim(continued_line):len_trim(continued_line)) == '\') then
-                in_continuation = .true.
-                continued_line = continued_line(:len_trim(continued_line) - 1)
-                cycle
+            ! Check for line continuation with '\'
+            if (continued_line(len_trim(continued_line):len_trim(continued_line)) == '\') then
+                ! Check for line break with '\\'
+                if (continued_line(len_trim(continued_line) - 1:len_trim(continued_line)) == '\\') then
+                    in_continuation = .true.
+                    continued_line = continued_line(:len_trim(continued_line) - 2)//new_line('A') ! Strip '\\'
+                    cycle
+                else
+                    in_continuation = .true.
+                    continued_line = continued_line(:len_trim(continued_line) - 1)
+                    cycle
+                end if
             else
                 in_continuation = .false.
                 call process_line(continued_line, output_unit, input_file, line_num)
