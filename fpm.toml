@@ -26,6 +26,6 @@ library = false
 [fortran]
 implicit-external = false
 
-# [[test]]
-# name = "test"
-# source-dir = "tests"
+[[test]]
+name = "test"
+source-dir = "tests"

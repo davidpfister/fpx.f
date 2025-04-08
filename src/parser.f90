@@ -8,11 +8,14 @@ module fpx_parser
 
     public :: preprocess_file
 
+    type(macro_t), allocatable :: macros(:)
+    integer :: num_macros = 0
+
 contains
 
     subroutine preprocess_file(input_file, output_file)
-        character(len=*), intent(in) :: input_file, output_file
-        character(len=MAX_LINE_LEN) :: line, continued_line
+        character(*), intent(in) :: input_file, output_file
+        character(MAX_LINE_LEN) :: line, continued_line
         integer :: input_unit, output_unit, ios, line_num
         logical :: in_continuation
 
@@ -74,10 +77,10 @@ contains
     end subroutine
 
     subroutine process_line(line, output_unit, filename, line_num)
-        character(len=*) :: line
+        character(*) :: line
         integer, intent(in) :: output_unit, line_num
-        character(len=*), intent(in) :: filename
-        character(len=:), allocatable :: trimmed_line, expanded_line
+        character(*), intent(in) :: filename
+        character(:), allocatable :: trimmed_line, expanded_line
         logical :: active
 
         trimmed_line = trim(adjustl(line))
@@ -92,29 +95,30 @@ contains
             else if (starts_with(trimmed_line, '#include') .and. active) then
                 call handle_include(trimmed_line, output_unit, filename, line_num)
             else if (starts_with(trimmed_line, '#if')) then
-                call handle_if(trimmed_line, filename, line_num)
+                call handle_if(trimmed_line, filename, line_num, macros)
             else if (starts_with(trimmed_line, '#ifdef')) then
-                call handle_ifdef(trimmed_line, filename, line_num)
+                call handle_ifdef(trimmed_line, filename, line_num, macros)
             else if (starts_with(trimmed_line, '#ifndef')) then
-                call handle_ifndef(trimmed_line, filename, line_num)
+                call handle_ifndef(trimmed_line, filename, line_num, macros)
             else if (starts_with(trimmed_line, '#elif')) then
-                call handle_elif(trimmed_line, filename, line_num)
+                call handle_elif(trimmed_line, filename, line_num, macros)
             else if (starts_with(trimmed_line, '#else')) then
                 call handle_else(filename, line_num)
             else if (starts_with(trimmed_line, '#endif')) then
                 call handle_endif(filename, line_num)
             end if
         else if (active) then
-            expanded_line = expand_macros(trimmed_line)
+            expanded_line = expand_macros(trimmed_line, macros)
             print *, "Writing to output: '", trim(expanded_line), "'"
             write (output_unit, '(A)') trim(expanded_line)
         end if
     end subroutine
 
     subroutine handle_define(line)
-        character(len=*), intent(in) :: line
-        character(len=MAX_LINE_LEN) :: name, temp
-        character(len=:), allocatable :: val
+        character(*), intent(in) :: line
+        !private
+        character(MAX_LINE_LEN) :: name, temp
+        character(:), allocatable :: val
         integer :: pos, paren_start, paren_end, i, param_count
         type(macro_t), allocatable :: temp_macros(:)
 
@@ -150,7 +154,7 @@ contains
                 call move_alloc(temp_macros, macros)
             end if
             macros(num_macros)%name = name
-            allocate (character(len=len_trim(val)) :: macros(num_macros)%value)
+            allocate (character(len_trim(val)) :: macros(num_macros)%value)
             macros(num_macros)%value = val
 
             if (index(temp, '...') > 0) then
@@ -215,7 +219,7 @@ contains
                 call move_alloc(temp_macros, macros)
             end if
             macros(num_macros)%name = name
-            allocate (character(len=len_trim(val)) :: macros(num_macros)%value)
+            allocate (character(len_trim(val)) :: macros(num_macros)%value)
             macros(num_macros)%value = val
             macros(num_macros)%num_params = 0
             macros(num_macros)%is_variadic = .false.
@@ -224,9 +228,9 @@ contains
     end subroutine
 
     recursive subroutine handle_include(line, output_unit, parent_file, line_num)
-        character(len=*), intent(in) :: line, parent_file
+        character(*), intent(in) :: line, parent_file
         integer, intent(in) :: output_unit, line_num
-        character(len=MAX_LINE_LEN) :: include_file, buffer
+        character(MAX_LINE_LEN) :: include_file, buffer
         integer :: input_unit, ios
         logical :: in_continuation
 

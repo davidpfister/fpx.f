@@ -4,34 +4,33 @@ module fpx_macro
     implicit none; private
 
     public :: expand_macros,    &
-              macros,           &
-              num_macros
+              is_defined
 
     type, public :: macro_t
-        character(len=:), allocatable :: name
-        character(len=:), allocatable :: value
-        character(len=MAX_LINE_LEN), allocatable :: params(:)
-        integer :: num_params
-        logical :: is_variadic ! New flag for variadic macros
+        character(:), allocatable               :: name
+        character(:), allocatable               :: value
+        character(MAX_LINE_LEN), allocatable    :: params(:)
+        integer                                 :: num_params
+        logical                                 :: is_variadic
     end type macro_t
-
-    type(macro_t), allocatable :: macros(:)
-
-    integer :: num_macros = 0
 
     contains
 
-    recursive function expand_macros(line) result(expanded)
-        character(len=*), intent(in) :: line
-        character(len=:), allocatable :: expanded, args_str, temp, va_args, token1, token2
-        character(len=MAX_LINE_LEN) :: arg_values(MAX_PARAMS)
+    recursive function expand_macros(line, macros) result(expanded)
+        character(*), intent(in)    :: line
+        type(macro_t), intent(in)   :: macros(:)
+        character(:), allocatable   :: expanded
+        !private
+        character(:), allocatable   :: args_str, temp, va_args, token1, token2
+        character(MAX_LINE_LEN)     :: arg_values(MAX_PARAMS)
         integer :: i, pos, start, end_pos, paren_level, arg_start, arg_count, j, macro_start, macro_end, k, token1_start
         logical :: param_used(MAX_PARAMS) ! Track which parameters are consumed by ##
 
         expanded = line
         print *, "Initial expanded: '", trim(expanded), "'"
-        do i = 1, num_macros
+        do i = 1, size(macros)
             pos = 1
+            if (.not. allocated(macros(i)%name)) continue
             do while (pos > 0)
                 pos = index(expanded, trim(macros(i)%name))
                 if (pos > 0) then
@@ -134,7 +133,8 @@ module fpx_macro
 
                                     ! Concatenate, replacing the full 'token1 ## token2' pattern
                                     temp = trim(temp(:token1_start - 1)//trim(token1)//trim(token2)//trim(temp(k:)))
-                print *, "Concatenated '", trim(token1), "' and '", trim(token2), "' to '", trim(token1)//trim(token2), "', temp: '", trim(temp), "'"
+                                    print *, "Concatenated '", trim(token1), "' and '", trim(token2), "' to '", &
+                                             trim(token1)//trim(token2), "', temp: '", trim(temp), "'"
                                 end if
                             end do
 
@@ -146,7 +146,8 @@ module fpx_macro
                                     if (pos > 0) then
                                         start = pos + 1 + len_trim(macros(i)%params(j))
                                         temp = trim(temp(:pos - 1)//'"'//trim(arg_values(j))//'"'//trim(temp(start:)))
-    print *, "Stringified param ", j, ": '", trim(macros(i)%params(j)), "' to '", trim(arg_values(j)), "', temp: '", trim(temp), "'"
+                                        print *, "Stringified param ", j, ": '", trim(macros(i)%params(j)), & 
+                                                 "' to '", trim(arg_values(j)), "', temp: '", trim(temp), "'"
                                         param_used(j) = .true.
                                     end if
                                 end do
@@ -161,7 +162,8 @@ module fpx_macro
                                         if (pos > 0) then
                                             start = pos + len_trim(macros(i)%params(j))
                                             temp = trim(temp(:pos - 1)//trim(arg_values(j))//trim(temp(start:)))
-  print *, "Substituted param ", j, ": '", trim(macros(i)%params(j)), "' with '", trim(arg_values(j)), "', temp: '", trim(temp), "'"
+                                            print *, "Substituted param ", j, ": '", trim(macros(i)%params(j)), &
+                                                     "' with '", trim(arg_values(j)), "', temp: '", trim(temp), "'"
                                         end if
                                     end do
                                 end if
@@ -185,7 +187,7 @@ module fpx_macro
                             end if
 
                             print *, "Before recursive call, temp: '", trim(temp), "'"
-                            temp = expand_macros(temp) ! Only for nested macros
+                            temp = expand_macros(temp, macros) ! Only for nested macros
                             print *, "After recursive call, temp: '", trim(temp), "'"
                             print *, "Prefix: '", trim(expanded(:macro_start - 1)), "'"
                             print *, "Temp: '", trim(temp), "'"
@@ -197,11 +199,27 @@ module fpx_macro
                         temp = trim(macros(i)%value)
                         macro_end = start - 1
                         expanded = trim(expanded(:macro_start - 1)//trim(temp)//expanded(macro_end + 1:))
-                        expanded = expand_macros(expanded)
+                        expanded = expand_macros(expanded, macros)
                         print *, "Simple macro expanded: '", trim(expanded), "'"
                     end if
                 end if
             end do
         end do
     end function
+
+    logical function is_defined(name, macros) result(res)
+        character(len=*), intent(in)    :: name
+        type(macro_t), intent(in)       :: macros(:)
+        integer :: i
+        res = .false.
+        do i = 1, size(macros)
+            if (allocated(macros(i)%name)) then
+                if (trim(macros(i)%name) == trim(name)) then
+                    res = .true.
+                    exit
+                end if
+            end if
+        end do
+    end function
+
 end module

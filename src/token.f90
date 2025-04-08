@@ -1,44 +1,55 @@
 module fpx_token
     use fpx_constants
     use fpx_macro
-    use fpx_stack
 
     implicit none; private
 
     public ::   tokenize,           &
                 starts_with,        &
-                parse_expression,   &
-                is_active,          &
-                is_defined
+                evaluate_expression, &
+                parse_expression
+
+    enum, bind(c)
+        enumerator :: unknown       = -1
+        enumerator :: number        = 0
+        enumerator :: operator      = 1
+        enumerator :: identifier    = 2
+        enumerator :: parenthesis   = 3
+        enumerator :: defined       = 4
+    end enum
+
+    integer, parameter :: tokens_enum = kind(unknown)
 
     type, public :: token_t
-        character(len=:), allocatable :: value
-        integer :: type ! 0: number, 1: operator, 2: identifier, 3: parenthesis, 4: defined identifier
+        character(:), allocatable   :: value
+        integer(tokens_enum)        :: type
     end type token_t
 
     contains
 
-    logical function is_active() result(res)
-        integer :: i
-        res = .true.
-        do i = 1, cond_depth + 1
-            if (.not. cond_stack(i)%active) then
-                res = .false.
-                exit
-            end if
-        end do
-    end function
+    logical function evaluate_expression(expr, macros) result(res)
+        character(*), intent(in)    :: expr
+        type(macro_t), intent(in)       :: macros(:)
+        !private
+        type(token_t), allocatable :: tokens(:)
+        integer :: num_tokens, pos, result
 
-    logical function is_defined(name) result(res)
-        character(len=*), intent(in) :: name
-        integer :: i
-        res = .false.
-        do i = 1, num_macros
-            if (trim(macros(i)%name) == trim(name)) then
-                res = .true.
-                exit
-            end if
-        end do
+        call tokenize(expr, tokens, num_tokens)
+        if (num_tokens == 0) then
+            print *, "No tokens found for expression"
+            res = .false.
+            return
+        end if
+
+        pos = 1
+        result = parse_expression(tokens, num_tokens, pos, macros)
+        print *, "Parsed '", trim(expr), "': pos = ", pos, ", num_tokens = ", num_tokens, ", result = ", result
+        if (pos <= num_tokens) then
+            print *, "Error: Extra tokens in expression: ", trim(tokens(pos)%value)
+            res = .false.
+            return
+        end if
+        res = (result /= 0)
     end function
 
     logical function is_digit(ch) result(res)
@@ -46,61 +57,68 @@ module fpx_token
         res = (ch >= '0' .and. ch <= '9')
     end function
 
-    recursive integer function parse_expression(tokens, num_tokens, pos) result(val)
-        type(token_t), intent(in) :: tokens(:)
-        integer, intent(in) :: num_tokens
-        integer, intent(inout) :: pos
-        val = parse_or(tokens, num_tokens, pos)
+    recursive integer function parse_expression(tokens, num_tokens, pos, macros) result(val)
+        type(token_t), intent(in)   :: tokens(:)
+        integer, intent(in)         :: num_tokens
+        integer, intent(inout)      :: pos
+        type(macro_t), intent(in)   :: macros(:)
+
+        val = parse_or(tokens, num_tokens, pos, macros)
     end function
 
-    recursive integer function parse_or(tokens, num_tokens, pos) result(val)
-        type(token_t), intent(in) :: tokens(:)
-        integer, intent(in) :: num_tokens
-        integer, intent(inout) :: pos
+    recursive integer function parse_or(tokens, num_tokens, pos, macros) result(val)
+        type(token_t), intent(in)   :: tokens(:)
+        integer, intent(in)         :: num_tokens
+        integer, intent(inout)      :: pos
+        type(macro_t), intent(in)   :: macros(:)
         integer :: left
 
-        left = parse_and(tokens, num_tokens, pos)
+        left = parse_and(tokens, num_tokens, pos, macros)
         do while (pos <= num_tokens .and. tokens(pos)%value == '||')
             print *, "Parsing || at pos ", pos
             pos = pos + 1
-            val = merge(1, 0, left /= 0 .or. parse_and(tokens, num_tokens, pos) /= 0)
+            val = merge(1, 0, left /= 0 .or. parse_and(tokens, num_tokens, pos, macros) /= 0)
             left = val
         end do
         val = left
     end function
 
-    recursive integer function parse_and(tokens, num_tokens, pos) result(val)
-        type(token_t), intent(in) :: tokens(:)
-        integer, intent(in) :: num_tokens
-        integer, intent(inout) :: pos
+    recursive integer function parse_and(tokens, num_tokens, pos, macros) result(val)
+        type(token_t), intent(in)   :: tokens(:)
+        integer, intent(in)         :: num_tokens
+        integer, intent(inout)      :: pos
+        type(macro_t), intent(in)   :: macros(:)
+        !private
         integer :: left
 
-        left = parse_equality(tokens, num_tokens, pos)
+        left = parse_equality(tokens, num_tokens, pos, macros)
         do while (pos <= num_tokens .and. tokens(pos)%value == '&&')
             print *, "Parsing && at pos ", pos
             pos = pos + 1
-            val = merge(1, 0, left /= 0 .and. parse_equality(tokens, num_tokens, pos) /= 0)
+            val = merge(1, 0, left /= 0 .and. parse_equality(tokens, num_tokens, pos, macros) /= 0)
             left = val
         end do
         val = left
     end function
 
-    recursive integer function parse_equality(tokens, num_tokens, pos) result(val)
-        type(token_t), intent(in) :: tokens(:)
-        integer, intent(in) :: num_tokens
-        integer, intent(inout) :: pos
+    recursive integer function parse_equality(tokens, num_tokens, pos, macros) result(val)
+        type(token_t), intent(in)   :: tokens(:)
+        integer, intent(in)         :: num_tokens
+        integer, intent(inout)      :: pos
+        type(macro_t), intent(in)   :: macros(:)
+        !private
         integer :: left, right
 
-        left = parse_relational(tokens, num_tokens, pos)
+        left = parse_relational(tokens, num_tokens, pos, macros)
         do while (pos <= num_tokens .and. (tokens(pos)%value == '==' .or. tokens(pos)%value == '!='))
             print *, "Parsing ", trim(tokens(pos)%value), " at pos ", pos
             if (tokens(pos)%value == '==') then
                 pos = pos + 1
-                right = parse_relational(tokens, num_tokens, pos)
+                right = parse_relational(tokens, num_tokens, pos, macros)
                 val = merge(1, 0, left == right)
             else
                 pos = pos + 1
-                right = parse_relational(tokens, num_tokens, pos)
+                right = parse_relational(tokens, num_tokens, pos, macros)
                 val = merge(1, 0, left /= right)
             end if
             left = val
@@ -108,31 +126,33 @@ module fpx_token
         val = left
     end function
 
-    recursive integer function parse_relational(tokens, num_tokens, pos) result(val)
-        type(token_t), intent(in) :: tokens(:)
-        integer, intent(in) :: num_tokens
-        integer, intent(inout) :: pos
+    recursive integer function parse_relational(tokens, num_tokens, pos, macros) result(val)
+        type(token_t), intent(in)   :: tokens(:)
+        integer, intent(in)         :: num_tokens
+        integer, intent(inout)      :: pos
+        type(macro_t), intent(in)   :: macros(:)
+        !private
         integer :: left, right
 
-        left = parse_additive(tokens, num_tokens, pos)
+        left = parse_additive(tokens, num_tokens, pos, macros)
         do while (pos <= num_tokens .and. (tokens(pos)%value == '<' .or. tokens(pos)%value == '>' .or. &
                                            tokens(pos)%value == '<=' .or. tokens(pos)%value == '>='))
             print *, "Parsing ", trim(tokens(pos)%value), " at pos ", pos
             if (tokens(pos)%value == '<') then
                 pos = pos + 1
-                right = parse_additive(tokens, num_tokens, pos)
+                right = parse_additive(tokens, num_tokens, pos, macros)
                 val = merge(1, 0, left < right)
             else if (tokens(pos)%value == '>') then
                 pos = pos + 1
-                right = parse_additive(tokens, num_tokens, pos)
+                right = parse_additive(tokens, num_tokens, pos, macros)
                 val = merge(1, 0, left > right)
             else if (tokens(pos)%value == '<=') then
                 pos = pos + 1
-                right = parse_additive(tokens, num_tokens, pos)
+                right = parse_additive(tokens, num_tokens, pos, macros)
                 val = merge(1, 0, left <= right)
             else
                 pos = pos + 1
-                right = parse_additive(tokens, num_tokens, pos)
+                right = parse_additive(tokens, num_tokens, pos, macros)
                 val = merge(1, 0, left >= right)
             end if
             left = val
@@ -140,22 +160,24 @@ module fpx_token
         val = left
     end function
 
-    recursive integer function parse_additive(tokens, num_tokens, pos) result(val)
-        type(token_t), intent(in) :: tokens(:)
-        integer, intent(in) :: num_tokens
-        integer, intent(inout) :: pos
+    recursive integer function parse_additive(tokens, num_tokens, pos, macros) result(val)
+        type(token_t), intent(in)   :: tokens(:)
+        integer, intent(in)         :: num_tokens
+        integer, intent(inout)      :: pos
+        type(macro_t), intent(in)   :: macros(:)
+        !private
         integer :: left, right
 
-        left = parse_unary(tokens, num_tokens, pos)
+        left = parse_unary(tokens, num_tokens, pos, macros)
         do while (pos <= num_tokens .and. (tokens(pos)%value == '+' .or. tokens(pos)%value == '-'))
             print *, "Parsing ", trim(tokens(pos)%value), " at pos ", pos
             if (tokens(pos)%value == '+') then
                 pos = pos + 1
-                right = parse_unary(tokens, num_tokens, pos)
+                right = parse_unary(tokens, num_tokens, pos, macros)
                 val = left + right
             else
                 pos = pos + 1
-                right = parse_unary(tokens, num_tokens, pos)
+                right = parse_unary(tokens, num_tokens, pos, macros)
                 val = left - right
             end if
             left = val
@@ -163,24 +185,26 @@ module fpx_token
         val = left
     end function
 
-    recursive integer function parse_unary(tokens, num_tokens, pos) result(val)
-        type(token_t), intent(in) :: tokens(:)
-        integer, intent(in) :: num_tokens
-        integer, intent(inout) :: pos
+    recursive integer function parse_unary(tokens, num_tokens, pos, macros) result(val)
+        type(token_t), intent(in)   :: tokens(:)
+        integer, intent(in)         :: num_tokens
+        integer, intent(inout)      :: pos
+        type(macro_t), intent(in)   :: macros(:)
 
         if (pos <= num_tokens .and. tokens(pos)%value == '!') then
             print *, "Parsing ! at pos ", pos
             pos = pos + 1
-            val = merge(0, 1, parse_unary(tokens, num_tokens, pos) /= 0)
+            val = merge(0, 1, parse_unary(tokens, num_tokens, pos, macros) /= 0)
         else
-            val = parse_primary(tokens, num_tokens, pos)
+            val = parse_primary(tokens, num_tokens, pos, macros)
         end if
     end function
 
-    recursive integer function parse_primary(tokens, num_tokens, pos) result(val)
-        type(token_t), intent(in) :: tokens(:)
-        integer, intent(in) :: num_tokens
-        integer, intent(inout) :: pos
+    recursive integer function parse_primary(tokens, num_tokens, pos, macros) result(val)
+        type(token_t), intent(in)   :: tokens(:)
+        integer, intent(in)         :: num_tokens
+        integer, intent(inout)      :: pos
+        type(macro_t), intent(in)   :: macros(:)
         integer :: i
         character(len=MAX_LINE_LEN) :: expanded
 
@@ -195,14 +219,14 @@ module fpx_token
             read (tokens(pos)%value, *) val
             pos = pos + 1
         else if (tokens(pos)%type == 2) then
-            expanded = expand_macros(tokens(pos)%value)
+            expanded = expand_macros(tokens(pos)%value, macros)
             read (expanded, *, iostat=i) val
             if (i /= 0) val = 0
             print *, "Expanded ", trim(tokens(pos)%value), " to ", trim(expanded), ", val = ", val
             pos = pos + 1
         else if (tokens(pos)%value == '(') then
             pos = pos + 1
-            val = parse_expression(tokens, num_tokens, pos)
+            val = parse_expression(tokens, num_tokens, pos, macros)
             if (pos > num_tokens .or. tokens(pos)%value /= ')') then
                 print *, "Error: Missing closing parenthesis at pos ", pos
                 val = 0
@@ -212,7 +236,7 @@ module fpx_token
             end if
         else if (tokens(pos)%type == 4) then
             expanded = trim(tokens(pos)%value)
-            val = merge(1, 0, is_defined(expanded))
+            val = merge(1, 0, is_defined(expanded, macros))
             print *, "defined(", trim(expanded), ") = ", val
             pos = pos + 1
         else
