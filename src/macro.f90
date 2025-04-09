@@ -20,9 +20,9 @@ module fpx_macro
         character(*), intent(in)    :: line
         type(macro_t), intent(in)   :: macros(:)
         !private
-        character(:), allocatable :: expanded, args_str, temp, va_args, token1, token2, btoken1, atoken2
+        character(:), allocatable :: expanded, args_str, temp, va_args, token1, token2, prefix, suffix
         character(MAX_LINE_LEN) :: arg_values(MAX_PARAMS)
-        integer :: i, pos, start, end_pos, paren_level, arg_start, arg_count, j, macro_start, macro_end, k, token1_start, token2_stop
+        integer :: i, pos, start, paren_level, arg_start, arg_count, j, macro_start, macro_end, k, token1_start, token2_stop
         logical :: param_used(MAX_PARAMS)  ! Track which parameters are consumed by ##
 
         expanded = line
@@ -89,10 +89,10 @@ module fpx_macro
                         end if
                         
                         token1 = adjustr(temp(:k))
-                        btoken1 = ''
+                        prefix = ''
                         token1_start = index(token1, ' ')
                         if (token1_start > 0) then 
-                            btoken1 = token1(:token1_start)
+                            prefix = token1(:token1_start)
                             token1 = token1(token1_start+1:)
                         end if
 
@@ -112,11 +112,11 @@ module fpx_macro
                             cycle
                         end if
                         
-                        atoken2 = ''
+                        suffix = ''
                         token2 = adjustl(temp(k:))
                         token2_stop = index(token2, ' ')
                         if (token2_stop > 0) then 
-                            atoken2 = token2(token2_stop:)
+                            suffix = token2(token2_stop:)
                             token2 = token2(:token2_stop-1)
                         end if
                         
@@ -130,7 +130,7 @@ module fpx_macro
                         end do
 
                         ! Concatenate, replacing the full 'token1 ## token2' pattern
-                        temp = trim(btoken1 // trim(token1) // trim(token2) // atoken2)
+                        temp = trim(prefix // trim(token1) // trim(token2) // suffix)
                         print *, "Concatenated '", trim(token1), "' and '", trim(token2), "' to '", trim(token1)//trim(token2), "', temp: '", trim(temp), "'"
                     end if
                     end do

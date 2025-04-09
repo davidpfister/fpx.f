@@ -2,9 +2,13 @@
 "test" \\
 #x
 #define CONCAT(a, b) a ## b
+#define FOO bar
 #define PRINT(...) printf(__VA_ARGS__)
 int main() {
   STR(hello);
+  FOO;
+#undef FOO
+  FOO;
   CONCAT(var, 123) = 42;
   PRINT("Hello, %d", 42);
 }

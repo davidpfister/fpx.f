@@ -131,5 +131,33 @@ module fpx_define
         character(*), intent(in)                    :: line
         integer, intent(inout)                      :: num_macros
         type(macro_t), allocatable, intent(inout)   :: macros(:)
+        !private
+        type(macro_t), allocatable :: temp_macros(:)
+        character(MAX_LINE_LEN) :: name, temp
+        integer :: i
+
+        temp = trim(adjustl(line))
+        temp = trim(adjustl(temp(7:)))  ! Skip '#undef'
+        name = trim(temp)
+        do i = 1, num_macros
+            if (trim(macros(i)%name) == name) then
+                print *, "Undefining macro: ", trim(name)
+                if (allocated(macros(i)%params)) deallocate(macros(i)%params)
+                if (num_macros > 1) then
+                    macros(i:num_macros-1) = macros(i+1:num_macros)
+                    allocate(temp_macros(num_macros-1))
+                    temp_macros = macros(:num_macros-1)
+                    deallocate(macros)
+                    call move_alloc(temp_macros, macros)
+                else
+                    deallocate(macros); allocate(macros(0))
+                end if
+                num_macros = num_macros - 1
+                exit
+            end if
+        end do
+        if (i > num_macros) then
+            print *, "Warning: Macro ", trim(name), " not found for #undef"
+        end if
     end subroutine
 end module
