@@ -86,4 +86,15 @@ print *, "Hello World"
 #:endif
 end
 ```
-Do you have any previous experience with such usage, or should I raise an issue at the Intel Fortran forum?
+
+## cpp
+
+You could experiment with shell piping gcc preprocessor in front of (or in place of) fpp.
+
+In your development environment, insert in PATH, in front of other paths, a path to a GCChack folder containing a copy of the GCC preprocessor renamed to FPP.EXE. This assumes the GCC preprocessor can completely preprocess the source. This can also be a shell program youwrite that handles the shell call to GCC then to FPP.
+
+Plan B is to create a batch file that first runs the GCC preprocessor, then runs the FPP preprocessor. Place the batch file into the "hack" folder under the name "FPP.EXE". Windows will (has for me) examine the contents of the start of the file and determine it is a batch file.
+
+Plan C is to create pre-build events and actions to pre-pre-process the files using the GCC pre-processor.
+
+Jim Dempsey

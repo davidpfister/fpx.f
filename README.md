@@ -1,237 +1,242 @@
-# FXP: Fortran extended preprocessing
+<a id="readme-top"></a>
 
-## Compatibility with cpp/fpp
+[![Contributors][contributors-shield]][contributors-url]
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
+[![Issues][issues-shield]][issues-url]
+[![MIT License][license-shield]][license-url]
 
-You can explicitly run fpp in the following ways:
+<!-- PROJECT LOGO -->
+<br />
+<div align="center">
+  <h3 align="center">fpx.f</h3>
 
-- On the command line, use the ifort command with the fpp compiler option. By default, the specified files are then compiled and linked. To retain the intermediate (.i or .i90) file, specify the [Q]save-temps compiler option.
+  <p align="center">
+    A fortran preprocessor in fortran for modern Fortran.
+    <br />
+    <a href="https://github.com/davidpfister/fpx.f"><strong>Explore the project »</strong></a>
+    <br />
+  </p>
+</div>
 
-- On the command line, use the fpp command. In this case, the compiler is not invoked. When using fpp on the command line, you need to specify the input file and the intermediate (.i or .i90) output file. For more information, type fpp -help (Linux and macOS) or fpp /help (Windows) on the command line.
 
-- In the Microsoft Visual Studio* IDE, set the Preprocess Source File option to Yes in the Fortran Preprocessor Option Category. To retain the intermediate files, add /Qsave-temps to Additional Options in the Fortran Command Line Category.
 
-The following table lists some common cpp features that are supported by fpp and some common cpp features that are not supported.
+<!-- TABLE OF CONTENTS -->
+[TOC]
 
-| Supported cpp features:| Unsupported cpp features:|
-|:--|:--|
-|#define, #undef, #ifdef, #ifndef, #if, #elif, #else, #endif, #include, #error, #warning, #line|#pragma and #ident|
-|# (stringsize) and ## (concatenation) operators| spaces or tab characters preceding the initial "#" character, # followed by empty line|
-|! as negation operator|\ backslash-newline|
+# Introduction
+<!-- ABOUT THE PROJECT -->
+## About the Project
+<p align="center">
+  <img src="">
+</p>
 
-Unlike cpp, fpp does not merge continued lines into a single line when possible.
+Fortran, the venerable language of scientific computing, has powered simulations of galaxies, weather systems, and quantum phenomena for over seven decades. Its enduring strength lies in its clarity, performance, and mathematical soul—qualities that resonate deeply with its community of developers. Yet, nestled within this ecosystem is a contentious tool: the preprocessor. From its ad hoc beginnings in the 1970s to its modern incarnations in tools like `cpp`, `fpp`, and `fypp`, preprocessing has been both a lifeline and a lightning rod for Fortran developers. It enables portability across diverse platforms, conditional compilation for debugging, and code generation for complex libraries—capabilities critical to Fortran’s role in high-performance computing. But it also sparks fierce debate, with many Fortraners decrying its tendency to obscure code, disrupt the language’s elegant simplicity, and introduce bugs that haunt scientific precision. This article explores the pivotal uses of preprocessing in Fortran, delving into the passionate love-hate relationship that defines its place in the community—a tug-of-war between pragmatic necessity and a purist’s devotion to Fortran’s unadulterated clarity.  
 
-You do not usually need to specify preprocessing for Fortran source programs unless your program uses fpp preprocessing commands, such as those listed above.
+This project aims at providing a simple, open-source preprocessor written in modern Fortran. `fpx` is a build on top of a C-compliant preprocessor, fine-tuned for the specificity of the Fortran language. 
 
-> CAUTION:
+* [![fpm][fpm]][fpm-url]
+* [![ifort][ifort]][ifort-url]
+* [![gfortran][gfortran]][gfortran-url]
 
-Using a preprocessor that does not support Fortran can damage your Fortran code.
-For example, consider the following code:
-```
-FORMAT (\\I4)
-```
-In this case, most C++ and C preprocessors will change the meaning of the program by interpreting the double backslash "\" as end-of-record.
+<!-- GETTING STARTED -->
+## Getting Started
 
-### fpp Preprocessor Directives
-All fpp preprocessor directives start with the number sign (#) as the first character on a line. White space (blank or tab characters) can appear after the initial "#" for indentation.
+### Requirements
 
-fpp preprocessor directives can be placed anywhere in source code, but they usually appear before a Fortran continuation line. However, fpp preprocessor directives within a macro call can not be divided among several lines by means of continuation symbols.
+To build that library you need
 
-fpp preprocessor directives can be grouped according to their purpose.
+- a Fortran 2008 compliant compiler, or better, a Fortran 2018 compliant compiler (Intel Fortran and gfortran compilers are known to work well for _fpx.f_).
 
-Preprocessor directives for string substitution
-The following fpp preprocessor directives cause substitutions in your program:
+The following compilers are tested on the default branch of _benchmark.f_:
 
-|Preprocessor Directive|Result|
-|:--|:--|
-|`__FILE__`|Replaces a string with the input file name (a character string literal).|
-|`__LINE__`|Replaces a string with the current line number in the input file (an integer constant).|
-|`__DATE__`|Replaces a string with the date that fpp processed the input file (a character string literal in the form Mmm dd yyyy).|
-|`__TIME__`|Replaces a string with the time that fpp processed the input file (a character string literal in the form hh:mm:ss).|
-|`__TIMESTAMP__`|Replaces a string with the timestamp that fpp processed the input file (a character string literal in the form "day date time year", where day is a 3-letter abbreviation, date is Mmm dd, time is hh:mm:ss and year is yyyy).|
+<center>
 
-#### Preprocessor directive for inclusion of external files
-To include external files, preprocessor directive #include can be specified in one of the following forms:
-```
-#include "filename"
-```
+| Name |	Version	| Platform	| Architecture |
+|:--:|:--:|:--:|:--:|
+| GCC Fortran (MinGW) | 14 | Windows 10 | x86_64 |
+| Intel oneAPI classic	| 2021.5	| Windows 10 |	x86_64 |
 
-```
-#include <filename>
-```
-#include reads in the contents of the named file into the specified or default location in the source. The lines read in from the file are processed by fpp as if they were part of the current file.
+</center>
 
-When the <filename> notation is used, the compiler only searches for the file name in the standard "include" directories. For more information, see the fpp preprocessor options Idir and Ydir options. No additional tokens are allowed on the directive line after the final '"' or ">".
+- a preprocessor. _fpx.f_ uses some preprocessor macros. It is known to work both with intel `fpp` and `cpp`. The goal is for `fpx` to preproces itself at some point. In particular, the console line application uses the header file ['app.inc'](https://github.com/davidpfister/fortiche/tree/master/src/app) from the ['fortiche'](https://github.com/davidpfister/fortiche) repo. 
 
-For #include "filename", file names are searched for in the following order:
+Unit test rely on the the header file [`assertion.inc`](https://github.com/davidpfister/fortiche/tree/master/src/assertion). Since the whole framework fits in a single file, it has been added directly to the repo. 
 
-- In the directory in which the source file resides
-- In the directories specified by the I or Y preprocessor option
-- In the default directory
-
-For #include <filename>, filenames are searched for in the following order:
-- In the directories specified by the I or Y preprocessor option
-- In the default directory
-
-#### Preprocessor directive for line control
-The preprocessor directive #line-number generates line control information for the compiler. It takes the following form:
-```
-#line-number "filename"
-```
-#line-number is an integer constant that is the line number of the next line. "filename" is the name of the file containing the line. 
-If "filename" is not provided, the current file name is assumed.
-
-#### Preprocessor directive for fpp variable and macro definitions
-The preprocessor directive #define can be used to define both simple string variables and more complicated macros. It can take two forms.
-
-Definition of an fpp variable:
-
-> #define name token-string
-
-In the above, occurrences of name in the source file will be replaced by token-string.
-
-- Definition of an fppmacro:
-```
-#define name(argument[,argument] ... ) token-string
-```
-In the above, occurrences of the macro name followed by the comma-separated list of actual arguments within parentheses, will be replaced by token-string. Each occurrence of argument in token-string is replaced by the token sequence representing the corresponding "actual" argument in the macro call.
-
-An error occurs if the number of macro call arguments is not the same as the number of arguments in the corresponding macro definition. For example, consider this macro definition:
-```
-#define INTSUB(m, n, o) call mysub(m, n, o)
-```
-Any use of the macro INTSUB must have three arguments. In macro definitions, spaces between the macro name and the open parenthesis "(" are prohibited to prevent the directive from being interpreted as an fpp variable definition with the rest of the line beginning with the open parenthesis "(" being interpreted as its token-string.
-
-An fpp variable or macro definition can be of any length and is limited only by the newline symbol. It can be defined in multiple lines by continuing it to the next line with the insertion of "\". For example:
-```
-#define long_macro_name(x,\
-   y) x*y
-```
-The occurrence of a newline without a macro-continuation signifies the end of the macro definition.
-
-The scope of a definition begins from the #define and encloses all the source lines (and source lines from #include files) to the end of the current file, except for:
-
-- Files included by Fortran INCLUDE statements
-- fpp and Fortran comments
-- Fortran IMPLICIT statements that specify a single letter
-- Fortran FORMAT statements
-- Numeric, typeless, and character constants
-
-#### Preprocessor directive for undefining a macro
-The preprocessor directive #undef takes the following form:
-```
-#undef name
-```
-This preprocessor directive removes any definition for name produced by the D preprocessor option, the #define preprocessor directive, or by default. No additional tokens are permitted on the directive line after name.
-
-If name has not been previously defined, then #undef has no effect.
-
-#### Preprocessor directive for macro expansion
-If, during expansion of a macro, the column width of a line exceeds column 72 (for fixed format) or column 132 (for free format), fpp inserts appropriate Fortran continuation lines.
-
-For fixed format, there is a limit on macro expansions in label fields (positions 1-5):
-
-- A macro call (together with possible arguments) should not extend beyond column 5.
-- A macro call whose name begins with one of the Fortran comment symbols is considered to be part of a comment.
-- A macro expansion may produce text extending beyond column 5. In this case, a warning will be issued.
-
-In fixed format, when the fpp preprocessor option Xw has been specified, an ambiguity may occur if a macro call occurs in a statement position and a macro name begins or coincides with a Fortran keyword. For example, consider the following:
-
-```
-#define callp(x)   call f(x)
-  call p(0)
+Linting, indentation, and styling is done with [fprettify](https://github.com/fortran-lang/fprettify) with the following settings
+```bash
+fprettify .\src\ -r --case 1 1 1 1 -i 4 --strict-indent --enable-replacements --strip-comments --c-relations
 ```
 
-In this case, fpp cannot determine how to interpret the callp token sequence. It could be considered to be a macro name. The current implementation does the following:
+### Installation
 
-- The longer identifier is chosen (callp in this case)
-- From this identifier the longest macro name or keyword is extracted
-- If a macro name has been extracted, a macro expansion is performed. If the name begins with some keyword, fpp issues an appropriate warning
-- The rest of the identifier is considered a whole identifier
-
-In the previous example, the macro expansion is performed and the following warning is produced:
-
-> warning: possibly incorrect substitution of macro callp
-
-This situation appears only when preprocessing fixed-format source code and when the space symbol is not interpreted as a token delimiter.
-
-In the following case, a macro name coincides with a beginning of a keyword:
-
+#### Get the code
+```bash
+git clone https://github.com/davidpfister/fpx.f
+cd fpx.f
 ```
-#define INT  INTEGER*8
-              INTEGER k
+
+#### Build with fpm
+
+The repo can be build using _fpm_
+```bash
+fpm build --flag '-ffree-line-length-none'
 ```
-The INTEGER keyword will be found earlier than the INT macro name. There will be no warning when preprocessing such a macro definition.
-
-#### Preprocessor directives for conditional selection of source text
-The following three preprocessor directives are conditional constructs that you can use to select source text.
+For convenience, the  repo also contains a response file that can be invoked as follows: 
 ```
-#if preprocessor directive
+fpm @build
 ```
-When #if is specified, subsequent lines up to the matching #else, #elif, or #endif preprocessor directive appear in the output only if condition evaluates to .TRUE..
+(For the Windows users, that command does not work in Powershell since '@' is a reserved symbol. One should use the '--%' as follows: `fpm --% @build`.
+This is linked to the following [issue](https://github.com/urbanjost/M_CLI2/issues/19))
 
-The following shows an example:
+Building with ifort requires to specify the compiler name (gfortran by default)
+```bash
+fpm @build --compiler ifort
 ```
-#if condition_1
-  block_1
-#elif condition_2
-  block_2
-#elif ...
-#else
-  block_n
-#endif
-#ifdef preprocessor directive
+Alternatively, the compiler can be set using fpm environment variables.
+```bash
+set FPM_FC=ifort
 ```
-When #ifdef is specified, subsequent lines up to the matching #else, #elif, or #endif preprocessor directive appear in the output only if name has been defined, either by a #define preprocessor directive or by the D preprocessor option, with no intervening #undef preprocessor directive. No additional tokens are permitted on the preprocessor directive line after name.
 
-The following shows an example:
+Besides the build command, several commands are also available:
+```bash
+@pretiffy
+system fprettify .\examples\ -r --case 1 1 1 1 -i 4 --strict-indent --enable-replacements --strip-comments --c-relations
+system fprettify .\src\ -r --case 1 1 1 1 -i 4 --strict-indent --enable-replacements --strip-comments --c-relations
+system fprettify .\tests\ -r --case 1 1 1 1 -i 4 --strict-indent --enable-replacements --strip-comments --c-relations
+
+@clean
+option clean --all
+
+@rebuild
+system rmdir /s /q build
+option build --flag '-ffree-line-length-none'
+
+@build
+option build --flag '-ffree-line-length-none'
+
+@test
+options test --flag '-ffree-line-length-none'
+
+@doc
+option clean --all
+system cd ./.dox & doxygen ./Doxyfile.in & cd ..
 ```
-#ifdef name
-  block_1
-#elif condition
-  block_2
-#elif ...
-#else
-  block_n
-#endif
-#ifndef preprocessor directive
+
+The settings to the cpp preprocessor are specified in the file. 
+
+```toml
+[preprocess]
+cpp.suffixes = ["F90", "f90"]
+cpp.macros = ["_FPM"]
 ```
-When #ifndef is specified, subsequent lines up to the matching #else, #elif, or #endif preprocessor directive appear in the output only if name has not been defined, or if its definition has been removed with an #undef preprocessor directive. No additional tokens are permitted on the directive line after name.
+The `_FPM` macro is used to differentiate the build when compiling with _fpm_ or _Visual Studio_. This is mostly present to adapt the hard coded paths that differs in both cases.
 
-The following shows an example:
+#### Build with Visual Studio 2019
+
+The project was originally developed on Windows with Visual Studio 2019. The repo contains the solution file (_Fpx.f.sln_) to get you started with Visual Studio 2019. 
+
+
+<!-- USAGE EXAMPLES -->
+## Usage
+
+Using the file preprocessor could not be easier. The function simply takes as arguments the input and output file paths. 
+
+```fortran
+program test
+    use fpx_parser
+    
+    call preprocess_file('tests/input.in', 'tests/output.out')
+end program
 ```
-#ifndef name
-  block_1
-#elif condition
-  block_2
-#elif ...
-#else
-  block_n
-#endif
-```
-The #else, #elif, or #endif preprocessor directives are optional. They can be used in the above preprocessor directives.
 
-Subsequent lines up to the matching #else, #elif, or #endif appear in the output only if all of the following occur:
+_For more examples, please refer to the [Documentation](https://davidpfister.github.io/fpx.f/index.html)_
 
-- The condition in the preceding #if directive evaluates to .FALSE., the name in the preceding #ifdef directive is not defined, or the name in the preceding #ifndef directive is defined
-- The conditions in all of the preceding #elif directives evaluate to .FALSE.
-- The condition in the current #elif evaluates to .TRUE.
+<!-- CONTRIBUTING -->
+### Contributing
 
-Any condition allowed in an #if directive is allowed in an #elif directive. Any number of #elif directives may appear between an #if, #ifdef, or #ifndef directive and a matching #else or #endif directive.
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**. So, thank you for considering contributing to _fpx.f_.
+Please review and follow these guidelines to make the contribution process simple and effective for all involved. In return, the developers will help address your problem, evaluate changes, and guide you through your pull requests.
 
-#### Conditional expressions
+By contributing to _fpx.f_, you certify that you own or are allowed to share the content of your contribution under the same license.
 
-condition_1, condition_2, etc. are logical expressions involving fpp constants, macros, and intrinsic functions. The following items are permitted in conditional expressions:
+### Style
 
-- C language operations: <, >, ==, !=, >=, <=, +, -, /, *, %, <<, >>, &, ~, |, &&, and ||
-They are interpreted by fpp in accordance to the C language semantics. This facility is provided for compatibility with "old" Fortran programs using cpp.
-- Fortran language operations: .AND., .OR., .NEQV., .XOR., .EQV., .NOT., .GT., .LT., .LE., .GE., .NE., .EQ., ** (power).
-- Fortran logical constants: .TRUE. , .FALSE.
-- The fpp intrinsic function "defined": defined(name) or defined name, which returns .TRUE. if name is defined as an fpp variable or a macro. It returns .FALSE. if the name is not defined.
+Please follow the style used in this repository for any Fortran code that you contribute. This allows focusing on substance rather than style.
 
-#ifdef is shorthand for #if defined(name) and #ifndef is shorthand for #if .not. defined(name).
+### Reporting a bug
 
-Only these items, integer constants, and names can be used within a constant expression.
+A bug is a *demonstrable problem* caused by the code in this repository.
+Good bug reports are extremely valuable to us—thank you!
 
-A name that has not been defined with the D preprocessor option, a #define preprocessor directive, or defined by default, has a value of zero.
+Before opening a bug report:
 
-The C operation != (not equal) can be used in the #if or #elif preprocessor directive, but not in the #define preprocessor directive, where the symbol ! is considered to be the Fortran comment symbol by default.
+1. Check if the issue has already been reported
+   ([issues](https://github.com/davidpfister/fpx.f/issues)).
+2. Check if it is still an issue or it has been fixed?
+   Try to reproduce it with the latest version from the default branch.
+3. Isolate the problem and create a minimal test case.
+
+A good bug report should include all information needed to reproduce the bug.
+Please be as detailed as possible:
+
+1. Which version of _benchmark.f_ are you using? Please be specific.
+2. What are the steps to reproduce the issue?
+3. What is the expected outcome?
+4. What happens instead?
+
+This information will help the developers diagnose the issue quickly and with
+minimal back-and-forth.
+
+### Pull request
+
+If you have a suggestion that would make this project better, please create a pull request. You can also simply open an issue with the tag "enhancement".
+Don't forget to give the project a star! Thanks again!
+1. Open a [new issue](https://github.com/davidpfister/fpx.f/issues/new) to
+   describe a bug or propose a new feature.
+   Refer to the earlier sections on how to write a good bug report or feature    request.
+2. Discuss with the developers and reach consensus about what should be done about the bug or feature request.
+   **When actively working on code towards a PR, please assign yourself to the
+   issue on GitHub.**
+   This is good collaborative practice to avoid duplicated effort and also inform others what you are currently working on.
+3. Create your Feature Branch (```git checkout -b feature/AmazingFeature```)
+4. Commit your Changes (```git commit -m 'Add some AmazingFeature'```)
+5. Push to the Branch (```git push origin feature/AmazingFeature```)
+6. Open a Pull Request with your contribution.
+   The body of the PR should at least include a bullet-point summary of the
+   changes, and a detailed description is encouraged.
+   If the PR completely addresses the issue you opened in step 1, include in
+   the PR description the following line: ```Fixes #<issue-number>```. If your PR implements a feature that adds or changes the behavior of _benchmark.f_,
+   your PR must also include appropriate changes to the documentation and associated units tests.
+
+In brief, 
+* A PR should implement *only one* feature or bug fix.
+* Do not commit changes to files that are irrelevant to your feature or bug fix.
+* Smaller PRs are better than large PRs, and will lead to a shorter review and
+  merge cycle
+* Add tests for your feature or bug fix to be sure that it stays functional and useful
+* Be open to constructive criticism and requests for improving your code.
+
+
+<!-- LICENSE -->
+## License
+
+Distributed under the MIT License.
+
+<!-- MARKDOWN LINKS & IMAGES -->
+[contributors-shield]: https://img.shields.io/github/contributors/davidpfister/fpx.f.svg?style=for-the-badge
+[contributors-url]: https://github.com/davidpfister/fpx.f/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/davidpfister/fpx.f.svg?style=for-the-badge
+[forks-url]: https://github.com/davidpfister/fpx.f/network/members
+[stars-shield]: https://img.shields.io/github/stars/davidpfister/fpx.f.svg?style=for-the-badge
+[stars-url]: https://github.com/davidpfister/fpx.f/stargazers
+[issues-shield]: https://img.shields.io/github/issues/davidpfister/fpx.f.svg?style=for-the-badge
+[issues-url]: https://github.com/davidpfister/fpx.f/issues
+[license-shield]: https://img.shields.io/github/license/davidpfister/fpx.f.svg?style=for-the-badge
+[license-url]: https://github.com/davidpfister/fpx.f/master/LICENSE
+[gfortran]: https://img.shields.io/badge/gfortran-000000?style=for-the-badge&logo=gnu&logoColor=white
+[gfortran-url]: https://gcc.gnu.org/wiki/GFortran
+[ifort]: https://img.shields.io/badge/ifort-000000?style=for-the-badge&logo=Intel&logoColor=61DAFB
+[ifort-url]: https://www.intel.com/content/www/us/en/developer/tools/oneapi/fortran-compiler.html
+[fpm]: https://img.shields.io/badge/fpm-000000?style=for-the-badge&logo=Fortran&logoColor=734F96
+[fpm-url]: https://fpm.fortran-lang.org/
