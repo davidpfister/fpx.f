@@ -1,0 +1,11 @@
+#line ".\kw-in-char.F90" 5
+      subroutine test_b_wrapper_c() bind(C, name="test_b_c_f")
+
+
+
+
+
+
+
+
+      end

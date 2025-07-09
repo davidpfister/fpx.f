@@ -1,0 +1,6 @@
+#line ".\implicit-contin2.F90" 4
+      print *, 1
+      continue
+      print *, 2
+
+      end

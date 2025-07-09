@@ -1,0 +1,11 @@
+#line ".\pp025.F" 4
+      integer, parameter :: IKWM2Z = 777
+
+      integer :: res
+      res = I KWM2 Z
+      if (res .eq. 777) then
+        print *, 'pp025.F yes'
+      else
+        print *, 'pp025.F no: ', res
+      end if
+      end

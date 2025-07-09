@@ -1,0 +1,3 @@
+#line ".\pp040.F" 6
+      print *, 'pp040.F yes'
+      end

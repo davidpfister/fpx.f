@@ -1,0 +1,9 @@
+#line ".\pp101.F90" 4
+      integer, parameter :: KWM = 666
+
+      if (777 .eq. 777) then
+        print *, 'pp101.F90 yes'
+      else
+        print *, 'pp101.F90 no: ', 777
+      end if
+      end

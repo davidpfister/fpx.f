@@ -1,0 +1,12 @@
+#line ".\ff-include-args.F" 4
+      call foo (  3.14159)
+
+      end
+
+      subroutine foo(test)
+
+
+
+
+
+      end

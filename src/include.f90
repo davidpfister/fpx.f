@@ -1,11 +1,12 @@
 module fpx_include
     use fpx_constants
+    use fpx_logging
 
     implicit none; private
 
     public :: handle_include
 
-    interface 
+    interface
         subroutine read_line(line, output_unit, filename, line_num)
             character(*), intent(in)    :: line
             integer, intent(in)         :: output_unit
@@ -14,7 +15,7 @@ module fpx_include
         end subroutine
     end interface
 
-    contains
+contains
 
     recursive subroutine handle_include(line, output_unit, parent_file, line_num, process_line)
         character(*), intent(in)    :: line
@@ -35,7 +36,7 @@ module fpx_include
 
         open (newunit=input_unit, file=include_file, status='old', action='read', iostat=ios)
         if (ios /= 0) then
-            print *, "Error: Cannot open include file '", trim(include_file), "' at ", trim(parent_file), ":", line_num
+            if (verbose) print *, "Error: Cannot open include file '", trim(include_file), "' at ", trim(parent_file), ":", line_num
             return
         end if
 

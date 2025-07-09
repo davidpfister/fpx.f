@@ -56,10 +56,14 @@
 	</Configurations>
 	<Files>
 		<File RelativePath=".\conditional.f90"/>
-		<File RelativePath=".\constants.f90"/>
+		<File RelativePath=".\constants.f90">
+		</File>
+		<File RelativePath=".\define.f90">
+		</File>
+		<File RelativePath=".\include.f90"/>
+		<File RelativePath=".\logging.f90"/>
 		<File RelativePath=".\macro.f90"/>
 		<File RelativePath=".\parser.f90"/>
-		<File RelativePath=".\stack.f90"/>
 		<File RelativePath=".\token.f90"/>
 	</Files>
 	<Globals/>

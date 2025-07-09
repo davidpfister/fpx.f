@@ -1,0 +1,6 @@
+program preprocessor7
+implicit none
+print *, 2
+print *, 4
+print *, 4
+end program

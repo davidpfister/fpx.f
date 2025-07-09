@@ -1,19 +1,20 @@
 module fpx_conditional
     use fpx_constants
+    use fpx_logging
     use fpx_macro, only: macro_t, is_defined
     use fpx_token, only: evaluate_expression
 
     implicit none; private
 
-    public ::   handle_if,      &
-                handle_ifdef,   &
-                handle_ifndef,  &
-                handle_elif,    &
-                handle_else,    & 
-                handle_endif,   &
-                is_active,      &
-                cond_stack,     &
-                cond_depth
+    public ::   handle_if, &
+              handle_ifdef, &
+              handle_ifndef, &
+              handle_elif, &
+              handle_else, &
+              handle_endif, &
+              is_active, &
+              cond_stack, &
+              cond_depth
 
     type, public :: cond_state_t
         logical :: active
@@ -24,7 +25,7 @@ module fpx_conditional
 
     integer :: cond_depth = 0
 
-    contains
+contains
 
     logical function is_active() result(res)
         integer :: i
@@ -46,18 +47,18 @@ module fpx_conditional
         logical :: result, parent_active
 
         if (cond_depth + 1 > MAX_COND_DEPTH) then
-            print *, "Error: Conditional nesting too deep at ", trim(filename), ":", line_num
+            if (verbose) print *, "Error: Conditional nesting too deep at ", trim(filename), ":", line_num
             return
         end if
 
         expr = trim(adjustl(line(4:)))
-        print *, "Evaluating #if: '", trim(expr), "'"
+        if (verbose) print *, "Evaluating #if: '", trim(expr), "'"
         result = evaluate_expression(expr, macros)
         parent_active = is_active()
         cond_depth = cond_depth + 1
         cond_stack(cond_depth + 1)%active = result .and. parent_active
         cond_stack(cond_depth + 1)%has_met = result
-        print *, "#if result: ", result, ", cond_depth = ", cond_depth, ", active = ", cond_stack(cond_depth + 1)%active
+        if (verbose) print *, "#if result: ", result, ", cond_depth = ", cond_depth, ", active = ", cond_stack(cond_depth + 1)%active
     end subroutine
 
     subroutine handle_ifdef(line, filename, line_num, macros)
@@ -70,7 +71,7 @@ module fpx_conditional
         logical :: defined, parent_active
 
         if (cond_depth + 1 > MAX_COND_DEPTH) then
-            print *, "Error: Conditional nesting too deep at ", trim(filename), ":", line_num
+            if (verbose) print *, "Error: Conditional nesting too deep at ", trim(filename), ":", line_num
             return
         end if
 
@@ -92,7 +93,7 @@ module fpx_conditional
         logical :: defined, parent_active
 
         if (cond_depth + 1 > MAX_COND_DEPTH) then
-            print *, "Error: Conditional nesting too deep at ", trim(filename), ":", line_num
+            if (verbose) print *, "Error: Conditional nesting too deep at ", trim(filename), ":", line_num
             return
         end if
 
@@ -113,7 +114,7 @@ module fpx_conditional
         logical :: result, parent_active
 
         if (cond_depth == 0) then
-            print *, "Error: #elif without matching #if at ", trim(filename), ":", line_num
+            if (verbose) print *, "Error: #elif without matching #if at ", trim(filename), ":", line_num
             return
         end if
 
@@ -134,7 +135,7 @@ module fpx_conditional
         logical :: parent_active
 
         if (cond_depth == 0) then
-            print *, "Error: #else without matching #if at ", trim(filename), ":", line_num
+            if (verbose) print *, "Error: #else without matching #if at ", trim(filename), ":", line_num
             return
         end if
 
@@ -145,7 +146,7 @@ module fpx_conditional
         else
             cond_stack(cond_depth + 1)%active = .false.
         end if
-        print *, "#else at depth ", cond_depth, ", active = ", cond_stack(cond_depth + 1)%active
+        if (verbose) print *, "#else at depth ", cond_depth, ", active = ", cond_stack(cond_depth + 1)%active
     end subroutine
 
     subroutine handle_endif(filename, line_num)
@@ -153,11 +154,11 @@ module fpx_conditional
         integer, intent(in) :: line_num
 
         if (cond_depth == 0) then
-            print *, "Error: #endif without matching #if at ", trim(filename), ":", line_num
+            if (verbose) print *, "Error: #endif without matching #if at ", trim(filename), ":", line_num
             return
         end if
 
-        print *, "#endif at depth ", cond_depth
+        if (verbose) print *, "#endif at depth ", cond_depth
         cond_depth = cond_depth - 1
     end subroutine
 

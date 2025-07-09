@@ -20,12 +20,18 @@ module fpx_constants
 
     !> @brief Maximum number of parameters in a signature, set to 10 to ensure manageable interfaces
     integer, parameter, public :: MAX_PARAMS = 10
+            
+contains
 
-    contains
-
-    logical function starts_with(str, prefix) result(res)
-        character(len=*), intent(in) :: str, prefix
-        res = (index(trim(str), trim(prefix)) == 1)
+    logical function starts_with(str, arg1, idx) result(res)
+        character(*), intent(in) :: str, arg1
+        integer, intent(out), optional :: idx
+        !private
+        integer :: i
+        
+        i = index(trim(adjustl(str)), trim(arg1))
+        res = (i == 1)
+        if (present(idx)) idx = i
     end function
 
 end module

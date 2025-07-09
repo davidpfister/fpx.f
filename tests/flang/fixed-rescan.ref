@@ -1,0 +1,3 @@
+#line ".\fixed-rescan.F" 6
+      call bar
+      end

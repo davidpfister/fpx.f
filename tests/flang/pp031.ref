@@ -1,0 +1,9 @@
+#line ".\pp031.F" 5
+      integer, parameter :: KWM = 666
+
+      if (777 // C comment.eq. 777) then
+        print *, 'pp031.F FAIL (should not have compiled)'
+      else
+        print *, 'pp031.F no: ', 777 // C comment
+      end if
+      end

@@ -1,0 +1,8 @@
+program preprocessor14
+print *, "X == 0"
+print *, "X == 0"
+print *, "X == 0"
+print *, "X == 0"
+print *, "X == 0"
+print *, "X == 0"
+end program

@@ -1,0 +1,20 @@
+program preprocessor6
+implicit none
+print *, "2a"
+print *, "2b"
+print *, "2a"
+print *, "2b"
+print *, "2a"
+print *, "2b"
+print *, "2a"
+print *, "2b"
+print *, "2a"
+print *, "2b"
+print *, "20"
+print *, "20"
+print *, "2aa"
+print *, "2ab"
+print *, "2a"
+print *, "2b"
+print *, "2c"
+end program

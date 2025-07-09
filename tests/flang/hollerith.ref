@@ -1,0 +1,8 @@
+ character*1hi
+ character*1a,b
+ integerh
+ dataa/1*1h /
+ datab/1*1h /
+ do1h=1,2
+1continue
+ end

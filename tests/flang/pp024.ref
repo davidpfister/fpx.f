@@ -1,0 +1,10 @@
+#line ".\pp024.F" 7
+      character(len=3) :: ch
+ 100  format(3HKWM)
+      write(ch, 100)
+      if (ch .eq. 'KWM') then
+        print *, 'pp024.F yes'
+      else
+        print *, 'pp024.F no: ', ch
+      end if
+      end

@@ -1,0 +1,1 @@
+for %f in ( *.f90 ) do (lfortran --cpp -E %f -o %~nf.ref)

@@ -1,0 +1,4 @@
+#line ".\pp042.F" 6
+      print *, 'pp042.F no'
+2     continue
+      end

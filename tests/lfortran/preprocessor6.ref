@@ -1,0 +1,31 @@
+program preprocessor6
+! Nested macros
+implicit none
+
+print *, "1a"
+
+print *, "1b"
+
+print *, "2a"
+
+print *, "2b"
+
+! ifndef
+print *, "1b"
+
+! more nesting
+
+print *, "10"
+  print *, "1a0"
+    print *, "1ab"
+  print *, "1ac"
+print *, "1c"
+
+
+print *, "10"
+  print *, "1a0"
+    print *, "1aa"
+  print *, "1ac"
+print *, "1c"
+
+end program

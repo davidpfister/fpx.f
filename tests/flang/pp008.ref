@@ -1,0 +1,11 @@
+#line ".\pp008.F" 4
+      integer, parameter :: KWM = 777
+
+      integer :: res
+      res = K W M
+      if (res .eq. 777) then
+        print *, 'pp008.F yes'
+      else
+        print *, 'pp008.F no: ', res
+      end if
+      end

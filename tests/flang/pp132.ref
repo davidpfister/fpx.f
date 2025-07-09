@@ -1,0 +1,13 @@
+#line ".\pp132.f90" 7
+      subroutine foo
+      integer :: super_very_long_name_for_the_variable
+      integer :: another_super_wordy_variable_to_test
+
+      super_very_long_name_for_the_variable = 42
+      another_super_wordy_variable_to_test = super_very_long_name_for_th&
+     &e_variable * 2
+
+
+
+
+      end subroutine foo

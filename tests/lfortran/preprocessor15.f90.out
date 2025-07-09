@@ -1,0 +1,14 @@
+program preprocessor15
+print *, "X == 0"
+print *, "X == 0"
+print *, "X == 0"
+print *, "X == 0"
+print *, "X == 0"
+print *, "X == 0"
+print *, "X == 0"
+print *, "X == 0"
+print *, "X == 0"
+print *, "X == 0"
+print *, "X == 0"
+print *, "X == 0"
+end program

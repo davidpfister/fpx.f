@@ -1,0 +1,12 @@
+#line ".\dash-E.F90" 3
+      program Main
+
+
+      integer :: j = (1)+( 2)
+
+
+
+1     format('This is a very long output literal edit descriptor for a F&
+     &ORMAT statement, and it will require statement continuation.')
+#line 25
+      end PROGRAM Main

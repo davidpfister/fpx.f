@@ -1,0 +1,4 @@
+#line ".\cond-contin.F90" 5
+      subroutine test(ARG1, FA, FB, ARG2)
+#line 21
+      end

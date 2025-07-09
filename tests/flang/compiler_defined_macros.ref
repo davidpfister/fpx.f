@@ -1,0 +1,4 @@
+#line ".\compiler_defined_macros.F90" 9
+      integer, parameter :: flang_major = 20
+      integer, parameter :: flang_minor = 1
+      integer, parameter :: flang_patchlevel = 6

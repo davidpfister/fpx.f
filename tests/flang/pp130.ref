@@ -1,0 +1,11 @@
+#line ".\pp130.F90" 5
+      integer :: j
+      j = 666
+      j = j +  111
+
+      if (j .eq. 777) then
+        print *, 'pp130.F90 yes'
+      else
+        print *, 'pp130.F90 no', j
+      end if
+      end

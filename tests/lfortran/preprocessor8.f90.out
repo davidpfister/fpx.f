@@ -1,0 +1,7 @@
+program preprocessor8
+implicit none
+print *, __LFORTRAN__
+print *, "lfortran\preprocessor8.f90"
+print *, 19
+print *, 20
+end program

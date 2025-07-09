@@ -1,0 +1,11 @@
+#line ".\pp044.F" 6
+      integer, parameter :: KWM = 222
+      integer, parameter :: z = KWM
+
+      j=111+444
+      if (z .EQ. 222 .AND. j .EQ. 555) then
+        print *, 'yes'
+      else
+        print *, 'no', z, _4
+      end if
+      end

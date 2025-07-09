@@ -1,0 +1,9 @@
+[0;31;1mC preprocessor error[0;0m[0;1m: Include file 'assert.fpp' not found. If an include path is available, please use the `-I` option to specify it.[0;0m
+ [0;34;1m-->[0;0m preprocessor12.f90:1:11
+  [0;34;1m|[0;0m
+[0;34;1m1 |[0;0m #include "assert.fpp"
+  [0;34;1m|[0;0m           [0;31;1m^^^^^^^^^^ [0;0m
+
+
+[0;1mNote[0;0m: Please report unclear, confusing or incorrect messages as bugs at
+https://github.com/lfortran/lfortran/issues.

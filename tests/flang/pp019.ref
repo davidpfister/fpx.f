@@ -1,0 +1,17 @@
+#line ".\pp019.F" 4
+      integer function IFLM(x)
+        integer :: x
+        IFLM = x
+      end function IFLM
+      program main
+      integer, parameter :: KWM = 999
+
+
+      integer :: res
+      res = ((666)+111)
+      if (res .eq. 777) then
+        print *, 'pp019.F yes'
+      else
+        print *, 'pp019.F no: ', res
+      end if
+      end

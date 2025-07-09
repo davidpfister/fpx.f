@@ -1,0 +1,17 @@
+#line ".\pp134.F90" 8
+      implicit none
+      real ADC
+      print *, ADC, 1
+
+
+      print *, AD, 1
+
+
+      print *, DC, 1
+
+
+      print *, AD
+
+      print *, AB
+
+      end

@@ -1,0 +1,5 @@
+program preprocessor22
+print *, 'Both 1 and 3 are defined.'
+print *, "At least one of VAR3 or VAR4 is defined."
+print *, "Both VAR5 and VAR6 are defined or neither is defined."
+end program preprocessor22

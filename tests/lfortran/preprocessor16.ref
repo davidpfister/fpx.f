@@ -1,0 +1,12 @@
+program test_cpp_hex
+
+print *, "yes hex and int equal"
+
+
+print *, "yes hex and bin equal"
+
+
+
+print *, "yes bin and int equal"
+
+end program

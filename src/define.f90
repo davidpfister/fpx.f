@@ -1,13 +1,14 @@
 module fpx_define
     use fpx_constants
+    use fpx_logging
     use fpx_macro, only: macro_t
 
     implicit none; private
 
-    public :: handle_define,    &
+    public :: handle_define, &
               handle_undef
 
-    contains
+contains
 
     subroutine handle_define(line, num_macros, macros)
         character(*), intent(in)                    :: line
@@ -26,11 +27,11 @@ module fpx_define
             name = trim(temp(:paren_start - 1))
             paren_end = index(temp, ')')
             if (paren_end == 0) then
-                print *, "Error: Unclosed parenthesis in macro definition: ", trim(line)
+                if (verbose) print *, "Error: Unclosed parenthesis in macro definition: ", trim(line)
                 return
             end if
             val = trim(adjustl(temp(paren_end + 1:)))
-            print *, "Raw value before allocation: ", val, ", length = ", len(val)
+            if (verbose) print *, "Raw value before allocation: ", val, ", length = ", len(val)
 
             temp = temp(paren_start + 1:paren_end - 1)
             param_count = 0
@@ -70,14 +71,14 @@ module fpx_define
                         pos = pos + 1
                     end do
                     macros(num_macros)%params(i) = temp(paren_start:pos - 1)
-                    print *, "Param ", i, ": '", trim(macros(num_macros)%params(i)), &
-                             "', length = ", len_trim(macros(num_macros)%params(i))
+                    if (verbose) print *, "Param ", i, ": '", trim(macros(num_macros)%params(i)), &
+                        "', length = ", len_trim(macros(num_macros)%params(i))
                     i = i + 1
                     pos = pos + 1
                 end do
                 macros(num_macros)%num_params = param_count
-                print *, "Defined variadic macro: ", trim(name), &
-                         "(", (trim(macros(num_macros)%params(i))//", ", i=1,param_count), "...) = ", trim(val)
+                if (verbose) print *, "Defined variadic macro: ", trim(name), &
+                    "(", (trim(macros(num_macros)%params(i))//", ", i=1, param_count), "...) = ", trim(val)
             else
                 macros(num_macros)%is_variadic = .false.
                 allocate (macros(num_macros)%params(param_count))
@@ -93,13 +94,13 @@ module fpx_define
                         pos = pos + 1
                     end do
                     macros(num_macros)%params(i) = temp(paren_start:pos - 1)
-                    print *, "Param ", i, ": '", trim(macros(num_macros)%params(i)), &
-                             "', length = ", len_trim(macros(num_macros)%params(i))
+                    if (verbose) print *, "Param ", i, ": '", trim(macros(num_macros)%params(i)), &
+                        "', length = ", len_trim(macros(num_macros)%params(i))
                     i = i + 1
                     if (pos <= len_trim(temp) .and. temp(pos:pos) == ',') pos = pos + 1
                 end do
                 macros(num_macros)%num_params = param_count
-                print *, "Defined macro: ", trim(name), "(", (trim(macros(num_macros)%params(i))//", ", i=1, param_count - 1), &
+                if (verbose) print *, "Defined macro: ", trim(name), "(", (trim(macros(num_macros)%params(i))//", ", i=1, param_count - 1), &
                     trim(macros(num_macros)%params(param_count)), ") = ", trim(val)
             end if
         else
@@ -123,7 +124,7 @@ module fpx_define
             macros(num_macros)%value = val
             macros(num_macros)%num_params = 0
             macros(num_macros)%is_variadic = .false.
-            print *, "Defined macro: ", trim(name), " = ", trim(val)
+            if (verbose) print *, "Defined macro: ", trim(name), " = ", trim(val)
         end if
     end subroutine
 
@@ -137,27 +138,27 @@ module fpx_define
         integer :: i
 
         temp = trim(adjustl(line))
-        temp = trim(adjustl(temp(7:)))  ! Skip '#undef'
+        temp = trim(adjustl(temp(7:))) ! Skip '#undef'
         name = trim(temp)
         do i = 1, num_macros
             if (trim(macros(i)%name) == name) then
-                print *, "Undefining macro: ", trim(name)
-                if (allocated(macros(i)%params)) deallocate(macros(i)%params)
+                if (verbose) print *, "Undefining macro: ", trim(name)
+                if (allocated(macros(i)%params)) deallocate (macros(i)%params)
                 if (num_macros > 1) then
-                    macros(i:num_macros-1) = macros(i+1:num_macros)
-                    allocate(temp_macros(num_macros-1))
-                    temp_macros = macros(:num_macros-1)
-                    deallocate(macros)
+                    macros(i:num_macros - 1) = macros(i + 1:num_macros)
+                    allocate (temp_macros(num_macros - 1))
+                    temp_macros = macros(:num_macros - 1)
+                    deallocate (macros)
                     call move_alloc(temp_macros, macros)
                 else
-                    deallocate(macros); allocate(macros(0))
+                    deallocate (macros); allocate (macros(0))
                 end if
                 num_macros = num_macros - 1
                 exit
             end if
         end do
         if (i > num_macros) then
-            print *, "Warning: Macro ", trim(name), " not found for #undef"
+            if (verbose) print *, "Warning: Macro ", trim(name), " not found for #undef"
         end if
     end subroutine
 end module

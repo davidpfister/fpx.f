@@ -1,0 +1,5 @@
+#line ".\parse-preprocessed.F" 12
+      PROGRAM HELLO
+        write(*, *), "hello, world!"
+
+      END PROGRAM

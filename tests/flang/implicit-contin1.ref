@@ -1,0 +1,3 @@
+#line ".\implicit-contin1.F90" 4
+      call foo(1 )
+      end

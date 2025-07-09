@@ -1,0 +1,9 @@
+[0;31;1mC preprocessor error[0;0m[0;1m: Unexpected token '|', expected ')'[0;0m
+ [0;34;1m-->[0;0m preprocessor21.f90:3:20
+  [0;34;1m|[0;0m
+[0;34;1m3 |[0;0m #if (!defined(VAR1) | !defined(VAR2))
+  [0;34;1m|[0;0m                    [0;31;1m^^^ [0;0m
+
+
+[0;1mNote[0;0m: Please report unclear, confusing or incorrect messages as bugs at
+https://github.com/lfortran/lfortran/issues.

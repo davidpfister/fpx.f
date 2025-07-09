@@ -1,6 +1,7 @@
 module fpx_token
     use fpx_constants
     use fpx_macro
+    use fpx_logging
 
     implicit none; private
 
@@ -8,12 +9,12 @@ module fpx_token
                 parse_expression
 
     enum, bind(c)
-        enumerator :: unknown       = -1
-        enumerator :: number        = 0
-        enumerator :: operator      = 1
-        enumerator :: identifier    = 2
-        enumerator :: parenthesis   = 3
-        enumerator :: defined       = 4
+        enumerator :: unknown = -1
+        enumerator :: number = 0
+        enumerator :: operator = 1
+        enumerator :: identifier = 2
+        enumerator :: parenthesis = 3
+        enumerator :: defined = 4
     end enum
 
     integer, parameter :: tokens_enum = kind(unknown)
@@ -23,7 +24,7 @@ module fpx_token
         integer(tokens_enum)        :: type
     end type token_t
 
-    contains
+contains
 
     logical function evaluate_expression(expr, macros) result(res)
         character(*), intent(in)    :: expr
@@ -34,16 +35,16 @@ module fpx_token
 
         call tokenize(expr, tokens, num_tokens)
         if (num_tokens == 0) then
-            print *, "No tokens found for expression"
+            if (verbose) print *, "No tokens found for expression"
             res = .false.
             return
         end if
 
         pos = 1
         result = parse_expression(tokens, num_tokens, pos, macros)
-        print *, "Parsed '", trim(expr), "': pos = ", pos, ", num_tokens = ", num_tokens, ", result = ", result
+        if (verbose) print *, "Parsed '", trim(expr), "': pos = ", pos, ", num_tokens = ", num_tokens, ", result = ", result
         if (pos <= num_tokens) then
-            print *, "Error: Extra tokens in expression: ", trim(tokens(pos)%value)
+            if (verbose) print *, "Error: Extra tokens in expression: ", trim(tokens(pos)%value)
             res = .false.
             return
         end if
@@ -73,7 +74,7 @@ module fpx_token
 
         left = parse_and(tokens, num_tokens, pos, macros)
         do while (pos <= num_tokens .and. tokens(pos)%value == '||')
-            print *, "Parsing || at pos ", pos
+            if (verbose) print *, "Parsing || at pos ", pos
             pos = pos + 1
             val = merge(1, 0, left /= 0 .or. parse_and(tokens, num_tokens, pos, macros) /= 0)
             left = val
@@ -91,7 +92,7 @@ module fpx_token
 
         left = parse_equality(tokens, num_tokens, pos, macros)
         do while (pos <= num_tokens .and. tokens(pos)%value == '&&')
-            print *, "Parsing && at pos ", pos
+            if (verbose) print *, "Parsing && at pos ", pos
             pos = pos + 1
             val = merge(1, 0, left /= 0 .and. parse_equality(tokens, num_tokens, pos, macros) /= 0)
             left = val
@@ -109,7 +110,7 @@ module fpx_token
 
         left = parse_relational(tokens, num_tokens, pos, macros)
         do while (pos <= num_tokens .and. (tokens(pos)%value == '==' .or. tokens(pos)%value == '!='))
-            print *, "Parsing ", trim(tokens(pos)%value), " at pos ", pos
+            if (verbose) print *, "Parsing ", trim(tokens(pos)%value), " at pos ", pos
             if (tokens(pos)%value == '==') then
                 pos = pos + 1
                 right = parse_relational(tokens, num_tokens, pos, macros)
@@ -135,7 +136,7 @@ module fpx_token
         left = parse_additive(tokens, num_tokens, pos, macros)
         do while (pos <= num_tokens .and. (tokens(pos)%value == '<' .or. tokens(pos)%value == '>' .or. &
                                            tokens(pos)%value == '<=' .or. tokens(pos)%value == '>='))
-            print *, "Parsing ", trim(tokens(pos)%value), " at pos ", pos
+            if (verbose) print *, "Parsing ", trim(tokens(pos)%value), " at pos ", pos
             if (tokens(pos)%value == '<') then
                 pos = pos + 1
                 right = parse_additive(tokens, num_tokens, pos, macros)
@@ -168,7 +169,7 @@ module fpx_token
 
         left = parse_unary(tokens, num_tokens, pos, macros)
         do while (pos <= num_tokens .and. (tokens(pos)%value == '+' .or. tokens(pos)%value == '-'))
-            print *, "Parsing ", trim(tokens(pos)%value), " at pos ", pos
+            if (verbose) print *, "Parsing ", trim(tokens(pos)%value), " at pos ", pos
             if (tokens(pos)%value == '+') then
                 pos = pos + 1
                 right = parse_unary(tokens, num_tokens, pos, macros)
@@ -190,7 +191,7 @@ module fpx_token
         type(macro_t), intent(in)   :: macros(:)
 
         if (pos <= num_tokens .and. tokens(pos)%value == '!') then
-            print *, "Parsing ! at pos ", pos
+            if (verbose) print *, "Parsing ! at pos ", pos
             pos = pos + 1
             val = merge(0, 1, parse_unary(tokens, num_tokens, pos, macros) /= 0)
         else
@@ -207,12 +208,12 @@ module fpx_token
         character(len=MAX_LINE_LEN) :: expanded
 
         if (pos > num_tokens) then
-            print *, "Error: Unexpected end of expression at pos ", pos
+            if (verbose) print *, "Error: Unexpected end of expression at pos ", pos
             val = 0
             return
         end if
 
-        print *, "Parsing primary: ", trim(tokens(pos)%value), " at pos ", pos
+        if (verbose) print *, "Parsing primary: ", trim(tokens(pos)%value), " at pos ", pos
         if (tokens(pos)%type == 0) then
             read (tokens(pos)%value, *) val
             pos = pos + 1
@@ -220,25 +221,25 @@ module fpx_token
             expanded = expand_macros(tokens(pos)%value, macros)
             read (expanded, *, iostat=i) val
             if (i /= 0) val = 0
-            print *, "Expanded ", trim(tokens(pos)%value), " to ", trim(expanded), ", val = ", val
+            if (verbose) print *, "Expanded ", trim(tokens(pos)%value), " to ", trim(expanded), ", val = ", val
             pos = pos + 1
         else if (tokens(pos)%value == '(') then
             pos = pos + 1
             val = parse_expression(tokens, num_tokens, pos, macros)
             if (pos > num_tokens .or. tokens(pos)%value /= ')') then
-                print *, "Error: Missing closing parenthesis at pos ", pos
+                if (verbose) print *, "Error: Missing closing parenthesis at pos ", pos
                 val = 0
             else
-                print *, "Parsed ) at pos ", pos
+                if (verbose) print *, "Parsed ) at pos ", pos
                 pos = pos + 1
             end if
         else if (tokens(pos)%type == 4) then
             expanded = trim(tokens(pos)%value)
             val = merge(1, 0, is_defined(expanded, macros))
-            print *, "defined(", trim(expanded), ") = ", val
+            if (verbose) print *, "defined(", trim(expanded), ") = ", val
             pos = pos + 1
         else
-            print *, "Error: Invalid token in expression: ", trim(tokens(pos)%value)
+            if (verbose) print *, "Error: Invalid token in expression: ", trim(tokens(pos)%value)
             val = 0
             pos = pos + 1
         end if
@@ -270,7 +271,7 @@ module fpx_token
             if (.not. in_word) then
                 num_tokens = num_tokens + 1
                 if (num_tokens > MAX_TOKENS) then
-                    print *, "Error: Too many tokens in expression"
+                    if (verbose) print *, "Error: Too many tokens in expression"
                     return
                 end if
                 in_word = .true.
@@ -287,13 +288,15 @@ module fpx_token
                 i = i + 1
                 in_word = .false.
             else if (temp(i:i + 1) == '&&' .or. temp(i:i + 1) == '||' .or. temp(i:i + 1) == '==' .or. &
-                     temp(i:i + 1) == '!=' .or. temp(i:i + 1) == '<=' .or. temp(i:i + 1) == '>=') then
+                     temp(i:i + 1) == '!=' .or. temp(i:i + 1) == '<=' .or. temp(i:i + 1) == '>=' .or. &
+                     temp(i:i + 1) == '**') then
                 tokens(num_tokens)%value = temp(i:i + 1)
                 tokens(num_tokens)%type = 1
                 i = i + 2
                 in_word = .false.
             else if (temp(i:i) == '<' .or. temp(i:i) == '>' .or. temp(i:i) == '=' .or. &
-                     temp(i:i) == '+' .or. temp(i:i) == '-') then
+                     temp(i:i) == '+' .or. temp(i:i) == '-' .or. temp(i:i) == '*' .or. &
+                     temp(i:i) == '/' .or. temp(i:i) == '^') then
                 tokens(num_tokens)%value = temp(i:i)
                 tokens(num_tokens)%type = 1
                 i = i + 1
@@ -309,7 +312,7 @@ module fpx_token
                     do while (pos <= len_expr .and. temp(pos:pos) /= ')')
                         pos = pos + 1
                     end do
-                    tokens(num_tokens)%value = trim(temp(i:pos - 1))
+                    tokens(num_tokens)%value = trim(adjustl(temp(i:pos - 1)))
                     tokens(num_tokens)%type = 4
                     i = pos + 1
                 else
@@ -317,7 +320,7 @@ module fpx_token
                     do while (pos <= len_expr .and. temp(pos:pos) /= ' ')
                         pos = pos + 1
                     end do
-                    tokens(num_tokens)%value = trim(temp(i:pos - 1))
+                    tokens(num_tokens)%value = trim(adjustl(temp(i:pos - 1)))
                     tokens(num_tokens)%type = 4
                     i = pos
                 end if
@@ -327,7 +330,7 @@ module fpx_token
                 do while (pos <= len_expr .and. is_digit(temp(pos:pos)))
                     pos = pos + 1
                 end do
-                tokens(num_tokens)%value = trim(temp(i:pos - 1))
+                tokens(num_tokens)%value = trim(adjustl(temp(i:pos - 1)))
                 tokens(num_tokens)%type = 0
                 i = pos
                 in_word = .false.
@@ -344,9 +347,9 @@ module fpx_token
             end if
         end do
 
-        print *, "Tokens for '", trim(expr), "':"
+        if (verbose) print *, "Tokens for '", trim(expr), "':"
         do i = 1, num_tokens
-            print *, "  Token ", i, ": ", trim(tokens(i)%value), " (type ", tokens(i)%type, ")"
+            if (verbose) print *, "  Token ", i, ": ", trim(tokens(i)%value), " (type ", tokens(i)%type, ")"
         end do
     end subroutine
 end module

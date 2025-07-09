@@ -1,0 +1,8 @@
+#line ".\inc-contin-2.F90" 4
+      program main
+#line ".\inc-contin-2a.h" 1
+      print *, 3.14159
+#line ".\inc-contin-2b.h" 1
+      print *, 3. 14159
+#line ".\inc-contin-2.F90" 9
+      end program main

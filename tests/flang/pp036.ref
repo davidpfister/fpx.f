@@ -1,0 +1,7 @@
+#line ".\pp036.F" 6
+      if (.TRUE .) then
+        print *, 'pp036.F yes'
+      else
+        print *, 'pp036.F no: ', .TRUE .
+      end if
+      end

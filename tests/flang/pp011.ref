@@ -1,0 +1,19 @@
+#line ".\pp011.F" 4
+      integer function IFLM(x)
+        integer :: x
+        IFLM = x
+      end function IFLM
+      program main
+
+      integer :: res
+
+
+
+      res = IFLM(666)
+
+      if (res .eq. 777) then
+        print *, 'pp011.F yes'
+      else
+        print *, 'pp011.F no: ', res
+      end if
+      end

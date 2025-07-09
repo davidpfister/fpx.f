@@ -1,0 +1,6 @@
+#line ".\defines.F90" 4
+      integer :: a = 1
+
+      integer :: b = 2
+
+      end program

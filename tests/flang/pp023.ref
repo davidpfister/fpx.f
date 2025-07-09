@@ -1,0 +1,9 @@
+#line ".\pp023.F" 7
+      character(len=3) :: ch
+      ch = 3HKWM
+      if (ch .eq. 'KWM') then
+        print *, 'pp023.F yes'
+      else
+        print *, 'pp023.F no: ', ch
+      end if
+      end

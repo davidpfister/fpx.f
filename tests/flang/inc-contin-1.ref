@@ -1,0 +1,6 @@
+#line ".\inc-contin-1.F" 3
+      program main
+#line ".\inc-contin-1.h" 1
+      call t(1  ,.false.)
+#line ".\inc-contin-1.F" 6
+      end

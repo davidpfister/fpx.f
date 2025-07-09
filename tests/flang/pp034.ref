@@ -1,0 +1,10 @@
+#line ".\pp034.F" 5
+      integer, parameter :: KWMC = 666
+
+
+      if (777  .eq. 777) then
+        print *, 'pp034.F yes'
+      else
+        print *, 'pp034.F no: ', 777
+      end if
+      end
