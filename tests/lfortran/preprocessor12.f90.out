@@ -1,11 +1,11 @@
 program preprocessor12
 ! Test that a typical ASSERT macro works
 implicit none
-ASSERT(.true.)
-ASSERT(5 > 3)
-ASSERT(5+3*8 > 3)
-ASSERT(fn(3, 5))
-ASSERT(5 < 3)
+if(.not.(.true.)) call f90_assert("preprocessor12.f90",7)
+if(.not.(5 > 3)) call f90_assert("preprocessor12.f90",8)
+if(.not.(5+3*8 > 3)) call f90_assert("preprocessor12.f90",9)
+if(.not.(fn(3, 5))) call f90_assert("preprocessor12.f90",11)
+if(.not.(5 < 3)) call f90_assert("preprocessor12.f90",13)
 contains
 logical function fn(a, b)
 integer, intent(in) :: a, b

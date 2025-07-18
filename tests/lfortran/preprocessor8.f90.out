@@ -1,7 +1,12 @@
 program preprocessor8
+! pre-defined macros
 implicit none
-print *, __LFORTRAN__
-print *, "lfortran\preprocessor8.f90"
+print *, 1
+print *, "__VERSION__ present"
+print *, "__LFORTRAN_MAJOR__ present"
+print *, "__LFORTRAN_MINOR__ present"
+print *, "__LFORTRAN_PATCHLEVEL__ present"
+print *, "preprocessor8.f90"
 print *, 19
 print *, 20
 end program

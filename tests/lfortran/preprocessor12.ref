@@ -1,9 +1,28 @@
-[0;31;1mC preprocessor error[0;0m[0;1m: Include file 'assert.fpp' not found. If an include path is available, please use the `-I` option to specify it.[0;0m
- [0;34;1m-->[0;0m preprocessor12.f90:1:11
-  [0;34;1m|[0;0m
-[0;34;1m1 |[0;0m #include "assert.fpp"
-  [0;34;1m|[0;0m           [0;31;1m^^^^^^^^^^ [0;0m
 
+program preprocessor12
+! Test that a typical ASSERT macro works
+implicit none
 
-[0;1mNote[0;0m: Please report unclear, confusing or incorrect messages as bugs at
-https://github.com/lfortran/lfortran/issues.
+if(.not.(.true.)) call f90_assert("preprocessor12.f90",7)
+if(.not.(5 > 3)) call f90_assert("preprocessor12.f90",8)
+if(.not.(5+3*8 > 3)) call f90_assert("preprocessor12.f90",9)
+
+if(.not.(fn(3, 5))) call f90_assert("preprocessor12.f90",11)
+
+if(.not.(5 < 3)) call f90_assert("preprocessor12.f90",13)
+
+contains
+
+    logical function fn(a, b)
+    integer, intent(in) :: a, b
+    fn = a < b
+    end function
+
+    subroutine f90_assert(file, line)
+    character(len=*), intent(in) :: file
+    integer,          intent(in) :: line
+    print *, "Assertion failed at " // file // ":", line
+    error stop
+    end subroutine f90_assert
+
+end program

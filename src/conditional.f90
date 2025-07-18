@@ -6,7 +6,7 @@ module fpx_conditional
 
     implicit none; private
 
-    public ::   handle_if, &
+    public :: handle_if, &
               handle_ifdef, &
               handle_ifndef, &
               handle_elif, &
@@ -45,13 +45,15 @@ contains
         !private
         character(MAX_LINE_LEN) :: expr
         logical :: result, parent_active
+        integer :: pos
 
         if (cond_depth + 1 > MAX_COND_DEPTH) then
             if (verbose) print *, "Error: Conditional nesting too deep at ", trim(filename), ":", line_num
             return
         end if
 
-        expr = trim(adjustl(line(4:)))
+        pos = index(line, 'if') + len('if')
+        expr = trim(adjustl(line(pos:)))
         if (verbose) print *, "Evaluating #if: '", trim(expr), "'"
         result = evaluate_expression(expr, macros)
         parent_active = is_active()
@@ -69,13 +71,15 @@ contains
         !private
         character(MAX_LINE_LEN) :: name
         logical :: defined, parent_active
+        integer :: pos
 
         if (cond_depth + 1 > MAX_COND_DEPTH) then
             if (verbose) print *, "Error: Conditional nesting too deep at ", trim(filename), ":", line_num
             return
         end if
 
-        name = trim(adjustl(line(6:)))
+        pos = index(line, 'ifdef') + len('ifdef')
+        name = trim(adjustl(line(pos:)))
         defined = is_defined(name, macros)
         parent_active = is_active()
         cond_depth = cond_depth + 1
@@ -91,13 +95,15 @@ contains
         !private
         character(MAX_LINE_LEN) :: name
         logical :: defined, parent_active
+        integer :: pos
 
         if (cond_depth + 1 > MAX_COND_DEPTH) then
             if (verbose) print *, "Error: Conditional nesting too deep at ", trim(filename), ":", line_num
             return
         end if
 
-        name = trim(adjustl(line(7:)))
+        pos = index(line, 'ifndef') + len('ifndef')
+        name = trim(adjustl(line(pos:)))
         defined = is_defined(name, macros)
         parent_active = is_active()
         cond_depth = cond_depth + 1
@@ -112,13 +118,15 @@ contains
         !private
         character(MAX_LINE_LEN) :: expr
         logical :: result, parent_active
+        integer :: pos
 
         if (cond_depth == 0) then
             if (verbose) print *, "Error: #elif without matching #if at ", trim(filename), ":", line_num
             return
         end if
 
-        expr = trim(adjustl(line(5:)))
+        pos = index(line, 'elif') + len('elif')
+        expr = trim(adjustl(line(pos:)))
         result = evaluate_expression(expr, macros)
         parent_active = cond_depth == 0 .or. cond_stack(cond_depth)%active
         if (.not. cond_stack(cond_depth + 1)%has_met) then

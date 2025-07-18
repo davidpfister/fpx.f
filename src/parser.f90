@@ -7,10 +7,13 @@ module fpx_parser
     use fpx_conditional
     use fpx_define
     use fpx_include
+    use fpx_path
+    use fpx_global
 
     implicit none; private
 
-    public :: preprocess
+    public :: preprocess,  & 
+              global, global_t
 
     type(macro_t), allocatable :: macros(:)
     integer :: num_macros = 0
@@ -20,20 +23,6 @@ module fpx_parser
         module procedure :: preprocess_unit
     end interface
     
-    interface
-        function getcwd_c(buf, size) &
-#ifdef _WIN32
-            bind(C,name='_getcwd') result(r)
-#else
-            bind(C,name='getcwd') result(r)
-#endif
-        import
-            type(c_ptr) :: r
-            character(kind=c_char), intent(out) :: buf(*)
-            integer(kind=c_size_t), value :: size
-        end function
-    end interface
-
 contains
 
     subroutine preprocess_file(filepath, outputfile)
@@ -79,8 +68,10 @@ contains
            filepath = filepath(n+1:)
         end if
 
+        if (.not. allocated(global)) global = global_t()
         if (allocated(macros)) deallocate (macros)
-        allocate (macros(0))
+        num_macros = size(global%macros)
+        allocate (macros(num_macros), source = global%macros)
         cond_depth = 0
         cond_stack(1)%active = .true.
         cond_stack(1)%has_met = .false.
@@ -88,6 +79,7 @@ contains
         iline = 0
         in_continuation = .false.
         continued_line = ''
+        
         do
             read (iunit, '(A)', iostat=ierr) line
             if (ierr /= 0) exit
@@ -108,13 +100,12 @@ contains
                     in_continuation = .true.
                     continued_line = continued_line(:len_trim(continued_line) - 2)//new_line('A') ! Strip '\\'
                     icontinuation = len_trim(continued_line)
-                    cycle
                 else
                     in_continuation = .true.
                     icontinuation = len_trim(continued_line) - 1
                     continued_line = continued_line(:icontinuation)
-                    cycle
                 end if
+                cycle
             else
                 in_continuation = .false.
                 call process_line(continued_line, ounit, filepath, iline)
@@ -138,32 +129,46 @@ contains
         !private
         character(:), allocatable :: trimmed_line, expanded_line
         logical :: active
-        integer :: idx
+        logical, save :: in_comment = .false.
+        integer :: idx, comment_start, comment_end, n
 
         trimmed_line = trim(adjustl(line))
-        if (len_trim(trimmed_line) == 0) return
+
+        comment_end = index(trimmed_line, '*/')
+        if (in_comment .and. comment_end > 0) then
+            trimmed_line = trimmed_line(comment_end + 2:)
+            in_comment = .false.
+        end if
+        
+        if (in_comment) return
+        comment_start = index(trimmed_line, '/*')
+        if (comment_start > 0) then
+            trimmed_line = trimmed_line(:comment_start - 1)
+            in_comment = comment_end == 0
+        end if
+        n = len(trimmed_line); if (n == 0) return
 
         active = is_active()
         if (verbose) print *, "Processing line ", iline, ": '", trim(trimmed_line), "'"
         if (verbose) print *, "is_active() = ", active, ", cond_depth = ", cond_depth
         if (trimmed_line(1:1) == '#') then
-            if (starts_with(trimmed_line, '#define') .and. active) then
+            if (starts_with(adjustl(trimmed_line(2:)), 'define') .and. active) then
                 call handle_define(trimmed_line, num_macros, macros)
-            else if (starts_with(trimmed_line, '#undef') .and. active) then
+            else if (starts_with(adjustl(trimmed_line(2:)), 'undef') .and. active) then
                 call handle_undef(trimmed_line, num_macros, macros)
-            else if (starts_with(trimmed_line, '#include') .and. active) then
+            else if (starts_with(adjustl(trimmed_line(2:)), 'include') .and. active) then
                 call handle_include(trimmed_line, ounit, filename, iline, process_line)
-            else if (starts_with(trimmed_line, '#if')) then
-                call handle_if(trimmed_line, filename, iline, macros)
-            else if (starts_with(trimmed_line, '#ifdef')) then
+            else if (starts_with(adjustl(trimmed_line(2:)), 'ifdef')) then
                 call handle_ifdef(trimmed_line, filename, iline, macros)
-            else if (starts_with(trimmed_line, '#ifndef')) then
+            else if (starts_with(adjustl(trimmed_line(2:)), 'ifndef')) then
                 call handle_ifndef(trimmed_line, filename, iline, macros)
-            else if (starts_with(trimmed_line, '#elif')) then
+            else if (starts_with(adjustl(trimmed_line(2:)), 'if')) then
+                call handle_if(trimmed_line, filename, iline, macros)
+            else if (starts_with(adjustl(trimmed_line(2:)), 'elif')) then
                 call handle_elif(trimmed_line, filename, iline, macros)
-            else if (starts_with(trimmed_line, '#else')) then
+            else if (starts_with(adjustl(trimmed_line(2:)), 'else')) then
                 call handle_else(filename, iline)
-            else if (starts_with(trimmed_line, '#endif')) then
+            else if (starts_with(adjustl(trimmed_line(2:)), 'endif')) then
                 call handle_endif(filename, iline)
             end if
         else if (active) then
@@ -171,7 +176,7 @@ contains
             !if (trimmed_line(1:1) == '!') return
             expanded_line = expand_all(trimmed_line, macros, filename, iline)
             if (verbose) print *, "Writing to output: '", trim(expanded_line), "'"
-            if (len_trim(expanded_line) == 0) return
+            !if (len_trim(expanded_line) == 0) return
             !if (expanded_line(1:1) == '!') return
             !if (expanded_line(len_trim(expanded_line):len_trim(expanded_line)) == '&') then
             !    expanded_line(len_trim(expanded_line):len_trim(expanded_line)) = ' '

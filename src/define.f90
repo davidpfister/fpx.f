@@ -1,7 +1,7 @@
 module fpx_define
     use fpx_constants
     use fpx_logging
-    use fpx_macro, only: macro_t
+    use fpx_macro, only: macro_t, is_defined
 
     implicit none; private
 
@@ -20,9 +20,13 @@ contains
         integer :: pos, paren_start, paren_end, i, param_count
         type(macro_t), allocatable :: temp_macros(:)
 
-        pos = index(line, ' ')
+        pos = index(line, 'define') + len('define')
         temp = trim(adjustl(line(pos + 1:)))
+        
         paren_start = index(temp, '(')
+        pos = index(temp, ' ')
+        if (pos > 0 .and. pos < paren_start) paren_start = 0
+        
         if (paren_start > 0) then
             name = trim(temp(:paren_start - 1))
             paren_end = index(temp, ')')
@@ -44,21 +48,23 @@ contains
             end do
             if (len_trim(temp) > 0) param_count = param_count + 1
 
-            if (.not. allocated(macros)) allocate (macros(0))
+            if (.not. allocated(macros)) allocate(macros(0))
+            
             num_macros = num_macros + 1
-            if (num_macros > size(macros)) then
-                allocate (temp_macros(num_macros))
-                temp_macros(1:size(macros)) = macros
-                call move_alloc(temp_macros, macros)
+            if (.not. is_defined(name, macros, num_macros)) then
+                if (num_macros > size(macros)) then
+                    allocate(temp_macros(num_macros))
+                    temp_macros(1:size(macros)) = macros
+                    call move_alloc(temp_macros, macros)
+                end if
             end if
-            macros(num_macros)%name = name
-            allocate (character(len_trim(val)) :: macros(num_macros)%value)
-            macros(num_macros)%value = val
+            macros(num_macros) = macro_t(name, val)
 
             if (index(temp, '...') > 0) then
                 macros(num_macros)%is_variadic = .true.
                 param_count = param_count - 1
-                allocate (macros(num_macros)%params(param_count))
+                if (allocated(macros(num_macros)%params)) deallocate(macros(num_macros)%params)
+                allocate(macros(num_macros)%params(param_count))
                 pos = 1
                 i = 1
                 do while (pos <= len_trim(temp) .and. i <= param_count)
@@ -81,7 +87,8 @@ contains
                     "(", (trim(macros(num_macros)%params(i))//", ", i=1, param_count), "...) = ", trim(val)
             else
                 macros(num_macros)%is_variadic = .false.
-                allocate (macros(num_macros)%params(param_count))
+                if (allocated(macros(num_macros)%params)) deallocate(macros(num_macros)%params)
+                allocate(macros(num_macros)%params(param_count))
                 pos = 1
                 i = 1
                 do while (pos <= len_trim(temp) .and. i <= param_count)
@@ -112,20 +119,19 @@ contains
                 name = trim(temp)
                 val = ''
             end if
-            if (.not. allocated(macros)) allocate (macros(0))
+            if (.not. allocated(macros)) allocate(macros(0))
             num_macros = num_macros + 1
-            if (num_macros > size(macros)) then
-                allocate (temp_macros(num_macros))
-                temp_macros(1:size(macros)) = macros
-                call move_alloc(temp_macros, macros)
+            if (.not. is_defined(name, macros, num_macros)) then
+                if (num_macros > size(macros)) then
+                    allocate(temp_macros(num_macros))
+                    temp_macros(1:size(macros)) = macros
+                    call move_alloc(temp_macros, macros)
+                end if
             end if
-            macros(num_macros)%name = name
-            allocate (character(len_trim(val)) :: macros(num_macros)%value)
-            macros(num_macros)%value = val
-            macros(num_macros)%num_params = 0
-            macros(num_macros)%is_variadic = .false.
+            macros(num_macros) = macro_t(name, val)
             if (verbose) print *, "Defined macro: ", trim(name), " = ", trim(val)
         end if
+        num_macros = size(macros)
     end subroutine
 
     subroutine handle_undef(line, num_macros, macros)

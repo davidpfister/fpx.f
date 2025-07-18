@@ -114,6 +114,7 @@ end if;                                                                \
 call flush(output_unit);                                               \
 end block;                                                             \
 end associate;                                                         \
+nsuccess = 0; nfailures = 0;                                           \
 end block;
 # define END_TESTPROGRAM                                               \
 write(*,'(A, I3, A, A)') '[==========] Ran ', nsuccess_all + nfailures_all, ' tests from ', __FILE__; \

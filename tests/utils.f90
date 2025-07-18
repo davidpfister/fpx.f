@@ -1,4 +1,6 @@
 module  test_utils
+    use fpx_path
+    
     implicit none; private
     
     public :: getchecks,    &
@@ -41,9 +43,12 @@ module  test_utils
         logical, optional                           :: keepall
         !private
         logical :: exists, keep
-        integer :: idx, ierr, count, unit
+        integer :: idx, ierr, count, k, unit, last, pos
         character(:), allocatable :: line
         character(256) :: tmp
+        character(1), parameter :: LF = char(10)            !< line feed.
+        character(1), parameter :: CR = char(13)            !< carriage return.
+        character(2), parameter :: CRLF = CR//LF            !< carriage return and line feed new line.
         
         
         if (present(keepall)) keep = keepall
@@ -61,7 +66,9 @@ module  test_utils
             if (ierr /= 0) exit
             
             if (.not. keep .and. len_trim(line) == 0) cycle
-            tmp = ' '; tmp = line
+            tmp = ' '; tmp = trim(adjustl(line))
+            pos = index(line, CR); if (pos > 0) tmp(pos:pos) = ' '
+            pos = index(line, LF); if (pos > 0) tmp(pos:pos) = ' '
             res = [res, tmp]
             count = count + 1
         end do
@@ -158,20 +165,5 @@ module  test_utils
 
         line = trim(line)
     end subroutine
-
-    function filename(filepath) result(res)
-        character(*), intent(in) :: filepath
-        character(:), allocatable :: res
-        !private
-        integer :: ipoint, islash
-
-        ipoint = index(filepath, '.', back=.true.)
-#ifdef _WIN32   
-        islash = index(filepath, '\', back=.true.)
-#else
-        islash = index(filepath, '/', back=.true.)
-#endif
-        res = filepath(islash+1: ipoint-1)
-    end function
        
 end module

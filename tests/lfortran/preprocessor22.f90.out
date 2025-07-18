@@ -1,5 +1,8 @@
+! this test program is almost the same as
+! tests/preprocessor21.f90, except it defines
+! value of some of the variables by using `#define`
 program preprocessor22
-print *, 'Both 1 and 3 are defined.'
+print *, 'Both VAR1 and VAR2 are defined.'
 print *, "At least one of VAR3 or VAR4 is defined."
-print *, "Both VAR5 and VAR6 are defined or neither is defined."
+print *, "Exactly one of VAR5 or VAR6 is not defined."
 end program preprocessor22

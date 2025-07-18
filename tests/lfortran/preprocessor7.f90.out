@@ -1,6 +1,7 @@
 program preprocessor7
+! undef
 implicit none
-print *, 2
+print *, 1
 print *, 4
 print *, 4
 end program

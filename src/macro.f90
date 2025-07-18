@@ -1,6 +1,7 @@
 module fpx_macro
     use fpx_constants
     use fpx_logging
+    use fpx_path
 
     implicit none; private
 
@@ -16,13 +17,21 @@ module fpx_macro
         logical :: is_variadic ! New flag for variadic macros
     end type
     
-#ifdef _WIN32
-    character(*), parameter :: SEPARATOR = '\'
-#else
-    character(*), parameter :: SEPARATOR = '/'
-#endif
+    interface macro_t
+        module procedure :: macro_new
+    end interface
 
-contains
+    contains
+    
+    type(macro_t) function macro_new(name, val) result(that)
+        character(*), intent(in)    :: name
+        character(*), intent(in)    :: val
+        
+        that%name = name
+        that%value = val
+        that%num_params = 0
+        that%is_variadic = .false.
+    end function
 
     function expand_all(line, macros, filepath, iline) result(expanded)
         character(*), intent(in)            :: line
@@ -37,22 +46,20 @@ contains
         ! Substitute __FILE__ (relative path to working directory)
         pos = 1
         do while (pos > 0)
-            pos = index(expanded, '__FILENAME__')
-            if (pos > 0) then
-                start = pos + len('__FILENAME__')
-                sep = index(filepath, SEPARATOR, back=.true.)
-                dot = index(filepath, '.', back=.true.)
-                expanded = trim(expanded(:pos - 1)//'"'//filepath(sep+1:dot-1)//'"'//trim(expanded(start:)))
-                if (verbose) print *, "Substituted __FILENAME__ with '", trim(filepath), "', expanded: '", trim(expanded), "'"
-            end if
-        end do
-        
-        ! Substitute __FILE__
-        pos = 1
-        do while (pos > 0)
             pos = index(expanded, '__FILE__')
             if (pos > 0) then
                 start = pos + len('__FILE__')
+                expanded = trim(expanded(:pos - 1)//'"'//filename(filepath, .true.)//'"'//trim(expanded(start:)))
+                if (verbose) print *, "Substituted __FILE__ with '", trim(filepath), "', expanded: '", trim(expanded), "'"
+            end if
+        end do
+        
+        ! Substitute __FILEPATH__
+        pos = 1
+        do while (pos > 0)
+            pos = index(expanded, '__FILEPATH__')
+            if (pos > 0) then
+                start = pos + len('__FILEPATH__')
                 expanded = trim(expanded(:pos - 1)//'"'//trim(filepath)//'"'//trim(expanded(start:)))
                 if (verbose) print *, "Substituted __FILE__ with '", trim(filepath), "', expanded: '", trim(expanded), "'"
             end if
@@ -82,6 +89,7 @@ contains
         integer :: j, macro_start, macro_end, k, token1_start, token2_stop
         integer :: quote1, quote2
         logical :: isopened
+        character :: quote
 
         expanded = line
         if (size(macros) == 0) return
@@ -92,7 +100,14 @@ contains
             c = 0
             do while (c < len_trim(expanded))
                 c = c + 1
-                if (expanded(c:c) == '"') isopened = .not. isopened
+                if (expanded(c:c) == '"' .or. expanded(c:c) == "'") then
+                    if (.not. isopened) then
+                        isopened = .true.
+                        quote = expanded(c:c)
+                    else    
+                        if (expanded(c:c) == quote) isopened = .false.
+                    end if
+                end if
                 if (isopened) cycle
                 if (c + len_trim(macros(i)%name) - 1 > len_trim(expanded)) exit
                 if (expanded(c:c + len_trim(macros(i)%name) - 1) == trim(macros(i)%name)) then
@@ -297,15 +312,18 @@ contains
         end do
     end function
 
-    logical function is_defined(name, macros) result(res)
+    logical function is_defined(name, macros, idx) result(res)
         character(*), intent(in)    :: name
         type(macro_t), intent(in)   :: macros(:)
+        integer, intent(inout), optional :: idx
         !private
         integer :: i
+        
         res = .false.
         do i = 1, size(macros)
             if (trim(macros(i)%name) == trim(name)) then
                 res = .true.
+                if (present(idx)) idx = i
                 exit
             end if
         end do

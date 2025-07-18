@@ -1,6 +1,46 @@
 #include <assertion.inc>
 TESTPROGRAM(main)
 
+    TEST('test_expression')
+        use fpx_token
+        use fpx_macro
+        
+        type(macro_t) :: macros(0)
+        integer :: res
+        
+        EXPECT_TRUE(evaluate_expression('3-2', macros, res))
+        EXPECT_EQ(res, 3-2)
+        
+        EXPECT_TRUE(evaluate_expression('3-1', macros, res))
+        EXPECT_EQ(res, 3-1)
+        
+        EXPECT_TRUE(evaluate_expression('(6*5-5)/5', macros, res))
+        EXPECT_EQ(res, (6*5-5)/5)
+        
+        EXPECT_TRUE(evaluate_expression('(6*5-6)/5', macros, res))
+        EXPECT_EQ(res, (6*5-6)/5)
+        
+        EXPECT_TRUE(evaluate_expression('(5+6*5)/5', macros, res))
+        EXPECT_EQ(res, (5+6*5)/5)
+        
+        EXPECT_TRUE(evaluate_expression('(-5+6*5)/5', macros, res))
+        EXPECT_EQ(res, (-5+6*5)/5)
+        
+        EXPECT_TRUE(evaluate_expression('(-6+6*5)/5', macros, res))
+        EXPECT_EQ(res, (-6+6*5)/5)
+        
+        EXPECT_TRUE(evaluate_expression('(+5+6*5)/7', macros, res))
+        EXPECT_EQ(res, (+5+6*5)/7)
+        
+        EXPECT_TRUE(evaluate_expression('(+4+6*5)/7', macros, res))
+        EXPECT_EQ(res, (+4+6*5)/7)
+               
+        EXPECT_TRUE(evaluate_expression('2**2', macros, res))
+        EXPECT_EQ(res, 4)
+        
+    END_TEST
+    
+
     block
         use fpx_parser
         use test_utils
@@ -16,12 +56,20 @@ TESTPROGRAM(main)
 #else
         call getfiles('lfortran', files)
 #endif
+
+        global = global_t(5)
+        global%macros(1)%name = '__LFORTRAN__'; global%macros(1)%value = '1'
+        global%macros(2)%name = '__VERSION__'
+        global%macros(3)%name = '__LFORTRAN_MAJOR__'
+        global%macros(4)%name = '__LFORTRAN_MINOR__'
+        global%macros(5)%name = '__LFORTRAN_PATCHLEVEL__'
+
         do i = 1, size(files)
             if (index(files(i), '.out') > 0) then
                 cycle
             else if (index(files(i), '.ref') > 0) then
                 cycle
-            else if (index(files(i), '.f90') > 0) then
+            else if (index(files(i), '.f90') > 0 .or. index(files(i), '.F90') > 0) then
                 call preprocess(trim(files(i)), trim(files(i))//'.out')
 
                 TEST(filename(files(i)))
@@ -44,7 +92,7 @@ TESTPROGRAM(main)
                     EXPECT_EQ(size(actual), size(expected))
                     
                     do j = 1, min(size(actual), size(expected))
-                        EXPECT_STREQ(trim(adjustl(actual(j))), trim(adjustl(expected(j))))
+                        EXPECT_STREQ(trim(actual(j)), trim(expected(j)))
                     end do
                 END_TEST
             end if
@@ -52,7 +100,6 @@ TESTPROGRAM(main)
     end block
     
     block
-        TEST_PRINT('flang_unit_tests')
         use fpx_parser
         use test_utils
 
@@ -60,6 +107,8 @@ TESTPROGRAM(main)
         character(256), allocatable, target  :: checks(:)
         character(:), allocatable :: runs
         integer :: i, j
+        
+        TEST_PRINT('flang_unit_tests')
 
 #ifdef _FPM
         call getfiles('tests\flang', files)
