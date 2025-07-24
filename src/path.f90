@@ -1,5 +1,5 @@
 module fpx_path
-    use, intrinsic :: iso_c_binding, only: c_char, c_size_t, c_ptr, c_null_ptr, c_associated
+    use, intrinsic :: iso_c_binding
     
     implicit none
     
@@ -25,6 +25,13 @@ module fpx_path
             integer(kind=c_size_t), value :: size
         end function
     end interface
+    
+    interface
+        integer(c_int) function chdir_c(path) bind(C, name='chdir')
+        import
+            character(kind=c_char) :: path(*)
+        end function
+  end interface
     
     contains
     
@@ -167,8 +174,9 @@ module fpx_path
         
         s = size(buf, kind=c_size_t)
         if (c_associated(getcwd_c(buf, s))) then
-            allocate(character(s) :: res)
-            do i = 1, n + 1
+            n = findloc(buf, achar(0), 1)
+            allocate(character(n-1) :: res)
+            do i = 1, n - 1
                 res(i:i) = buf(i)
             end do
         else 
@@ -176,4 +184,13 @@ module fpx_path
         end if
     end function
 
+    subroutine chdir(path, err)
+        character(*) :: path
+        integer, optional, intent(out) :: err
+        integer :: loc_err
+
+        loc_err =  chdir_c(path//c_null_char)
+
+        if (present(err)) err = loc_err
+    end subroutine
 end module

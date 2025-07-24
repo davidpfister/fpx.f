@@ -10,6 +10,7 @@ module fpx_global
     type, public :: global_t
         private
         type(macro_t), allocatable, public :: macros(:)
+        logical, public                    :: exlude_comments
     end type
     
     interface global_t
@@ -28,6 +29,8 @@ module fpx_global
         else
             allocate(that%macros(0))
         end if
+        
+        that%exlude_comments = .false.
     end function
     
 end module

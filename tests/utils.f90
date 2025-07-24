@@ -3,11 +3,9 @@ module  test_utils
     
     implicit none; private
     
-    public :: getchecks,    &
-              getfiles,     &
-              getruns,      &
+    public :: getfiles,     &
+              readruns,     &
               readline,     &
-              filename,     &
               getlines
     
     contains
@@ -67,6 +65,7 @@ module  test_utils
             
             if (.not. keep .and. len_trim(line) == 0) cycle
             tmp = ' '; tmp = trim(adjustl(line))
+            if (.not. keep .and. (tmp(1:1) == '!' .or. tmp(1:1) == '#')) cycle
             pos = index(line, CR); if (pos > 0) tmp(pos:pos) = ' '
             pos = index(line, LF); if (pos > 0) tmp(pos:pos) = ' '
             res = [res, tmp]
@@ -75,7 +74,7 @@ module  test_utils
         close(unit)
     end subroutine
 
-    subroutine getruns(filepath, res)
+    subroutine readruns(filepath, res)
         character(*), intent(in)                    :: filepath
         character(:), allocatable, intent(out)    :: res
         !private
@@ -99,43 +98,6 @@ module  test_utils
         end do
         close(unit)
         
-    end subroutine
-    
-    subroutine getchecks(filepath, res)
-        character(*), intent(in)                    :: filepath
-        character(256), allocatable, intent(out)    :: res(:)
-        !private
-        logical :: exists
-        integer :: idx, ierr, count, unit
-        character(:), allocatable :: line
-        character(256) :: tmp
-        
-        allocate(res(0))
-        
-        inquire(file=filepath, exist=exists)
-        if (.not. exists) return
-        
-        open (newunit=unit, file=filepath, status='old', action='read', iostat=ierr)
-        if (ierr /= 0) return
-        count = 0
-        
-        do while (.true.)
-            call readline(unit, line, ierr)
-            if (ierr /= 0) exit
-            idx = index(line, 'CHECK-SAME')
-            if (idx > 0) then
-                idx = index(line, ':')
-                res(count) = trim(adjustl(res(count))) // trim(adjustl(line(idx + 1:)))
-                cycle
-            end if
-            
-            idx = index(line, 'CHECK'); if (idx <= 0) cycle
-            idx = index(line, ':')
-            tmp = ' '; tmp = trim(adjustl(line(idx + 1:)))
-            res = [res, tmp]
-            count = count + 1
-        end do
-        close(unit)
     end subroutine
     
     subroutine readline(iunit, line, ierr)

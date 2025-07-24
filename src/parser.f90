@@ -45,11 +45,16 @@ contains
         !private
         character(MAX_LINE_LEN) :: line, continued_line
         character(256) :: filepath
+        character(:), allocatable :: res, tmp
         character(len=1, kind=c_char) :: buf(256)
         integer :: ierr, iline, n, ounit, icontinuation
-        logical :: in_continuation
+        logical :: in_continuation1, in_continuation2
+        logical :: is_dir, in_comment, reprocess
 
         icontinuation = 1
+        in_continuation2 = .false.
+        reprocess = .false.
+        is_dir = .false.
         if (present(outputfile)) then
             open (newunit=ounit, file=outputfile, status='replace', action='write', iostat=ierr)
             if (ierr /= 0) then
@@ -77,38 +82,75 @@ contains
         cond_stack(1)%has_met = .false.
 
         iline = 0
-        in_continuation = .false.
-        continued_line = ''
+        in_continuation1 = .false.
+        in_continuation2 = .false.
+        is_dir = .false.
+        continued_line = ''; res = ''
         
         do
-            read (iunit, '(A)', iostat=ierr) line
-            if (ierr /= 0) exit
+            read (iunit, '(A)', iostat=ierr) line; if (ierr /= 0) exit
             iline = iline + 1
 
-            if (in_continuation) then
+            if (in_continuation1) then
                 continued_line = continued_line(:icontinuation)//trim(adjustl(line))
             else
                 continued_line = trim(adjustl(line))
             end if
-
-            if (len_trim(continued_line) == 0) cycle
+            n = len_trim(continued_line); if (n == 0) cycle
 
             ! Check for line continuation with '\'
-            if (verify(continued_line(len_trim(continued_line):len_trim(continued_line)), '\') == 0) then
+            if (verify(continued_line(n:n), '\') == 0 ) then
                 ! Check for line break with '\\'
                 if (continued_line(len_trim(continued_line) - 1:len_trim(continued_line)) == '\\') then
-                    in_continuation = .true.
+                    in_continuation1 = .true.
                     continued_line = continued_line(:len_trim(continued_line) - 2)//new_line('A') ! Strip '\\'
                     icontinuation = len_trim(continued_line)
                 else
-                    in_continuation = .true.
+                    in_continuation1 = .true.
                     icontinuation = len_trim(continued_line) - 1
                     continued_line = continued_line(:icontinuation)
                 end if
                 cycle
             else
-                in_continuation = .false.
-                call process_line(continued_line, ounit, filepath, iline)
+                in_continuation1 = .false.; in_comment = .false.
+
+                tmp = process_line(continued_line, ounit, filepath, iline)
+                n = len_trim(tmp); if (n == 0) cycle
+                    
+                select case (head(tmp))
+                case('&')
+                    tmp = tmp(2:)
+                    n = n - 1
+                case('!')
+                    in_comment = .true.
+                end select
+            
+                if (merge(head(res) == '!', in_comment, len_trim(res) > 0)) then
+                    in_continuation2 = merge(.true., .false., tmp(n:n) == '&')
+                else
+                    if (in_comment) then
+                        if (in_continuation2) cycle
+                    end if
+                    in_continuation2 = merge(.true., .false., .not. in_comment .and. tmp(n:n) == '&')
+                end if
+                
+                if (in_continuation2) then
+                    reprocess = .true.
+                    if (tail(tmp(:n-1)) == '(') then
+                        res = res // trim(tmp(:n-1))
+                    else
+                        res = res // tmp(:n-1)
+                    end if
+                else
+                    if (reprocess) then
+                        res = process_line(res // trim(tmp), ounit, filepath, iline)
+                        reprocess = .false.
+                    else
+                        res = trim(tmp)
+                    end if
+                    write (ounit, '(A)') res
+                    res = ''
+                end if
             end if
         end do
 
@@ -121,19 +163,21 @@ contains
         deallocate (macros)
     end subroutine
 
-    recursive subroutine process_line(line, ounit, filename, iline)
+    recursive function process_line(line, ounit, filename, iline) result(res)
         character(*), intent(in)    :: line
         integer, intent(in)         :: ounit
         character(*), intent(in)    :: filename
         integer, intent(in)         :: iline
+        character(:), allocatable   :: res
         !private
-        character(:), allocatable :: trimmed_line, expanded_line
+        character(:), allocatable :: trimmed_line
         logical :: active
         logical, save :: in_comment = .false.
+        logical, save :: in_continuation2 = .false.
         integer :: idx, comment_start, comment_end, n
 
         trimmed_line = trim(adjustl(line))
-
+        res = ''
         comment_end = index(trimmed_line, '*/')
         if (in_comment .and. comment_end > 0) then
             trimmed_line = trimmed_line(comment_end + 2:)
@@ -151,7 +195,7 @@ contains
         active = is_active()
         if (verbose) print *, "Processing line ", iline, ": '", trim(trimmed_line), "'"
         if (verbose) print *, "is_active() = ", active, ", cond_depth = ", cond_depth
-        if (trimmed_line(1:1) == '#') then
+        if (head(trimmed_line) == '#') then
             if (starts_with(adjustl(trimmed_line(2:)), 'define') .and. active) then
                 call handle_define(trimmed_line, num_macros, macros)
             else if (starts_with(adjustl(trimmed_line(2:)), 'undef') .and. active) then
@@ -171,22 +215,10 @@ contains
             else if (starts_with(adjustl(trimmed_line(2:)), 'endif')) then
                 call handle_endif(filename, iline)
             end if
-        else if (active) then
-            if (len_trim(trimmed_line) == 0) return
-            !if (trimmed_line(1:1) == '!') return
-            expanded_line = expand_all(trimmed_line, macros, filename, iline)
-            if (verbose) print *, "Writing to output: '", trim(expanded_line), "'"
-            !if (len_trim(expanded_line) == 0) return
-            !if (expanded_line(1:1) == '!') return
-            !if (expanded_line(len_trim(expanded_line):len_trim(expanded_line)) == '&') then
-            !    expanded_line(len_trim(expanded_line):len_trim(expanded_line)) = ' '
-            !    if (starts_with(expanded_line, '&', idx)) expanded_line(idx:idx) = ' '
-            !    write (ounit, '(A)', advance='no') trim(expanded_line)
-            !else
-            !    if (starts_with(expanded_line, '&', idx)) expanded_line(idx:idx) = ' '
-                write (ounit, '(A)') trim(expanded_line)
-            !end if
+        else if (active) then           
+            res = adjustl(expand_all(trimmed_line, macros, filename, iline))
+            if (verbose) print *, "Writing to output: '", trim(res), "'"
         end if
-    end subroutine
+    end function
 
 end module

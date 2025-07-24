@@ -4,7 +4,9 @@
 module fpx_constants
     implicit none; private
 
-    public :: starts_with
+    public :: starts_with,  &
+              head,         &
+              tail
 
     !> @brief Maximum allowed line length in characters, set to 1024 to handle large input strings or files
     integer, parameter, public :: MAX_LINE_LEN = 1024
@@ -24,7 +26,8 @@ module fpx_constants
 contains
 
     logical function starts_with(str, arg1, idx) result(res)
-        character(*), intent(in) :: str, arg1
+        character(*), intent(in) :: str
+        character(*), intent(in) :: arg1
         integer, intent(out), optional :: idx
         !private
         integer :: i
@@ -32,6 +35,26 @@ contains
         i = index(trim(adjustl(str)), trim(arg1))
         res = (i == 1)
         if (present(idx)) idx = i
+    end function
+    
+    character function head(str) result(res)
+        character(*), intent(in) :: str
+        
+        res = ' '
+        if (len_trim(str) == 0) return
+        
+        res = str(1:1)
+    end function
+    
+    character function tail(str) result(res)
+        character(*), intent(in) :: str
+        !private
+        integer :: n
+        
+        res = ' '; n = len_trim(str)
+        if (n == 0) return
+        
+        res = str(n:n)
     end function
 
 end module

@@ -1,0 +1,3 @@
+! RUN: %flang -E %s | FileCheck %s
+! CHECK: a
+a

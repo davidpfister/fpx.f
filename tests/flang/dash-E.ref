@@ -2,7 +2,7 @@
       program Main
 
 
-      integer :: j = (1)+( 2)
+      integer :: j = (1)+(2)
 
 
 

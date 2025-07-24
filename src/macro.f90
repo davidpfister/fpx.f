@@ -15,6 +15,10 @@ module fpx_macro
         character(MAX_LINE_LEN), allocatable :: params(:)
         integer :: num_params
         logical :: is_variadic ! New flag for variadic macros
+    contains
+        procedure, pass(this), private :: set_default
+        procedure, pass(this), private :: set_with_value
+        generic, public :: set => set_default, set_with_value
     end type
     
     interface macro_t
@@ -32,6 +36,23 @@ module fpx_macro
         that%num_params = 0
         that%is_variadic = .false.
     end function
+    
+    subroutine set_default(this, name)
+        class(macro_t), intent(inout)   :: this
+        character(*), intent(in)        :: name
+        
+        this%name = name
+        this%value = ''
+    end subroutine
+    
+    subroutine set_with_value(this, name, value)
+        class(macro_t), intent(inout)   :: this
+        character(*), intent(in)        :: name
+        character(*), intent(in)        :: value
+        
+        this%name = name
+        this%value = value
+    end subroutine
 
     function expand_all(line, macros, filepath, iline) result(expanded)
         character(*), intent(in)            :: line
@@ -43,23 +64,23 @@ module fpx_macro
         integer :: pos, start, sep, dot
 
         expanded = expand_macros(line, macros)
+        ! Substitute __FILENAME__
+        pos = 1
+        do while (pos > 0)
+            pos = index(expanded, '__FILENAME__')
+            if (pos > 0) then
+                start = pos + len('__FILENAME__')
+                expanded = trim(expanded(:pos - 1)//'"'//filename(filepath, .true.)//'"'//trim(expanded(start:)))
+                if (verbose) print *, "Substituted __FILENAME__ with '", trim(filepath), "', expanded: '", trim(expanded), "'"
+            end if
+        end do
+        
         ! Substitute __FILE__ (relative path to working directory)
         pos = 1
         do while (pos > 0)
             pos = index(expanded, '__FILE__')
             if (pos > 0) then
                 start = pos + len('__FILE__')
-                expanded = trim(expanded(:pos - 1)//'"'//filename(filepath, .true.)//'"'//trim(expanded(start:)))
-                if (verbose) print *, "Substituted __FILE__ with '", trim(filepath), "', expanded: '", trim(expanded), "'"
-            end if
-        end do
-        
-        ! Substitute __FILEPATH__
-        pos = 1
-        do while (pos > 0)
-            pos = index(expanded, '__FILEPATH__')
-            if (pos > 0) then
-                start = pos + len('__FILEPATH__')
                 expanded = trim(expanded(:pos - 1)//'"'//trim(filepath)//'"'//trim(expanded(start:)))
                 if (verbose) print *, "Substituted __FILE__ with '", trim(filepath), "', expanded: '", trim(expanded), "'"
             end if
@@ -255,8 +276,12 @@ module fpx_macro
                                                     if (c1 > len_trim(temp)) then
                                                         if (verify(temp(c1 - 1:c1 - 1), ' ()[]<>&;.,!/*-+\="'//"'") /= 0) cycle
                                                     end if
-                                                    if (verify(temp(c1 - 1:c1 - 1), ' ()[]<>&;.,!/*-+\="'//"'") /= 0 &
-                                                        .and. verify(temp(c1 + 1:c1 + 1), ' ()[]<>&;.,!/*-+\="'//"'") /= 0) cycle
+                                                    if (len(temp) > c1) then
+                                                        if (verify(temp(c1 - 1:c1 - 1), ' ()[]<>&;.,!/*-+\="'//"'") /= 0 &
+                                                            .and. verify(temp(c1 + 1:c1 + 1), ' ()[]<>$&;.,!/*-+\="'//"'") /= 0) cycle
+                                                    else
+                                                        if (verify(temp(c1 - 1:c1 - 1), ' ()[]<>&;.,!/*-+\="'//"'") /= 0) cycle
+                                                    end if
                                                 end if
                                                 pos = c1
                                                 c1 = c1 + len_trim(macros(i)%params(j)) - 1

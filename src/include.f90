@@ -12,25 +12,26 @@ module fpx_include
     public :: handle_include
 
     interface
-        subroutine read_line(line, output_unit, filename, iline)
+        function read_line(line, ounit, filename, iline) result(res)
             character(*), intent(in)    :: line
-            integer, intent(in)         :: output_unit
+            integer, intent(in)         :: ounit
             character(*), intent(in)    :: filename
             integer, intent(in)         :: iline
-        end subroutine
+            character(:), allocatable   :: res
+        end function
     end interface
 
 contains
 
-    recursive subroutine handle_include(line, output_unit, parent_file, iline, process_line)
+    recursive subroutine handle_include(line, ounit, parent_file, iline, process_line)
         character(*), intent(in)    :: line
-        integer, intent(in)         :: output_unit
+        integer, intent(in)         :: ounit
         character(*), intent(in)    :: parent_file
         integer, intent(in)         :: iline
         procedure(read_line)        :: process_line
         !private
         character(MAX_LINE_LEN) :: include_file, buffer
-        character(:), allocatable :: dir, ifile
+        character(:), allocatable :: dir, ifile, res
         integer :: icontinuation, input_unit, ios, pos
         logical :: in_continuation, exists
 
@@ -92,7 +93,8 @@ contains
                 cycle
             else
                 in_continuation = .false.
-                call process_line(buffer, output_unit, include_file, iline)
+                res = process_line(buffer, ounit, include_file, iline)
+                write (ounit, '(A)') trim(adjustl(res))
             end if
         end do
 

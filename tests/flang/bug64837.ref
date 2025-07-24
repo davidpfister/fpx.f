@@ -1,3 +1,3 @@
 #line ".\bug64837.F90" 3
-      integer, parameter :: p = +1
+      integer, parameter :: p =  +1
       end

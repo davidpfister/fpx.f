@@ -44,6 +44,7 @@ TESTPROGRAM(main)
     block
         use fpx_parser
         use test_utils
+        use fpx_path
 
         character(256), allocatable  :: files(:)
         character(:), allocatable :: ref
@@ -52,17 +53,17 @@ TESTPROGRAM(main)
         TEST_PRINT('lfortran_unit_test')
 
 #ifdef _FPM
-        call getfiles('tests\lfortran', files)
+        call chdir(join('tests','lfortran')
 #else
-        call getfiles('lfortran', files)
+        call chdir('lfortran')
 #endif
-
+        call getfiles('', files)
         global = global_t(5)
-        global%macros(1)%name = '__LFORTRAN__'; global%macros(1)%value = '1'
-        global%macros(2)%name = '__VERSION__'
-        global%macros(3)%name = '__LFORTRAN_MAJOR__'
-        global%macros(4)%name = '__LFORTRAN_MINOR__'
-        global%macros(5)%name = '__LFORTRAN_PATCHLEVEL__'
+        call global%macros(1)%set('__LFORTRAN__','1')
+        call global%macros(2)%set('__VERSION__')
+        call global%macros(3)%set('__LFORTRAN_MAJOR__')
+        call global%macros(4)%set('__LFORTRAN_MINOR__')
+        call global%macros(5)%set('__LFORTRAN_PATCHLEVEL__')
 
         do i = 1, size(files)
             if (index(files(i), '.out') > 0) then
@@ -97,56 +98,78 @@ TESTPROGRAM(main)
                 END_TEST
             end if
         end do
+#ifdef _FPM
+        call chdir(join('..','..')
+#else
+        call chdir('..')
+#endif
     end block
     
     block
         use fpx_parser
         use test_utils
+        use fpx_path
 
         character(256), allocatable  :: files(:)
-        character(256), allocatable, target  :: checks(:)
-        character(:), allocatable :: runs
+        character(:), allocatable :: runs, ref
         integer :: i, j
         
         TEST_PRINT('flang_unit_tests')
 
 #ifdef _FPM
-        call getfiles('tests\flang', files)
+        call chdir(join('tests','flang')
 #else
-        call getfiles('flang', files)
+        call chdir('flang')
 #endif
+        call getfiles('', files)
+        
+        global = global_t(6)
+        call global%macros(1)%set('__flang_major__','20')
+        call global%macros(2)%set('__flang_minor__','1')
+        call global%macros(3)%set('__flang_patchlevel__','6')
+        !only for the tests
+        call global%macros(4)%set('MACRO')
+        call global%macros(5)%set('FOO','1')
+        call global%macros(6)%set('BAR','2')
+
         do i = 1, size(files)
-            call getruns(trim(files(i)), runs)
-            if (len_trim(runs) > 0) then
-                TEST_PRINT(filename(files(i)))
-                call getchecks(trim(files(i)), checks)
-                call preprocess(trim(files(i)), trim(files(i))//'.out')
-                TEST(filename(files(i)))
-                    logical :: exists
-                    integer :: ierr, unit
-                    character(:), allocatable :: line
-                    character(256), pointer :: check => null() 
+            if (index(files(i), '.out') > 0) then
+                cycle
+            else if (index(files(i), '.ref') > 0) then
+                cycle
+            else if (index(files(i), '.f90') > 0 .or. & 
+                     index(files(i), '.F90') > 0 .or. &
+                     index(files(i), '.F') > 0 .or.   & 
+                     index(files(i), '.f') > 0) then
+                call readruns(trim(files(i)), runs)
+                if (len_trim(runs) > 0) then
+                    call preprocess(trim(files(i)), trim(files(i))//'.out')
+                    TEST(filename(files(i)))
+                        logical :: exists
+                        integer :: ierr, unit, cunit
+                        character(256), allocatable :: actual(:), expected(:)
                 
-                    inquire(file=trim(files(i))//'.out', exist=exists)
-                    ASSERT_TRUE(exists)
-        
-                    open (newunit=unit, file=trim(files(i))//'.out', status='old', action='read', iostat=ierr)
-                    ASSERT_TRUE(ierr /= 0)
-        
-                    j = 1
-                    do while (.true.)
-                        call readline(unit, line, ierr)
-                        if (ierr /= 0 .and. .not. is_iostat_end(ierr)) stop -1
+                        inquire(file=trim(files(i))//'.out', exist=exists)
+#if defined (_DEBUG) || defined (DEBUG)
+                        ASSERT_TRUE(exists)
+#endif
+                        ref = trim(files(i)); ref(len(ref)-2:) = 'ref'
+                        call getlines(trim(files(i))//'.out', actual, .false.)
+                        call getlines(ref, expected, .false.)
                     
-                        if (j > size(checks)) exit
-                        check => checks(j)
-                        EXPECT_STRCASEEQ(line, check)
-                        j = j + 1
-                        nullify(check)
-                    end do
-                    close(unit)
-                END_TEST
+                        EXPECT_EQ(size(actual), size(expected))
+                    
+                        do j = 1, min(size(actual), size(expected))
+                            EXPECT_STREQ(trim(actual(j)), trim(expected(j)))
+                        end do
+                    END_TEST
+                end if
             end if
         end do
+#ifdef _FPM
+        call chdir(join('..','..')
+#else
+        call chdir('..')
+#endif
     end block
 END_TESTPROGRAM

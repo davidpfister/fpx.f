@@ -1,2 +1,2 @@
-if(.not.(.true.)) error stop "assert(" // ".TRUE." // ") failed " // "at "".\assert.F90"": " // "7"
+if(.not.(.TRUE.)) error stop "assert(" // ".TRUE." // ") failed " // "at ""assert.F90"": " // "7"
 end
