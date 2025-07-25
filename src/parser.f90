@@ -48,13 +48,11 @@ contains
         character(:), allocatable :: res, tmp
         character(len=1, kind=c_char) :: buf(256)
         integer :: ierr, iline, n, ounit, icontinuation
-        logical :: in_continuation1, in_continuation2
-        logical :: is_dir, in_comment, reprocess
+        logical :: c_continue, f_continue
+        logical :: in_comment, reprocess
 
         icontinuation = 1
-        in_continuation2 = .false.
         reprocess = .false.
-        is_dir = .false.
         if (present(outputfile)) then
             open (newunit=ounit, file=outputfile, status='replace', action='write', iostat=ierr)
             if (ierr /= 0) then
@@ -66,8 +64,7 @@ contains
             ounit = stdout
         end if
 
-        inquire (unit=iunit, name=filepath)
-        
+        inquire (unit=iunit, name=filepath)     
         if (c_associated(getcwd_c(buf, size(buf, kind=c_size_t)))) then
            n = findloc(buf,achar(0),1)
            filepath = filepath(n+1:)
@@ -82,16 +79,14 @@ contains
         cond_stack(1)%has_met = .false.
 
         iline = 0
-        in_continuation1 = .false.
-        in_continuation2 = .false.
-        is_dir = .false.
+        c_continue = .false.; f_continue = .false.
         continued_line = ''; res = ''
         
         do
             read (iunit, '(A)', iostat=ierr) line; if (ierr /= 0) exit
             iline = iline + 1
 
-            if (in_continuation1) then
+            if (c_continue) then
                 continued_line = continued_line(:icontinuation)//trim(adjustl(line))
             else
                 continued_line = trim(adjustl(line))
@@ -102,39 +97,38 @@ contains
             if (verify(continued_line(n:n), '\') == 0 ) then
                 ! Check for line break with '\\'
                 if (continued_line(len_trim(continued_line) - 1:len_trim(continued_line)) == '\\') then
-                    in_continuation1 = .true.
+                    c_continue = .true.
                     continued_line = continued_line(:len_trim(continued_line) - 2)//new_line('A') ! Strip '\\'
                     icontinuation = len_trim(continued_line)
                 else
-                    in_continuation1 = .true.
+                    c_continue = .true.
                     icontinuation = len_trim(continued_line) - 1
                     continued_line = continued_line(:icontinuation)
                 end if
                 cycle
             else
-                in_continuation1 = .false.; in_comment = .false.
+                c_continue = .false.; in_comment = .false.
 
                 tmp = process_line(continued_line, ounit, filepath, iline)
                 n = len_trim(tmp); if (n == 0) cycle
                     
                 select case (head(tmp))
                 case('&')
-                    tmp = tmp(2:)
-                    n = n - 1
+                    tmp = tmp(2:); n = n - 1
                 case('!')
                     in_comment = .true.
                 end select
             
                 if (merge(head(res) == '!', in_comment, len_trim(res) > 0)) then
-                    in_continuation2 = merge(.true., .false., tmp(n:n) == '&')
+                    f_continue = tmp(n:n) == '&'
                 else
                     if (in_comment) then
-                        if (in_continuation2) cycle
+                        if (f_continue) cycle
                     end if
-                    in_continuation2 = merge(.true., .false., .not. in_comment .and. tmp(n:n) == '&')
+                    f_continue = .not. in_comment .and. tmp(n:n) == '&'
                 end if
                 
-                if (in_continuation2) then
+                if (f_continue) then
                     reprocess = .true.
                     if (tail(tmp(:n-1)) == '(') then
                         res = res // trim(tmp(:n-1))
@@ -173,7 +167,7 @@ contains
         character(:), allocatable :: trimmed_line
         logical :: active
         logical, save :: in_comment = .false.
-        logical, save :: in_continuation2 = .false.
+        logical, save :: f_continue = .false.
         integer :: idx, comment_start, comment_end, n
 
         trimmed_line = trim(adjustl(line))
