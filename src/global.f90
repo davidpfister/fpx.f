@@ -7,30 +7,14 @@ module fpx_global
     
     
     
-    type, public :: global_t
+    type, public :: global_settings
         private
-        type(macro_t), allocatable, public :: macros(:)
-        logical, public                    :: exlude_comments
+        type(macro), allocatable, public :: macros(:)
+        logical, public                  :: exlude_comments = .false.
     end type
     
-    interface global_t
-        module procedure :: global_new
-    end interface
-    
-    type(global_t), allocatable, public :: global
+    type(global_settings), public :: global
     
     contains
-    
-    type(global_t) function global_new(n) result(that)
-        integer, intent(in), optional :: n
-        
-        if (present(n)) then
-            allocate(that%macros(n))
-        else
-            allocate(that%macros(0))
-        end if
-        
-        that%exlude_comments = .false.
-    end function
     
 end module

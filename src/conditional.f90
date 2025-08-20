@@ -1,7 +1,7 @@
 module fpx_conditional
     use fpx_constants
     use fpx_logging
-    use fpx_macro, only: macro_t, is_defined
+    use fpx_macro, only: macro, is_defined
     use fpx_token, only: evaluate_expression
 
     implicit none; private
@@ -12,18 +12,15 @@ module fpx_conditional
               handle_elif, &
               handle_else, &
               handle_endif, &
-              is_active, &
-              cond_stack, &
-              cond_depth
+              is_active
 
-    type, public :: cond_state_t
+    type, public :: cond_state
         logical :: active
         logical :: has_met
-    end type cond_state_t
+    end type
 
-    type(cond_state_t) :: cond_stack(MAX_COND_DEPTH)
-
-    integer :: cond_depth = 0
+    type(cond_state), public :: cond_stack(MAX_COND_DEPTH)
+    integer, public :: cond_depth = 0
 
 contains
 
@@ -41,9 +38,9 @@ contains
     subroutine handle_if(line, filename, line_num, macros)
         character(*), intent(in)    :: line, filename
         integer, intent(in)         :: line_num
-        type(macro_t), intent(in)   :: macros(:)
+        type(macro), intent(in)   :: macros(:)
         !private
-        character(MAX_LINE_LEN) :: expr
+        character(:), allocatable :: expr
         logical :: result, parent_active
         integer :: pos
 
@@ -67,9 +64,9 @@ contains
         character(*), intent(in)        :: line
         character(*), intent(in)        :: filename
         integer, intent(in)             :: line_num
-        type(macro_t), intent(in)       :: macros(:)
+        type(macro), intent(in)       :: macros(:)
         !private
-        character(MAX_LINE_LEN) :: name
+        character(:), allocatable :: name
         logical :: defined, parent_active
         integer :: pos
 
@@ -91,9 +88,9 @@ contains
         character(*), intent(in)        :: line
         character(*), intent(in)        :: filename
         integer, intent(in)             :: line_num
-        type(macro_t), intent(in)       :: macros(:)
+        type(macro), intent(in)       :: macros(:)
         !private
-        character(MAX_LINE_LEN) :: name
+        character(:), allocatable :: name
         logical :: defined, parent_active
         integer :: pos
 
@@ -114,9 +111,9 @@ contains
     subroutine handle_elif(line, filename, line_num, macros)
         character(*), intent(in)    :: line, filename
         integer, intent(in)         :: line_num
-        type(macro_t), intent(in)   :: macros(:)
+        type(macro), intent(in)   :: macros(:)
         !private
-        character(MAX_LINE_LEN) :: expr
+        character(:), allocatable :: expr
         logical :: result, parent_active
         integer :: pos
 

@@ -6,31 +6,36 @@ module fpx_include
     use fpx_constants
     use fpx_logging
     use fpx_path
+    use fpx_macro
 
     implicit none; private
 
     public :: handle_include
 
     interface
-        function read_line(line, ounit, filename, iline) result(res)
-            character(*), intent(in)    :: line
-            integer, intent(in)         :: ounit
-            character(*), intent(in)    :: filename
-            integer, intent(in)         :: iline
+        function read_line(line, ounit, filename, iline, macros) result(res)
+            import macro
+            character(*), intent(in)                :: line
+            integer, intent(in)                     :: ounit
+            character(*), intent(in)                :: filename
+            integer, intent(in)                     :: iline
+            type(macro), allocatable, intent(inout) :: macros(:) 
             character(:), allocatable   :: res
         end function
     end interface
 
 contains
 
-    recursive subroutine handle_include(line, ounit, parent_file, iline, process_line)
-        character(*), intent(in)    :: line
-        integer, intent(in)         :: ounit
-        character(*), intent(in)    :: parent_file
-        integer, intent(in)         :: iline
-        procedure(read_line)        :: process_line
+    recursive subroutine handle_include(line, ounit, parent_file, iline, process_line, macros)
+        character(*), intent(in)                :: line
+        integer, intent(in)                     :: ounit
+        character(*), intent(in)                :: parent_file
+        integer, intent(in)                     :: iline
+        procedure(read_line)                    :: process_line
+        type(macro), allocatable, intent(inout) :: macros(:) 
         !private
-        character(MAX_LINE_LEN) :: include_file, buffer
+        character(:), allocatable :: include_file
+        character(MAX_LINE_LEN) :: buffer
         character(:), allocatable :: dir, ifile, res
         integer :: icontinuation, input_unit, ios, pos
         logical :: in_continuation, exists
@@ -93,7 +98,7 @@ contains
                 cycle
             else
                 in_continuation = .false.
-                res = process_line(buffer, ounit, include_file, iline)
+                res = process_line(buffer, ounit, include_file, iline, macros)
                 write (ounit, '(A)') trim(adjustl(res))
             end if
         end do

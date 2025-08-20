@@ -1,0 +1,8 @@
+# 1 "similar-name.F90"
+# 1 "<built-in>"
+# 1 "<command-line>"
+# 1 "similar-name.F90"
+
+
+print*, 2
+end

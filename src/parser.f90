@@ -2,6 +2,7 @@ module fpx_parser
     use, intrinsic :: iso_fortran_env, only: stdout => output_unit
     use, intrinsic :: iso_c_binding, only: c_char, c_size_t,c_ptr, c_null_ptr, c_associated
     use fpx_constants
+    use fpx_string
     use fpx_logging
     use fpx_macro
     use fpx_conditional
@@ -13,10 +14,7 @@ module fpx_parser
     implicit none; private
 
     public :: preprocess,  & 
-              global, global_t
-
-    type(macro_t), allocatable :: macros(:)
-    integer :: num_macros = 0
+              global
 
     interface preprocess
         module procedure :: preprocess_file
@@ -43,6 +41,7 @@ contains
         integer, intent(in)                 :: iunit
         character(*), intent(in), optional  :: outputfile
         !private
+        type(macro), allocatable :: macros(:)
         character(MAX_LINE_LEN) :: line, continued_line
         character(256) :: filepath
         character(:), allocatable :: res, tmp
@@ -70,10 +69,8 @@ contains
            filepath = filepath(n+1:)
         end if
 
-        if (.not. allocated(global)) global = global_t()
-        if (allocated(macros)) deallocate (macros)
-        num_macros = size(global%macros)
-        allocate (macros(num_macros), source = global%macros)
+        if (.not. allocated(global%macros)) allocate(global%macros(0))
+        allocate (macros(sizeof(global%macros)), source = global%macros)
         cond_depth = 0
         cond_stack(1)%active = .true.
         cond_stack(1)%has_met = .false.
@@ -107,37 +104,26 @@ contains
                 end if
                 cycle
             else
-                c_continue = .false.; in_comment = .false.
+                c_continue = .false.
 
-                tmp = process_line(continued_line, ounit, filepath, iline)
-                n = len_trim(tmp); if (n == 0) cycle
+                tmp = process_line(continued_line, ounit, filepath, iline, macros)
+                if (len_trim(tmp) == 0) cycle
                     
-                select case (head(tmp))
-                case('&')
-                    tmp = tmp(2:); n = n - 1
-                case('!')
-                    in_comment = .true.
-                end select
-            
+                in_comment = head(tmp) == '!'
+                           
                 if (merge(head(res) == '!', in_comment, len_trim(res) > 0)) then
-                    f_continue = tmp(n:n) == '&'
+                    f_continue = tail(tmp) == '&'
                 else
-                    if (in_comment) then
-                        if (f_continue) cycle
-                    end if
-                    f_continue = .not. in_comment .and. tmp(n:n) == '&'
+                    if (in_comment .and. f_continue) cycle
+                    f_continue = .not. in_comment .and. tail(tmp) == '&'
                 end if
                 
                 if (f_continue) then
                     reprocess = .true.
-                    if (tail(tmp(:n-1)) == '(') then
-                        res = res // trim(tmp(:n-1))
-                    else
-                        res = res // tmp(:n-1)
-                    end if
+                    res = stitch(res, tmp)
                 else
                     if (reprocess) then
-                        res = process_line(res // trim(tmp), ounit, filepath, iline)
+                        res = process_line(stitch(res, tmp), ounit, filepath, iline, macros)
                         reprocess = .false.
                     else
                         res = trim(tmp)
@@ -157,12 +143,13 @@ contains
         deallocate (macros)
     end subroutine
 
-    recursive function process_line(line, ounit, filename, iline) result(res)
-        character(*), intent(in)    :: line
-        integer, intent(in)         :: ounit
-        character(*), intent(in)    :: filename
-        integer, intent(in)         :: iline
-        character(:), allocatable   :: res
+    recursive function process_line(line, ounit, filename, iline, macros) result(res)
+        character(*), intent(in)                :: line
+        integer, intent(in)                     :: ounit
+        character(*), intent(in)                :: filename
+        integer, intent(in)                     :: iline
+        character(:), allocatable               :: res
+        type(macro), allocatable, intent(inout) :: macros(:) 
         !private
         character(:), allocatable :: trimmed_line
         logical :: active
@@ -191,11 +178,11 @@ contains
         if (verbose) print *, "is_active() = ", active, ", cond_depth = ", cond_depth
         if (head(trimmed_line) == '#') then
             if (starts_with(adjustl(trimmed_line(2:)), 'define') .and. active) then
-                call handle_define(trimmed_line, num_macros, macros)
+                call handle_define(trimmed_line, macros)
             else if (starts_with(adjustl(trimmed_line(2:)), 'undef') .and. active) then
-                call handle_undef(trimmed_line, num_macros, macros)
+                call handle_undef(trimmed_line, macros)
             else if (starts_with(adjustl(trimmed_line(2:)), 'include') .and. active) then
-                call handle_include(trimmed_line, ounit, filename, iline, process_line)
+                call handle_include(trimmed_line, ounit, filename, iline, process_line, macros)
             else if (starts_with(adjustl(trimmed_line(2:)), 'ifdef')) then
                 call handle_ifdef(trimmed_line, filename, iline, macros)
             else if (starts_with(adjustl(trimmed_line(2:)), 'ifndef')) then

@@ -1,4 +1,5 @@
 module fpx_token
+    use fpx_string
     use fpx_constants
     use fpx_macro
     use fpx_logging
@@ -19,7 +20,7 @@ module fpx_token
 
     integer, parameter :: tokens_enum = kind(unknown)
 
-    type, public :: token_t
+    type, public :: token
         character(:), allocatable   :: value
         integer(tokens_enum)        :: type
     end type
@@ -33,23 +34,23 @@ contains
 
     logical function evaluate_expression(expr, macros, val) result(res)
         character(*), intent(in)        :: expr
-        type(macro_t), intent(in)       :: macros(:)
+        type(macro), intent(in)         :: macros(:)
         integer, intent(out), optional  :: val
         !private
-        type(token_t), allocatable :: tokens(:)
-        integer :: num_tokens, pos, result
+        type(token), allocatable :: tokens(:)
+        integer :: ntokens, pos, result
 
-        call tokenize(expr, tokens, num_tokens)
-        if (num_tokens == 0) then
+        call tokenize(expr, tokens, ntokens)
+        if (ntokens == 0) then
             if (verbose) print *, "No tokens found for expression"
             res = .false.
             return
         end if
 
         pos = 1
-        result = parse_expression(tokens, num_tokens, pos, macros)
-        if (verbose) print *, "Parsed '", trim(expr), "': pos = ", pos, ", num_tokens = ", num_tokens, ", result = ", result
-        if (pos <= num_tokens) then
+        result = parse_expression(tokens, ntokens, pos, macros)
+        if (verbose) print *, "Parsed '", trim(expr), "': pos = ", pos, ", ntokens = ", ntokens, ", result = ", result
+        if (pos <= ntokens) then
             if (verbose) print *, "Error: Extra tokens in expression: ", trim(tokens(pos)%value)
             res = .false.
             return
@@ -178,122 +179,122 @@ contains
         if (present(success)) success = is_valid
     end function
 
-    recursive integer function parse_expression(tokens, num_tokens, pos, macros) result(val)
-        type(token_t), intent(in)   :: tokens(:)
-        integer, intent(in)         :: num_tokens
+    recursive integer function parse_expression(tokens, ntokens, pos, macros) result(val)
+        type(token), intent(in)   :: tokens(:)
+        integer, intent(in)         :: ntokens
         integer, intent(inout)      :: pos
-        type(macro_t), intent(in)   :: macros(:)
+        type(macro), intent(in)   :: macros(:)
 
-        val = parse_or(tokens, num_tokens, pos, macros)
+        val = parse_or(tokens, ntokens, pos, macros)
     end function
 
-    recursive integer function parse_or(tokens, num_tokens, pos, macros) result(val)
-        type(token_t), intent(in)   :: tokens(:)
-        integer, intent(in)         :: num_tokens
+    recursive integer function parse_or(tokens, ntokens, pos, macros) result(val)
+        type(token), intent(in)   :: tokens(:)
+        integer, intent(in)         :: ntokens
         integer, intent(inout)      :: pos
-        type(macro_t), intent(in)   :: macros(:)
+        type(macro), intent(in)   :: macros(:)
         integer :: left
 
-        left = parse_and(tokens, num_tokens, pos, macros)
-        do while (pos <= num_tokens .and. tokens(pos)%value == '||')
+        left = parse_and(tokens, ntokens, pos, macros)
+        do while (pos <= ntokens .and. tokens(pos)%value == '||')
             if (verbose) print *, "Parsing || at pos ", pos
             pos = pos + 1
-            val = merge(1, 0, left /= 0 .or. parse_and(tokens, num_tokens, pos, macros) /= 0)
+            val = merge(1, 0, left /= 0 .or. parse_and(tokens, ntokens, pos, macros) /= 0)
             left = val
         end do
         val = left
     end function
 
-    recursive integer function parse_and(tokens, num_tokens, pos, macros) result(val)
-        type(token_t), intent(in)   :: tokens(:)
-        integer, intent(in)         :: num_tokens
+    recursive integer function parse_and(tokens, ntokens, pos, macros) result(val)
+        type(token), intent(in)   :: tokens(:)
+        integer, intent(in)         :: ntokens
         integer, intent(inout)      :: pos
-        type(macro_t), intent(in)   :: macros(:)
+        type(macro), intent(in)   :: macros(:)
         !private
         integer :: left
 
-        left = parse_bitwise_or(tokens, num_tokens, pos, macros)
-        do while (pos <= num_tokens .and. tokens(pos)%value == '&&')
+        left = parse_bitwise_or(tokens, ntokens, pos, macros)
+        do while (pos <= ntokens .and. tokens(pos)%value == '&&')
             if (verbose) print *, "Parsing && at pos ", pos
             pos = pos + 1
-            val = merge(1, 0, left /= 0 .and. parse_bitwise_or(tokens, num_tokens, pos, macros) /= 0)
+            val = merge(1, 0, left /= 0 .and. parse_bitwise_or(tokens, ntokens, pos, macros) /= 0)
             left = val
         end do
         val = left
     end function
     
-    recursive integer function parse_bitwise_or(tokens, num_tokens, pos, macros) result(val)
-        type(token_t), intent(in)   :: tokens(:)
-        integer, intent(in)         :: num_tokens
+    recursive integer function parse_bitwise_or(tokens, ntokens, pos, macros) result(val)
+        type(token), intent(in)   :: tokens(:)
+        integer, intent(in)         :: ntokens
         integer, intent(inout)      :: pos
-        type(macro_t), intent(in)   :: macros(:)
+        type(macro), intent(in)   :: macros(:)
         !private
         integer :: left
 
-        left = parse_bitwise_xor(tokens, num_tokens, pos, macros)
-        do while (pos <= num_tokens .and. tokens(pos)%value == '|')
+        left = parse_bitwise_xor(tokens, ntokens, pos, macros)
+        do while (pos <= ntokens .and. tokens(pos)%value == '|')
             if (verbose) print *, "Parsing && at pos ", pos
             pos = pos + 1
-            val = parse_bitwise_xor(tokens, num_tokens, pos, macros)
+            val = parse_bitwise_xor(tokens, ntokens, pos, macros)
             left = ior(left, val)
         end do
         val = left
     end function
     
-    recursive integer function parse_bitwise_xor(tokens, num_tokens, pos, macros) result(val)
-        type(token_t), intent(in)   :: tokens(:)
-        integer, intent(in)         :: num_tokens
+    recursive integer function parse_bitwise_xor(tokens, ntokens, pos, macros) result(val)
+        type(token), intent(in)   :: tokens(:)
+        integer, intent(in)         :: ntokens
         integer, intent(inout)      :: pos
-        type(macro_t), intent(in)   :: macros(:)
+        type(macro), intent(in)   :: macros(:)
         !private
         integer :: left
 
-        left = parse_bitwise_and(tokens, num_tokens, pos, macros)
-        do while (pos <= num_tokens .and. tokens(pos)%value == '^')
+        left = parse_bitwise_and(tokens, ntokens, pos, macros)
+        do while (pos <= ntokens .and. tokens(pos)%value == '^')
             if (verbose) print *, "Parsing ^ at pos ", pos
             pos = pos + 1
-            val = parse_bitwise_and(tokens, num_tokens, pos, macros)
+            val = parse_bitwise_and(tokens, ntokens, pos, macros)
             left = ieor(left, val)
         end do
         val = left
     end function
     
-    recursive integer function parse_bitwise_and(tokens, num_tokens, pos, macros) result(val)
-        type(token_t), intent(in)   :: tokens(:)
-        integer, intent(in)         :: num_tokens
+    recursive integer function parse_bitwise_and(tokens, ntokens, pos, macros) result(val)
+        type(token), intent(in)   :: tokens(:)
+        integer, intent(in)         :: ntokens
         integer, intent(inout)      :: pos
-        type(macro_t), intent(in)   :: macros(:)
+        type(macro), intent(in)   :: macros(:)
         !private
         integer :: left
 
-        left = parse_equality(tokens, num_tokens, pos, macros)
-        do while (pos <= num_tokens .and. tokens(pos)%value == '&')
+        left = parse_equality(tokens, ntokens, pos, macros)
+        do while (pos <= ntokens .and. tokens(pos)%value == '&')
             if (verbose) print *, "Parsing && at pos ", pos
             pos = pos + 1
-            val = parse_equality(tokens, num_tokens, pos, macros)
+            val = parse_equality(tokens, ntokens, pos, macros)
             left = iand(left, val)
         end do
         val = left
     end function
 
-    recursive integer function parse_equality(tokens, num_tokens, pos, macros) result(val)
-        type(token_t), intent(in)   :: tokens(:)
-        integer, intent(in)         :: num_tokens
+    recursive integer function parse_equality(tokens, ntokens, pos, macros) result(val)
+        type(token), intent(in)   :: tokens(:)
+        integer, intent(in)         :: ntokens
         integer, intent(inout)      :: pos
-        type(macro_t), intent(in)   :: macros(:)
+        type(macro), intent(in)   :: macros(:)
         !private
         integer :: left, right
 
-        left = parse_relational(tokens, num_tokens, pos, macros)
-        do while (pos <= num_tokens .and. (tokens(pos)%value == '==' .or. tokens(pos)%value == '!='))
+        left = parse_relational(tokens, ntokens, pos, macros)
+        do while (pos <= ntokens .and. (tokens(pos)%value == '==' .or. tokens(pos)%value == '!='))
             if (verbose) print *, "Parsing ", trim(tokens(pos)%value), " at pos ", pos
             if (tokens(pos)%value == '==') then
                 pos = pos + 1
-                right = parse_relational(tokens, num_tokens, pos, macros)
+                right = parse_relational(tokens, ntokens, pos, macros)
                 val = merge(1, 0, left == right)
             else
                 pos = pos + 1
-                right = parse_relational(tokens, num_tokens, pos, macros)
+                right = parse_relational(tokens, ntokens, pos, macros)
                 val = merge(1, 0, left /= right)
             end if
             left = val
@@ -301,33 +302,33 @@ contains
         val = left
     end function
 
-    recursive integer function parse_relational(tokens, num_tokens, pos, macros) result(val)
-        type(token_t), intent(in)   :: tokens(:)
-        integer, intent(in)         :: num_tokens
+    recursive integer function parse_relational(tokens, ntokens, pos, macros) result(val)
+        type(token), intent(in)   :: tokens(:)
+        integer, intent(in)         :: ntokens
         integer, intent(inout)      :: pos
-        type(macro_t), intent(in)   :: macros(:)
+        type(macro), intent(in)   :: macros(:)
         !private
         integer :: left, right
 
-        left = parse_shifting(tokens, num_tokens, pos, macros)
-        do while (pos <= num_tokens .and. (tokens(pos)%value == '<' .or. tokens(pos)%value == '>' .or. &
+        left = parse_shifting(tokens, ntokens, pos, macros)
+        do while (pos <= ntokens .and. (tokens(pos)%value == '<' .or. tokens(pos)%value == '>' .or. &
                                            tokens(pos)%value == '<=' .or. tokens(pos)%value == '>='))
             if (verbose) print *, "Parsing ", trim(tokens(pos)%value), " at pos ", pos
             if (tokens(pos)%value == '<') then
                 pos = pos + 1
-                right = parse_shifting(tokens, num_tokens, pos, macros)
+                right = parse_shifting(tokens, ntokens, pos, macros)
                 val = merge(1, 0, left < right)
             else if (tokens(pos)%value == '>') then
                 pos = pos + 1
-                right = parse_shifting(tokens, num_tokens, pos, macros)
+                right = parse_shifting(tokens, ntokens, pos, macros)
                 val = merge(1, 0, left > right)
             else if (tokens(pos)%value == '<=') then
                 pos = pos + 1
-                right = parse_shifting(tokens, num_tokens, pos, macros)
+                right = parse_shifting(tokens, ntokens, pos, macros)
                 val = merge(1, 0, left <= right)
             else
                 pos = pos + 1
-                right = parse_shifting(tokens, num_tokens, pos, macros)
+                right = parse_shifting(tokens, ntokens, pos, macros)
                 val = merge(1, 0, left >= right)
             end if
             left = val
@@ -335,24 +336,24 @@ contains
         val = left
     end function
     
-    recursive integer function parse_shifting(tokens, num_tokens, pos, macros) result(val)
-        type(token_t), intent(in)   :: tokens(:)
-        integer, intent(in)         :: num_tokens
+    recursive integer function parse_shifting(tokens, ntokens, pos, macros) result(val)
+        type(token), intent(in)   :: tokens(:)
+        integer, intent(in)         :: ntokens
         integer, intent(inout)      :: pos
-        type(macro_t), intent(in)   :: macros(:)
+        type(macro), intent(in)   :: macros(:)
         !private
         integer :: left, right
 
-        left = parse_additive(tokens, num_tokens, pos, macros)
-        do while (pos <= num_tokens .and. (tokens(pos)%value == '<<' .or. tokens(pos)%value == '>>'))
+        left = parse_additive(tokens, ntokens, pos, macros)
+        do while (pos <= ntokens .and. (tokens(pos)%value == '<<' .or. tokens(pos)%value == '>>'))
             if (verbose) print *, "Parsing ", trim(tokens(pos)%value), " at pos ", pos
             if (tokens(pos)%value == '<<') then
                 pos = pos + 1
-                right = parse_additive(tokens, num_tokens, pos, macros)
+                right = parse_additive(tokens, ntokens, pos, macros)
                 val = lshift(left, right)
             else
                 pos = pos + 1
-                right = parse_additive(tokens, num_tokens, pos, macros)
+                right = parse_additive(tokens, ntokens, pos, macros)
                 val = rshift(left, right)
             end if
             left = val
@@ -360,24 +361,24 @@ contains
         val = left
     end function
 
-    recursive integer function parse_additive(tokens, num_tokens, pos, macros) result(val)
-        type(token_t), intent(in)   :: tokens(:)
-        integer, intent(in)         :: num_tokens
+    recursive integer function parse_additive(tokens, ntokens, pos, macros) result(val)
+        type(token), intent(in)   :: tokens(:)
+        integer, intent(in)         :: ntokens
         integer, intent(inout)      :: pos
-        type(macro_t), intent(in)   :: macros(:)
+        type(macro), intent(in)   :: macros(:)
         !private
         integer :: left, right
 
-        left = parse_multiplicative(tokens, num_tokens, pos, macros)
-        do while (pos <= num_tokens .and. (tokens(pos)%value == '+' .or. tokens(pos)%value == '-'))
+        left = parse_multiplicative(tokens, ntokens, pos, macros)
+        do while (pos <= ntokens .and. (tokens(pos)%value == '+' .or. tokens(pos)%value == '-'))
             if (verbose) print *, "Parsing ", trim(tokens(pos)%value), " at pos ", pos
             if (tokens(pos)%value == '+') then
                 pos = pos + 1
-                right = parse_multiplicative(tokens, num_tokens, pos, macros)
+                right = parse_multiplicative(tokens, ntokens, pos, macros)
                 val = left + right
             else
                 pos = pos + 1
-                right = parse_multiplicative(tokens, num_tokens, pos, macros)
+                right = parse_multiplicative(tokens, ntokens, pos, macros)
                 val = left - right
             end if
             left = val
@@ -385,28 +386,28 @@ contains
         val = left
     end function
     
-    recursive integer function parse_multiplicative(tokens, num_tokens, pos, macros) result(val)
-        type(token_t), intent(in)   :: tokens(:)
-        integer, intent(in)         :: num_tokens
+    recursive integer function parse_multiplicative(tokens, ntokens, pos, macros) result(val)
+        type(token), intent(in)   :: tokens(:)
+        integer, intent(in)         :: ntokens
         integer, intent(inout)      :: pos
-        type(macro_t), intent(in)   :: macros(:)
+        type(macro), intent(in)   :: macros(:)
         !private
         integer :: left, right
 
-        left = parse_power(tokens, num_tokens, pos, macros)
-        do while (pos <= num_tokens .and. (tokens(pos)%value == '*' .or. tokens(pos)%value == '/' .or. tokens(pos)%value == '%'))
+        left = parse_power(tokens, ntokens, pos, macros)
+        do while (pos <= ntokens .and. (tokens(pos)%value == '*' .or. tokens(pos)%value == '/' .or. tokens(pos)%value == '%'))
             if (verbose) print *, "Parsing ", trim(tokens(pos)%value), " at pos ", pos
             if (tokens(pos)%value == '*') then
                 pos = pos + 1
-                right = parse_power(tokens, num_tokens, pos, macros)
+                right = parse_power(tokens, ntokens, pos, macros)
                 val = left * right
             else if (tokens(pos)%value == '/') then
                 pos = pos + 1
-                right = parse_power(tokens, num_tokens, pos, macros)
+                right = parse_power(tokens, ntokens, pos, macros)
                 val = left / right
             else
                 pos = pos + 1
-                right = parse_power(tokens, num_tokens, pos, macros)
+                right = parse_power(tokens, ntokens, pos, macros)
                 val = modulo(left, right)
             end if
             left = val
@@ -414,62 +415,62 @@ contains
         val = left
     end function
     
-    recursive integer function parse_power(tokens, num_tokens, pos, macros) result(val)
-        type(token_t), intent(in)   :: tokens(:)
-        integer, intent(in)         :: num_tokens
+    recursive integer function parse_power(tokens, ntokens, pos, macros) result(val)
+        type(token), intent(in)   :: tokens(:)
+        integer, intent(in)         :: ntokens
         integer, intent(inout)      :: pos
-        type(macro_t), intent(in)   :: macros(:)
+        type(macro), intent(in)   :: macros(:)
         !private
         integer :: left, right
 
-        left = parse_unary(tokens, num_tokens, pos, macros)
-        do while (pos <= num_tokens .and. (tokens(pos)%value == '**'))
+        left = parse_unary(tokens, ntokens, pos, macros)
+        do while (pos <= ntokens .and. (tokens(pos)%value == '**'))
             if (verbose) print *, "Parsing ", trim(tokens(pos)%value), " at pos ", pos
             pos = pos + 1
-            right = parse_unary(tokens, num_tokens, pos, macros)
+            right = parse_unary(tokens, ntokens, pos, macros)
             val = left ** right
             left = val
         end do
         val = left
     end function
     
-    recursive integer function parse_unary(tokens, num_tokens, pos, macros) result(val)
-        type(token_t), intent(in)   :: tokens(:)
-        integer, intent(in)         :: num_tokens
+    recursive integer function parse_unary(tokens, ntokens, pos, macros) result(val)
+        type(token), intent(in)   :: tokens(:)
+        integer, intent(in)         :: ntokens
         integer, intent(inout)      :: pos
-        type(macro_t), intent(in)   :: macros(:)
+        type(macro), intent(in)   :: macros(:)
 
-        if (pos <= num_tokens .and. tokens(pos)%value == '!') then
+        if (pos <= ntokens .and. tokens(pos)%value == '!') then
             if (verbose) print *, "Parsing ! at pos ", pos
             pos = pos + 1
-            val = merge(0, 1, parse_unary(tokens, num_tokens, pos, macros) /= 0)
-        else if (pos <= num_tokens .and. tokens(pos)%value == '-') then
+            val = merge(0, 1, parse_unary(tokens, ntokens, pos, macros) /= 0)
+        else if (pos <= ntokens .and. tokens(pos)%value == '-') then
             if (verbose) print *, "Parsing - at pos ", pos
             pos = pos + 1
-            val = -parse_unary(tokens, num_tokens, pos, macros)
-        else if (pos <= num_tokens .and. tokens(pos)%value == '+') then
+            val = -parse_unary(tokens, ntokens, pos, macros)
+        else if (pos <= ntokens .and. tokens(pos)%value == '+') then
             if (verbose) print *, "Parsing + at pos ", pos
             pos = pos + 1
-            val = parse_unary(tokens, num_tokens, pos, macros)
-        else if (pos <= num_tokens .and. tokens(pos)%value == '~') then
+            val = parse_unary(tokens, ntokens, pos, macros)
+        else if (pos <= ntokens .and. tokens(pos)%value == '~') then
             if (verbose) print *, "Parsing + at pos ", pos
             pos = pos + 1
-            val = not(parse_unary(tokens, num_tokens, pos, macros))
+            val = not(parse_unary(tokens, ntokens, pos, macros))
         else
-            val = parse_atom(tokens, num_tokens, pos, macros)
+            val = parse_atom(tokens, ntokens, pos, macros)
         end if
     end function
 
-    recursive integer function parse_atom(tokens, num_tokens, pos, macros) result(val)
-        type(token_t), intent(in)   :: tokens(:)
-        integer, intent(in)         :: num_tokens
+    recursive integer function parse_atom(tokens, ntokens, pos, macros) result(val)
+        type(token), intent(in)   :: tokens(:)
+        integer, intent(in)         :: ntokens
         integer, intent(inout)      :: pos
-        type(macro_t), intent(in)   :: macros(:)
+        type(macro), intent(in)   :: macros(:)
         !private
         integer :: i
-        character(MAX_LINE_LEN) :: expanded
+        character(:), allocatable :: expanded
 
-        if (pos > num_tokens) then
+        if (pos > ntokens) then
             if (verbose) print *, "Error: Unexpected end of expression at pos ", pos
             val = 0
             return
@@ -490,8 +491,8 @@ contains
             pos = pos + 1
         else if (tokens(pos)%value == '(') then
             pos = pos + 1
-            val = parse_expression(tokens, num_tokens, pos, macros)
-            if (pos > num_tokens .or. tokens(pos)%value /= ')') then
+            val = parse_expression(tokens, ntokens, pos, macros)
+            if (pos > ntokens .or. tokens(pos)%value /= ')') then
                 if (verbose) print *, "Error: Missing closing parenthesis at pos ", pos
                 val = 0
             else
@@ -510,19 +511,20 @@ contains
         end if
     end function
 
-    subroutine tokenize(expr, tokens, num_tokens)
-        character(len=*), intent(in) :: expr
-        type(token_t), allocatable, intent(out) :: tokens(:)
-        integer, intent(out) :: num_tokens
-        character(len=MAX_LINE_LEN) :: temp
+    subroutine tokenize(expr, tokens, ntokens)
+        character(*), intent(in)                :: expr
+        type(token), allocatable, intent(out) :: tokens(:)
+        integer, intent(out)                    :: ntokens
+        !private
+        character(:), allocatable :: temp
         integer :: i, pos, len_expr
         logical :: in_word
         logical, save :: in_comment
 
         if (allocated(tokens)) deallocate (tokens)
         allocate (tokens(MAX_TOKENS))
-        num_tokens = 0
-        temp = trim(adjustl(expr))
+        ntokens = 0
+        temp = trim(adjustl(expr))//' '
         len_expr = len_trim(temp)
         i = 1
         in_word = .false.
@@ -535,8 +537,8 @@ contains
             end if
             
             if (.not. in_word) then
-                num_tokens = num_tokens + 1
-                if (num_tokens > MAX_TOKENS) then
+                ntokens = ntokens + 1
+                if (ntokens > MAX_TOKENS) then
                     if (verbose) print *, "Error: Too many tokens in expression"
                     return
                 end if
@@ -544,42 +546,42 @@ contains
             end if
 
             if (temp(i:i) == '(' .or. temp(i:i) == ')') then
-                tokens(num_tokens)%value = temp(i:i)
-                tokens(num_tokens)%type = parenthesis
+                tokens(ntokens)%value = temp(i:i)
+                tokens(ntokens)%type = parenthesis
                 i = i + 1
                 in_word = .false.
             else if (temp(i:i + 1) == '&&' .or. temp(i:i + 1) == '||' .or. temp(i:i + 1) == '==' .or. &
                      temp(i:i + 1) == '!=' .or. temp(i:i + 1) == '<=' .or. temp(i:i + 1) == '>=') then
-                tokens(num_tokens)%value = temp(i:i + 1)
-                tokens(num_tokens)%type = operator
+                tokens(ntokens)%value = temp(i:i + 1)
+                tokens(ntokens)%type = operator
                 i = i + 2
                 in_word = .false.
             else if (temp(i:i) == '!') then
-                tokens(num_tokens)%value = temp(i:i)
-                tokens(num_tokens)%type = operator
+                tokens(ntokens)%value = temp(i:i)
+                tokens(ntokens)%type = operator
                 i = i + 1
                 in_word = .false.
             else if (temp(i:i + 1) == '**') then
-                tokens(num_tokens)%value = temp(i:i + 1)
-                tokens(num_tokens)%type = operator
+                tokens(ntokens)%value = temp(i:i + 1)
+                tokens(ntokens)%type = operator
                 i = i + 2
                 in_word = .false.
             else if (temp(i:i + 1) == '<<' .or. temp(i:i + 1) == '>>') then
-                tokens(num_tokens)%value = temp(i:i + 1)
-                tokens(num_tokens)%type = operator
+                tokens(ntokens)%value = temp(i:i + 1)
+                tokens(ntokens)%type = operator
                 i = i + 2
                 in_word = .false.
             else if (temp(i:i) == '<' .or. temp(i:i) == '>' .or. temp(i:i) == '=' .or. &
                      temp(i:i) == '+' .or. temp(i:i) == '-' .or. temp(i:i) == '*' .or. &
                      temp(i:i) == '/' .or. temp(i:i) == '%') then
-                tokens(num_tokens)%value = temp(i:i)
-                tokens(num_tokens)%type = operator
+                tokens(ntokens)%value = temp(i:i)
+                tokens(ntokens)%type = operator
                 i = i + 1
                 in_word = .false.
             else if (temp(i:i) == '&' .or. temp(i:i) == '|' .or. temp(i:i) == '^' .or. &
                      temp(i:i) == '~') then
-                tokens(num_tokens)%value = temp(i:i)
-                tokens(num_tokens)%type = operator
+                tokens(ntokens)%value = temp(i:i)
+                tokens(ntokens)%type = operator
                 i = i + 1
                 in_word = .false.
             else if (starts_with(temp(i:), 'defined')) then
@@ -593,23 +595,23 @@ contains
                     do while (pos <= len_expr .and. temp(pos:pos) /= ')')
                         pos = pos + 1
                     end do
-                    tokens(num_tokens)%value = trim(adjustl(temp(i:pos - 1)))
-                    tokens(num_tokens)%type = defined
+                    tokens(ntokens)%value = trim(adjustl(temp(i:pos - 1)))
+                    tokens(ntokens)%type = defined
                     i = pos + 1
                 else
                     pos = i
                     do while (pos <= len_expr .and. temp(pos:pos) /= ' ')
                         pos = pos + 1
                     end do
-                    tokens(num_tokens)%value = trim(adjustl(temp(i:pos - 1)))
-                    tokens(num_tokens)%type = defined
+                    tokens(ntokens)%value = trim(adjustl(temp(i:pos - 1)))
+                    tokens(ntokens)%type = defined
                     i = pos
                 end if
                 in_word = .false.
             else if (is_typeless(temp(i:), pos)) then
                 pos = i + pos
-                tokens(num_tokens)%value = trim(adjustl(temp(i:pos - 1)))
-                tokens(num_tokens)%type = number
+                tokens(ntokens)%value = trim(adjustl(temp(i:pos - 1)))
+                tokens(ntokens)%type = number
                 i = pos
                 in_word = .false.
             else if (is_digit(temp(i:i))) then
@@ -617,8 +619,8 @@ contains
                 do while (pos <= len_expr .and. is_digit(temp(pos:pos)))
                     pos = pos + 1
                 end do
-                tokens(num_tokens)%value = trim(adjustl(temp(i:pos - 1)))
-                tokens(num_tokens)%type = number
+                tokens(ntokens)%value = trim(adjustl(temp(i:pos - 1)))
+                tokens(ntokens)%type = number
                 i = pos
                 in_word = .false.
             else
@@ -627,15 +629,15 @@ contains
                           temp(pos:pos) /= '(' .and. temp(pos:pos) /= ')')
                     pos = pos + 1
                 end do
-                tokens(num_tokens)%value = trim(temp(i:pos - 1))
-                tokens(num_tokens)%type = identifier
+                tokens(ntokens)%value = trim(temp(i:pos - 1))
+                tokens(ntokens)%type = identifier
                 i = pos
                 in_word = .false.
             end if
         end do
 
         if (verbose) print *, "Tokens for '", trim(expr), "':"
-        do i = 1, num_tokens
+        do i = 1, ntokens
             if (verbose) print *, "  Token ", i, ": ", trim(tokens(i)%value), " (type ", tokens(i)%type, ")"
         end do
     end subroutine
