@@ -95,18 +95,14 @@ module fpx_macro
     
     function expand_all(line, macros, filepath, iline) result(expanded)
         character(*), intent(in)            :: line
-        type(macro), intent(in)           :: macros(:)
+        type(macro), intent(in)             :: macros(:)
         character(*), intent(in)            :: filepath
         integer, intent(in)                 :: iline
         character(:), allocatable :: expanded
         !private
         integer :: pos, start, sep, dot
 
-        if (.not. is_circular(macros)) then
-            expanded = expand_macros(line, macros)
-        else
-            expanded = line
-        end if
+        expanded = expand_macros(line, macros)
         ! Substitute __FILENAME__
         pos = 1
         do while (pos > 0)
@@ -142,276 +138,45 @@ module fpx_macro
             end if
         end do
     end function
-
-    recursive function expand_macros(line, macros) result(expanded)
+    
+    function expand_macros(line, macros) result(expanded)
         character(*), intent(in)    :: line
         type(macro), intent(in)     :: macros(:)
+        character(:), allocatable   :: expanded
         !private
-        character(:), allocatable :: expanded, args_str, temp, va_args, token1, token2, prefix, suffix
-        type(string) :: arg_values(MAX_PARAMS)
-        integer :: c, i, j, k, n, pos, start, paren_level, arg_start, nargs
-        integer :: m_start, m_end, token1_start, token2_stop
-        logical :: isopened, found
-        character :: quote
-        integer, allocatable :: indexes(:)
-
-        expanded = line
-        if (size(macros) == 0) return
-        isopened = .false.
-        if (verbose) print *, "Initial expanded: '", trim(expanded), "'"
-        
-        do i = 1, size(macros)
-            n = len_trim(macros(i))
-            if (n == 0) cycle
-            c = 0
-            do while (c < len_trim(expanded))
-                c = c + 1
-                if (expanded(c:c) == '"' .or. expanded(c:c) == "'") then
-                    if (.not. isopened) then
-                        isopened = .true.
-                        quote = expanded(c:c)
-                    else    
-                        if (expanded(c:c) == quote) isopened = .false.
-                    end if
-                end if
-                if (isopened) cycle
-                if (c + n - 1 > len_trim(expanded)) exit
-                
-                found = .false.
-                if (expanded(c:c + n - 1) == macros(i)) then
-                    found = .true.
-                    if (len_trim(expanded(c:)) > n) then
-                        found = verify(expanded(c + n:c + n), ' ()[]<>&;.,^~!/*-+\="'//"'") == 0
-                    end if
-                end if
-                
-                if (found) then
-                    pos = c
-                    c = c + n - 1
-                    m_start = pos
-                    start = pos + n
-                    if (size(macros(i)%params) > 0 .or. macros(i)%is_variadic) then
-                        if (start <= len(expanded)) then
-                            if (expanded(start:start) == '(') then
-                                paren_level = 1
-                                arg_start = start + 1
-                                nargs = 0
-                                j = arg_start
-                                do while (j <= len(expanded) .and. paren_level > 0)
-                                    if (expanded(j:j) == '(') paren_level = paren_level + 1
-                                    if (expanded(j:j) == ')') paren_level = paren_level - 1
-                                    if (paren_level == 1 .and. expanded(j:j) == ',' .or. paren_level == 0) then
-                                        if (nargs < MAX_PARAMS) then
-                                            nargs = nargs + 1
-                                            arg_values(nargs) = trim(adjustl(expanded(arg_start:j - 1)))
-                                            arg_start = j + 1
-                                        end if
-                                    end if
-                                    j = j + 1
-                                end do
-                                m_end = j - 1
-                                args_str = expanded(start:m_end)
-                                if (verbose) print *, "Expanding macro: ", macros(i), ", args: ", trim(args_str)
-                                temp = trim(macros(i)%value)
-
-                                if (macros(i)%is_variadic) then
-                                    if (nargs < size(macros(i)%params)) then
-                                        if (verbose) print *, "Error: Too few arguments for macro ", macros(i)
-                                        cycle
-                                    end if
-                                    va_args = ''
-                                    do j = size(macros(i)%params) + 1, nargs
-                                        if (j > size(macros(i)%params) + 1) va_args = va_args//', '
-                                        va_args = va_args//arg_values(j)
-                                    end do
-                                    if (verbose) print *, "__VA_ARGS__: '", trim(va_args), "'"
-                                else if (nargs /= size(macros(i)%params)) then
-                                    if (verbose) print *, "Error: Incorrect number of arguments for macro ", macros(i)
-                                    cycle
-                                end if
-
-                                ! Handle concatenation (##) first with immediate substitution
-                                block
-                                    pos = 1
-                                    do while (pos > 0)
-                                        pos = index(temp, '##')
-                                        if (pos > 0) then
-                                            ! Find token1 (before ##)
-                                            k = pos - 1
-                                            if (k <= 0) then
-                                                if (verbose) print *, "Error: No token before ##"
-                                                cycle
-                                            end if
-
-                                            token1 = adjustr(temp(:k))
-                                            prefix = ''
-                                            token1_start = index(token1, ' ')
-                                            if (token1_start > 0) then
-                                                prefix = token1(:token1_start)
-                                                token1 = token1(token1_start + 1:)
-                                            end if
-
-                                            ! Substitute token1 and mark as used
-                                            do j = 1, size(macros(i)%params)
-                                                if (trim(token1) == trim(macros(i)%params(j))) then
-                                                    token1 = arg_values(j)
-                                                    exit
-                                                end if
-                                            end do
-
-                                            ! Find token2 (after ##)
-                                            k = pos + 2
-                                            if (k > len(temp)) then
-                                                if (verbose) print *, "Error: No token after ##"
-                                                cycle
-                                            end if
-
-                                            suffix = ''
-                                            token2 = adjustl(temp(k:))
-                                            token2_stop = index(token2, ' ')
-                                            if (token2_stop > 0) then
-                                                suffix = token2(token2_stop:)
-                                                token2 = token2(:token2_stop - 1)
-                                            end if
-
-                                            ! Substitute token2 and mark as used
-                                            do j = 1, size(macros(i)%params)
-                                                if (trim(token2) == trim(macros(i)%params(j))) then
-                                                    token2 = arg_values(j)
-                                                    exit
-                                                end if
-                                            end do
-
-                                            ! Concatenate, replacing the full 'token1 ## token2' pattern
-                                            temp = trim(prefix//trim(token1)//trim(token2)//suffix)
-                                            if (verbose) print *, "Concatenated '", trim(token1), "' and '", trim(token2), &
-                                                "' to '", trim(token1)//trim(token2), "', temp: '", trim(temp), "'"
-                                        end if
-                                    end do
-                                end block
-
-                                ! Handle stringification (#param)
-                                block
-                                    do j = 1, size(macros(i)%params)
-                                        pos = 1
-                                        do while (pos > 0)
-                                            pos = index(temp, '#'//trim(macros(i)%params(j)))
-                                            if (pos > 0) then
-                                                start = pos + 1 + len_trim(macros(i)%params(j))
-                                                temp = trim(temp(:pos - 1)//'"'//arg_values(j)//'"'//trim(temp(start:)))
-                                                if (verbose) print *, "Stringified param ", j, ": '", macros(i)%params(j), "' to '", &
-                                                    arg_values(j), "', temp: '", trim(temp), "'"
-                                            end if
-                                        end do
-                                    end do
-                                end block
-
-                                ! Substitute regular parameters (only if not used by ## or #)
-                                block
-                                    integer :: c1
-                                    logical :: opened
-
-                                    opened = .false.
-                                    do j = 1, size(macros(i)%params)
-                                        c1 = 0
-                                        do while (c1 < len_trim(temp))
-                                            c1 = c1 + 1
-                                            if (temp(c1:c1) == '"') opened = .not. opened
-                                            if (c1 > 1) then
-                                                if (temp(c1 - 1:c1 - 1) == '#') exit
-                                            end if
-                                            if (opened .or. opened) cycle
-                                            if (c1 + len_trim(macros(i)%params(j)) - 1 > len_trim(temp)) exit
-                                            if (temp(c1:c1 + len_trim(macros(i)%params(j)) - 1) == trim(macros(i)%params(j))) then
-                                                if (len_trim(temp) > 1) then
-                                                    if (c1 == 1) then
-                                                        if (verify(temp(c1 + 1:c1 + 1), ' ()[]<>&;.,!/*-+\="'//"'") /= 0) cycle
-                                                    end if
-                                                    if (c1 > len_trim(temp)) then
-                                                        if (verify(temp(c1 - 1:c1 - 1), ' ()[]<>&;.,!/*-+\="'//"'") /= 0) cycle
-                                                    end if
-                                                    if (len(temp) > c1) then
-                                                        if (verify(temp(c1 - 1:c1 - 1), ' ()[]<>&;.,!/*-+\="'//"'") /= 0 &
-                                                            .and. verify(temp(c1 + 1:c1 + 1), ' ()[]<>$&;.,!/*-+\="'//"'") /= 0) cycle
-                                                    else
-                                                        if (verify(temp(c1 - 1:c1 - 1), ' ()[]<>&;.,!/*-+\="'//"'") /= 0) cycle
-                                                    end if
-                                                end if
-                                                pos = c1
-                                                c1 = c1 + len_trim(macros(i)%params(j)) - 1
-                                                start = pos + len_trim(macros(i)%params(j))
-                                                temp = trim(temp(:pos - 1)//arg_values(j)//trim(temp(start:)))
-                                                if (verbose) print *, "Substituted param ", j, ": '", macros(i)%params(j), "' with '", &
-                                                    arg_values(j), "', temp: '", trim(temp), "'"
-                                            end if
-                                        end do
-                                    end do
-                                end block
-
-                                ! Substitute __VA_ARGS__
-                                block
-                                    if (macros(i)%is_variadic) then
-                                        pos = 1
-                                        do while (pos > 0)
-                                            pos = index(temp, '__VA_ARGS__')
-                                            if (pos > 0) then
-                                                start = pos + len('__VA_ARGS__')
-                                                if (start < len(temp) .and. temp(start:start) == '_' &
-                                                    .and. temp(start + 1:start + 1) == ')') then
-                                                    temp = trim(temp(:pos - 1)//trim(va_args)//')')
-                                                else
-                                                    temp = trim(temp(:pos - 1)//trim(va_args)//trim(temp(start:)))
-                                                end if
-                                                if (verbose) print *, "Substituted __VA_ARGS__ with '", trim(va_args), &
-                                                    "', temp: '", trim(temp), "'"
-                                            end if
-                                        end do
-                                    end if
-                                end block
-
-                                if (verbose) print *, "Before recursive call, temp: '", trim(temp), "'"
-                                temp = expand_macros(temp, macros) ! Only for nested macros
-                                if (verbose) print *, "After recursive call, temp: '", trim(temp), "'"
-                                if (verbose) print *, "Prefix: '", trim(expanded(:m_start - 1)), "'"
-                                if (verbose) print *, "Temp: '", trim(temp), "'"
-                                if (verbose) print *, "Suffix: '", trim(expanded(m_end + 1:)), "'"
-                                expanded = trim(expanded(:m_start - 1)//trim(temp)//expanded(m_end + 1:))
-                                if (verbose) print *, "After substitution, expanded: '", trim(expanded), "'"
-                            end if
-                        end if
-                    else
-                        temp = trim(macros(i)%value)
-                        m_end = start - 1
-                        expanded = trim(expanded(:m_start - 1)//trim(temp)//expanded(m_end + 1:))
-                        expanded = expand_macros(expanded, macros)
-                        if (verbose) print *, "Simple macro expanded: '", trim(expanded), "'"
-                    end if
-                end if
-            end do
-        end do
-    end function
-    
-    logical function is_circular(macros) result(res)
-        type(macro), intent(in) :: macros(:)
-        !private
-        character(:), allocatable :: expanded
-        integer :: i, j, pos, start, paren_level, arg_start, c
-        integer :: m_start
-        logical :: isopened
-        character :: quote
-        integer, allocatable :: indexes(:)
+        integer :: imacro
         type(digraph) :: graph
-
-        res = .false.
-        if (size(macros) == 0) return
-        isopened = .false.
-
+        
+        imacro = 0
         graph = digraph(size(macros))
         
-        do j = 1, size(macros)
-            expanded = macros(j)%value
+        expanded = expand_macros_internal(line, imacro, macros)
+        
+    contains
+    
+        recursive function expand_macros_internal(line, imacro, macros) result(expanded)
+            character(*), intent(in)    :: line
+            integer, intent(in)         :: imacro
+            type(macro), intent(in)     :: macros(:)
+            character(:), allocatable   :: expanded
+            !private
+            character(:), allocatable :: args_str, temp, va_args, token1, token2, prefix, suffix
+            type(string) :: arg_values(MAX_PARAMS)
+            integer :: c, i, j, k, n, pos, start, paren_level, arg_start, nargs
+            integer :: m_start, m_end, token1_start, token2_stop
+            logical :: isopened, found
+            character :: quote
+            integer, allocatable :: indexes(:)
+            logical :: exists
+
+            expanded = line
+            if (size(macros) == 0) return
+            isopened = .false.
+            if (verbose) print *, "Initial expanded: '", trim(expanded), "'"
+        
             do i = 1, size(macros)
-                if (len_trim(macros(i)) == 0) cycle
+                n = len_trim(macros(i))
+                if (n == 0) cycle
                 c = 0
                 do while (c < len_trim(expanded))
                     c = c + 1
@@ -424,8 +189,282 @@ module fpx_macro
                         end if
                     end if
                     if (isopened) cycle
-                    if (c + len_trim(macros(i)) - 1 > len_trim(expanded)) exit
-                    if (expanded(c:c + len_trim(macros(i)) - 1) == macros(i)) then
+                    if (c + n - 1 > len_trim(expanded)) exit
+                
+                    found = .false.
+                    if (expanded(c:c + n - 1) == macros(i)) then
+                        found = .true.
+                        if (len_trim(expanded(c:)) > n) then
+                            found = verify(expanded(c + n:c + n), ' ()[]<>&;.,^~!/*-+\="'//"'") == 0
+                        end if
+                    end if
+
+                    if (found) then
+                        pos = c
+                        c = c + n - 1
+                        m_start = pos
+                        start = pos + n
+                        if (size(macros(i)%params) > 0 .or. macros(i)%is_variadic) then
+                            if (start <= len(expanded)) then
+                                if (expanded(start:start) == '(') then
+                                    paren_level = 1
+                                    arg_start = start + 1
+                                    nargs = 0
+                                    j = arg_start
+                                    do while (j <= len(expanded) .and. paren_level > 0)
+                                        if (expanded(j:j) == '(') paren_level = paren_level + 1
+                                        if (expanded(j:j) == ')') paren_level = paren_level - 1
+                                        if (paren_level == 1 .and. expanded(j:j) == ',' .or. paren_level == 0) then
+                                            if (nargs < MAX_PARAMS) then
+                                                nargs = nargs + 1
+                                                arg_values(nargs) = trim(adjustl(expanded(arg_start:j - 1)))
+                                                arg_start = j + 1
+                                            end if
+                                        end if
+                                        j = j + 1
+                                    end do
+                                    m_end = j - 1
+                                    args_str = expanded(start:m_end)
+                                    if (verbose) print *, "Expanding macro: ", macros(i), ", args: ", trim(args_str)
+                                    temp = trim(macros(i)%value)
+                                    
+                                    if (macros(i)%is_variadic) then
+                                        if (nargs < size(macros(i)%params)) then
+                                            if (verbose) print *, "Error: Too few arguments for macro ", macros(i)
+                                            cycle
+                                        end if
+                                        va_args = ''
+                                        do j = size(macros(i)%params) + 1, nargs
+                                            if (j > size(macros(i)%params) + 1) va_args = va_args//', '
+                                            va_args = va_args//arg_values(j)
+                                        end do
+                                        if (verbose) print *, "__VA_ARGS__: '", trim(va_args), "'"
+                                    else if (nargs /= size(macros(i)%params)) then
+                                        if (verbose) print *, "Error: Incorrect number of arguments for macro ", macros(i)
+                                        cycle
+                                    end if
+
+                                    ! Handle concatenation (##) first with immediate substitution
+                                    block
+                                        pos = 1
+                                        do while (pos > 0)
+                                            pos = index(temp, '##')
+                                            if (pos > 0) then
+                                                ! Find token1 (before ##)
+                                                k = pos - 1
+                                                if (k <= 0) then
+                                                    if (verbose) print *, "Error: No token before ##"
+                                                    cycle
+                                                end if
+
+                                                token1 = adjustr(temp(:k))
+                                                prefix = ''
+                                                token1_start = index(token1, ' ')
+                                                if (token1_start > 0) then
+                                                    prefix = token1(:token1_start)
+                                                    token1 = token1(token1_start + 1:)
+                                                end if
+
+                                                ! Substitute token1 and mark as used
+                                                do j = 1, size(macros(i)%params)
+                                                    if (trim(token1) == trim(macros(i)%params(j))) then
+                                                        token1 = arg_values(j)
+                                                        exit
+                                                    end if
+                                                end do
+
+                                                ! Find token2 (after ##)
+                                                k = pos + 2
+                                                if (k > len(temp)) then
+                                                    if (verbose) print *, "Error: No token after ##"
+                                                    cycle
+                                                end if
+
+                                                suffix = ''
+                                                token2 = adjustl(temp(k:))
+                                                token2_stop = index(token2, ' ')
+                                                if (token2_stop > 0) then
+                                                    suffix = token2(token2_stop:)
+                                                    token2 = token2(:token2_stop - 1)
+                                                end if
+
+                                                ! Substitute token2 and mark as used
+                                                do j = 1, size(macros(i)%params)
+                                                    if (trim(token2) == trim(macros(i)%params(j))) then
+                                                        token2 = arg_values(j)
+                                                        exit
+                                                    end if
+                                                end do
+
+                                                ! Concatenate, replacing the full 'token1 ## token2' pattern
+                                                temp = trim(prefix//trim(token1)//trim(token2)//suffix)
+                                                if (verbose) print *, "Concatenated '", trim(token1), "' and '", trim(token2), &
+                                                    "' to '", trim(token1)//trim(token2), "', temp: '", trim(temp), "'"
+                                            end if
+                                        end do
+                                    end block
+
+                                    ! Handle stringification (#param)
+                                    block
+                                        do j = 1, size(macros(i)%params)
+                                            pos = 1
+                                            do while (pos > 0)
+                                                pos = index(temp, '#'//trim(macros(i)%params(j)))
+                                                if (pos > 0) then
+                                                    start = pos + 1 + len_trim(macros(i)%params(j))
+                                                    temp = trim(temp(:pos - 1)//'"'//arg_values(j)//'"'//trim(temp(start:)))
+                                                    if (verbose) print *, "Stringified param ", j, ": '", macros(i)%params(j), "' to '", &
+                                                        arg_values(j), "', temp: '", trim(temp), "'"
+                                                end if
+                                            end do
+                                        end do
+                                    end block
+
+                                    ! Substitute regular parameters (only if not used by ## or #)
+                                    block
+                                        integer :: c1
+                                        logical :: opened
+
+                                        opened = .false.
+                                        do j = 1, size(macros(i)%params)
+                                            c1 = 0
+                                            do while (c1 < len_trim(temp))
+                                                c1 = c1 + 1
+                                                if (temp(c1:c1) == '"') opened = .not. opened
+                                                if (c1 > 1) then
+                                                    if (temp(c1 - 1:c1 - 1) == '#') exit
+                                                end if
+                                                if (opened .or. opened) cycle
+                                                if (c1 + len_trim(macros(i)%params(j)) - 1 > len_trim(temp)) exit
+                                                if (temp(c1:c1 + len_trim(macros(i)%params(j)) - 1) == trim(macros(i)%params(j))) then
+                                                    if (len_trim(temp) > 1) then
+                                                        if (c1 <= 1) then
+                                                            if (verify(temp(c1 + 1:c1 + 1), ' ()[]<>&;.,!/*-+\="'//"'") /= 0) cycle
+                                                        else
+                                                            if (c1 > len_trim(temp)) then
+                                                                if (verify(temp(c1 - 1:c1 - 1), ' ()[]<>&;.,!/*-+\="'//"'") /= 0) cycle
+                                                            end if
+                                                            if (len(temp) > c1) then
+                                                                if (verify(temp(c1 - 1:c1 - 1), ' ()[]<>&;.,!/*-+\="'//"'") /= 0 &
+                                                                    .and. verify(temp(c1 + 1:c1 + 1), ' ()[]<>$&;.,!/*-+\="'//"'") /= 0) cycle
+                                                            else
+                                                                if (verify(temp(c1 - 1:c1 - 1), ' ()[]<>&;.,!/*-+\="'//"'") /= 0) cycle
+                                                            end if
+                                                        end if
+                                                    end if
+                                                    pos = c1
+                                                    c1 = c1 + len_trim(macros(i)%params(j)) - 1
+                                                    start = pos + len_trim(macros(i)%params(j))
+                                                    temp = trim(temp(:pos - 1)//arg_values(j)//trim(temp(start:)))
+                                                    if (verbose) print *, "Substituted param ", j, ": '", macros(i)%params(j), "' with '", &
+                                                        arg_values(j), "', temp: '", trim(temp), "'"
+                                                end if
+                                            end do
+                                        end do
+                                    end block
+
+                                    ! Substitute __VA_ARGS__
+                                    block
+                                        if (macros(i)%is_variadic) then
+                                            pos = 1
+                                            do while (pos > 0)
+                                                pos = index(temp, '__VA_ARGS__')
+                                                if (pos > 0) then
+                                                    start = pos + len('__VA_ARGS__') - 1
+                                                    if (start < len(temp) .and. temp(start:start) == '_' &
+                                                        .and. temp(start + 1:start + 1) == ')') then
+                                                        temp = trim(temp(:pos - 1)//trim(va_args)//')')
+                                                    else
+                                                        temp = trim(temp(:pos - 1)//trim(va_args)//trim(temp(start:)))
+                                                    end if
+                                                    if (verbose) print *, "Substituted __VA_ARGS__ with '", trim(va_args), &
+                                                        "', temp: '", trim(temp), "'"
+                                                end if
+                                            end do
+                                        end if
+                                    end block
+
+                                    if (verbose) print *, "Before recursive call, temp: '", trim(temp), "'"
+                                    call graph%add_edge(imacro, i)
+                                    if (.not. graph%is_circular(i)) then
+                                        temp = expand_macros_internal(temp, i, macros) ! Only for nested macros
+                                    else 
+                                        if (verbose) print *, "Circular macro detected: '", macros(i), "'"
+                                        cycle
+                                    end if
+                                    if (verbose) print *, "After recursive call, temp: '", trim(temp), "'"
+                                    if (verbose) print *, "Prefix: '", trim(expanded(:m_start - 1)), "'"
+                                    if (verbose) print *, "Temp: '", trim(temp), "'"
+                                    if (verbose) print *, "Suffix: '", trim(expanded(m_end + 1:)), "'"
+                                    expanded = trim(expanded(:m_start - 1)//trim(temp)//expanded(m_end + 1:))
+                                    if (verbose) print *, "After substitution, expanded: '", trim(expanded), "'"
+                                end if
+                            end if
+                        else
+                            temp = trim(macros(i)%value)
+                            m_end = start - 1
+                            call graph%add_edge(imacro, i)
+                            if (.not. graph%is_circular(i)) then
+                                expanded = trim(expanded(:m_start - 1)//trim(temp)//expanded(m_end + 1:))
+                                expanded = expand_macros_internal(expanded, imacro, macros)
+                            else 
+                                if (verbose) print *, "Circular macro detected: '", macros(i), "'"
+                                cycle
+                            end if
+                            if (verbose) print *, "Simple macro expanded: '", trim(expanded), "'"
+                        end if
+                    else
+                        if (verbose) print *, "Error: detected recursion whilst expanding macro '", macros(i), "'" 
+                    end if
+                end do
+            end do
+        end function
+    end function
+    
+    logical function is_circular(macros, idx) result(res)
+        type(macro), intent(in) :: macros(:)
+        integer, intent(in)     :: idx
+        !private
+        character(:), allocatable :: expanded
+        integer :: c, i, j, n
+        logical :: isopened, found
+        character :: quote
+        type(digraph) :: graph
+
+        res = .false.
+        if (size(macros) == 0) return
+        isopened = .false.
+
+        graph = digraph(size(macros))
+        
+        do j = 1, size(macros)
+            expanded = macros(j)%value
+            do i = 1, size(macros)
+                n = len_trim(macros(i))
+                if (n == 0) cycle
+                c = 0
+                do while (c < len_trim(expanded))
+                    c = c + 1
+                    if (expanded(c:c) == '"' .or. expanded(c:c) == "'") then
+                        if (.not. isopened) then
+                            isopened = .true.
+                            quote = expanded(c:c)
+                        else    
+                            if (expanded(c:c) == quote) isopened = .false.
+                        end if
+                    end if
+                    if (isopened) cycle
+                    if (c + n - 1 > len_trim(expanded)) exit
+                    
+                    found = .false.
+                    if (expanded(c:c + n - 1) == macros(i)) then
+                        found = .true.
+                        if (len_trim(expanded(c:)) > n) then
+                            found = verify(expanded(c + n:c + n), ' ()[]<>&;.,^~!/*-+\="'//"'") == 0
+                        end if
+                    end if
+                
+                    if (found) then
                         expanded(c:c + len_trim(macros(i)) - 1) = ' '
                         call graph%add_edge(j, i)
                     end if
@@ -433,7 +472,7 @@ module fpx_macro
             end do
         end do
         
-        res = graph%is_circular(3)
+        res = graph%is_circular(idx)
     end function
 
     logical function is_defined(name, macros, idx) result(res)

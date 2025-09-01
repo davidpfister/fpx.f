@@ -1,5 +1,6 @@
 C:\Users\dev\Documents\GitHub\sandbox\fpx.f\tests\fpx\circular.F90
 C:\Users\dev\Documents\GitHub\sandbox\fpx.f\tests\fpx\circular.F90.out
+C:\Users\dev\Documents\GitHub\sandbox\fpx.f\tests\fpx\circular.ref
 C:\Users\dev\Documents\GitHub\sandbox\fpx.f\tests\fpx\filecontent.txt
 C:\Users\dev\Documents\GitHub\sandbox\fpx.f\tests\fpx\input.in
 C:\Users\dev\Documents\GitHub\sandbox\fpx.f\tests\fpx\input1.in

@@ -28,9 +28,11 @@ contains
         allocate(that%list_sizes(vertices), source=0)
     end function
 
-    subroutine graph_add_edge(this, source, destination)
-        class(digraph), intent(inout) :: this
-        integer, intent(in) :: source, destination
+    subroutine graph_add_edge(this, source, destination, exists)
+        class(digraph), intent(inout)   :: this
+        integer, intent(in)             :: source
+        integer, intent(in)             :: destination
+        logical, intent(out), optional  :: exists
         
         if (source < 1 .or. source > this%vertices .or. &
             destination < 1 .or. destination > this%vertices) then
@@ -39,6 +41,7 @@ contains
         
         this%list_sizes(source) = this%list_sizes(source) + 1
         if (this%list_sizes(source) <= this%vertices) then
+            if (present(exists)) exists = this%adjacency_list(source, this%list_sizes(source)) /= 0
             this%adjacency_list(source, this%list_sizes(source)) = destination
         end if
     end subroutine

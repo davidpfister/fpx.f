@@ -462,10 +462,10 @@ contains
     end function
 
     recursive integer function parse_atom(tokens, ntokens, pos, macros) result(val)
-        type(token), intent(in)   :: tokens(:)
+        type(token), intent(in)     :: tokens(:)
         integer, intent(in)         :: ntokens
         integer, intent(inout)      :: pos
-        type(macro), intent(in)   :: macros(:)
+        type(macro), intent(in)     :: macros(:)
         !private
         integer :: i
         character(:), allocatable :: expanded

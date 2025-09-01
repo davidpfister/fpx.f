@@ -190,9 +190,7 @@ TESTPROGRAM(main)
             else if (index(files(i), '.ref') > 0) then
                 cycle
             else if (index(files(i), '.f90') > 0 .or. & 
-                     index(files(i), '.F90') > 0 .or. &
-                     index(files(i), '.F') > 0 .or.   & 
-                     index(files(i), '.f') > 0) then
+                     index(files(i), '.F90') > 0) then
                 call readruns(trim(files(i)), runs)
                 if (len_trim(runs) > 0) then
                     call preprocess(trim(files(i)), trim(files(i))//'.out')

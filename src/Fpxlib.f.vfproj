@@ -63,10 +63,10 @@
 		<File RelativePath=".\include.f90"/>
 		<File RelativePath=".\logging.f90"/>
 		<File RelativePath=".\macro.f90"/>
+		<File RelativePath=".\os.f90"/>
 		<File RelativePath=".\parser.f90"/>
 		<File RelativePath=".\path.f90"/>
-		<File RelativePath=".\string.f90">
-		</File>
+		<File RelativePath=".\string.f90"/>
 		<File RelativePath=".\token.f90"/>
 	</Files>
 	<Globals/>
