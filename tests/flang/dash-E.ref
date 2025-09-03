@@ -1,12 +1,29 @@
-#line ".\dash-E.F90" 3
-      program Main
+# 1 "dash-E.f90"
+# 1 "<built-in>"
+# 1 "<command-line>"
+# 1 "dash-E.f90"
+! RUN: %flang -E %s 2>&1 | FileCheck --strict-whitespace %s
+!CHECK:       program Main
+program Main
+
+!CHECK:       integer :: j = (1)+( 2)
+  integer :: j = (1)+(2)
+
+!CHECK:1     format('This is a very long output literal edit descriptor for a F&
+!CHECK:     &ORMAT statement, and it will require statement continuation.')
+1 format('This is a very long output literal edit descriptor for a FORMAT statement, and it will require statement continuation.')
 
 
-      integer :: j = (1)+(2)
 
 
 
-1     format('This is a very long output literal edit descriptor for a F&
-     &ORMAT statement, and it will require statement continuation.')
-#line 25
-      end PROGRAM Main
+
+
+
+
+
+
+
+!CHECK: #line 25
+!CHECK:       end PROGRAM Main
+end PROGRAM Main

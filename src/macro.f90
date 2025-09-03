@@ -93,16 +93,17 @@ module fpx_macro
         this%value = value
     end subroutine
     
-    function expand_all(line, macros, filepath, iline) result(expanded)
+    function expand_all(line, macros, filepath, iline, stitch) result(expanded)
         character(*), intent(in)            :: line
         type(macro), intent(in)             :: macros(:)
         character(*), intent(in)            :: filepath
         integer, intent(in)                 :: iline
+        logical, intent(out)                :: stitch
         character(:), allocatable :: expanded
         !private
         integer :: pos, start, sep, dot
 
-        expanded = expand_macros(line, macros)
+        expanded = expand_macros(line, macros, stitch)
         ! Substitute __FILENAME__
         pos = 1
         do while (pos > 0)
@@ -139,19 +140,21 @@ module fpx_macro
         end do
     end function
     
-    function expand_macros(line, macros) result(expanded)
+    function expand_macros(line, macros, stitch) result(expanded)
         character(*), intent(in)    :: line
         type(macro), intent(in)     :: macros(:)
+        logical, intent(out)        :: stitch
         character(:), allocatable   :: expanded
         !private
-        integer :: imacro
+        integer :: imacro, paren_level
         type(digraph) :: graph
         
-        imacro = 0
+        imacro = 0; paren_level = 0
         graph = digraph(size(macros))
         
         expanded = expand_macros_internal(line, imacro, macros)
         
+        stitch = paren_level > 0
     contains
     
         recursive function expand_macros_internal(line, imacro, macros) result(expanded)
@@ -162,7 +165,7 @@ module fpx_macro
             !private
             character(:), allocatable :: args_str, temp, va_args, token1, token2, prefix, suffix
             type(string) :: arg_values(MAX_PARAMS)
-            integer :: c, i, j, k, n, pos, start, paren_level, arg_start, nargs
+            integer :: c, i, j, k, n, pos, start, arg_start, nargs
             integer :: m_start, m_end, token1_start, token2_stop
             logical :: isopened, found
             character :: quote

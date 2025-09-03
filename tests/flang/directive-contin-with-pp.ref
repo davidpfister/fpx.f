@@ -1,21 +1,58 @@
-MODULE m
-CONTAINS
- SUBROUTINE s (x1, x2, x3, x4, x5, x6, x7)
-  !DIR$ IGNORE_TKR x1
-  !DIR$ IGNORE_TKR x2
-  !DIR$ IGNORE_TKR x3
-  !DIR$ IGNORE_TKR x4
-  !DIR$ IGNORE_TKR x5
-  !DIR$ IGNORE_TKR x6
-  STOP 1_4
-!$OMP PARALLEL DO  REDUCTION(+: x)
-  DO j1=1_4,n
-  END DO
-!$OMP PARALLEL DO  REDUCTION(+: x)
-  DO j2=1_4,n
-  END DO
-!$OMP PARALLEL DO  REDUCTION(+: x)
-  DO j3=1_4,n
-  END DO
- END SUBROUTINE
-END MODULE
+# 1 "directive-contin-with-pp.f90"
+# 1 "<built-in>"
+# 1 "<command-line>"
+# 1 "directive-contin-with-pp.f90"
+! RUN: %flang_fc1 -fdebug-unparse -fopenmp %s 2>&1 | FileCheck %s
+
+# 11 "directive-contin-with-pp.f90"
+
+module m
+ contains
+  subroutine s(x1, x2, x3, x4, x5, x6, x7)
+
+!dir$ ignore_tkr x1
+
+!dir$ ignore_tkr x2
+!dir$ ignore_tkr x3
+!dir$ ignore_tkr x4
+!dir$ ignore_tkr x5
+!dir$ ignore_tkr x6
+
+! blah more
+    stop 1
+
+!$omp parallel do reduction(+:x)
+    do j1 = 1, n
+    end do
+
+!$omp parallel do reduction(+:x)
+    do j2 = 1, n
+    end do
+
+!$omp parallel do reduction(+:x)
+    do j3 = 1, n
+    end do
+  end
+end
+
+!CHECK: MODULE m
+!CHECK: CONTAINS
+!CHECK:  SUBROUTINE s (x1, x2, x3, x4, x5, x6, x7)
+!CHECK:   !DIR$ IGNORE_TKR x1
+!CHECK:   !DIR$ IGNORE_TKR x2
+!CHECK:   !DIR$ IGNORE_TKR x3
+!CHECK:   !DIR$ IGNORE_TKR x4
+!CHECK:   !DIR$ IGNORE_TKR x5
+!CHECK:   !DIR$ IGNORE_TKR x6
+!CHECK:   STOP 1_4
+!CHECK: !$OMP PARALLEL DO  REDUCTION(+:x)
+!CHECK:   DO j1=1_4,n
+!CHECK:   END DO
+!CHECK: !$OMP PARALLEL DO  REDUCTION(+:x)
+!CHECK:   DO j2=1_4,n
+!CHECK:   END DO
+!CHECK: !$OMP PARALLEL DO  REDUCTION(+:x)
+!CHECK:   DO j3=1_4,n
+!CHECK:   END DO
+!CHECK:  END SUBROUTINE
+!CHECK: END MODULE

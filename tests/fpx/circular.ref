@@ -5,5 +5,5 @@
 a
 b d FLM(y) e a c
 b d FLM(a) e a c
-b d FLM(b d FLM(y) e a c) e a c
-b d FLM(b d FLM(a) e a c) e a c
+b d FLM(FLM(y)) e a c
+b d FLM(FLM(a)) e a c

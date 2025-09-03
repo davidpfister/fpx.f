@@ -48,7 +48,7 @@ contains
         character(len=1, kind=c_char) :: buf(256)
         integer :: ierr, iline, n, ounit, icontinuation
         logical :: c_continue, f_continue
-        logical :: in_comment, reprocess
+        logical :: in_comment, reprocess, stitch
 
         icontinuation = 1
         reprocess = .false.
@@ -106,7 +106,7 @@ contains
             else
                 c_continue = .false.
 
-                tmp = process_line(continued_line, ounit, filepath, iline, macros)
+                tmp = process_line(continued_line, ounit, filepath, iline, macros, stitch)
                 if (len_trim(tmp) == 0) cycle
                     
                 in_comment = head(tmp) == '!'
@@ -118,12 +118,12 @@ contains
                     f_continue = .not. in_comment .and. tail(tmp) == '&'
                 end if
                 
-                if (f_continue) then
+                if (f_continue .or. stitch) then
                     reprocess = .true.
-                    res = stitch(res, tmp)
+                    res = concat(res, tmp)
                 else
                     if (reprocess) then
-                        res = process_line(stitch(res, tmp), ounit, filepath, iline, macros)
+                        res = process_line(concat(res, tmp), ounit, filepath, iline, macros, stitch)
                         reprocess = .false.
                     else
                         res = trim(tmp)
@@ -143,13 +143,14 @@ contains
         deallocate (macros)
     end subroutine
 
-    recursive function process_line(line, ounit, filename, iline, macros) result(res)
+    recursive function process_line(line, ounit, filename, iline, macros, stitch) result(res)
         character(*), intent(in)                :: line
         integer, intent(in)                     :: ounit
         character(*), intent(in)                :: filename
         integer, intent(in)                     :: iline
         character(:), allocatable               :: res
-        type(macro), allocatable, intent(inout) :: macros(:) 
+        type(macro), allocatable, intent(inout) :: macros(:)
+        logical, intent(out)                    :: stitch
         !private
         character(:), allocatable :: trimmed_line
         logical :: active
@@ -197,7 +198,7 @@ contains
                 call handle_endif(filename, iline)
             end if
         else if (active) then           
-            res = adjustl(expand_all(trimmed_line, macros, filename, iline))
+            res = adjustl(expand_all(trimmed_line, macros, filename, iline, stitch))
             if (verbose) print *, "Writing to output: '", trim(res), "'"
         end if
     end function

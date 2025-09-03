@@ -1,6 +1,17 @@
-#line ".\implicit-contin2.F90" 4
-      print *, 1
-      continue
-      print *, 2
+# 1 "implicit-contin2.F90"
+# 1 "<built-in>"
+# 1 "<command-line>"
+# 1 "implicit-contin2.F90"
+! RUN: %flang -E %s | FileCheck %s
+! Test implicit continuation for possible function-like macro calls
 
-      end
+print *, 1
+continue
+print *, 2 
+
+end
+
+!CHECK:      print *, 1
+!CHECK:      continue
+!CHECK:      print *, 2
+!CHECK:      end

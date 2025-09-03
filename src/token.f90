@@ -469,6 +469,7 @@ contains
         !private
         integer :: i
         character(:), allocatable :: expanded
+        logical :: stitch
 
         if (pos > ntokens) then
             if (verbose) print *, "Error: Unexpected end of expression at pos ", pos
@@ -482,7 +483,7 @@ contains
             pos = pos + 1
         else if (tokens(pos)%type == 2) then
             if (is_defined(tokens(pos)%value, macros)) then
-                expanded = expand_macros(tokens(pos)%value, macros)
+                expanded = expand_macros(tokens(pos)%value, macros, stitch)
                 if (.not. evaluate_expression(expanded, macros, val)) val = 0
                 if (verbose) print *, "Expanded ", trim(tokens(pos)%value), " to ", trim(expanded), ", val = ", val
             else

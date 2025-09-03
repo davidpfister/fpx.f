@@ -10,7 +10,7 @@ module fpx_string
     public :: starts_with,  &
               head,         &
               tail,         &
-              stitch,       &
+              concat,       &
               writechk
         
     !> @class string
@@ -288,7 +288,7 @@ module fpx_string
         res = str(n:n)
     end function
     
-    function stitch(str1, str2) result(res)
+    function concat(str1, str2) result(res)
         character(*), intent(in) :: str1
         character(*), intent(in) :: str2
         character(:), allocatable :: res

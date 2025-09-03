@@ -13,13 +13,14 @@ module fpx_include
     public :: handle_include
 
     interface
-        function read_line(line, ounit, filename, iline, macros) result(res)
+        function read_line(line, ounit, filename, iline, macros, stitch) result(res)
             import macro
             character(*), intent(in)                :: line
             integer, intent(in)                     :: ounit
             character(*), intent(in)                :: filename
             integer, intent(in)                     :: iline
-            type(macro), allocatable, intent(inout) :: macros(:) 
+            type(macro), allocatable, intent(inout) :: macros(:)
+            logical, intent(out)                    :: stitch
             character(:), allocatable   :: res
         end function
     end interface
@@ -38,7 +39,7 @@ contains
         character(MAX_LINE_LEN) :: buffer
         character(:), allocatable :: dir, ifile, res
         integer :: icontinuation, input_unit, ios, pos
-        logical :: in_continuation, exists
+        logical :: in_continuation, exists, stitch
 
         dir = dirpath(parent_file)
         icontinuation = 1
@@ -98,7 +99,7 @@ contains
                 cycle
             else
                 in_continuation = .false.
-                res = process_line(buffer, ounit, include_file, iline, macros)
+                res = process_line(buffer, ounit, include_file, iline, macros, stitch)
                 write (ounit, '(A)') trim(adjustl(res))
             end if
         end do
