@@ -1,11 +1,13 @@
 !The directory containing the first source file.
 !The current working directory where the compilation is taking place (if different from the above directory).
-!Any directory or directories specified using the I option. If multiple directories are specified, they are searched in the order specified on the command line, from left to right.
+!Any directory or directories specified using the I option. If multiple directories are specified, they are searched in the order specified on the command input, from left to right.
 !On Linux* systems, any directories indicated using environment variable CPATH. On Windows* systems, any directories indicated using environment variable INCLUDE.
 module fpx_include
+    use iso_fortran_env, only : iostat_end
     use fpx_constants
     use fpx_logging
     use fpx_path
+    use fpx_string
     use fpx_macro
 
     implicit none; private
@@ -13,38 +15,33 @@ module fpx_include
     public :: handle_include
 
     interface
-        function read_line(line, ounit, filename, iline, macros, stitch) result(res)
+        subroutine read_unit(iunit, ounit, macros, from_include)
             import macro
-            character(*), intent(in)                :: line
+            integer, intent(in)                     :: iunit
             integer, intent(in)                     :: ounit
-            character(*), intent(in)                :: filename
-            integer, intent(in)                     :: iline
             type(macro), allocatable, intent(inout) :: macros(:)
-            logical, intent(out)                    :: stitch
-            character(:), allocatable   :: res
-        end function
+            logical, intent(in)                     :: from_include
+        end subroutine
     end interface
 
 contains
 
-    recursive subroutine handle_include(line, ounit, parent_file, iline, process_line, macros)
-        character(*), intent(in)                :: line
+    recursive subroutine handle_include(input, ounit, parent_file, iline, preprocess, macros)
+        character(*), intent(in)                :: input
         integer, intent(in)                     :: ounit
         character(*), intent(in)                :: parent_file
         integer, intent(in)                     :: iline
-        procedure(read_line)                    :: process_line
-        type(macro), allocatable, intent(inout) :: macros(:) 
+        procedure(read_unit)                    :: preprocess
+        type(macro), allocatable, intent(inout) :: macros(:)
         !private
         character(:), allocatable :: include_file
-        character(MAX_LINE_LEN) :: buffer
-        character(:), allocatable :: dir, ifile, res
-        integer :: icontinuation, input_unit, ios, pos
-        logical :: in_continuation, exists, stitch
+        character(:), allocatable :: dir, ifile
+        integer :: iunit, ierr, pos
+        logical :: exists
 
         dir = dirpath(parent_file)
-        icontinuation = 1
-        pos = index(line,'include') + len('include')
-        include_file = trim(adjustl(line(pos:)))
+        pos = index(input,'include') + len('include')
+        include_file = trim(adjustl(input(pos:)))
         if (include_file(1:1) == '"') then
             include_file = include_file(2:index(include_file(2:), '"'))
         else if (include_file(1:1) == '<') then
@@ -66,44 +63,13 @@ contains
             end if
         end if
 
-        open (newunit=input_unit, file=include_file, status='old', action='read', iostat=ios)
-        if (ios /= 0) then
+        open (newunit=iunit, file=include_file, status='old', action='read', iostat=ierr)
+        if (ierr /= 0) then
             if (verbose) print *, "Error: Cannot open include file '", trim(include_file), "' at ", trim(parent_file), ":", iline
             return
         end if
-
-        in_continuation = .false.
-        buffer = ''
-        do
-            read (input_unit, '(A)', iostat=ios) buffer
-            if (ios /= 0) exit
-            
-            if (in_continuation) then
-                buffer = buffer(:icontinuation)//trim(adjustl(buffer))
-            else
-                buffer = trim(adjustl(buffer))
-            end if
-            
-            if (len_trim(buffer) == 0) cycle
-            
-            if (verify(buffer(len_trim(buffer):len_trim(buffer)), '\') == 0) then
-                if (buffer(len_trim(buffer) - 1:len_trim(buffer)) == '\\') then
-                    in_continuation = .true.
-                    buffer = buffer(:len_trim(buffer) - 2)//new_line('A') ! Strip '\\'
-                    icontinuation = len_trim(buffer)
-                else
-                    in_continuation = .true.
-                    icontinuation = len_trim(buffer) - 1
-                    buffer = buffer(:icontinuation)
-                end if
-                cycle
-            else
-                in_continuation = .false.
-                res = process_line(buffer, ounit, include_file, iline, macros, stitch)
-                write (ounit, '(A)') trim(adjustl(res))
-            end if
-        end do
-
-        close (input_unit)
+        
+        call preprocess(iunit, ounit, macros, .true.)
+        close (iunit)
     end subroutine
 end module

@@ -151,10 +151,11 @@ module fpx_macro
         
         imacro = 0; paren_level = 0
         graph = digraph(size(macros))
+        stitch = .false.
         
         expanded = expand_macros_internal(line, imacro, macros)
         
-        stitch = paren_level > 0
+        stitch = stitch .or. paren_level > 0
     contains
     
         recursive function expand_macros_internal(line, imacro, macros) result(expanded)
@@ -163,7 +164,8 @@ module fpx_macro
             type(macro), intent(in)     :: macros(:)
             character(:), allocatable   :: expanded
             !private
-            character(:), allocatable :: args_str, temp, va_args, token1, token2, prefix, suffix
+            character(:), allocatable :: args_str, temp, va_args
+            character(:), allocatable :: token1, token2, prefix, suffix
             type(string) :: arg_values(MAX_PARAMS)
             integer :: c, i, j, k, n, pos, start, arg_start, nargs
             integer :: m_start, m_end, token1_start, token2_stop
@@ -416,11 +418,12 @@ module fpx_macro
                             end if
                             if (verbose) print *, "Simple macro expanded: '", trim(expanded), "'"
                         end if
-                    else
-                        if (verbose) print *, "Error: detected recursion whilst expanding macro '", macros(i), "'" 
                     end if
                 end do
             end do
+            pos = index(expanded, '&')
+            if (index(expanded, '!') > pos .and. pos > -1) expanded = expanded(:pos+1)
+            stitch = tail(expanded) == '&'
         end function
     end function
     

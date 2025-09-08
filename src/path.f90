@@ -102,7 +102,7 @@ module fpx_path
         !private
         character(:), allocatable :: temp
 
-        call split_path(filepath, temp, res)
+        call split_path(filepath, res, temp)
     end function
     
     pure function dirname(filepath) result(res)
@@ -111,7 +111,7 @@ module fpx_path
         !private
         character(:), allocatable :: temp
 
-        call split_path(filepath, res, temp)
+        call split_path(filepath, temp, res)
     end function
     
     pure subroutine split_path(filepath, head, tail)

@@ -1,5 +1,5 @@
 module fpx_parser
-    use, intrinsic :: iso_fortran_env, only: stdout => output_unit
+    use, intrinsic :: iso_fortran_env, only: stdout => output_unit, iostat_end
     use, intrinsic :: iso_c_binding, only: c_char, c_size_t,c_ptr, c_null_ptr, c_associated
     use fpx_constants
     use fpx_string
@@ -21,37 +21,34 @@ module fpx_parser
         module procedure :: preprocess_unit
     end interface
     
+    character(256) :: filename
+    logical :: c_continue, f_continue
+    logical :: in_comment, reprocess, stitch
+    character(:), allocatable :: res, tmp
+    character(MAX_LINE_LEN) :: line, continued_line
+    integer :: iline, icontinuation
+    
 contains
 
     subroutine preprocess_file(filepath, outputfile)
         character(*), intent(in)            :: filepath
         character(*), intent(in), optional  :: outputfile
         !private
-        integer :: iunit, ierr
+        integer :: iunit, ierr, n, ounit
+        type(macro), allocatable :: macros(:)
+        character(len=1, kind=c_char) :: buf(256)
 
         open (newunit=iunit, file=filepath, status='old', action='read', iostat=ierr)
         if (ierr /= 0) then
             if (verbose) print *, "Error opening input file: ", trim(filepath)
             return
+        else
+            if (c_associated(getcwd_c(buf, size(buf, kind=c_size_t)))) then
+               n = findloc(buf,achar(0),1)
+               filename = filepath(n+1:)
+            end if
         end if
-        call preprocess_unit(iunit, outputfile)
-    end subroutine
 
-    subroutine preprocess_unit(iunit, outputfile)
-        integer, intent(in)                 :: iunit
-        character(*), intent(in), optional  :: outputfile
-        !private
-        type(macro), allocatable :: macros(:)
-        character(MAX_LINE_LEN) :: line, continued_line
-        character(256) :: filepath
-        character(:), allocatable :: res, tmp
-        character(len=1, kind=c_char) :: buf(256)
-        integer :: ierr, iline, n, ounit, icontinuation
-        logical :: c_continue, f_continue
-        logical :: in_comment, reprocess, stitch
-
-        icontinuation = 1
-        reprocess = .false.
         if (present(outputfile)) then
             open (newunit=ounit, file=outputfile, status='replace', action='write', iostat=ierr)
             if (ierr /= 0) then
@@ -62,26 +59,38 @@ contains
         else
             ounit = stdout
         end if
-
-        inquire (unit=iunit, name=filepath)     
-        if (c_associated(getcwd_c(buf, size(buf, kind=c_size_t)))) then
-           n = findloc(buf,achar(0),1)
-           filepath = filepath(n+1:)
-        end if
-
+        
         if (.not. allocated(global%macros)) allocate(global%macros(0))
         allocate (macros(sizeof(global%macros)), source = global%macros)
         cond_depth = 0
         cond_stack(1)%active = .true.
         cond_stack(1)%has_met = .false.
-
-        iline = 0
-        c_continue = .false.; f_continue = .false.
+        
+        reprocess = .false.;  c_continue = .false.; f_continue = .false.
+        icontinuation = 1; iline = 0
         continued_line = ''; res = ''
         
+        call preprocess_unit(iunit, ounit, macros, .false.)
+        close (iunit)
+        if (ounit /= stdout) close (ounit)
+        deallocate (macros)
+    end subroutine
+
+    subroutine preprocess_unit(iunit, ounit, macros, from_include)
+        integer, intent(in)                     :: iunit
+        integer, intent(in)                     :: ounit
+        type(macro), allocatable, intent(inout) :: macros(:)
+        logical, intent(in)                     :: from_include
+        !private
+        integer :: ierr, n
+        
         do
-            read (iunit, '(A)', iostat=ierr) line; if (ierr /= 0) exit
-            iline = iline + 1
+            read (iunit, '(A)', iostat=ierr) line
+            if (ierr /= 0) then
+                if (ierr == iostat_end .and. from_include) f_continue = tail(tmp) == '&'
+                exit
+            end if
+            if (.not. from_include) iline = iline + 1
 
             if (c_continue) then
                 continued_line = continued_line(:icontinuation)//trim(adjustl(line))
@@ -106,7 +115,7 @@ contains
             else
                 c_continue = .false.
 
-                tmp = process_line(continued_line, ounit, filepath, iline, macros, stitch)
+                tmp = process_line(continued_line, ounit, filename, iline, macros, stitch)
                 if (len_trim(tmp) == 0) cycle
                     
                 in_comment = head(tmp) == '!'
@@ -123,7 +132,12 @@ contains
                     res = concat(res, tmp)
                 else
                     if (reprocess) then
-                        res = process_line(concat(res, tmp), ounit, filepath, iline, macros, stitch)
+                        if (.not. in_comment .and. head(res) == '!') then
+                            write (ounit, '(A)') res
+                            res = process_line(tmp, ounit, filename, iline, macros, stitch)
+                        else
+                            res = process_line(concat(res, tmp), ounit, filename, iline, macros, stitch)
+                        end if
                         reprocess = .false.
                     else
                         res = trim(tmp)
@@ -135,12 +149,8 @@ contains
         end do
 
         if (cond_depth > 0) then
-            if (verbose) print *, "Error: Unclosed conditional block at end of file ", trim(filepath)
+            if (verbose) print *, "Error: Unclosed conditional block at end of file ", trim(filename)
         end if
-
-        close (iunit)
-        if (ounit /= stdout) close (ounit)
-        deallocate (macros)
     end subroutine
 
     recursive function process_line(line, ounit, filename, iline, macros, stitch) result(res)
@@ -183,7 +193,7 @@ contains
             else if (starts_with(adjustl(trimmed_line(2:)), 'undef') .and. active) then
                 call handle_undef(trimmed_line, macros)
             else if (starts_with(adjustl(trimmed_line(2:)), 'include') .and. active) then
-                call handle_include(trimmed_line, ounit, filename, iline, process_line, macros)
+                call handle_include(trimmed_line, ounit, filename, iline, preprocess_unit, macros)
             else if (starts_with(adjustl(trimmed_line(2:)), 'ifdef')) then
                 call handle_ifdef(trimmed_line, filename, iline, macros)
             else if (starts_with(adjustl(trimmed_line(2:)), 'ifndef')) then
