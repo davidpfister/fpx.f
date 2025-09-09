@@ -1,8 +1,0 @@
-program preprocessor5
-implicit none
-print *, 1
-print *, 12
-print *, 3
-print *, 6
-print *, 15
-end program

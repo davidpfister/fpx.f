@@ -1,8 +1,0 @@
-! Check that the macros that give the version number are set properly
-!CHECK: flang_major = {{[1-9][0-9]*$}}
-!CHECK: flang_minor = {{[0-9]+$}}
-!CHECK: flang_patchlevel = {{[0-9]+$}}
-!RUN: %flang -E %s | FileCheck  --ignore-case %s
-integer, parameter :: flang_major = 20
-integer, parameter :: flang_minor = 1
-integer, parameter :: flang_patchlevel = 6

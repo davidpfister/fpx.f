@@ -1,6 +1,0 @@
-! RUN: %flang -E -D1=1 -D2=2 %s | FileCheck %s
-! CHECK: integer :: a = 1
-integer :: a = 1
-! CHECK: integer :: b = 2
-integer :: b = 2
-end program

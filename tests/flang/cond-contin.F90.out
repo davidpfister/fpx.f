@@ -1,6 +1,0 @@
-! RUN: %flang_fc1 -E %s 2>&1 | FileCheck %s
-! CHECK: subroutine test(ARG1, FA, FB, ARG2)
-! CHECK: end
-subroutine test(ARG1, FA, FB, ARG2)
-! comment
-end

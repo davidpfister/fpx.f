@@ -1,6 +1,0 @@
-program preprocessor1
-implicit none
-integer :: x, y
-x = (2+3)*5
-print *, x, 12345678
-end program

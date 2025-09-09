@@ -1,3 +1,0 @@
-program preprocessor18
-integer,parameter :: y = 0
-end program
