@@ -302,6 +302,7 @@ module fpx_string
             if (starts_with(str2, '!dir$') .or. starts_with(str2, '!DIR$') .or. &
                 starts_with(str2, '!dec$') .or. starts_with(str2, '!DEC$') .or. &
                 starts_with(str2, '!gcc$') .or. starts_with(str2, '!GCC$') .or. &
+                starts_with(str2, '!acc$') .or. starts_with(str2, '!ACC$') .or. &
                 starts_with(str2, '!$omp') .or. starts_with(str2, '!$OMP')) then
                 n2 = 6
             end if

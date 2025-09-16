@@ -11,14 +11,15 @@ module fpx_define
 
 contains
 
-    subroutine handle_define(line, macros)
+    subroutine handle_define(line, macros, token)
         character(*), intent(in)                    :: line
-        type(macro), allocatable, intent(inout)   :: macros(:)
+        type(macro), allocatable, intent(inout)     :: macros(:)
+        character(*), intent(in)                    :: token
         !private
         character(:), allocatable :: val, name, temp
         integer :: pos, paren_start, paren_end, i, npar, imacro
 
-        pos = index(line, 'define') + len('define')
+        pos = index(line, token) + len(token)
         temp = trim(adjustl(line(pos + 1:)))
         
         paren_start = index(temp, '(')
@@ -127,16 +128,17 @@ contains
         end if
     end subroutine
 
-    subroutine handle_undef(line, macros)
+    subroutine handle_undef(line, macros, token)
         character(*), intent(in)                    :: line
-        type(macro), allocatable, intent(inout)   :: macros(:)
+        type(macro), allocatable, intent(inout)     :: macros(:)
+        character(*), intent(in)                    :: token
         !private
         type(macro), allocatable :: temp_macros(:)
         character(:), allocatable :: name
         integer :: i, n, pos
 
         n = sizeof(macros)
-        pos = index(line, 'undef') + len('undef')
+        pos = index(line, token) + len(token)
         name = trim(adjustl(line(pos:)))
         do i = 1, n
             if (macros(i) == name) then

@@ -202,6 +202,9 @@ module fpx_macro
                         if (len_trim(expanded(c:)) > n) then
                             found = verify(expanded(c + n:c + n), ' ()[]<>&;.,^~!/*-+\="'//"'") == 0
                         end if
+                        if (found .and. c > 1) then
+                            found = verify(expanded(c-1:c-1), ' ()[]<>&;.,^~!/*-+\="'//"'") == 0
+                        end if
                     end if
 
                     if (found) then
@@ -311,15 +314,24 @@ module fpx_macro
 
                                     ! Handle stringification (#param)
                                     block
+                                        integer :: hash
                                         do j = 1, size(macros(i)%params)
                                             pos = 1
                                             do while (pos > 0)
-                                                pos = index(temp, '#'//trim(macros(i)%params(j)))
+                                                pos = index(temp, '#')
+                                                hash = pos
                                                 if (pos > 0) then
-                                                    start = pos + 1 + len_trim(macros(i)%params(j))
-                                                    temp = trim(temp(:pos - 1)//'"'//arg_values(j)//'"'//trim(temp(start:)))
-                                                    if (verbose) print *, "Stringified param ", j, ": '", macros(i)%params(j), "' to '", &
-                                                        arg_values(j), "', temp: '", trim(temp), "'"
+                                                    do while (temp(pos + 1:pos + 1) == ' ')
+                                                        pos = pos + 1
+                                                    end do
+                                                    if (head(temp(pos + 1:)) == trim(macros(i)%params(j))) then
+                                                        start = pos + 1 + len_trim(macros(i)%params(j))
+                                                        temp = trim(temp(:hash - 1)//'"'//arg_values(j)//'"'//trim(temp(start:)))
+                                                        if (verbose) print *, "Stringified param ", j, ": '", macros(i)%params(j), "' to '", &
+                                                            arg_values(j), "', temp: '", trim(temp), "'"
+                                                    else 
+                                                        pos = -1
+                                                    end if
                                                 end if
                                             end do
                                         end do
@@ -422,7 +434,7 @@ module fpx_macro
                 end do
             end do
             pos = index(expanded, '&')
-            if (index(expanded, '!') > pos .and. pos > -1) expanded = expanded(:pos+1)
+            if (index(expanded, '!') > pos .and. pos > 0) expanded = expanded(:pos+1)
             stitch = tail(expanded) == '&'
         end function
     end function
@@ -608,7 +620,7 @@ module fpx_macro
     end subroutine
     
     subroutine clear_item(this)
-        class(macro), intent(inout), allocatable :: this(:)
+        type(macro), intent(inout), allocatable :: this(:)
        
         if (allocated(this)) deallocate(this)
         allocate(this(0))

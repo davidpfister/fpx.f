@@ -6,7 +6,7 @@
       program main
 
       integer :: res
-      res = IFLM (666)
+      res = ((666)+111)
 
       if (res .eq. 777) then
         print *, 'pp111.F90 yes'

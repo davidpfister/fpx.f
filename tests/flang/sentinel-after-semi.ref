@@ -1,4 +1,4 @@
 #line ".\sentinel-after-semi.F90" 5
-      program main
-      integer :: var;
-      end program
+program main
+  integer :: var;   !$acc declare copyin(var)
+end program

@@ -1,5 +1,5 @@
 #line ".\pp131.F90" 6
       program main
       character(6) n
-      n = "foobar"  // "baz"
+      n =  "foobar" // "baz"
       end

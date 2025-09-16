@@ -26,13 +26,14 @@ module fpx_include
 
 contains
 
-    recursive subroutine handle_include(input, ounit, parent_file, iline, preprocess, macros)
+    recursive subroutine handle_include(input, ounit, parent_file, iline, preprocess, macros, token)
         character(*), intent(in)                :: input
         integer, intent(in)                     :: ounit
         character(*), intent(in)                :: parent_file
         integer, intent(in)                     :: iline
         procedure(read_unit)                    :: preprocess
         type(macro), allocatable, intent(inout) :: macros(:)
+        character(*), intent(in)                :: token
         !private
         character(:), allocatable :: include_file
         character(:), allocatable :: dir, ifile
@@ -40,7 +41,7 @@ contains
         logical :: exists
 
         dir = dirpath(parent_file)
-        pos = index(input,'include') + len('include')
+        pos = index(input,token) + len(token)
         include_file = trim(adjustl(input(pos:)))
         if (include_file(1:1) == '"') then
             include_file = include_file(2:index(include_file(2:), '"'))

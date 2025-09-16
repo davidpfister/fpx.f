@@ -6,6 +6,9 @@ C:\Users\dev\Documents\GitHub\sandbox\fpx.f\tests\fpx\input.in
 C:\Users\dev\Documents\GitHub\sandbox\fpx.f\tests\fpx\input1.in
 C:\Users\dev\Documents\GitHub\sandbox\fpx.f\tests\fpx\input2.in
 C:\Users\dev\Documents\GitHub\sandbox\fpx.f\tests\fpx\input3.in
+C:\Users\dev\Documents\GitHub\sandbox\fpx.f\tests\fpx\preprocessed-dirs.F90
+C:\Users\dev\Documents\GitHub\sandbox\fpx.f\tests\fpx\preprocessed-dirs.F90.out
+C:\Users\dev\Documents\GitHub\sandbox\fpx.f\tests\fpx\preprocessed-dirs.ref
 C:\Users\dev\Documents\GitHub\sandbox\fpx.f\tests\fpx\similar-name.F90
 C:\Users\dev\Documents\GitHub\sandbox\fpx.f\tests\fpx\similar-name.F90.out
 C:\Users\dev\Documents\GitHub\sandbox\fpx.f\tests\fpx\similar-name.ref

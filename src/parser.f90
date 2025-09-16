@@ -108,7 +108,7 @@ contains
                     icontinuation = len_trim(continued_line)
                 else
                     c_continue = .true.
-                    icontinuation = len_trim(continued_line) - 1
+                    icontinuation = len_trim(continued_line)-1
                     continued_line = continued_line(:icontinuation)
                 end if
                 cycle
@@ -189,22 +189,40 @@ contains
         if (verbose) print *, "is_active() = ", active, ", cond_depth = ", cond_depth
         if (head(trimmed_line) == '#') then
             if (starts_with(adjustl(trimmed_line(2:)), 'define') .and. active) then
-                call handle_define(trimmed_line, macros)
+                call handle_define(trimmed_line, macros, 'define')
+            else if (starts_with(adjustl(trimmed_line(2:)), 'DEFINE') .and. active) then
+                call handle_define(trimmed_line, macros, 'DEFINE')
             else if (starts_with(adjustl(trimmed_line(2:)), 'undef') .and. active) then
-                call handle_undef(trimmed_line, macros)
+                call handle_undef(trimmed_line, macros, 'undef')
+            else if (starts_with(adjustl(trimmed_line(2:)), 'UNDEF') .and. active) then
+                call handle_undef(trimmed_line, macros, 'UNDEF')
             else if (starts_with(adjustl(trimmed_line(2:)), 'include') .and. active) then
-                call handle_include(trimmed_line, ounit, filename, iline, preprocess_unit, macros)
+                call handle_include(trimmed_line, ounit, filename, iline, preprocess_unit, macros, 'include')
+            else if (starts_with(adjustl(trimmed_line(2:)), 'INCLUDE') .and. active) then
+                call handle_include(trimmed_line, ounit, filename, iline, preprocess_unit, macros, 'INCLUDE')
             else if (starts_with(adjustl(trimmed_line(2:)), 'ifdef')) then
-                call handle_ifdef(trimmed_line, filename, iline, macros)
+                call handle_ifdef(trimmed_line, filename, iline, macros, 'ifdef')
+            else if (starts_with(adjustl(trimmed_line(2:)), 'IFDEF')) then
+                call handle_ifdef(trimmed_line, filename, iline, macros, 'IFDEF')
             else if (starts_with(adjustl(trimmed_line(2:)), 'ifndef')) then
-                call handle_ifndef(trimmed_line, filename, iline, macros)
+                call handle_ifndef(trimmed_line, filename, iline, macros, 'ifndef')
+            else if (starts_with(adjustl(trimmed_line(2:)), 'IFNDEF')) then
+                call handle_ifndef(trimmed_line, filename, iline, macros, 'IFNDEF')
             else if (starts_with(adjustl(trimmed_line(2:)), 'if')) then
-                call handle_if(trimmed_line, filename, iline, macros)
+                call handle_if(trimmed_line, filename, iline, macros, 'if')
+            else if (starts_with(adjustl(trimmed_line(2:)), 'IF')) then
+                call handle_if(trimmed_line, filename, iline, macros, 'IF')
             else if (starts_with(adjustl(trimmed_line(2:)), 'elif')) then
-                call handle_elif(trimmed_line, filename, iline, macros)
+                call handle_elif(trimmed_line, filename, iline, macros, 'elif')
+            else if (starts_with(adjustl(trimmed_line(2:)), 'ELIF')) then
+                call handle_elif(trimmed_line, filename, iline, macros, 'ELIF')
             else if (starts_with(adjustl(trimmed_line(2:)), 'else')) then
                 call handle_else(filename, iline)
+            else if (starts_with(adjustl(trimmed_line(2:)), 'ELSE')) then
+                call handle_else(filename, iline)
             else if (starts_with(adjustl(trimmed_line(2:)), 'endif')) then
+                call handle_endif(filename, iline)
+            else if (starts_with(adjustl(trimmed_line(2:)), 'ENDIF')) then
                 call handle_endif(filename, iline)
             end if
         else if (active) then           

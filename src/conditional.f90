@@ -35,10 +35,11 @@ contains
         end do
     end function
 
-    subroutine handle_if(line, filename, line_num, macros)
+    subroutine handle_if(line, filename, line_num, macros, token)
         character(*), intent(in)    :: line, filename
         integer, intent(in)         :: line_num
-        type(macro), intent(in)   :: macros(:)
+        type(macro), intent(in)     :: macros(:)
+        character(*), intent(in)    :: token
         !private
         character(:), allocatable :: expr
         logical :: result, parent_active
@@ -49,7 +50,7 @@ contains
             return
         end if
 
-        pos = index(line, 'if') + len('if')
+        pos = index(line, token) + len(token)
         expr = trim(adjustl(line(pos:)))
         if (verbose) print *, "Evaluating #if: '", trim(expr), "'"
         result = evaluate_expression(expr, macros)
@@ -60,11 +61,12 @@ contains
         if (verbose) print *, "#if result: ", result, ", cond_depth = ", cond_depth, ", active = ", cond_stack(cond_depth + 1)%active
     end subroutine
 
-    subroutine handle_ifdef(line, filename, line_num, macros)
+    subroutine handle_ifdef(line, filename, line_num, macros, token)
         character(*), intent(in)        :: line
         character(*), intent(in)        :: filename
         integer, intent(in)             :: line_num
-        type(macro), intent(in)       :: macros(:)
+        type(macro), intent(in)         :: macros(:)
+        character(*), intent(in)        :: token
         !private
         character(:), allocatable :: name
         logical :: defined, parent_active
@@ -75,7 +77,7 @@ contains
             return
         end if
 
-        pos = index(line, 'ifdef') + len('ifdef')
+        pos = index(line, token) + len(token)
         name = trim(adjustl(line(pos:)))
         defined = is_defined(name, macros)
         parent_active = is_active()
@@ -84,11 +86,12 @@ contains
         cond_stack(cond_depth + 1)%has_met = defined
     end subroutine
 
-    subroutine handle_ifndef(line, filename, line_num, macros)
+    subroutine handle_ifndef(line, filename, line_num, macros, token)
         character(*), intent(in)        :: line
         character(*), intent(in)        :: filename
         integer, intent(in)             :: line_num
-        type(macro), intent(in)       :: macros(:)
+        type(macro), intent(in)         :: macros(:)
+        character(*), intent(in)        :: token
         !private
         character(:), allocatable :: name
         logical :: defined, parent_active
@@ -99,7 +102,7 @@ contains
             return
         end if
 
-        pos = index(line, 'ifndef') + len('ifndef')
+        pos = index(line, token) + len(token)
         name = trim(adjustl(line(pos:)))
         defined = is_defined(name, macros)
         parent_active = is_active()
@@ -108,10 +111,11 @@ contains
         cond_stack(cond_depth + 1)%has_met = .not. defined
     end subroutine
 
-    subroutine handle_elif(line, filename, line_num, macros)
+    subroutine handle_elif(line, filename, line_num, macros, token)
         character(*), intent(in)    :: line, filename
         integer, intent(in)         :: line_num
-        type(macro), intent(in)   :: macros(:)
+        type(macro), intent(in)     :: macros(:)
+        character(*), intent(in)    :: token
         !private
         character(:), allocatable :: expr
         logical :: result, parent_active
@@ -122,7 +126,7 @@ contains
             return
         end if
 
-        pos = index(line, 'elif') + len('elif')
+        pos = index(line, token) + len(token)
         expr = trim(adjustl(line(pos:)))
         result = evaluate_expression(expr, macros)
         parent_active = cond_depth == 0 .or. cond_stack(cond_depth)%active

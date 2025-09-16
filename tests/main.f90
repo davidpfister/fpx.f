@@ -150,6 +150,7 @@ TESTPROGRAM(main)
                 END_TEST
             end if
         end do
+        call clear(global%macros)
 #ifdef _FPM
         call chdir(join('..','..')
 #else
@@ -216,6 +217,7 @@ TESTPROGRAM(main)
                 end if
             end if
         end do
+        call clear(global%macros)
 #ifdef _FPM
         call chdir(join('..','..')
 #else

@@ -2,7 +2,7 @@
       integer, parameter :: KWM = 666
 
       integer :: res
-      res = KWM 
+      res = 777 
 
       if (res .eq. 777) then
         print *, 'pp108.F90 yes'
