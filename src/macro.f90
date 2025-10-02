@@ -354,7 +354,7 @@ module fpx_macro
                                                 if (opened .or. opened) cycle
                                                 if (c1 + len_trim(macros(i)%params(j)) - 1 > len_trim(temp)) exit
                                                 if (temp(c1:c1 + len_trim(macros(i)%params(j)) - 1) == trim(macros(i)%params(j))) then
-                                                    if (len_trim(temp) > 1) then
+                                                    if (len_trim(temp(c1:)) > 1) then
                                                         if (c1 <= 1) then
                                                             if (verify(temp(c1 + 1:c1 + 1), ' ()[]<>&;.,!/*-+\="'//"'") /= 0) cycle
                                                         else
@@ -363,7 +363,7 @@ module fpx_macro
                                                             end if
                                                             if (len(temp) > c1) then
                                                                 if (verify(temp(c1 - 1:c1 - 1), ' ()[]<>&;.,!/*-+\="'//"'") /= 0 &
-                                                                    .and. verify(temp(c1 + 1:c1 + 1), ' ()[]<>$&;.,!/*-+\="'//"'") /= 0) cycle
+                                                                    .or. verify(temp(c1 + 1:c1 + 1), ' ()[]<>$&;.,!/*-+\="'//"'") /= 0) cycle
                                                             else
                                                                 if (verify(temp(c1 - 1:c1 - 1), ' ()[]<>&;.,!/*-+\="'//"'") /= 0) cycle
                                                             end if
