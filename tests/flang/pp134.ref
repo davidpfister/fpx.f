@@ -12,6 +12,6 @@
 
       print *, AD
 
-      print *, AB
+      print *, AD
 
       end
