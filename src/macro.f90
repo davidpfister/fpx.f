@@ -263,9 +263,6 @@ module fpx_macro
                                             wloop: do while (c1 < len_trim(temp))
                                                 c1 = c1 + 1
                                                 if (temp(c1:c1) == '"') opened = .not. opened
-                                                !if (c1 > 1) then
-                                                !    if (temp(c1 - 1:c1 - 1) == '#') exit wloop
-                                                !end if
                                                 if (opened) cycle wloop
                                                 if (c1 + len_trim(macros(i)%params(j)) - 1 > len(temp)) cycle wloop
                                                 
@@ -278,12 +275,12 @@ module fpx_macro
                                                         if (c1 == 1 .and. cend == l + 1) then
                                                             exit checkbck
                                                         else if (c1 > 1 .and. l == cend - 1) then
-                                                            if (verify(temp(c1 - 1:c1 - 1), ' ()[]<>&;.,!/*-+\="'//"'") /= 0) cycle wloop
+                                                            if (verify(temp(c1 - 1:c1 - 1), ' #()[]<>&;.,!/*-+\="'//"'") /= 0) cycle wloop
                                                         else if (c1 <= 1 .and. cend <= l) then
-                                                            if (verify(temp(cend:cend), ' ()[]<>&;.,!/*-+\="'//"'") /= 0) cycle wloop
+                                                            if (verify(temp(cend:cend), ' #()[]<>&;.,!/*-+\="'//"'") /= 0) cycle wloop
                                                         else  
-                                                            if (verify(temp(c1 - 1:c1 - 1), ' ()[]<>&;.,!/*-+\="'//"'") /= 0 &
-                                                                .or. verify(temp(cend:cend), ' ()[]<>$&;.,!/*-+\="'//"'") /= 0) cycle wloop
+                                                            if (verify(temp(c1 - 1:c1 - 1), ' #()[]<>&;.,!/*-+\="'//"'") /= 0 &
+                                                                .or. verify(temp(cend:cend), ' #()[]<>$&;.,!/*-+\="'//"'") /= 0) cycle wloop
                                                         end if
                                                     end block checkbck
                                                     pos = c1
@@ -353,26 +350,30 @@ module fpx_macro
                                                     do while (temp(pos + 1:pos + 1) == ' ')
                                                         pos = pos + 1
                                                         if (pos == len(temp)) then
-                                                            temp = trim(temp(:hash - 1))
+                                                            temp = temp(:hash - 1)
                                                             exit sbck
                                                         end if
                                                     end do
                                                 else
-                                                    temp = trim(temp(:hash - 1))
+                                                    temp = temp(:hash - 1)
                                                 end if
                                                 start = pos + 1
                                                 if (start < len(temp)) then
-                                                    do while (verify(temp(start + 1:start + 1), ' ()[]<>&;.,!/*-+\="'//"'") /= 0)
+                                                    do while (verify(temp(start + 1:start + 1), ' ()[]<>&;,!/*-+\="'//"'") /= 0)
                                                         start = start + 1
                                                         if (start == len(temp)) then
-                                                            temp = trim(temp(:hash - 1))//'"'//trim(temp(pos + 1:))//'"'
+                                                            temp = temp(:hash - 1)//'"'//temp(pos + 1:)//'"'
                                                             exit sbck
                                                         end if
                                                     end do
                                                 else
-                                                    temp = trim(temp(:hash - 1))//'"'//trim(temp(pos + 1:))//'"'
+                                                    temp = temp(:hash - 1)//'"'//trim(temp(pos + 1:))//'"'
                                                 end if
-                                                temp = trim(temp(:hash - 1))//'"'//trim(temp(pos + 1:start-1))//'"'//trim(temp(start:))
+                                                if (start + 1 <= len(temp)) then
+                                                    temp = temp(:hash - 1)//'"'//trim(temp(pos + 1:start))//'"'//temp(start+1:)
+                                                else
+                                                    temp = temp(:hash - 1)//'"'//trim(temp(pos + 1:start))//'"'
+                                                end if
                                             end if
                                         end do
                                     end block sbck
@@ -672,12 +673,15 @@ module fpx_macro
 
         if (.not. allocated(this)) allocate(this(0))
         n = size(this)
-        do j = i, n - 1
-            this(j) = this(j + 1)
-        end do
-        
-        allocate (tmp(n - 1), source = this(1:n - 1))
-        call move_alloc(tmp, this)
-        deallocate(tmp)
+       if (allocated(this(i)%params)) deallocate (this(i)%params)
+        if (n > 1) then
+            this(i:n - 1) = this(i + 1:n)
+            allocate (tmp(n - 1))
+            tmp = this(:n - 1)
+            deallocate (this)
+            call move_alloc(tmp, this)
+        else
+            deallocate (this); allocate (this(0))
+        end if
     end subroutine
 end module
