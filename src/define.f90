@@ -143,16 +143,7 @@ contains
         do i = 1, n
             if (macros(i) == name) then
                 if (verbose) print *, "Undefining macro: ", name
-                if (allocated(macros(i)%params)) deallocate (macros(i)%params)
-                if (n > 1) then
-                    macros(i:n - 1) = macros(i + 1:n)
-                    allocate (temp_macros(n - 1))
-                    temp_macros = macros(:n - 1)
-                    deallocate (macros)
-                    call move_alloc(temp_macros, macros)
-                else
-                    deallocate (macros); allocate (macros(0))
-                end if
+                call remove(macros, i)
                 exit
             end if
         end do
