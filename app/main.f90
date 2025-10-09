@@ -41,11 +41,6 @@ console(main)
                     if (len(args(i)%chars) > 2) then
                         global%includedir = [global%includedir, string(args(i)%chars(3:))]
                     end if
-                case ('Y')
-                    if (.not. allocated(global%includedir)) allocate(global%includedir(0))
-                    if (len(args(i)%chars) > 2) then
-                        global%includedir = [global%includedir, string(args(i)%chars(3:))]
-                    end if
                 case ('v')
                     write(*, '(*(A,/))') 'fpx version '//version,     &
                                          'Copyright (C) 2025 davidpfister', &
@@ -62,7 +57,6 @@ console(main)
                                          '-D                ', & 
                                          '-U                ', &
                                          '-I                ', & 
-                                         '-Y                ', &
                                          '-h, -?            ', &
                                          '-o                Output file path with name and extension.', &
                                          '-v                Display the version of the program.'

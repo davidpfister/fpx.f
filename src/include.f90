@@ -9,6 +9,7 @@ module fpx_include
     use fpx_path
     use fpx_string
     use fpx_macro
+    use fpx_global
 
     implicit none; private
 
@@ -37,7 +38,7 @@ contains
         !private
         character(:), allocatable :: include_file
         character(:), allocatable :: dir, ifile
-        integer :: iunit, ierr, pos
+        integer :: i, iunit, ierr, pos
         logical :: exists
 
         dir = dirpath(parent_file)
@@ -49,21 +50,40 @@ contains
             include_file = include_file(2:index(include_file(2:), '>'))
         end if
         
-        ifile = join(dir, include_file)
-        inquire(file=ifile, exist=exists)
-        if (exists) then
-            include_file = ifile
-        else
-            ifile = join(cwd(), include_file)
-            inquire(file=ifile, exist=exists)
+        if (is_rooted(include_file)) then
             if (exists) then
                 include_file = ifile
             else
                 if (verbose) print *, "Error: Cannot find include file '", trim(include_file), "' at ", trim(parent_file), ":", iline
                 return
             end if
+        else
+            ifile = join(dir, include_file)
+            inquire(file=ifile, exist=exists)
+            if (exists) then
+                include_file = ifile
+            else
+                do i = 1, size(global%includedir)
+                    ifile = join(global%includedir(i), include_file)
+                    inquire(file=ifile, exist=exists)
+                    if (exists) then
+                        include_file = ifile
+                        exit
+                    end if
+                end do
+            
+                if (.not. exists) then
+                    ifile = join(cwd(), include_file)
+                    inquire(file=ifile, exist=exists)
+                    if (exists) then
+                        include_file = ifile
+                    else
+                        if (verbose) print *, "Error: Cannot find include file '", trim(include_file), "' at ", trim(parent_file), ":", iline
+                        return
+                    end if
+                end if
+            end if
         end if
-
         open (newunit=iunit, file=include_file, status='old', action='read', iostat=ierr)
         if (ierr /= 0) then
             if (verbose) print *, "Error: Cannot open include file '", trim(include_file), "' at ", trim(parent_file), ":", iline
