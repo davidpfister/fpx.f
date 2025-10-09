@@ -251,6 +251,48 @@ module fpx_macro
                                         if (verbose) print *, "Error: Incorrect number of arguments for macro ", macros(i)
                                         cycle
                                     end if
+                                    
+                                    ! Substitute regular parameters (only if not used by ## or #)
+                                    argbck :block
+                                        integer :: c1
+                                        logical :: opened
+
+                                        opened = .false.
+                                        jloop: do j = 1, size(macros(i)%params)
+                                            c1 = 0
+                                            wloop: do while (c1 < len_trim(temp))
+                                                c1 = c1 + 1
+                                                if (temp(c1:c1) == '"') opened = .not. opened
+                                                if (opened) cycle wloop
+                                                if (c1 + len_trim(macros(i)%params(j)) - 1 > len(temp)) cycle wloop
+                                                
+                                                if (temp(c1:c1 + len_trim(macros(i)%params(j)) - 1) == trim(macros(i)%params(j))) then
+                                                    checkbck:block
+                                                        integer :: cend, l
+                                                        
+                                                        cend = c1 + len_trim(macros(i)%params(j))
+                                                        l = len(temp)
+                                                        if (c1 == 1 .and. cend == l + 1) then
+                                                            exit checkbck
+                                                        else if (c1 > 1 .and. l == cend - 1) then
+                                                            if (verify(temp(c1 - 1:c1 - 1), ' #()[]<>&;.,!/*-+\="'//"'") /= 0) cycle wloop
+                                                        else if (c1 <= 1 .and. cend <= l) then
+                                                            if (verify(temp(cend:cend), ' #()[]<>&;.,!/*-+\="'//"'") /= 0) cycle wloop
+                                                        else  
+                                                            if (verify(temp(c1 - 1:c1 - 1), ' #()[]<>&;.,!/*-+\="'//"'") /= 0 &
+                                                                .or. verify(temp(cend:cend), ' #()[]<>$&;.,!/*-+\="'//"'") /= 0) cycle wloop
+                                                        end if
+                                                    end block checkbck
+                                                    pos = c1
+                                                    c1 = c1 + len_trim(macros(i)%params(j)) - 1
+                                                    start = pos + len_trim(macros(i)%params(j))
+                                                    temp = trim(temp(:pos - 1)//arg_values(j)//trim(temp(start:)))
+                                                    if (verbose) print *, "Substituted param ", j, ": '", macros(i)%params(j), "' with '", &
+                                                        arg_values(j), "', temp: '", trim(temp), "'"
+                                                end if
+                                            end do wloop
+                                        end do jloop
+                                    end block argbck
 
                                     ! Handle concatenation (##) first with immediate substitution
                                     block
@@ -273,14 +315,6 @@ module fpx_macro
                                                     token1 = token1(token1_start + 1:)
                                                 end if
 
-                                                ! Substitute token1 and mark as used
-                                                do j = 1, size(macros(i)%params)
-                                                    if (trim(token1) == trim(macros(i)%params(j))) then
-                                                        token1 = arg_values(j)
-                                                        exit
-                                                    end if
-                                                end do
-
                                                 ! Find token2 (after ##)
                                                 k = pos + 2
                                                 if (k > len(temp)) then
@@ -296,14 +330,6 @@ module fpx_macro
                                                     token2 = token2(:token2_stop - 1)
                                                 end if
 
-                                                ! Substitute token2 and mark as used
-                                                do j = 1, size(macros(i)%params)
-                                                    if (trim(token2) == trim(macros(i)%params(j))) then
-                                                        token2 = arg_values(j)
-                                                        exit
-                                                    end if
-                                                end do
-
                                                 ! Concatenate, replacing the full 'token1 ## token2' pattern
                                                 temp = trim(prefix//trim(token1)//trim(token2)//suffix)
                                                 if (verbose) print *, "Concatenated '", trim(token1), "' and '", trim(token2), &
@@ -313,72 +339,44 @@ module fpx_macro
                                     end block
 
                                     ! Handle stringification (#param)
-                                    block
+                                    sbck: block
                                         integer :: hash
-                                        do j = 1, size(macros(i)%params)
-                                            pos = 1
-                                            do while (pos > 0)
-                                                pos = index(temp, '#')
-                                                hash = pos
-                                                if (pos > 0) then
+                                        pos = 1
+                                        do while (pos > 0)
+                                            pos = index(temp, '#')
+                                            hash = pos
+                                            if (pos > 0) then
+                                                if (pos < len(temp)) then
                                                     do while (temp(pos + 1:pos + 1) == ' ')
                                                         pos = pos + 1
-                                                    end do
-                                                    if (head(temp(pos + 1:)) == trim(macros(i)%params(j))) then
-                                                        start = pos + 1 + len_trim(macros(i)%params(j))
-                                                        temp = trim(temp(:hash - 1)//'"'//arg_values(j)//'"'//trim(temp(start:)))
-                                                        if (verbose) print *, "Stringified param ", j, ": '", macros(i)%params(j), "' to '", &
-                                                            arg_values(j), "', temp: '", trim(temp), "'"
-                                                    else 
-                                                        pos = -1
-                                                    end if
-                                                end if
-                                            end do
-                                        end do
-                                    end block
-
-                                    ! Substitute regular parameters (only if not used by ## or #)
-                                    block
-                                        integer :: c1
-                                        logical :: opened
-
-                                        opened = .false.
-                                        do j = 1, size(macros(i)%params)
-                                            c1 = 0
-                                            do while (c1 < len_trim(temp))
-                                                c1 = c1 + 1
-                                                if (temp(c1:c1) == '"') opened = .not. opened
-                                                if (c1 > 1) then
-                                                    if (temp(c1 - 1:c1 - 1) == '#') exit
-                                                end if
-                                                if (opened .or. opened) cycle
-                                                if (c1 + len_trim(macros(i)%params(j)) - 1 > len_trim(temp)) exit
-                                                if (temp(c1:c1 + len_trim(macros(i)%params(j)) - 1) == trim(macros(i)%params(j))) then
-                                                    if (len_trim(temp(c1:)) > 1) then
-                                                        if (c1 <= 1) then
-                                                            if (verify(temp(c1 + 1:c1 + 1), ' ()[]<>&;.,!/*-+\="'//"'") /= 0) cycle
-                                                        else
-                                                            if (c1 > len_trim(temp)) then
-                                                                if (verify(temp(c1 - 1:c1 - 1), ' ()[]<>&;.,!/*-+\="'//"'") /= 0) cycle
-                                                            end if
-                                                            if (len(temp) > c1) then
-                                                                if (verify(temp(c1 - 1:c1 - 1), ' ()[]<>&;.,!/*-+\="'//"'") /= 0 &
-                                                                    .or. verify(temp(c1 + 1:c1 + 1), ' ()[]<>$&;.,!/*-+\="'//"'") /= 0) cycle
-                                                            else
-                                                                if (verify(temp(c1 - 1:c1 - 1), ' ()[]<>&;.,!/*-+\="'//"'") /= 0) cycle
-                                                            end if
+                                                        if (pos == len(temp)) then
+                                                            temp = temp(:hash - 1)
+                                                            exit sbck
                                                         end if
-                                                    end if
-                                                    pos = c1
-                                                    c1 = c1 + len_trim(macros(i)%params(j)) - 1
-                                                    start = pos + len_trim(macros(i)%params(j))
-                                                    temp = trim(temp(:pos - 1)//arg_values(j)//trim(temp(start:)))
-                                                    if (verbose) print *, "Substituted param ", j, ": '", macros(i)%params(j), "' with '", &
-                                                        arg_values(j), "', temp: '", trim(temp), "'"
+                                                    end do
+                                                else
+                                                    temp = temp(:hash - 1)
                                                 end if
-                                            end do
+                                                start = pos + 1
+                                                if (start < len(temp)) then
+                                                    do while (verify(temp(start + 1:start + 1), ' ()[]<>&;,!/*-+\="'//"'") /= 0)
+                                                        start = start + 1
+                                                        if (start == len(temp)) then
+                                                            temp = temp(:hash - 1)//'"'//temp(pos + 1:)//'"'
+                                                            exit sbck
+                                                        end if
+                                                    end do
+                                                else
+                                                    temp = temp(:hash - 1)//'"'//trim(temp(pos + 1:))//'"'
+                                                end if
+                                                if (start + 1 <= len(temp)) then
+                                                    temp = temp(:hash - 1)//'"'//trim(temp(pos + 1:start))//'"'//temp(start+1:)
+                                                else
+                                                    temp = temp(:hash - 1)//'"'//trim(temp(pos + 1:start))//'"'
+                                                end if
+                                            end if
                                         end do
-                                    end block
+                                    end block sbck
 
                                     ! Substitute __VA_ARGS__
                                     block
@@ -675,12 +673,15 @@ module fpx_macro
 
         if (.not. allocated(this)) allocate(this(0))
         n = size(this)
-        do j = i, n - 1
-            this(j) = this(j + 1)
-        end do
-        
-        allocate (tmp(n - 1), source = this(1:n - 1))
-        call move_alloc(tmp, this)
-        deallocate(tmp)
+       if (allocated(this(i)%params)) deallocate (this(i)%params)
+        if (n > 1) then
+            this(i:n - 1) = this(i + 1:n)
+            allocate (tmp(n - 1))
+            tmp = this(:n - 1)
+            deallocate (this)
+            call move_alloc(tmp, this)
+        else
+            deallocate (this); allocate (this(0))
+        end if
     end subroutine
 end module

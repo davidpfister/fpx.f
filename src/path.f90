@@ -1,5 +1,6 @@
 module fpx_path
     use, intrinsic :: iso_c_binding
+    use fpx_string
     
     implicit none
     
@@ -31,7 +32,14 @@ module fpx_path
         import
             character(kind=c_char) :: path(*)
         end function
-  end interface
+    end interface
+    
+    interface join 
+        module procedure :: join_character_character
+        module procedure :: join_string_character
+        module procedure :: join_character_string
+        module procedure :: join_string_string
+    end interface
     
     contains
     
@@ -83,7 +91,7 @@ module fpx_path
         end if
     end function
     
-    pure function join(path1, path2) result(res)
+    pure function join_character_character(path1, path2) result(res)
         character(*), intent(in) :: path1
         character(*), intent(in) :: path2
         character(:), allocatable :: res
@@ -94,6 +102,45 @@ module fpx_path
         if (temp(len(temp):len(temp))==separator) temp = trim(temp(:len(temp)-1))
         
         res = temp // separator // trim(adjustl(path2))
+    end function
+    
+    pure function join_character_string(path1, path2) result(res)
+        character(*), intent(in) :: path1
+        type(string), intent(in) :: path2
+        character(:), allocatable :: res
+        !private
+        character(:), allocatable :: temp
+        
+        temp = trim(adjustl(path1))
+        if (temp(len(temp):len(temp))==separator) temp = trim(temp(:len(temp)-1))
+        
+        res = temp // separator // trim(adjustl(path2%chars))
+    end function
+    
+    pure function join_string_character(path1, path2) result(res)
+        type(string), intent(in) :: path1
+        character(*), intent(in) :: path2
+        character(:), allocatable :: res
+        !private
+        character(:), allocatable :: temp
+        
+        temp = trim(adjustl(path1%chars))
+        if (temp(len(temp):len(temp))==separator) temp = trim(temp(:len(temp)-1))
+        
+        res = temp // separator // trim(adjustl(path2))
+    end function
+    
+    pure function join_string_string(path1, path2) result(res)
+        type(string), intent(in) :: path1
+        type(string), intent(in) :: path2
+        character(:), allocatable :: res
+        !private
+        character(:), allocatable :: temp
+        
+        temp = trim(adjustl(path1%chars))
+        if (temp(len(temp):len(temp))==separator) temp = trim(temp(:len(temp)-1))
+        
+        res = temp // separator // trim(adjustl(path2%chars))
     end function
     
     pure function dirpath(filepath) result(res)

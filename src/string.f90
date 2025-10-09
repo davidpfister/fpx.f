@@ -5,7 +5,8 @@ module fpx_string
     public :: len,          &
               len_trim,     &
               trim,         &
-              operator(//)
+              operator(//), &
+              operator(.contains.)
     
     public :: starts_with,  &
               head,         &
@@ -72,6 +73,13 @@ module fpx_string
         module procedure :: string_concat_string
         module procedure :: string_concat_character
         module procedure :: character_concat_string
+    end interface
+    
+    interface operator(.contains.)
+        module procedure :: strings_contain_string
+        module procedure :: strings_contain_character
+        module procedure :: characters_contain_string
+        module procedure :: characters_contain_character
     end interface
     
     contains
@@ -336,4 +344,64 @@ module fpx_string
         end if
         write (unit, '(A)') str(n*CHKSIZE+1:)
     end subroutine
+    
+    logical function strings_contain_string(lhs, rhs) result(res)
+        type(string), intent(in)    :: lhs(:)
+        type(string), intent(in)    :: rhs
+        !private
+        integer :: i
+        
+        res = .false.
+        do i = 1, size(lhs)
+            if (lhs(i) == rhs) then
+                res = .true.
+                exit
+            end if
+        end do
+    end function
+    
+    logical function strings_contain_character(lhs, rhs) result(res)
+        type(string), intent(in)    :: lhs(:)
+        character(*), intent(in)    :: rhs
+        !private
+        integer :: i
+        
+        res = .false.
+        do i = 1, size(lhs)
+            if (lhs(i) == rhs) then
+                res = .true.
+                exit
+            end if
+        end do
+    end function
+    
+    logical function characters_contain_character(lhs, rhs) result(res)
+        character(*), intent(in)    :: lhs(:)
+        character(*), intent(in)    :: rhs
+        !private
+        integer :: i
+        
+        res = .false.
+        do i = 1, size(lhs)
+            if (lhs(i) == rhs) then
+                res = .true.
+                exit
+            end if
+        end do
+    end function
+    
+    logical function characters_contain_string(lhs, rhs) result(res)
+        character(*), intent(in)    :: lhs(:)
+        type(string), intent(in)    :: rhs
+        !private
+        integer :: i
+        
+        res = .false.
+        do i = 1, size(lhs)
+            if (lhs(i) == rhs) then
+                res = .true.
+                exit
+            end if
+        end do
+    end function
 end module

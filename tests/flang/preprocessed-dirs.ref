@@ -1,2 +1,2 @@
 #line ".\preprocessed-dirs.F90" 8
-      subroutine r4(x) Z real :: x Z !$acc routine Z print *, x Z end
+      subroutine r4(x) Z real :: x Z !$acc routine Z print *, x Z end subroutine r4

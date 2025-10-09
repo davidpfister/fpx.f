@@ -17,6 +17,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "app", "app", "{F0496E47-15BF-4BDB-AD77-1B6A775FF33B}"
 EndProject
 Project("{6989167D-11E4-40FE-8C1A-2192A86A7E90}") = "Fpx", "app\Fpx.vfproj", "{DEB535FF-E609-49F5-83D0-575DBD45523E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{AA3CCEFA-E58B-402E-889C-694760AA01FC} = {AA3CCEFA-E58B-402E-889C-694760AA01FC}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

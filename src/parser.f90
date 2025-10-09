@@ -1,5 +1,5 @@
 module fpx_parser
-    use, intrinsic :: iso_fortran_env, only: stdout => output_unit, iostat_end
+    use, intrinsic :: iso_fortran_env, only: stdout => output_unit, iostat_end, stdin => input_unit
     use, intrinsic :: iso_c_binding, only: c_char, c_size_t,c_ptr, c_null_ptr, c_associated
     use fpx_constants
     use fpx_string
@@ -18,7 +18,9 @@ module fpx_parser
 
     interface preprocess
         module procedure :: preprocess_file
-        module procedure :: preprocess_unit
+        module procedure :: preprocess_file_to_unit
+        module procedure :: preprocess_unit_to_file
+        module procedure :: preprocess_unit_to_unit
     end interface
     
     character(256) :: filename
@@ -35,7 +37,6 @@ contains
         character(*), intent(in), optional  :: outputfile
         !private
         integer :: iunit, ierr, n, ounit
-        type(macro), allocatable :: macros(:)
         character(len=1, kind=c_char) :: buf(256)
 
         open (newunit=iunit, file=filepath, status='old', action='read', iostat=ierr)
@@ -60,6 +61,62 @@ contains
             ounit = stdout
         end if
         
+        call preprocess(iunit, ounit)
+        if (iunit /= stdin) close (iunit)
+        if (ounit /= stdout) close (ounit)
+    end subroutine
+    
+    subroutine preprocess_unit_to_file(iunit, ofile)
+        integer, intent(in)         :: iunit
+        character(*), intent(in)    :: ofile
+        !private
+        integer :: ierr, ounit
+
+        if (iunit /= stdin) then
+            inquire(unit = iunit, name = filename)
+        end if
+ 
+        open (newunit=ounit, file=ofile, status='replace', action='write', iostat=ierr)
+        if (ierr /= 0) then
+            if (verbose) print *, "Error opening output file: ", trim(ofile)
+            close (iunit)
+            return
+        end if
+        
+        call preprocess(iunit, ounit)
+        if (iunit /= stdin) close (iunit)
+        if (ounit /= stdout) close (ounit)
+    end subroutine
+    
+    subroutine preprocess_file_to_unit(ifile, ounit)
+        character(*), intent(in)    :: ifile
+        integer, intent(in)         :: ounit
+        !private
+        integer :: iunit, ierr, n
+        character(len=1, kind=c_char) :: buf(256)
+
+        open (newunit=iunit, file=ifile, status='old', action='read', iostat=ierr)
+        if (ierr /= 0) then
+            if (verbose) print *, "Error opening input file: ", trim(ifile)
+            return
+        else
+            if (c_associated(getcwd_c(buf, size(buf, kind=c_size_t)))) then
+               n = findloc(buf,achar(0),1)
+               filename = ifile(n+1:)
+            end if
+        end if
+        
+        call preprocess(iunit, ounit)
+        if (iunit /= stdin) close (iunit)
+        if (ounit /= stdout) close (ounit)
+    end subroutine
+    
+    subroutine preprocess_unit_to_unit(iunit, ounit)
+        integer, intent(in) :: iunit
+        integer, intent(in) :: ounit
+        !private
+        type(macro), allocatable :: macros(:)
+        
         if (.not. allocated(global%macros)) allocate(global%macros(0))
         allocate (macros(sizeof(global%macros)), source = global%macros)
         cond_depth = 0
@@ -71,8 +128,6 @@ contains
         continued_line = ''; res = ''
         
         call preprocess_unit(iunit, ounit, macros, .false.)
-        close (iunit)
-        if (ounit /= stdout) close (ounit)
         deallocate (macros)
     end subroutine
 
@@ -225,9 +280,14 @@ contains
             else if (starts_with(adjustl(trimmed_line(2:)), 'ENDIF')) then
                 call handle_endif(filename, iline)
             end if
-        else if (active) then           
-            res = adjustl(expand_all(trimmed_line, macros, filename, iline, stitch))
-            if (verbose) print *, "Writing to output: '", trim(res), "'"
+        else if (active) then
+            if (.not. global%expand_macros) then 
+                res = trimmed_line
+            else
+                res = adjustl(expand_all(trimmed_line, macros, filename, iline, stitch))
+                if (verbose) print *, "Writing to output: '", trim(res), "'"
+            end if
+            
         end if
     end function
 
