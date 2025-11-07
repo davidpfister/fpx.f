@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.35425.106
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{6989167D-11E4-40FE-8C1A-2192A86A7E90}") = "Fpxlib.f", "src\Fpxlib.f.vfproj", "{AA3CCEFA-E58B-402E-889C-694760AA01FC}"
+Project("{6989167D-11E4-40FE-8C1A-2192A86A7E90}") = "FpxLib", "src\FpxLib.vfproj", "{AA3CCEFA-E58B-402E-889C-694760AA01FC}"
 EndProject
 Project("{6989167D-11E4-40FE-8C1A-2192A86A7E90}") = "Test.Fpx", "tests\Test.Fpx.vfproj", "{E0FE764A-6FE6-492B-9609-F36A1340F8E1}"
 	ProjectSection(ProjectDependencies) = postProject

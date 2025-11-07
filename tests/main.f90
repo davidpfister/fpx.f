@@ -106,7 +106,7 @@ TESTPROGRAM(main)
         TEST_PRINT('lfortran_unit_test')
 
 #ifdef _FPM
-        call chdir(join('tests','lfortran')
+        call chdir(join('tests','lfortran'))
 #else
         call chdir('lfortran')
 #endif
@@ -134,11 +134,6 @@ TESTPROGRAM(main)
                     ASSERT_TRUE(exists)
 #endif
                     ref = trim(files(i)); ref(len(ref)-2:) = 'ref'
-!#ifdef _WIN32
-!                   call execute_command_line('fc "'//trim(files(i))//'.out" "'//ref//'" > nul 2>&1', exitstat = ierr)
-!#else
-!                   call execute_command_line("cmp -s '"//trim(files(i))//".out' '"//ref//"'", exitstat = ierr)
-!#endif
                     call getlines(trim(files(i))//'.out', actual, .false.)
                     call getlines(ref, expected, .false.)
                     
@@ -152,7 +147,7 @@ TESTPROGRAM(main)
         end do
         call clear(global%macros)
 #ifdef _FPM
-        call chdir(join('..','..')
+        call chdir(join('..','..'))
 #else
         call chdir('..')
 #endif
@@ -171,7 +166,7 @@ TESTPROGRAM(main)
         TEST_PRINT('flang_unit_tests')
 
 #ifdef _FPM
-        call chdir(join('tests','flang')
+        call chdir(join('tests','flang'))
 #else
         call chdir('flang')
 #endif
@@ -219,7 +214,7 @@ TESTPROGRAM(main)
         end do
         call clear(global%macros)
 #ifdef _FPM
-        call chdir(join('..','..')
+        call chdir(join('..','..'))
 #else
         call chdir('..')
 #endif

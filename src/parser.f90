@@ -138,9 +138,27 @@ contains
         logical, intent(in)                     :: from_include
         !private
         integer :: ierr, n
+        character(:), allocatable :: uline
+        logical :: interactive
         
+        interactive = iunit == stdin
+        
+        if (interactive) then
+            write (*, *)
+            write (*, *) '   Welcome to fpx, the extended Fortran preprocessor. '
+            write (*, *) '   The program can be exited at any time by hitting'
+            write (*, *) "   'Enter' at the prompt without entering any data, "
+            write (*, *) "   or with the 'quit' command."
+        end if
         do
+            if (interactive) write (*, '(/a)', advance='no') ' [in]  ' ! Command line prompt 
             read (iunit, '(A)', iostat=ierr) line
+            
+            if (interactive) then
+                if (line == '') exit
+                uline = uppercase(trim(adjustl(line)))
+                if (uline == 'QUIT') exit
+            end if
             if (ierr /= 0) then
                 if (ierr == iostat_end .and. from_include) f_continue = tail(tmp) == '&'
                 exit
@@ -197,6 +215,7 @@ contains
                     else
                         res = trim(tmp)
                     end if
+                    if (interactive) write (*, '(/a)', advance='no') ' [out] ' ! Command line prompt 
                     write (ounit, '(A)') res
                     res = ''
                 end if
@@ -243,41 +262,23 @@ contains
         if (verbose) print *, "Processing line ", iline, ": '", trim(trimmed_line), "'"
         if (verbose) print *, "is_active() = ", active, ", cond_depth = ", cond_depth
         if (head(trimmed_line) == '#') then
-            if (starts_with(adjustl(trimmed_line(2:)), 'define') .and. active) then
-                call handle_define(trimmed_line, macros, 'define')
-            else if (starts_with(adjustl(trimmed_line(2:)), 'DEFINE') .and. active) then
+            if (starts_with(uppercase(adjustl(trimmed_line(2:))), 'DEFINE') .and. active) then
                 call handle_define(trimmed_line, macros, 'DEFINE')
-            else if (starts_with(adjustl(trimmed_line(2:)), 'undef') .and. active) then
-                call handle_undef(trimmed_line, macros, 'undef')
-            else if (starts_with(adjustl(trimmed_line(2:)), 'UNDEF') .and. active) then
+            else if (starts_with(uppercase(adjustl(trimmed_line(2:))), 'UNDEF') .and. active) then
                 call handle_undef(trimmed_line, macros, 'UNDEF')
-            else if (starts_with(adjustl(trimmed_line(2:)), 'include') .and. active) then
-                call handle_include(trimmed_line, ounit, filename, iline, preprocess_unit, macros, 'include')
-            else if (starts_with(adjustl(trimmed_line(2:)), 'INCLUDE') .and. active) then
+            else if (starts_with(uppercase(adjustl(trimmed_line(2:))), 'INCLUDE') .and. active) then
                 call handle_include(trimmed_line, ounit, filename, iline, preprocess_unit, macros, 'INCLUDE')
-            else if (starts_with(adjustl(trimmed_line(2:)), 'ifdef')) then
-                call handle_ifdef(trimmed_line, filename, iline, macros, 'ifdef')
-            else if (starts_with(adjustl(trimmed_line(2:)), 'IFDEF')) then
+            else if (starts_with(uppercase(adjustl(trimmed_line(2:))), 'IFDEF')) then
                 call handle_ifdef(trimmed_line, filename, iline, macros, 'IFDEF')
-            else if (starts_with(adjustl(trimmed_line(2:)), 'ifndef')) then
-                call handle_ifndef(trimmed_line, filename, iline, macros, 'ifndef')
-            else if (starts_with(adjustl(trimmed_line(2:)), 'IFNDEF')) then
+            else if (starts_with(uppercase(adjustl(trimmed_line(2:))), 'IFNDEF')) then
                 call handle_ifndef(trimmed_line, filename, iline, macros, 'IFNDEF')
-            else if (starts_with(adjustl(trimmed_line(2:)), 'if')) then
-                call handle_if(trimmed_line, filename, iline, macros, 'if')
-            else if (starts_with(adjustl(trimmed_line(2:)), 'IF')) then
+            else if (starts_with(uppercase(adjustl(trimmed_line(2:))), 'IF')) then
                 call handle_if(trimmed_line, filename, iline, macros, 'IF')
-            else if (starts_with(adjustl(trimmed_line(2:)), 'elif')) then
-                call handle_elif(trimmed_line, filename, iline, macros, 'elif')
-            else if (starts_with(adjustl(trimmed_line(2:)), 'ELIF')) then
+            else if (starts_with(uppercase(adjustl(trimmed_line(2:))), 'ELIF')) then
                 call handle_elif(trimmed_line, filename, iline, macros, 'ELIF')
-            else if (starts_with(adjustl(trimmed_line(2:)), 'else')) then
+            else if (starts_with(uppercase(adjustl(trimmed_line(2:))), 'ELSE')) then
                 call handle_else(filename, iline)
-            else if (starts_with(adjustl(trimmed_line(2:)), 'ELSE')) then
-                call handle_else(filename, iline)
-            else if (starts_with(adjustl(trimmed_line(2:)), 'endif')) then
-                call handle_endif(filename, iline)
-            else if (starts_with(adjustl(trimmed_line(2:)), 'ENDIF')) then
+            else if (starts_with(uppercase(adjustl(trimmed_line(2:))), 'ENDIF')) then
                 call handle_endif(filename, iline)
             end if
         else if (active) then

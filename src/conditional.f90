@@ -1,6 +1,7 @@
 module fpx_conditional
     use fpx_constants
     use fpx_logging
+    use fpx_string
     use fpx_macro, only: macro, is_defined
     use fpx_token, only: evaluate_expression
 
@@ -50,7 +51,7 @@ contains
             return
         end if
 
-        pos = index(line, token) + len(token)
+        pos = index(uppercase(line), token) + len(token)
         expr = trim(adjustl(line(pos:)))
         if (verbose) print *, "Evaluating #if: '", trim(expr), "'"
         result = evaluate_expression(expr, macros)
@@ -77,7 +78,7 @@ contains
             return
         end if
 
-        pos = index(line, token) + len(token)
+        pos = index(uppercase(line), token) + len(token)
         name = trim(adjustl(line(pos:)))
         defined = is_defined(name, macros)
         parent_active = is_active()
@@ -102,7 +103,7 @@ contains
             return
         end if
 
-        pos = index(line, token) + len(token)
+        pos = index(uppercase(line), token) + len(token)
         name = trim(adjustl(line(pos:)))
         defined = is_defined(name, macros)
         parent_active = is_active()
@@ -126,7 +127,7 @@ contains
             return
         end if
 
-        pos = index(line, token) + len(token)
+        pos = index(uppercase(line), token) + len(token)
         expr = trim(adjustl(line(pos:)))
         result = evaluate_expression(expr, macros)
         parent_active = cond_depth == 0 .or. cond_stack(cond_depth)%active

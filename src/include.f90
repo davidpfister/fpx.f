@@ -42,7 +42,7 @@ contains
         logical :: exists
 
         dir = dirpath(parent_file)
-        pos = index(input,token) + len(token)
+        pos = index(uppercase(input), token) + len(token)
         include_file = trim(adjustl(input(pos:)))
         if (include_file(1:1) == '"') then
             include_file = include_file(2:index(include_file(2:), '"'))
@@ -50,7 +50,9 @@ contains
             include_file = include_file(2:index(include_file(2:), '>'))
         end if
         
-        if (is_rooted(include_file)) then
+        ifile = include_file
+        if (is_rooted(ifile)) then
+            inquire(file=ifile, exist=exists)
             if (exists) then
                 include_file = ifile
             else
@@ -84,6 +86,7 @@ contains
                 end if
             end if
         end if
+        
         open (newunit=iunit, file=include_file, status='old', action='read', iostat=ierr)
         if (ierr /= 0) then
             if (verbose) print *, "Error: Cannot open include file '", trim(include_file), "' at ", trim(parent_file), ":", iline

@@ -12,7 +12,8 @@ module fpx_string
               head,         &
               tail,         &
               concat,       &
-              writechk
+              writechk,     &
+              uppercase
         
     !> @class string
     !! @ingroup group_string
@@ -327,6 +328,51 @@ module fpx_string
             if (str1(n1:n1) == ' ' .and. str2(n2:n2) == ' ') n2 = n2 + 1
         end if
         res = str1(:n1)//str2(n2:)
+    end function
+    
+    !> @brief   Convert string to upper case
+    !! @ingroup group_string
+    !! param[in] str input string
+    !!
+    !! @returns _character(*)_. A string with uppercase characters.
+    !!
+    !! @b Examples
+    !! @code
+    !! character(*), parameter :: input = 'test'
+    !! character(:), allocatable :: output
+    !! output = uppercase(input)
+    !! if (output == 'TEST') print*, 'OK'
+    !! @endcode
+    !!
+    !! @b Remarks
+    pure function uppercase(str) result(res)
+        character(*), intent(in) :: str
+        character(len_trim(str)) :: res
+        !private
+        integer :: ilen, ioffset, iquote, iqc, iav, i
+
+        ilen = len_trim(str)
+        ioffset = iachar('A') - iachar('a')
+        iquote = 0
+        res = str
+        do i = 1, ilen
+            iav = iachar(str(i:i))
+            if (iquote == 0 .and. (iav == 34 .or. iav == 39)) then
+                iquote = 1
+                iqc = iav
+                cycle
+            end if
+            if (iquote == 1 .and. iav == iqc) then
+                iquote = 0
+                cycle
+            end if
+            if (iquote == 1) cycle
+            if (iav >= iachar('a') .and. iav <= iachar('z')) then
+                res(i:i) = achar(iav + ioffset)
+            else
+                res(i:i) = str(i:i)
+            end if
+        end do
     end function
     
     subroutine writechk(unit, str)

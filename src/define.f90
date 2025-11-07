@@ -20,7 +20,7 @@ contains
         character(:), allocatable :: val, name, temp
         integer :: pos, paren_start, paren_end, i, npar, imacro
 
-        pos = index(line, token) + len(token)
+        pos = index(uppercase(line), token) + len(token)
         temp = trim(adjustl(line(pos + 1:)))
         
         paren_start = index(temp, '(')
@@ -143,7 +143,7 @@ contains
         integer :: i, n, pos
 
         n = sizeof(macros)
-        pos = index(line, token) + len(token)
+        pos = index(uppercase(line), token) + len(token)
         name = trim(adjustl(line(pos:)))
         do i = 1, n
             if (macros(i) == name) then
