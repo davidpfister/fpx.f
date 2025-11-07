@@ -12,3 +12,6 @@ C:\Users\dev\Documents\GitHub\sandbox\fpx.f\tests\fpx\preprocessed-dirs.ref
 C:\Users\dev\Documents\GitHub\sandbox\fpx.f\tests\fpx\similar-name.F90
 C:\Users\dev\Documents\GitHub\sandbox\fpx.f\tests\fpx\similar-name.F90.out
 C:\Users\dev\Documents\GitHub\sandbox\fpx.f\tests\fpx\similar-name.ref
+C:\Users\dev\Documents\GitHub\sandbox\fpx.f\tests\fpx\variadic.c
+C:\Users\dev\Documents\GitHub\sandbox\fpx.f\tests\fpx\variadic.c.out
+C:\Users\dev\Documents\GitHub\sandbox\fpx.f\tests\fpx\variadic.ref

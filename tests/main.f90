@@ -62,7 +62,7 @@ TESTPROGRAM(main)
                 cycle
             else if (index(files(i), '.ref') > 0) then
                 cycle
-            else if (index(files(i), '.f90') > 0 .or. index(files(i), '.F90') > 0) then
+            else if (index(files(i), '.f90') > 0 .or. index(files(i), '.F90') > 0 .or. index(files(i), '.c') > 0) then
                 call preprocess(trim(files(i)), trim(files(i))//'.out')
 
                 TEST(filename(files(i)))
@@ -73,7 +73,7 @@ TESTPROGRAM(main)
 #if defined (_DEBUG) || defined (DEBUG)
                     ASSERT_TRUE(exists)
 #endif
-                    ref = trim(files(i)); ref(len(ref)-2:) = 'ref'
+                    ref = trim(files(i)); ref(index(ref, '.', back = .true.) + 1:) = 'ref'
                     call getlines(trim(files(i))//'.out', actual, .false.)
                     call getlines(ref, expected, .false.)
                     
@@ -133,7 +133,7 @@ TESTPROGRAM(main)
 #if defined (_DEBUG) || defined (DEBUG)
                     ASSERT_TRUE(exists)
 #endif
-                    ref = trim(files(i)); ref(len(ref)-2:) = 'ref'
+                    ref = trim(files(i)); ref(index(ref, '.', back = .true.) + 1:) = 'ref'
                     call getlines(trim(files(i))//'.out', actual, .false.)
                     call getlines(ref, expected, .false.)
                     
@@ -199,7 +199,7 @@ TESTPROGRAM(main)
 #if defined (_DEBUG) || defined (DEBUG)
                         ASSERT_TRUE(exists)
 #endif
-                        ref = trim(files(i)); ref(len(ref)-2:) = 'ref'
+                        ref = trim(files(i)); ref(index(ref, '.', back = .true.) + 1:) = 'ref'
                         call getlines(trim(files(i))//'.out', actual, .false.)
                         call getlines(ref, expected, .false.)
                     

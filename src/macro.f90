@@ -394,6 +394,16 @@ module fpx_macro
                                                     end if
                                                     if (verbose) print *, "Substituted __VA_ARGS__ with '", trim(va_args), &
                                                         "', temp: '", trim(temp), "'"
+                                                    ! Substitute __VA_OPT__
+                                                    pos = index(temp, '__VA_OPT__')
+                                                    if (pos > 0) then
+                                                        start = pos + index(temp(pos:), ')') - 1
+                                                        if (len_trim(va_args) > 0) then
+                                                            temp = trim(temp(:pos - 1))//trim(temp(pos + index(temp(pos:), '('):start-1))//trim(temp(start+1:))
+                                                        else
+                                                            temp = trim(temp(:pos - 1))//trim(temp(start+1:))
+                                                        end if
+                                                    end if
                                                 end if
                                             end do
                                         end if
