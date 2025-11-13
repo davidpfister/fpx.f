@@ -23,7 +23,7 @@ module fpx_parser
         module procedure :: preprocess_unit_to_unit
     end interface
     
-    character(256) :: filename
+    character(256) :: name
     logical :: c_continue, f_continue
     logical :: in_comment, reprocess, stitch
     character(:), allocatable :: res, tmp
@@ -46,7 +46,7 @@ contains
         else
             if (c_associated(getcwd_c(buf, size(buf, kind=c_size_t)))) then
                n = findloc(buf,achar(0),1)
-               filename = filepath(n+1:)
+               name = filepath(n+1:)
             end if
         end if
 
@@ -73,7 +73,7 @@ contains
         integer :: ierr, ounit
 
         if (iunit /= stdin) then
-            inquire(unit = iunit, name = filename)
+            inquire(unit = iunit, name = name)
         end if
  
         open (newunit=ounit, file=ofile, status='replace', action='write', iostat=ierr)
@@ -102,7 +102,7 @@ contains
         else
             if (c_associated(getcwd_c(buf, size(buf, kind=c_size_t)))) then
                n = findloc(buf,achar(0),1)
-               filename = ifile(n+1:)
+               name = ifile(n+1:)
             end if
         end if
         
@@ -188,7 +188,7 @@ contains
             else
                 c_continue = .false.
 
-                tmp = process_line(continued_line, ounit, filename, iline, macros, stitch)
+                tmp = process_line(continued_line, ounit, name, iline, macros, stitch)
                 if (len_trim(tmp) == 0) cycle
                     
                 in_comment = head(tmp) == '!'
@@ -207,9 +207,9 @@ contains
                     if (reprocess) then
                         if (.not. in_comment .and. head(res) == '!') then
                             write (ounit, '(A)') res
-                            res = process_line(tmp, ounit, filename, iline, macros, stitch)
+                            res = process_line(tmp, ounit, name, iline, macros, stitch)
                         else
-                            res = process_line(concat(res, tmp), ounit, filename, iline, macros, stitch)
+                            res = process_line(concat(res, tmp), ounit, name, iline, macros, stitch)
                         end if
                         reprocess = .false.
                     else
@@ -223,43 +223,42 @@ contains
         end do
 
         if (cond_depth > 0) then
-            if (verbose) print *, "Error: Unclosed conditional block at end of file ", trim(filename)
+            if (verbose) print *, "Error: Unclosed conditional block at end of file ", trim(name)
         end if
     end subroutine
 
-    recursive function process_line(line, ounit, filename, iline, macros, stitch) result(res)
-        character(*), intent(in)                :: line
+    recursive function process_line(current_line, ounit, filepath, linenum, macros, stch) result(rst)
+        character(*), intent(in)                :: current_line
         integer, intent(in)                     :: ounit
-        character(*), intent(in)                :: filename
-        integer, intent(in)                     :: iline
-        character(:), allocatable               :: res
+        character(*), intent(in)                :: filepath
+        integer, intent(in)                     :: linenum
         type(macro), allocatable, intent(inout) :: macros(:)
-        logical, intent(out)                    :: stitch
+        logical, intent(out)                    :: stch
+        character(:), allocatable               :: rst
         !private
         character(:), allocatable :: trimmed_line
         logical :: active
-        logical, save :: in_comment = .false.
-        logical, save :: f_continue = .false.
+        logical, save :: l_in_comment = .false.
         integer :: idx, comment_start, comment_end, n
 
-        trimmed_line = trim(adjustl(line))
-        res = ''
+        trimmed_line = trim(adjustl(current_line))
+        rst = ''
         comment_end = index(trimmed_line, '*/')
-        if (in_comment .and. comment_end > 0) then
+        if (l_in_comment .and. comment_end > 0) then
             trimmed_line = trimmed_line(comment_end + 2:)
-            in_comment = .false.
+            l_in_comment = .false.
         end if
         
-        if (in_comment) return
+        if (l_in_comment) return
         comment_start = index(trimmed_line, '/*')
         if (comment_start > 0) then
             trimmed_line = trimmed_line(:comment_start - 1)
-            in_comment = comment_end == 0
+            l_in_comment = comment_end == 0
         end if
         n = len(trimmed_line); if (n == 0) return
 
         active = is_active()
-        if (verbose) print *, "Processing line ", iline, ": '", trim(trimmed_line), "'"
+        if (verbose) print *, "Processing line ", linenum, ": '", trim(trimmed_line), "'"
         if (verbose) print *, "is_active() = ", active, ", cond_depth = ", cond_depth
         if (head(trimmed_line) == '#') then
             if (starts_with(uppercase(adjustl(trimmed_line(2:))), 'DEFINE') .and. active) then
@@ -267,26 +266,26 @@ contains
             else if (starts_with(uppercase(adjustl(trimmed_line(2:))), 'UNDEF') .and. active) then
                 call handle_undef(trimmed_line, macros, 'UNDEF')
             else if (starts_with(uppercase(adjustl(trimmed_line(2:))), 'INCLUDE') .and. active) then
-                call handle_include(trimmed_line, ounit, filename, iline, preprocess_unit, macros, 'INCLUDE')
+                call handle_include(trimmed_line, ounit, filepath, linenum, preprocess_unit, macros, 'INCLUDE')
             else if (starts_with(uppercase(adjustl(trimmed_line(2:))), 'IFDEF')) then
-                call handle_ifdef(trimmed_line, filename, iline, macros, 'IFDEF')
+                call handle_ifdef(trimmed_line, filepath, linenum, macros, 'IFDEF')
             else if (starts_with(uppercase(adjustl(trimmed_line(2:))), 'IFNDEF')) then
-                call handle_ifndef(trimmed_line, filename, iline, macros, 'IFNDEF')
+                call handle_ifndef(trimmed_line, filepath, linenum, macros, 'IFNDEF')
             else if (starts_with(uppercase(adjustl(trimmed_line(2:))), 'IF')) then
-                call handle_if(trimmed_line, filename, iline, macros, 'IF')
+                call handle_if(trimmed_line, filepath, linenum, macros, 'IF')
             else if (starts_with(uppercase(adjustl(trimmed_line(2:))), 'ELIF')) then
-                call handle_elif(trimmed_line, filename, iline, macros, 'ELIF')
+                call handle_elif(trimmed_line, filepath, linenum, macros, 'ELIF')
             else if (starts_with(uppercase(adjustl(trimmed_line(2:))), 'ELSE')) then
-                call handle_else(filename, iline)
+                call handle_else(filepath, linenum)
             else if (starts_with(uppercase(adjustl(trimmed_line(2:))), 'ENDIF')) then
-                call handle_endif(filename, iline)
+                call handle_endif(filepath, linenum)
             end if
         else if (active) then
             if (.not. global%expand_macros) then 
-                res = trimmed_line
+                rst = trimmed_line
             else
-                res = adjustl(expand_all(trimmed_line, macros, filename, iline, stitch))
-                if (verbose) print *, "Writing to output: '", trim(res), "'"
+                rst = adjustl(expand_all(trimmed_line, macros, filepath, linenum, stch))
+                if (verbose) print *, "Writing to output: '", trim(rst), "'"
             end if
             
         end if

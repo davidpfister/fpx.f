@@ -52,7 +52,7 @@ TESTPROGRAM(main)
         TEST_PRINT('fpx_unit_test')
 
 #ifdef _FPM
-        call chdir(join('tests','fpx')
+        call chdir(join('tests','fpx'))
 #else
         call chdir('fpx')
 #endif
@@ -86,7 +86,7 @@ TESTPROGRAM(main)
             end if
         end do
 #ifdef _FPM
-        call chdir(join('..','..')
+        call chdir(join('..','..'))
 #else
         call chdir('..')
 #endif

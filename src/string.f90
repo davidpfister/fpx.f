@@ -164,8 +164,8 @@ module fpx_string
     !! l = len(s)
     !! ! The value of l is 3
     !! ```
-    !! @returns An integer cooresponding to the length of the string
-    elemental integer function string_len_trim(this) result(res)
+    !! @returns An integer corresponding to the length of the string
+    pure integer function string_len_trim(this) result(res)
          class(string), intent(in) :: this
          
         if (allocated(this%chars)) then
