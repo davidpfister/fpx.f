@@ -231,7 +231,11 @@ module fpx_string
         type(string), intent(in) :: rhs !! Right hand side.
         logical                   :: res !! Opreator test result.
 
-        res = lhs%chars == rhs%chars
+        if (.not. allocated(lhs%chars)) then
+            res = allocated(rhs%chars)
+        else
+            res = lhs%chars == rhs%chars
+        end if
     end function
 
     elemental function string_eq_character(lhs, rhs) result(res)
@@ -239,15 +243,23 @@ module fpx_string
         character(*), intent(in) :: rhs !! Right hand side.
         logical                               :: res !! Opreator test result.
 
-        res = lhs%chars == rhs
+        if (.not. allocated(lhs%chars)) then
+            res = .false.
+        else
+            res = lhs%chars == rhs
+        end if
     end function
 
     elemental function character_eq_string(lhs, rhs) result(res)
         character(*), intent(in) :: lhs !! Left hand side.
         class(string), intent(in) :: rhs !! Right hand side.
-        logical                               :: res !! Opreator test result.
+        logical                               :: res !! Operator test result.
 
-        res = rhs%chars == lhs
+        if (.not. allocated(rhs%chars)) then
+            res = .false.
+        else
+            res = rhs%chars == lhs
+        end if
     end function
     
     subroutine write_formatted(dtv, unit, iotype, v_list, iostat, iomsg)

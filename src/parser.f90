@@ -119,6 +119,9 @@ contains
         
         if (.not. allocated(global%macros)) allocate(global%macros(0))
         allocate (macros(sizeof(global%macros)), source = global%macros)
+        if (.not. allocated(global%undef)) allocate(global%undef(0))
+        if (.not. allocated(global%includedir)) allocate(global%includedir(0))
+        
         cond_depth = 0
         cond_stack(1)%active = .true.
         cond_stack(1)%has_met = .false.
