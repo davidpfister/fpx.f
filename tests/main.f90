@@ -73,7 +73,8 @@ TESTPROGRAM(main)
 #if defined (_DEBUG) || defined (DEBUG)
                     ASSERT_TRUE(exists)
 #endif
-                    ref = trim(files(i)); ref(index(ref, '.', back = .true.) + 1:) = 'ref'
+                    ref = files(i); ref(index(ref, '.', back = .true.) + 1:) = 'ref'
+                    ref = trim(ref)
                     call getlines(trim(files(i))//'.out', actual, .false.)
                     call getlines(ref, expected, .false.)
                     
@@ -133,7 +134,8 @@ TESTPROGRAM(main)
 #if defined (_DEBUG) || defined (DEBUG)
                     ASSERT_TRUE(exists)
 #endif
-                    ref = trim(files(i)); ref(index(ref, '.', back = .true.) + 1:) = 'ref'
+                    ref = files(i); ref(index(ref, '.', back = .true.) + 1:) = 'ref'
+                    ref = trim(ref)
                     call getlines(trim(files(i))//'.out', actual, .false.)
                     call getlines(ref, expected, .false.)
                     
@@ -199,7 +201,8 @@ TESTPROGRAM(main)
 #if defined (_DEBUG) || defined (DEBUG)
                         ASSERT_TRUE(exists)
 #endif
-                        ref = trim(files(i)); ref(index(ref, '.', back = .true.) + 1:) = 'ref'
+                        ref = files(i); ref(index(ref, '.', back = .true.) + 1:) = 'ref'
+                        ref = trim(ref)
                         call getlines(trim(files(i))//'.out', actual, .false.)
                         call getlines(ref, expected, .false.)
                     
