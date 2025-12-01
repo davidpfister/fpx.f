@@ -52,6 +52,11 @@ contains
 
             if (.not. allocated(macros)) allocate(macros(0))
             
+            if (name == 'defined') then
+                if (verbose) print *, '"defined" cannot be used a a macro name'
+                return
+            end if
+            
             if (.not. is_defined(name, macros, imacro)) then
                 call add(macros, name, val)
                 imacro = sizeof(macros)

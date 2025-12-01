@@ -1,0 +1,368 @@
+module fpx_date
+    use, intrinsic :: iso_fortran_env, only: i1 => int8, &
+                                             i2 => int16
+    implicit none; private
+    
+    public :: now
+    
+    type, public :: datetime
+        private
+        integer(i2), public  :: year
+        integer(i1), public  :: month
+        integer(i1), public  :: day
+        integer(i1), public  :: hour
+        integer(i1), public  :: minute
+        integer(i1), public  :: second
+        integer(i2), public  :: millisecond
+    contains
+        procedure, pass(this), public :: to_string => datetime_to_string
+        procedure, pass(this), public :: parse => datetime_parse
+    end type
+    
+    interface datetime
+        module procedure :: datetime_new, datetime_new_from_string
+    end interface
+    
+    contains
+    
+     elemental function datetime_new(year, month, day, hour, minute, second, millisecond) result(that)
+        integer, intent(in), optional   :: year
+        integer, intent(in), optional   :: month
+        integer, intent(in), optional   :: day
+        integer, intent(in), optional   :: hour
+        integer, intent(in), optional   :: minute
+        integer, intent(in), optional   :: second
+        integer, intent(in), optional   :: millisecond
+        type(datetime)                  :: that
+
+        that%year = 0_i2; if (present(year)) that%year = int(year, kind=i2)
+        that%month = 0_i1; if (present(month)) that%month = int(month, kind=i1)
+        that%day = 0_i1; if (present(day)) that%day = int(day, kind=i1)
+        that%hour = 0_i1; if (present(hour)) that%hour = int(hour, kind=i1)
+        that%minute = 0_i1; if (present(minute)) that%minute = int(minute, kind=i1)
+        that%second = 0_i1; if (present(second)) that%second = int(second, kind=i1)
+        that%millisecond = 0_i2; if (present(millisecond)) that%millisecond = int(millisecond, kind=i2)
+    end function
+    
+    elemental function datetime_new_from_string(string, fmt) result(that)
+        character(*), intent(in)            :: string
+        character(*), intent(in), optional  :: fmt
+        type(datetime)                      :: that
+        
+        if (present(fmt)) then
+            call that%parse(string, fmt)
+        else
+            call that%parse(string)
+        end if
+    end function
+    
+    function now() result(res)
+        type(datetime)  :: res  
+        !private
+        integer :: values(9)
+        
+        call date_and_time(values = values)
+
+        res%year   = int(values(1), kind=i2)
+        res%month  = int(values(2), kind=i1)
+        res%day    = int(values(3), kind=i1)
+        res%hour   = int(values(5), kind=i1)
+        res%minute = int(values(6), kind=i1)
+        res%second = int(values(7), kind=i1)
+        res%millisecond = int(values(8), kind=i2)
+    end function
+    
+    !> @brief Returns the day of the week calculated using Zeller's congruence.
+    !! Returned value is an integer scalar in the range [0-6], such that:
+    !! 0: Sunday
+    !! 1: Monday
+    !! 2: Tuesday
+    !! 3: Wednesday
+    !! 4: Thursday
+    !! 5: Friday
+    !! 6: Saturday
+    pure elemental integer function weekday(this)
+        class(datetime), intent(in) :: this
+        !private
+        integer :: year, month, j, k
+
+        year  = this%year
+        month = this%month
+
+        if (month <= 2) then
+            month = month + 12
+            year  = year - 1
+        end if
+
+        j = year / 100
+        k = mod(year, 100)
+
+        weekday = mod(this%day + ((month + 1) * 26) / 10 + k + k / 4 + j / 4 + 5 * j, 7) -1
+
+        if (weekday < 0) weekday = 6
+    end function
+    
+    ! Perform conversion to ISO string
+    !d: Represents the day of the month as a number from 1 through 31.
+    !dd: Represents the day of the month as a number from 01 through 31.
+    !ddd: Represents the abbreviated name of the day (Mon, Tues, Wed, etc).
+    !dddd: Represents the full name of the day (Monday, Tuesday, etc).
+    !h: 12-hour clock hour (e.g. 4).
+    !hh: 12-hour clock, with a leading 0 (e.g. 06)
+    !H: 24-hour clock hour (e.g. 15)
+    !HH: 24-hour clock hour, with a leading 0 (e.g. 22)
+    !m: Minutes
+    !mm: Minutes with a leading zero
+    !M: Month number(eg.3)
+    !MM: Month number with leading zero(eg.04)
+    !MMM: Abbreviated Month Name (e.g. Dec)
+    !MMMM: Full month name (e.g. December)
+    !s: Seconds
+    !ss: Seconds with leading zero
+    !t: Abbreviated AM / PM (e.g. A or P)
+    !tt: AM / PM (e.g. AM or PM
+    !y: Year, no leading zero (e.g. 2015 would be 15)
+    !yy: Year, leading zero (e.g. 2015 would be 015)
+    !yyy: Year, (e.g. 2015)
+    !yyyy: Year, (e.g. 2015)
+    elemental subroutine datetime_parse(this, string, fmt)
+        class(datetime), intent(inout)      :: this
+        character(*), intent(in)            :: string
+        character(*), intent(in), optional  :: fmt
+        !private
+        integer :: ierr
+        logical :: valid
+        character(256) :: errmsg
+        character(len(string)) :: tmp
+        character(:), allocatable :: dftfmt
+        
+        if (present(fmt)) then
+            dftfmt = fmt
+        else
+            if (len_trim(string) == 10) then
+                dftfmt = 'yyyy-MM-dd'
+            else
+                dftfmt = 'yyyy-MM-dd HH:mm:ss'
+            end if
+        end if
+        
+        tmp = string
+        
+        this%year   = 0_i2; this%month  = 0_i1; this%day    = 0_i1
+        this%hour   = 0_i1; this%minute = 0_i1; this%second = 0_i1; this%millisecond = 0_i2
+        
+        select case (dftfmt)
+        case ('MMM-dd-yyyy')
+            select case (tmp(:3))
+            case ('Jan'); tmp(:3) = ' 01'
+            case ('Feb'); tmp(:3) = ' 02'
+            case ('Mar'); tmp(:3) = ' 03'
+            case ('Apr'); tmp(:3) = ' 04'
+            case ('May'); tmp(:3) = ' 05'
+            case ('Jun'); tmp(:3) = ' 06'
+            case ('Jul'); tmp(:3) = ' 07'
+            case ('Aug'); tmp(:3) = ' 08'
+            case ('Sep'); tmp(:3) = ' 09'
+            case ('Oct'); tmp(:3) = ' 10'
+            case ('Nov'); tmp(:3) = ' 11'
+            case ('Dec'); tmp(:3) = ' 12'
+            end select
+            read(tmp(2:), '(i2.2,1x,i2.2,1x,i4.4)', iostat=ierr, iomsg = errmsg) &
+                this%month, &
+                this%day, &
+                this%year
+        case ('MMM-dd-yyyy HH:mm:ss','MMM-dd-yyyyTHH:mm:ss')
+            select case (tmp(:3))
+            case ('Jan'); tmp(:3) = ' 01'
+            case ('Feb'); tmp(:3) = ' 02'
+            case ('Mar'); tmp(:3) = ' 03'
+            case ('Apr'); tmp(:3) = ' 04'
+            case ('May'); tmp(:3) = ' 05'
+            case ('Jun'); tmp(:3) = ' 06'
+            case ('Jul'); tmp(:3) = ' 07'
+            case ('Aug'); tmp(:3) = ' 08'
+            case ('Sep'); tmp(:3) = ' 09'
+            case ('Oct'); tmp(:3) = ' 10'
+            case ('Nov'); tmp(:3) = ' 11'
+            case ('Dec'); tmp(:3) = ' 12'
+            end select
+            read(tmp(2:), '(i2.2,1x,i2.2,1x,i4.4,1x,i2.2,2(1x,i2.2))', iostat=ierr, iomsg = errmsg) &
+                this%month, &
+                this%day, &
+                this%year, &
+                this%hour, &
+                this%minute, &
+                this%second
+        case ('yyyy-MM')
+            read(tmp, '(i4.4,1x,i2.2)', iostat=ierr, iomsg = errmsg) &
+                this%year, &
+                this%month
+        case ('yyyy-MM-dd')
+            read(tmp, '(i4.4,2(1x,i2.2))', iostat=ierr, iomsg = errmsg) &
+                this%year, &
+                this%month, &
+                this%day
+        case ('dd-MM-yyyy')
+            read(tmp, '(i2.2,1x,i2.2,1x, i4.4)', iostat=ierr, iomsg = errmsg) &
+                this%day, &
+                this%month, &
+                this%year
+        case ('MM-dd-yyyy')
+            read(tmp, '(i2.2,1x,i2.2,1x,i4.4)', iostat=ierr, iomsg = errmsg) &
+                this%month, &
+                this%day, &
+                this%year
+        case ('yyyy-MM-ddTHH:mm:ss', 'yyyy-MM-dd HH:mm:ss')    
+            read(tmp, '(i4.4,2(1x,i2.2),1x,i2.2,2(1x,i2.2))', iostat=ierr, iomsg = errmsg) &
+                this%year, &
+                this%month, &
+                this%day, &
+                this%hour, &
+                this%minute, &
+                this%second
+        case ('HH:mm:ss')    
+            read(tmp, '(i2.2,2(1x,i2.2))', iostat=ierr, iomsg = errmsg) &
+                this%hour, &
+                this%minute, &
+                this%second
+        end select
+        
+        if(ierr > 0) then
+            this%year   = 1970_i2; this%month  = 1_i1; this%day    = 1_i1
+            this%hour   = 0_i1; this%minute = 0_i1; this%second = 0_i1; this%millisecond = 0_i2
+        end if
+    end subroutine
+    
+    function datetime_to_string(this, fmt) result(res)
+        class(datetime), intent(in)          :: this
+        character(*), intent(in), optional  :: fmt
+        character(:), allocatable           :: res
+        !private
+        character   :: sep
+        character(:), allocatable :: dftfmt, tmp, tmp2
+        integer :: ierr
+        character(256) :: errmsg
+        
+        if (present(fmt)) then
+            dftfmt = fmt
+        else 
+            dftfmt = 'yyyy-MM-ddTHH:mm:ss'
+        end if
+        ! Manager optional parameters
+        sep = merge('T', ' ', index(dftfmt, 'T') > 0)
+        
+        allocate(character(25) :: res)
+        ! Perform conversion to ISO string
+        
+        select case (this%month)
+        case (1); tmp = 'Jan'
+        case (2); tmp = 'Feb'
+        case (3); tmp = 'Mar'
+        case (4); tmp = 'Apr'
+        case (5); tmp = 'May'
+        case (6); tmp = 'Jun'
+        case (7); tmp = 'Jul'
+        case (8); tmp = 'Aug'
+        case (9); tmp = 'Sep'
+        case (10); tmp = 'Oct'
+        case (11); tmp = 'Nov'
+        case (12); tmp = 'Dec'
+        end select
+        select case (weekday(this))
+        case (0); tmp2 = 'Sun'
+        case (1); tmp2 = 'Mon'
+        case (2); tmp2 = 'Tue'
+        case (3); tmp2 = 'Wed'
+        case (4); tmp2 = 'Thu'
+        case (5); tmp2 = 'Fri'
+        case (6); tmp2 = 'Sat'
+        end select
+        
+        select case (dftfmt)
+        case ('MMM-dd-yyyy')
+            write(res, '(a3,"-",i2.2,"-",i4.4)', iostat=ierr, iomsg = errmsg) &
+                tmp, &
+                this%day, &
+                this%year
+        case ('MMM-ddd-yyyy')
+            write(res, '(a3,"-",a3,"-",i4.4)', iostat=ierr, iomsg = errmsg) &
+                tmp, &
+                tmp2, &
+                this%year
+        case ('MMM-dd-yyyy HH:mm:ss','MMM-dd-yyyyTHH:mm:ss')
+            write(res, '(a3,"-",i2.2,"-",i4.4,a1,i2.2,2(":",i2.2))', iostat=ierr, iomsg = errmsg) &
+                tmp, &
+                this%day, &
+                this%year, &
+                this%hour, &
+                this%minute, &
+                this%second
+        case ('MMM-ddd-yyyy HH:mm:ss','MMM-ddd-yyyyTHH:mm:ss')
+            write(res, '(a3,"-",a3,"-",i4.4,a1,i2.2,2(":",i2.2))', iostat=ierr, iomsg = errmsg) &
+                tmp, &
+                tmp2, &
+                this%year, &
+                this%hour, &
+                this%minute, &
+                this%second
+        case ('yyyy-MM')
+            write(res, '(i4.4,"-",i2.2)', iostat=ierr, iomsg = errmsg) &
+                this%year, &
+                this%month
+        case ('yyyy-MM-dd')
+            write(res, '(i4.4,2("-",i2.2))', iostat=ierr, iomsg = errmsg) &
+                this%year, &
+                this%month, &
+                this%day
+        case ('yyyy-MM-ddd')
+            write(res, '(i4.4,"-",i2.2,"-",a3)', iostat=ierr, iomsg = errmsg) &
+                this%year, &
+                this%month, &
+                tmp2
+        case ('dd-MM-yyyy')
+            write(res, '(i2.2,"-",i2.2,"-",i4.4)', iostat=ierr, iomsg = errmsg) &
+                this%day, &
+                this%month, &
+                this%year
+        case ('ddd-MM-yyyy')
+            write(res, '(a3,"-",i2.2,"-",i4.4)', iostat=ierr, iomsg = errmsg) &
+                tmp2, &
+                this%month, &
+                this%year
+        case ('MM-dd-yyyy')
+            write(res, '(i2.2,"-",i2.2,"-",i4.4)', iostat=ierr, iomsg = errmsg) &
+                this%month, &
+                this%day, &
+                this%year
+        case ('MM-ddd-yyyy')
+            write(res, '(i2.2,"-",a3,"-",i4.4)', iostat=ierr, iomsg = errmsg) &
+                this%month, &
+                tmp2, &
+                this%year
+        case ('yyyy-MM-ddTHH:mm:ss', 'yyyy-MM-dd HH:mm:ss')    
+            write(res, '(i4.4,2("-",i2.2),a1,i2.2,2(":",i2.2))', iostat=ierr, iomsg = errmsg) &
+                this%year, &
+                this%month, &
+                this%day, &
+                sep, &
+                this%hour, &
+                this%minute, &
+                this%second
+        case ('yyyy-MM-dddTHH:mm:ss', 'yyyy-MM-ddd HH:mm:ss')    
+            write(res, '(i4.4,"-",i2.2,"-",a3,a1,i2.2,2(":",i2.2))', iostat=ierr, iomsg = errmsg) &
+                this%year, &
+                this%month, &
+                tmp2, &
+                sep, &
+                this%hour, &
+                this%minute, &
+                this%second
+        case ('HH:mm:ss')    
+            write(res, '(i2.2,2(":",i2.2))', iostat=ierr, iomsg = errmsg) &
+                this%hour, &
+                this%minute, &
+                this%second
+        end select        
+        res = trim(res)
+    end function
+end module

@@ -4,6 +4,7 @@ module fpx_macro
     use fpx_path
     use fpx_graph
     use fpx_string
+    use fpx_date
 
     implicit none; private
 
@@ -102,8 +103,10 @@ module fpx_macro
         character(:), allocatable :: expanded
         !private
         integer :: pos, start, sep, dot
+        type(datetime) :: date
 
         expanded = expand_macros(line, macros, stitch)
+        date = now()
         ! Substitute __FILENAME__
         pos = 1
         do while (pos > 0)
@@ -135,6 +138,32 @@ module fpx_macro
                     start = pos + len('__LINE__')
                     expanded = trim(expanded(:pos - 1)//tostring(iline)//trim(expanded(start:)))
                     if (verbose) print *, "Substituted __LINE__ with '", iline, "', expanded: '", trim(expanded), "'"
+                end if
+            end if
+        end do
+        
+        ! Substitute __DATE__
+        pos = 1
+        do while (pos > 0)
+            pos = index(expanded, '__DATE__')
+            if (pos > 0) then
+                if (pos > 0) then
+                    start = pos + len('__DATE__')
+                    expanded = trim(expanded(:pos - 1)//date%to_string('MMM-dd-yyyy')//trim(expanded(start:)))
+                    if (verbose) print *, "Substituted __DATE__ with '", date%to_string('MMM-dd-yyyy'), "', expanded: '", trim(expanded), "'"
+                end if
+            end if
+        end do
+        
+        ! Substitute __TIME__
+        pos = 1
+        do while (pos > 0)
+            pos = index(expanded, '__TIME__')
+            if (pos > 0) then
+                if (pos > 0) then
+                    start = pos + len('__TIME__')
+                    expanded = trim(expanded(:pos - 1)//date%to_string('HH:mm:ss')//trim(expanded(start:)))
+                    if (verbose) print *, "Substituted __DATE__ with '", date%to_string('HH:mm:ss'), "', expanded: '", trim(expanded), "'"
                 end if
             end if
         end do
