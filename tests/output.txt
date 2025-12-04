@@ -1,0 +1,24 @@
+fpm: Entering directory 'C:\Users\dev\Documents\GitHub\sandbox\fpx.f'
+[  0%]                      macro.f90
+[ 10%]                      macro.f90  done.
+[ 10%]                      token.f90
+[ 10%]                     global.f90
+[ 20%]                     global.f90  done.
+[ 30%]                      token.f90  done.
+[ 30%]                     define.f90
+[ 30%]                conditional.f90
+[ 30%]                    include.f90
+[ 40%]                conditional.f90  done.
+[ 50%]                    include.f90  done.
+[ 60%]                     define.f90  done.
+[ 60%]                     parser.f90
+[ 70%]                     parser.f90  done.
+[ 70%]                       main.f90
+[ 70%]                       libfpx.a
+[ 80%]                       libfpx.a  done.
+[ 90%]                       main.f90  done.
+[ 90%]                        fpx.exe
+[100%]                        fpx.exe  done.
+[100%] Project compiled successfully.
+build\gfortran_E165DB5EEF599F3E\app\fpx.exe
+fpm: Leaving directory 'C:\Users\dev\Documents\GitHub\sandbox\fpx.f'

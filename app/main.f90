@@ -17,7 +17,7 @@ console(main)
 #endif
 
         nargs = size(args)
-        i = 2
+        i = 1
 
         do while (i <= nargs)
             if (args(i)%chars(1:1) == '-') then

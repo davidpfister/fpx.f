@@ -149,7 +149,7 @@ module fpx_macro
             if (pos > 0) then
                 if (pos > 0) then
                     start = pos + len('__DATE__')
-                    expanded = trim(expanded(:pos - 1)//date%to_string('MMM-dd-yyyy')//trim(expanded(start:)))
+                    expanded = trim(expanded(:pos - 1)//'"'//date%to_string('MMM-dd-yyyy')//'"'//trim(expanded(start:)))
                     if (verbose) print *, "Substituted __DATE__ with '", date%to_string('MMM-dd-yyyy'), "', expanded: '", trim(expanded), "'"
                 end if
             end if
@@ -162,8 +162,21 @@ module fpx_macro
             if (pos > 0) then
                 if (pos > 0) then
                     start = pos + len('__TIME__')
-                    expanded = trim(expanded(:pos - 1)//date%to_string('HH:mm:ss')//trim(expanded(start:)))
-                    if (verbose) print *, "Substituted __DATE__ with '", date%to_string('HH:mm:ss'), "', expanded: '", trim(expanded), "'"
+                    expanded = trim(expanded(:pos - 1)//'"'//date%to_string('HH:mm:ss')//'"'//trim(expanded(start:)))
+                    if (verbose) print *, "Substituted __TIME__ with '", date%to_string('HH:mm:ss'), "', expanded: '", trim(expanded), "'"
+                end if
+            end if
+        end do
+        
+        ! Substitute __TIMESTAMP__
+        pos = 1
+        do while (pos > 0)
+            pos = index(expanded, '__TIMESTAMP__')
+            if (pos > 0) then
+                if (pos > 0) then
+                    start = pos + len('__TIMESTAMP__')
+                    expanded = trim(expanded(:pos - 1)//'"'//date%to_string('ddd-MM-yyyy')//' '//date%to_string('HH:mm:ss')//'"'//trim(expanded(start:)))
+                    if (verbose) print *, "Substituted __TIMESTAMP__ with '", date%to_string('ddd-MM-yyyy')//' '//date%to_string('HH:mm:ss'), "', expanded: '", trim(expanded), "'"
                 end if
             end if
         end do
@@ -428,7 +441,7 @@ module fpx_macro
                                                     if (pos > 0) then
                                                         start = pos + index(temp(pos:), ')') - 1
                                                         if (len_trim(va_args) > 0) then
-                                                            temp = trim(temp(:pos - 1))//trim(temp(pos + index(temp(pos:), '('):start-1))//trim(temp(start+1:))
+                                                            temp = trim(temp(:pos - 1))//temp(pos + index(temp(pos:), '('):start-1)//trim(temp(start+1:))
                                                         else
                                                             temp = trim(temp(:pos - 1))//trim(temp(start+1:))
                                                         end if

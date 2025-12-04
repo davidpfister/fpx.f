@@ -64,8 +64,8 @@ module  test_utils
             if (ierr /= 0) exit
             
             if (.not. keep .and. len_trim(line) == 0) cycle
-            tmp = ' '; tmp = trim(adjustl(line))
-            if (.not. keep .and. (tmp(1:1) == '!' .or. tmp(1:1) == '#')) cycle
+            tmp = '  '; tmp = trim(adjustl(line))
+            if (.not. keep .and. (tmp(1:1) == '!' .or. tmp(1:1) == '#' .or. tmp(1:2) == '//')) cycle
             pos = index(line, CR); if (pos > 0) tmp(pos:pos) = ' '
             pos = index(line, LF); if (pos > 0) tmp(pos:pos) = ' '
             res = [res, tmp]
