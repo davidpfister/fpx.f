@@ -2,7 +2,7 @@
 !!
 !! * [get_os_type] -- Determine the OS type
 !! * [get_env] -- return the value of an environment variable
-module fpm_environment
+module fpx_os
     implicit none; private
     
     public ::   get_os_type, &

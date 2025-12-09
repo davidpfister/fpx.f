@@ -1,4 +1,0 @@
-fpm: Entering directory 'C:\Users\dev\Documents\GitHub\sandbox\fpx.f'
-Project is up to date
-build\gfortran_E165DB5EEF599F3E\app\fpx.exe
-fpm: Leaving directory 'C:\Users\dev\Documents\GitHub\sandbox\fpx.f'

@@ -403,3 +403,5 @@ sys.info
 *.fdz
 *.u2d
 tests/**/*.out
+tests/cli/main.out.exe
+tests/output.txt

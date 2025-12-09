@@ -225,44 +225,46 @@ TESTPROGRAM(main)
     
     block
         use test_utils
+        use fpx_path
         
         character(256), allocatable :: lines(:)
         integer :: exitstat, cmdstat
 #ifdef _FPM
 #ifdef _WIN32
-        character(*), parameter :: fpmcmd = 'fpm run --runner > tests\output.txt'
-        character(*), parameter :: fpxcmd = ' tests\cli\main.f90 tests\cli\main.out.f90 -Itests\cli\include'
+        character(*), parameter :: fpmcmd   = 'fpm run --runner > tests\output.txt'
+        character(*), parameter :: fpxcmd   = ' tests\cli\main.f90 tests\cli\main.out.f90 -Itests\cli\include'
         character(*), parameter :: gfortcmd = 'gfortran -o tests\cli\main.out.exe tests\cli\main.out.f90'
-        character(*), parameter :: execmd = 'tests\cli\main.out.exe > /dev/null 2>& 1'
-        character(*), parameter :: outpath = 'tests\output.txt'
+        character(*), parameter :: execmd   = 'tests\cli\main.out.exe > nul 2>& 1'
+        character(*), parameter :: outpath  = 'tests\output.txt'
 #else
-        character(*), parameter :: fpmcmd = 'fpm run --runner > tests/output.txt'
-        character(*), parameter :: fpxcmd = ' tests/cli/main.f90 tests/cli/main.out.f90 -Itests/cli/include'
+        character(*), parameter :: fpmcmd   = 'fpm run --runner > tests/output.txt'
+        character(*), parameter :: fpxcmd   = ' tests/cli/main.f90 tests/cli/main.out.f90 -Itests/cli/include'
         character(*), parameter :: gfortcmd = 'gfortran -o tests/cli/main.out.exe tests/cli/main.out.f90'
-        character(*), parameter :: execmd = 'tests/cli/main.out.exe > nul 2>&1'
-        character(*), parameter :: outpath = 'tests/output.txt'
+        character(*), parameter :: execmd   = 'tests/cli/main.out.exe > /dev/null 2>& 1'
+        character(*), parameter :: outpath  = 'tests/output.txt'
 #endif
 #else
-        character(*), parameter :: fpmcmd = 'fpm run --runner > output.txt 2>&1'
-        character(*), parameter :: fpxcmd = ' cli\main.f90 cli\main.out.f90 -Icli\include'
+        character(*), parameter :: fpmcmd   = 'fpm run --runner > output.txt 2>&1'
+        character(*), parameter :: fpxcmd   = ' cli\main.f90 cli\main.out.f90 -Icli\include'
         character(*), parameter :: gfortcmd = 'gfortran -o cli\main.out.exe cli\main.out.f90'
-        character(*), parameter :: execmd = 'cli\main.out.exe > nul 2>&1'
-        character(*), parameter :: outpath = 'output.txt'
+        character(*), parameter :: execmd   = 'cli\main.out.exe > nul 2>&1'
+        character(*), parameter :: outpath  = 'output.txt'
 #endif
         call execute_command_line(fpmcmd)
         call getlines(outpath, lines, .false.)
             
         TEST('cli')
 #ifdef _FPM
-            call execute_command_line(trim(lines(size(lines)-1))//fpxcmd, exitstat = exitstat, cmdstat = cmdstat)
+            call execute_command_line(trim(lines(1))//fpxcmd, exitstat = exitstat, cmdstat = cmdstat)
 #else
-            call execute_command_line('..\'//trim(lines(size(lines)-1))//fpxcmd, exitstat = exitstat, cmdstat = cmdstat)
+            call execute_command_line(join('..', trim(lines(size(lines)-1))//fpxcmd), exitstat = exitstat, cmdstat = cmdstat)
 #endif
             EXPECT_EQ(exitstat, 0)
             EXPECT_EQ(cmdstat, 0)
             call execute_command_line(gfortcmd, exitstat = exitstat, cmdstat = cmdstat)
             EXPECT_EQ(exitstat, 0)
             EXPECT_EQ(cmdstat, 0)
+            print *, execmd
             call execute_command_line(execmd, exitstat = exitstat, cmdstat = cmdstat)
             EXPECT_EQ(exitstat, 0)
             EXPECT_EQ(cmdstat, 0)
@@ -311,13 +313,13 @@ TESTPROGRAM(main)
                     call getlines(ref, expected, .false.)
                     
                     EXPECT_EQ(size(actual), size(expected))
-                    
                     do j = 1, min(size(actual), size(expected))
                         EXPECT_STREQ(trim(actual(j)), trim(expected(j)))
                     end do
                 END_TEST
             end if
         end do
+
         call clear(global%macros)
 #ifdef _FPM
         call chdir(join('..','..'))
