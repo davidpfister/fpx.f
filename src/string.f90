@@ -11,6 +11,7 @@ module fpx_string
     public :: starts_with,  &
               head,         &
               tail,         &
+              previous,     &
               concat,       &
               writechk,     &
               uppercase
@@ -402,6 +403,22 @@ module fpx_string
         end if
         write (unit, '(A)') str(n*CHKSIZE+1:)
     end subroutine
+    
+    character(1) function previous(line, pos) result(res)
+        character(*), intent(in)    :: line
+        integer, intent(inout)      :: pos
+        !private
+
+        if (pos == 1) then
+            res = trim(line(pos:pos))
+        else
+            do while (line(pos:pos) == ' ')
+                pos = pos - 1
+                if (pos == 1) exit
+            end do
+            res = line(pos:pos)
+        end if
+    end function    
     
     logical function strings_contain_string(lhs, rhs) result(res)
         type(string), intent(in)    :: lhs(:)

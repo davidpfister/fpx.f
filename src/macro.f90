@@ -25,7 +25,8 @@ module fpx_macro
     type, extends(string) :: macro
         character(:), allocatable :: value
         type(string), allocatable :: params(:)
-        logical :: is_variadic ! New flag for variadic macros
+        logical :: is_variadic
+        logical :: is_cyclic
     contains
         private
     end type
@@ -75,6 +76,7 @@ module fpx_macro
         end if
         allocate(that%params(0))
         that%is_variadic = .false.
+        that%is_cyclic = that == that%value
     end function
     
     subroutine set_default(this, name)
@@ -83,6 +85,7 @@ module fpx_macro
         
         this = trim(name)
         this%value = ''
+        this%is_cyclic = this == this%value
     end subroutine
     
     subroutine set_with_value(this, name, value)
@@ -92,6 +95,7 @@ module fpx_macro
         
         this = trim(name)
         this%value = value
+        this%is_cyclic = this == this%value
     end subroutine
     
     function expand_all(line, macros, filepath, iline, stitch) result(expanded)
@@ -294,9 +298,9 @@ module fpx_macro
                                         cycle
                                     end if
                                     
-                                    ! Substitute regular parameters (only if not used by ## or #)
+                                    ! Substitute regular parameters
                                     argbck :block
-                                        integer :: c1
+                                        integer :: c1, h1
                                         logical :: opened
 
                                         opened = .false.
@@ -328,7 +332,30 @@ module fpx_macro
                                                     pos = c1
                                                     c1 = c1 + len_trim(macros(i)%params(j)) - 1
                                                     start = pos + len_trim(macros(i)%params(j))
-                                                    temp = trim(temp(:pos - 1)//arg_values(j)//trim(temp(start:)))
+                                                    if (pos == 2) then
+                                                        if (temp(pos - 1:pos - 1) == '#') then
+                                                            temp = trim(temp(:pos - 2)//'"'//arg_values(j)//'"'//trim(temp(start:)))
+                                                        else
+                                                            temp = trim(temp(:pos - 1)//arg_values(j)//trim(temp(start:)))
+                                                        end if
+                                                    elseif (pos > 2) then
+                                                        h1 = pos - 1
+                                                        if (previous(temp, h1) == '#') then
+                                                            if (h1 == 1) then
+                                                                temp = trim(temp(:h1 - 1)//'"'//arg_values(j)//'"'//trim(temp(start:)))
+                                                            else
+                                                                if (temp(h1-1:h1-1) /= '#') then
+                                                                    temp = trim(temp(:h1 - 1)//'"'//arg_values(j)//'"'//trim(temp(start:)))
+                                                                else
+                                                                    temp = trim(temp(:pos - 1)//arg_values(j)//trim(temp(start:)))
+                                                                end if
+                                                            end if
+                                                        else
+                                                            temp = trim(temp(:pos - 1)//arg_values(j)//trim(temp(start:)))
+                                                        end if
+                                                    else
+                                                        temp = trim(temp(:pos - 1)//arg_values(j)//trim(temp(start:)))
+                                                    end if
                                                     if (verbose) print *, "Substituted param ", j, ": '", macros(i)%params(j), "' with '", &
                                                         arg_values(j), "', temp: '", trim(temp), "'"
                                                 end if
@@ -380,46 +407,6 @@ module fpx_macro
                                         end do
                                     end block
 
-                                    ! Handle stringification (#param)
-                                    sbck: block
-                                        integer :: hash
-                                        pos = 1
-                                        do while (pos > 0)
-                                            pos = index(temp, '#')
-                                            hash = pos
-                                            if (pos > 0) then
-                                                if (pos < len(temp)) then
-                                                    do while (temp(pos + 1:pos + 1) == ' ')
-                                                        pos = pos + 1
-                                                        if (pos == len(temp)) then
-                                                            temp = temp(:hash - 1)
-                                                            exit sbck
-                                                        end if
-                                                    end do
-                                                else
-                                                    temp = temp(:hash - 1)
-                                                end if
-                                                start = pos + 1
-                                                if (start < len(temp)) then
-                                                    do while (verify(temp(start + 1:start + 1), ' ()[]<>&;,!/*-+\="'//"'") /= 0)
-                                                        start = start + 1
-                                                        if (start == len(temp)) then
-                                                            temp = temp(:hash - 1)//'"'//temp(pos + 1:)//'"'
-                                                            exit sbck
-                                                        end if
-                                                    end do
-                                                else
-                                                    temp = temp(:hash - 1)//'"'//trim(temp(pos + 1:))//'"'
-                                                end if
-                                                if (start + 1 <= len(temp)) then
-                                                    temp = temp(:hash - 1)//'"'//trim(temp(pos + 1:start))//'"'//temp(start+1:)
-                                                else
-                                                    temp = temp(:hash - 1)//'"'//trim(temp(pos + 1:start))//'"'
-                                                end if
-                                            end if
-                                        end do
-                                    end block sbck
-
                                     ! Substitute __VA_ARGS__
                                     block
                                         if (macros(i)%is_variadic) then
@@ -432,7 +419,7 @@ module fpx_macro
                                                         .and. temp(start + 1:start + 1) == ')') then
                                                         temp = trim(temp(:pos - 1)//trim(va_args)//')')
                                                     else
-                                                        temp = trim(temp(:pos - 1)//trim(va_args)//trim(temp(start:)))
+                                                        temp = trim(temp(:pos - 1)//trim(va_args)//trim(temp(start+1:)))
                                                     end if
                                                     if (verbose) print *, "Substituted __VA_ARGS__ with '", trim(va_args), &
                                                         "', temp: '", trim(temp), "'"
@@ -471,7 +458,7 @@ module fpx_macro
                             temp = trim(macros(i)%value)
                             m_end = start - 1
                             call graph%add_edge(imacro, i)
-                            if (.not. graph%is_circular(i)) then
+                            if ((.not. graph%is_circular(i)) .and. (.not. macros(i)%is_cyclic)) then
                                 expanded = trim(expanded(:m_start - 1)//trim(temp)//expanded(m_end + 1:))
                                 expanded = expand_macros_internal(expanded, imacro, macros)
                             else 
@@ -588,14 +575,14 @@ module fpx_macro
     end function
     
     subroutine add_to(vec, val, n, chunk_size, finished)
-        type(macro), allocatable, intent(inout)    :: vec(:)
-        type(macro), intent(in)                    :: val
-        integer, intent(inout)                       :: n
-        integer, intent(in)                          :: chunk_size
-        logical, intent(in)                          :: finished
+        type(macro), allocatable, intent(inout) :: vec(:)
+        type(macro), intent(in)                 :: val
+        integer, intent(inout)                  :: n
+        integer, intent(in)                     :: chunk_size
+        logical, intent(in)                     :: finished
         !private
         type(macro), allocatable :: tmp(:)
-        integer :: csize
+        integer :: csize, i
        
         csize = chunk_size
         
@@ -622,11 +609,18 @@ module fpx_macro
                 call move_alloc(tmp, vec)
             end if
         end if
+        
+        do i = 1, size(vec) - 1
+            if (vec(i) == vec(n)%value .and. vec(i)%value == vec(n)) then
+                vec(i)%is_cyclic = .true.
+                vec(n)%is_cyclic = .true.
+            end if
+        end do
     end subroutine
     
     subroutine add_item(this, arg)
-        type(macro), intent(inout), allocatable    :: this(:)
-        type(macro), intent(in)                    :: arg
+        type(macro), intent(inout), allocatable :: this(:)
+        type(macro), intent(in)                 :: arg
         !private 
         integer :: count
        
@@ -635,8 +629,8 @@ module fpx_macro
     end subroutine
     
     subroutine add_item_from_name(this, name)
-        type(macro), intent(inout), allocatable   :: this(:)
-        character(*), intent(in)                    :: name
+        type(macro), intent(inout), allocatable :: this(:)
+        character(*), intent(in)                :: name
         !private 
         integer :: count
         if (.not. allocated(this)) allocate(this(0))
@@ -645,9 +639,9 @@ module fpx_macro
     end subroutine
     
     subroutine add_item_from_name_and_value(this, name, value)
-        type(macro), intent(inout), allocatable   :: this(:)
-        character(*), intent(in)                    :: name
-        character(*), intent(in)                    :: value
+        type(macro), intent(inout), allocatable :: this(:)
+        character(*), intent(in)                :: name
+        character(*), intent(in)                :: value
         !private 
         integer :: count
         
@@ -657,8 +651,8 @@ module fpx_macro
     end subroutine
     
     subroutine add_range(this, args)
-        type(macro), intent(inout), allocatable   :: this(:)
-        type(macro), intent(in)                   :: args(:)
+        type(macro), intent(inout), allocatable :: this(:)
+        type(macro), intent(in)                 :: args(:)
         !private 
         integer :: i, n, count
        
@@ -677,9 +671,9 @@ module fpx_macro
     end subroutine
 
     function get_item(this, key) result(res)
-        type(macro), intent(inout)    :: this(:)
-        integer, intent(in)             :: key
-        type(macro), allocatable      :: res
+        type(macro), intent(inout)  :: this(:)
+        integer, intent(in)         :: key
+        type(macro), allocatable    :: res
         !private
         integer :: n
         
@@ -690,9 +684,9 @@ module fpx_macro
     end function
     
     subroutine insert_item(this, i, arg)
-        type(macro), intent(inout), allocatable   :: this(:)
-        integer, intent(in)                         :: i
-        type(macro), intent(in)                   :: arg
+        type(macro), intent(inout), allocatable :: this(:)
+        integer, intent(in)                     :: i
+        type(macro), intent(in)                 :: arg
         !private 
         integer :: j, count
        
@@ -709,29 +703,35 @@ module fpx_macro
     integer function size_item(this) result(res)
         type(macro), intent(inout), allocatable  :: this(:)
         
-        if (.not. allocated(this)) then 
-            res = 0
-        else
-            res = size(this)
-        end if
+        res = merge(size(this), 0, allocated(this))
     end function
     
     subroutine remove_item(this, i)
-        type(macro), intent(inout), allocatable   :: this(:)
-        integer, intent(in)                         :: i
+        type(macro), intent(inout), allocatable :: this(:)
+        integer, intent(in)                     :: i
         !private
         type(macro), allocatable :: tmp(:)
-        integer :: j, n
+        integer :: k, j, n
 
         if (.not. allocated(this)) allocate(this(0))
         n = size(this)
-       if (allocated(this(i)%params)) deallocate (this(i)%params)
+        if (allocated(this(i)%params)) deallocate (this(i)%params)
         if (n > 1) then
             this(i:n - 1) = this(i + 1:n)
             allocate (tmp(n - 1))
             tmp = this(:n - 1)
             deallocate (this)
             call move_alloc(tmp, this)
+            
+            this(:)%is_cyclic = .false.
+            do k = 1, size(this)
+                do j = 1, size(this)
+                    if (this(k) == this(j)%value .and. this(k)%value == this(j)) then
+                        this(i)%is_cyclic = .true.
+                        this(j)%is_cyclic = .true.
+                    end if
+                end do
+            end do
         else
             deallocate (this); allocate (this(0))
         end if

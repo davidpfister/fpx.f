@@ -29,8 +29,11 @@ C:\Users\dev\Documents\GitHub\sandbox\fpx.f\tests\c\recursion.c
 C:\Users\dev\Documents\GitHub\sandbox\fpx.f\tests\c\recursion.c.out
 C:\Users\dev\Documents\GitHub\sandbox\fpx.f\tests\c\recursion.ref
 C:\Users\dev\Documents\GitHub\sandbox\fpx.f\tests\c\scan.c
+C:\Users\dev\Documents\GitHub\sandbox\fpx.f\tests\c\scan.c.out
 C:\Users\dev\Documents\GitHub\sandbox\fpx.f\tests\c\scan.ref
 C:\Users\dev\Documents\GitHub\sandbox\fpx.f\tests\c\stringisize.c
+C:\Users\dev\Documents\GitHub\sandbox\fpx.f\tests\c\stringisize.c.out
 C:\Users\dev\Documents\GitHub\sandbox\fpx.f\tests\c\stringisize.ref
 C:\Users\dev\Documents\GitHub\sandbox\fpx.f\tests\c\variadic.c
+C:\Users\dev\Documents\GitHub\sandbox\fpx.f\tests\c\variadic.c.out
 C:\Users\dev\Documents\GitHub\sandbox\fpx.f\tests\c\variadic.ref
