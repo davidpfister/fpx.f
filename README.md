@@ -31,14 +31,26 @@
   <img src="">
 </p>
 
-Fortran, the venerable language of scientific computing, has powered simulations of galaxies, weather systems, and quantum phenomena for over seven decades. Its enduring strength lies in its clarity, performance, and mathematical soul—qualities that resonate deeply with its community of developers. Yet, nestled within this ecosystem is a contentious tool: the preprocessor. From its ad hoc beginnings in the 1970s to its modern incarnations in tools like `cpp`, `fpp`, and `fypp`, preprocessing has been both a lifeline and a lightning rod for Fortran developers. It enables portability across diverse platforms, conditional compilation for debugging, and code generation for complex libraries—capabilities critical to Fortran’s role in high-performance computing. But it also sparks fierce debate, with many Fortraners decrying its tendency to obscure code, disrupt the language’s elegant simplicity, and introduce bugs that haunt scientific precision. This article explores the pivotal uses of preprocessing in Fortran, delving into the passionate love-hate relationship that defines its place in the community—a tug-of-war between pragmatic necessity and a purist’s devotion to Fortran’s unadulterated clarity.  
+Fortran, the venerable language of scientific computing, has powered simulations of galaxies, weather systems, and quantum phenomena for over seven decades. Its enduring strength lies in its clarity, performance, and mathematical soul, qualities that resonate deeply with its community of developers. Yet, nestled within this ecosystem is a contentious tool: the preprocessor. From its ad hoc beginnings in the 1970s to its modern incarnations in tools like `cpp`, `fpp`, and `fypp`, preprocessing has been both a lifeline and a lightning rod for Fortran developers. 
 
-This project aims at providing a simple, open-source preprocessor written in modern Fortran. `fpx` is a build on top of a C-compliant preprocessor, fine-tuned for the specificity of the Fortran language. 
+It enables portability across diverse platforms, conditional compilation for debugging, and code generation for complex libraries. These capabilities are critical to Fortran’s role in high-performance computing. But it also sparks fierce debate, with many Fortraners decrying its tendency to obscure code, disrupt the language’s elegant simplicity, and introduce bugs.   
+
+This project aims at providing a *simple*, *embeddable*, *open-source* preprocessor written in modern Fortran. `fpx` is a build on top of a C-compliant preprocessor, fine-tuned for the specificity of the Fortran language. 
+`fpx` is an embeddable preprocessor. It can be used as a command-line tool or directly embedded into any solution with the module `fpx_parser`.
 
 * [![fpm][fpm]][fpm-url]
 * [![ifort][ifort]][ifort-url]
 * [![gfortran][gfortran]][gfortran-url]
 
+`fpx` supports: 
+- conditional compilation with `#if`, `#ifdef`, `#ifndef`, `#elif`, `#else`,`#endif`
+- simple macros and function like macros with `#define`, `#undef`, `defined` and `!defined`
+- simple arithmetic and bitwise operations with `+`, `-`, `*`, `**`, `/`, `>`, `<`, `>=`, `=<`, `||`, `&&`, `|`, `^`, `&`, `!` and `~`.
+- include files with `#include`
+- variadic macros with `__VA_ARGS__`, and `__VA_OPT__`, 
+- build-in macros as `__LINE__`, `__FILE__`, `__FILENAME__`, `__TIME__`, `__DATE__`, `__TIMESTAMP__`
+- stringification `#` and concatenation `##`
+- and more...       
 <!-- GETTING STARTED -->
 ## Getting Started
 
@@ -101,9 +113,7 @@ set FPM_FC=ifort
 Besides the build command, several commands are also available:
 ```bash
 @pretiffy
-system fprettify .\examples\ -r --case 1 1 1 1 -i 4 --strict-indent --enable-replacements --strip-comments --c-relations
 system fprettify .\src\ -r --case 1 1 1 1 -i 4 --strict-indent --enable-replacements --strip-comments --c-relations
-system fprettify .\tests\ -r --case 1 1 1 1 -i 4 --strict-indent --enable-replacements --strip-comments --c-relations
 
 @clean
 option clean --all
@@ -140,13 +150,27 @@ The project was originally developed on Windows with Visual Studio 2019. The rep
 <!-- USAGE EXAMPLES -->
 ## Usage
 
+### Command line
+The preprocessor `fpx` can be used from the command-line using your favorite shell. 
+The following options are available:
+> |Option|Definition|
+> |:--|:--| 
+> |-D\<macro>|Define a \<macro> with no value.| 
+> |-D\<macro>=\<val>|Define a \<macro> with \<val> as its value.| 
+> |-U\<macro>|Undefine \<macro>'|
+> |-I\<dir>|Add \<dir> to the end of the global include paths.| 
+> |-h, -?|Display this help.|
+> |-o|Output file path with name and extension.|
+> |-v|Display the version of the program.|
+
 Using the file preprocessor could not be easier. The function simply takes as arguments the input and output file paths. 
 
+### Embedded
 ```fortran
 program test
     use fpx_parser
     
-    call preprocess_file('tests/input.in', 'tests/output.out')
+    call preprocess('tests/input.in', 'tests/output.out')
 end program
 ```
 

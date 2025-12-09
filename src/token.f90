@@ -225,15 +225,15 @@ contains
     
     recursive integer function parse_bitwise_or(tokens, ntokens, pos, macros) result(val)
         type(token), intent(in)   :: tokens(:)
-        integer, intent(in)         :: ntokens
-        integer, intent(inout)      :: pos
+        integer, intent(in)       :: ntokens
+        integer, intent(inout)    :: pos
         type(macro), intent(in)   :: macros(:)
         !private
         integer :: left
 
         left = parse_bitwise_xor(tokens, ntokens, pos, macros)
         do while (pos <= ntokens .and. tokens(pos)%value == '|')
-            if (verbose) print *, "Parsing && at pos ", pos
+            if (verbose) print *, "Parsing | at pos ", pos
             pos = pos + 1
             val = parse_bitwise_xor(tokens, ntokens, pos, macros)
             left = ior(left, val)
@@ -243,8 +243,8 @@ contains
     
     recursive integer function parse_bitwise_xor(tokens, ntokens, pos, macros) result(val)
         type(token), intent(in)   :: tokens(:)
-        integer, intent(in)         :: ntokens
-        integer, intent(inout)      :: pos
+        integer, intent(in)       :: ntokens
+        integer, intent(inout)    :: pos
         type(macro), intent(in)   :: macros(:)
         !private
         integer :: left
@@ -261,8 +261,8 @@ contains
     
     recursive integer function parse_bitwise_and(tokens, ntokens, pos, macros) result(val)
         type(token), intent(in)   :: tokens(:)
-        integer, intent(in)         :: ntokens
-        integer, intent(inout)      :: pos
+        integer, intent(in)       :: ntokens
+        integer, intent(inout)    :: pos
         type(macro), intent(in)   :: macros(:)
         !private
         integer :: left
@@ -304,8 +304,8 @@ contains
 
     recursive integer function parse_relational(tokens, ntokens, pos, macros) result(val)
         type(token), intent(in)   :: tokens(:)
-        integer, intent(in)         :: ntokens
-        integer, intent(inout)      :: pos
+        integer, intent(in)       :: ntokens
+        integer, intent(inout)    :: pos
         type(macro), intent(in)   :: macros(:)
         !private
         integer :: left, right
@@ -338,8 +338,8 @@ contains
     
     recursive integer function parse_shifting(tokens, ntokens, pos, macros) result(val)
         type(token), intent(in)   :: tokens(:)
-        integer, intent(in)         :: ntokens
-        integer, intent(inout)      :: pos
+        integer, intent(in)       :: ntokens
+        integer, intent(inout)    :: pos
         type(macro), intent(in)   :: macros(:)
         !private
         integer :: left, right
@@ -363,8 +363,8 @@ contains
 
     recursive integer function parse_additive(tokens, ntokens, pos, macros) result(val)
         type(token), intent(in)   :: tokens(:)
-        integer, intent(in)         :: ntokens
-        integer, intent(inout)      :: pos
+        integer, intent(in)       :: ntokens
+        integer, intent(inout)    :: pos
         type(macro), intent(in)   :: macros(:)
         !private
         integer :: left, right
@@ -388,8 +388,8 @@ contains
     
     recursive integer function parse_multiplicative(tokens, ntokens, pos, macros) result(val)
         type(token), intent(in)   :: tokens(:)
-        integer, intent(in)         :: ntokens
-        integer, intent(inout)      :: pos
+        integer, intent(in)       :: ntokens
+        integer, intent(inout)    :: pos
         type(macro), intent(in)   :: macros(:)
         !private
         integer :: left, right
@@ -417,8 +417,8 @@ contains
     
     recursive integer function parse_power(tokens, ntokens, pos, macros) result(val)
         type(token), intent(in)   :: tokens(:)
-        integer, intent(in)         :: ntokens
-        integer, intent(inout)      :: pos
+        integer, intent(in)       :: ntokens
+        integer, intent(inout)    :: pos
         type(macro), intent(in)   :: macros(:)
         !private
         integer :: left, right
@@ -436,8 +436,8 @@ contains
     
     recursive integer function parse_unary(tokens, ntokens, pos, macros) result(val)
         type(token), intent(in)   :: tokens(:)
-        integer, intent(in)         :: ntokens
-        integer, intent(inout)      :: pos
+        integer, intent(in)       :: ntokens
+        integer, intent(inout)    :: pos
         type(macro), intent(in)   :: macros(:)
 
         if (pos <= ntokens .and. tokens(pos)%value == '!') then

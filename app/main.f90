@@ -54,10 +54,11 @@ console(main)
                                          '', &
                                          '                             Preprocessor Option List', &
                                          '                             -----------------------', &
-                                         '-D                ', & 
-                                         '-U                ', &
-                                         '-I                ', & 
-                                         '-h, -?            ', &
+                                         '-D<macro>         Define a <macro> with no value.', &
+                                         '-D<macro>=<val>   Define a <macro> with <val> as its value.', & 
+                                         '-U<macro>         Undefine <macro>', &
+                                         '-I<dir>           Add <dir> to the end of the global include paths.', & 
+                                         '-h, -?            Display this help', &
                                          '-o                Output file path with name and extension.', &
                                          '-v                Display the version of the program.'
                     stop 0, quiet = .true.
