@@ -1,3 +1,64 @@
+!> @brief Module implementing a full C-preprocessor-style constant expression evaluator using a top-down recursive descent parser.
+!! The module provides the ability to evaluate integer constant expressions of the kind used in
+!! classical preprocessor. This includes support for:
+!! - All C-style arithmetic, bitwise, logical, relational, and conditional operators
+!! - Operator precedence and associativity
+!! - Macro identifier substitution and the special `defined(identifier)` operator
+!! - Integer literals in decimal, octal (`0...`), hexadecimal (`0x...`), and binary (`0b...`) bases
+!! - Parenthesized sub-expressions and proper handling of unary operators
+!!
+!! The implementation consists of two major phases:
+!!
+!! 1. Tokenization
+!!    The input string is scanned and converted into a sequence of @ref token objects.
+!!    The tokenizer recognizes multi-character operators (`&&`, `||`, `==`, `!=`, `<=`, `>=`, `<<`, `>>`, `**`),
+!!    the `defined` operator (with or without parentheses), numbers in all supported bases,
+!!    identifiers, and parentheses. Whitespace is ignored except as a token separator.
+!!
+!! 2. Parsing and evaluation via top-down recursive descent
+!!    A classic predictive (LL(1)) recursive descent parser is used, where each non-terminal
+!!    in the grammar is implemented as a separate parsing function with the exact precedence level.
+!!    The grammar is directly derived from the C standard operator precedence table:
+!!
+!!    parse_expression        → parse_or
+!!    parse_or                → parse_and ( '||' parse_and )*
+!!    parse_and               → parse_bitwise_or ( '&&' parse_bitwise_or )*
+!!    parse_bitwise_or        → parse_bitwise_xor ( '|' parse_bitwise_xor )*
+!!    parse_bitwise_xor       → parse_bitwise_and ( '^' parse_bitwise_and )*
+!!    parse_bitwise_and       → parse_equality ( '&' parse_equality )*
+!!    parse_equality          → parse_relational ( ('==' | '!=') parse_relational )*
+!!    parse_relational        → parse_shifting ( ('<' | '>' | '<=' | '>=') parse_shifting )*
+!!    parse_shifting          → parse_additive ( ('<<' | '>>') parse_additive )*
+!!    parse_additive          → parse_multiplicative ( ('+' | '-') parse_multiplicative )*
+!!    parse_multiplicative    → parse_power ( ('*' | '/' | '%') parse_power )*
+!!    parse_power             → parse_unary ( '**' parse_unary )*          (right-associative)
+!!    parse_unary             → ('!' | '-' | '+' | '~') parse_unary
+!!                             | parse_atom
+!!    parse_atom              → number
+!!                             | identifier                              (macro expansion)
+!!                             | 'defined' ( identifier ) | 'defined' identifier
+!!                             | '(' parse_expression ')'
+!!
+!!    Each parsing function consumes tokens from the global position `pos` and returns the
+!!    integer value of the sub-expression it recognizes. Because the grammar is factored by
+!!    precedence, left-associativity is achieved naturally via left-recursive loops,
+!!    while right-associativity for the power operator (`**`) is handled by calling
+!!    `parse_unary` on the right-hand side first.
+!!
+!!    Macro expansion occurs lazily inside `parse_atom` when an identifier token is encountered:
+!!    - If the identifier is defined, its replacement text is recursively evaluated.
+!!    - The special `defined` operator yields 1 or 0 depending on whether the identifier exists.
+!!
+!!    The parser is fully re-entrant and has no global state except the `verbose` flag from
+!!    the logging module (used only for debugging).
+!!
+!!    Public interface:
+!!    - @ref evaluate_expression : high-level function that tokenizes and evaluates in one call
+!!    - @ref parse_expression     : low-level entry point for already-tokenized input
+!!
+!!    This design guarantees correct operator precedence without the need for an explicit
+!!    abstract syntax tree or stack-based shunting-yard algorithm, while remaining easy to
+!!    read, maintain, and extend.
 module fpx_token
     use fpx_string
     use fpx_constants
@@ -9,6 +70,8 @@ module fpx_token
     public ::   evaluate_expression, &
                 parse_expression
 
+    !> @brief Token kinds used in expression parsing.
+    !! Enumeration defining the possible types of tokens recognized by the tokenizer.
     enum, bind(c)
         enumerator :: unknown = -1
         enumerator :: number = 0
@@ -18,20 +81,33 @@ module fpx_token
         enumerator :: defined = 4
     end enum
 
+    !> @brief Kind parameter for token type enumeration.
     integer, parameter :: tokens_enum = kind(unknown)
 
+    !> @brief Represents a single token in a parsed expression.
+    !! Holds the string value of the token and its classified type.
     type, public :: token
         character(:), allocatable   :: value
         integer(tokens_enum)        :: type
     end type
     
+    !> @brief Converts a string to integer.
+    !! @interface strtol
     interface strtol
         module procedure :: strtol_default
         module procedure :: strtol_with_base
     end interface
 
-contains
+    contains
 
+    !> @brief Evaluates a preprocessor-style expression with macro substitution.
+    !! Tokenizes the input expression, expands macros where appropriate,
+    !! parses it according to operator precedence, and computes the integer result.
+    !! Returns .true. if evaluation succeeded and the result is non-zero.
+    !! @param[in] expr   Expression string to evaluate
+    !! @param[in] macros Array of defined macros for substitution and `defined()` checks
+    !! @param[out] val   Optional integer result of the evaluation
+    !! @return .true. if the expression evaluated successfully to non-zero, .false. otherwise
     logical function evaluate_expression(expr, macros, val) result(res)
         character(*), intent(in)        :: expr
         type(macro), intent(in)         :: macros(:)
@@ -59,12 +135,20 @@ contains
         if (present(val)) val = result
     end function
 
+    !> @brief Tests whether a single character is a decimal digit ('0'-'9').
+    !! @param[in] ch Character to test
+    !! @return .true. if ch is a digit
     logical elemental function is_digit(ch) result(res)
         character(*), intent(in) :: ch
         
         res = verify(ch, '0123456789') == 0
     end function
     
+    !> @brief Detects whether a string starts a typeless constant (hex, octal, binary).
+    !! Used to avoid treating them as identifiers during tokenization.
+    !! @param[in]  str Input string starting at current position
+    !! @param[out] pos Length of the typeless constant (0 if not typeless)
+    !! @return .true. if the prefix is a valid typeless constant in non-base-10
     logical function is_typeless(str, pos) result(res)
         character(*), intent(in)    :: str
         integer, intent(out)        :: pos
@@ -82,6 +166,10 @@ contains
         if (base == 10) res = .false.
     end function
     
+    !> @brief Converts a string to integer, auto-detecting base (wrapper).
+    !! @param[in]  str      String to convert
+    !! @param[out] success  Optional flag indicating successful conversion
+    !! @return Converted integer value
     integer function strtol_default(str, success) result(val)
         character(*), intent(in)        :: str
         logical, intent(out), optional  :: success
@@ -92,6 +180,12 @@ contains
         val = strtol_with_base(str, base, success)
     end function
     
+    !> @brief Converts a string to integer with explicit base handling.
+    !! Supports base 2, 8, 10, 16 and prefixes `0x`, `0b`.
+    !! @param[in]    str      String to convert
+    !! @param[inout] base     0 = auto-detect, otherwise forces given base
+    !! @param[out]   success  Optional flag indicating successful conversion
+    !! @return Converted integer value
     integer function strtol_with_base(str, base, success) result(val)
         character(*), intent(in)        :: str
         integer, intent(inout)          :: base
@@ -179,6 +273,13 @@ contains
         if (present(success)) success = is_valid
     end function
 
+    !> @brief Parses a sequence of tokens starting at position `pos` as a full expression.
+    !! Entry point for the recursive descent parser. Delegates to parse_or().
+    !! @param[in] tokens    Array of tokens to parse
+    !! @param[in] ntokens   Number of valid tokens in the array
+    !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
+    !! @param[in] macros    Defined macros for expansion and `defined()` checks
+    !! @return Integer value of the parsed expression
     recursive integer function parse_expression(tokens, ntokens, pos, macros) result(val)
         type(token), intent(in)   :: tokens(:)
         integer, intent(in)         :: ntokens
@@ -188,6 +289,12 @@ contains
         val = parse_or(tokens, ntokens, pos, macros)
     end function
 
+    !> @brief Parses logical OR expressions (`||`).
+    !! @param[in] tokens    Array of tokens to parse
+    !! @param[in] ntokens   Number of valid tokens in the array
+    !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
+    !! @param[in] macros    Defined macros for expansion and `defined()` checks
+    !! @return Integer value of the parsed expression
     recursive integer function parse_or(tokens, ntokens, pos, macros) result(val)
         type(token), intent(in)   :: tokens(:)
         integer, intent(in)         :: ntokens
@@ -205,6 +312,12 @@ contains
         val = left
     end function
 
+    !> @brief Parses logical AND expressions (`&&`).
+    !! @param[in] tokens    Array of tokens to parse
+    !! @param[in] ntokens   Number of valid tokens in the array
+    !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
+    !! @param[in] macros    Defined macros for expansion and `defined()` checks
+    !! @return Integer value of the parsed expression
     recursive integer function parse_and(tokens, ntokens, pos, macros) result(val)
         type(token), intent(in)   :: tokens(:)
         integer, intent(in)         :: ntokens
@@ -223,6 +336,12 @@ contains
         val = left
     end function
     
+    !> @brief Parses bitwise OR expressions (`|`).
+    !! @param[in] tokens    Array of tokens to parse
+    !! @param[in] ntokens   Number of valid tokens in the array
+    !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
+    !! @param[in] macros    Defined macros for expansion and `defined()` checks
+    !! @return Integer value of the parsed expression
     recursive integer function parse_bitwise_or(tokens, ntokens, pos, macros) result(val)
         type(token), intent(in)   :: tokens(:)
         integer, intent(in)       :: ntokens
@@ -241,6 +360,12 @@ contains
         val = left
     end function
     
+    !> @brief Parses bitwise XOR expressions (`^`).
+    !! @param[in] tokens    Array of tokens to parse
+    !! @param[in] ntokens   Number of valid tokens in the array
+    !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
+    !! @param[in] macros    Defined macros for expansion and `defined()` checks
+    !! @return Integer value of the parsed expression
     recursive integer function parse_bitwise_xor(tokens, ntokens, pos, macros) result(val)
         type(token), intent(in)   :: tokens(:)
         integer, intent(in)       :: ntokens
@@ -259,6 +384,12 @@ contains
         val = left
     end function
     
+    !> @brief Parses bitwise AND expressions (`&`).
+    !! @param[in] tokens    Array of tokens to parse
+    !! @param[in] ntokens   Number of valid tokens in the array
+    !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
+    !! @param[in] macros    Defined macros for expansion and `defined()` checks
+    !! @return Integer value of the parsed expression
     recursive integer function parse_bitwise_and(tokens, ntokens, pos, macros) result(val)
         type(token), intent(in)   :: tokens(:)
         integer, intent(in)       :: ntokens
@@ -277,6 +408,12 @@ contains
         val = left
     end function
 
+    !> @brief Parses equality/inequality expressions (`==`, `!=`).
+    !! @param[in] tokens    Array of tokens to parse
+    !! @param[in] ntokens   Number of valid tokens in the array
+    !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
+    !! @param[in] macros    Defined macros for expansion and `defined()` checks
+    !! @return Integer value of the parsed expression
     recursive integer function parse_equality(tokens, ntokens, pos, macros) result(val)
         type(token), intent(in)   :: tokens(:)
         integer, intent(in)         :: ntokens
@@ -302,6 +439,12 @@ contains
         val = left
     end function
 
+    !> @brief Parses relational expressions (`<`, `>`, `<=`, `>=`).
+    !! @param[in] tokens    Array of tokens to parse
+    !! @param[in] ntokens   Number of valid tokens in the array
+    !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
+    !! @param[in] macros    Defined macros for expansion and `defined()` checks
+    !! @return Integer value of the parsed expression
     recursive integer function parse_relational(tokens, ntokens, pos, macros) result(val)
         type(token), intent(in)   :: tokens(:)
         integer, intent(in)       :: ntokens
@@ -336,6 +479,12 @@ contains
         val = left
     end function
     
+    !> @brief Parses shift expressions (`<<`, `>>`).
+    !! @param[in] tokens    Array of tokens to parse
+    !! @param[in] ntokens   Number of valid tokens in the array
+    !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
+    !! @param[in] macros    Defined macros for expansion and `defined()` checks
+    !! @return Integer value of the parsed expression
     recursive integer function parse_shifting(tokens, ntokens, pos, macros) result(val)
         type(token), intent(in)   :: tokens(:)
         integer, intent(in)       :: ntokens
@@ -361,6 +510,12 @@ contains
         val = left
     end function
 
+    !> @brief Parses additive expressions (`+`, `-`).
+    !! @param[in] tokens    Array of tokens to parse
+    !! @param[in] ntokens   Number of valid tokens in the array
+    !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
+    !! @param[in] macros    Defined macros for expansion and `defined()` checks
+    !! @return Integer value of the parsed expression
     recursive integer function parse_additive(tokens, ntokens, pos, macros) result(val)
         type(token), intent(in)   :: tokens(:)
         integer, intent(in)       :: ntokens
@@ -386,6 +541,12 @@ contains
         val = left
     end function
     
+    !> @brief Parses multiplicative expressions (`*`, `/`, `%`).
+    !! @param[in] tokens    Array of tokens to parse
+    !! @param[in] ntokens   Number of valid tokens in the array
+    !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
+    !! @param[in] macros    Defined macros for expansion and `defined()` checks
+    !! @return Integer value of the parsed expression
     recursive integer function parse_multiplicative(tokens, ntokens, pos, macros) result(val)
         type(token), intent(in)   :: tokens(:)
         integer, intent(in)       :: ntokens
@@ -415,6 +576,12 @@ contains
         val = left
     end function
     
+    !> @brief Parses exponentiation (`**`). Right-associative.
+    !! @param[in] tokens    Array of tokens to parse
+    !! @param[in] ntokens   Number of valid tokens in the array
+    !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
+    !! @param[in] macros    Defined macros for expansion and `defined()` checks
+    !! @return Integer value of the parsed expression
     recursive integer function parse_power(tokens, ntokens, pos, macros) result(val)
         type(token), intent(in)   :: tokens(:)
         integer, intent(in)       :: ntokens
@@ -434,6 +601,12 @@ contains
         val = left
     end function
     
+    !> @brief Parses unary operators (`!`, `-`, `+`, `~`).
+    !! @param[in] tokens    Array of tokens to parse
+    !! @param[in] ntokens   Number of valid tokens in the array
+    !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
+    !! @param[in] macros    Defined macros for expansion and `defined()` checks
+    !! @return Integer value of the parsed expression
     recursive integer function parse_unary(tokens, ntokens, pos, macros) result(val)
         type(token), intent(in)   :: tokens(:)
         integer, intent(in)       :: ntokens
@@ -461,6 +634,12 @@ contains
         end if
     end function
 
+    !> @brief Parses primary expressions: numbers, identifiers, `defined(...)`, parentheses.
+    !! @param[in] tokens    Array of tokens to parse
+    !! @param[in] ntokens   Number of valid tokens in the array
+    !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
+    !! @param[in] macros    Defined macros for expansion and `defined()` checks
+    !! @return Integer value of the parsed expression
     recursive integer function parse_atom(tokens, ntokens, pos, macros) result(val)
         type(token), intent(in)     :: tokens(:)
         integer, intent(in)         :: ntokens
@@ -512,6 +691,13 @@ contains
         end if
     end function
 
+    !> @brief Tokenizes a preprocessor expression into an array of token structures.
+    !! Handles whitespace, multi-character operators (`&&`, `||`, `==`, etc.),
+    !! the `defined` operator (with or without parentheses), numbers in various bases,
+    !! identifiers, and parentheses.
+    !! @param[in]  expr     Expression string to tokenize
+    !! @param[out] tokens   Allocated array receiving the tokens
+    !! @param[out] ntokens  Number of tokens produced
     subroutine tokenize(expr, tokens, ntokens)
         character(*), intent(in)                :: expr
         type(token), allocatable, intent(out) :: tokens(:)

@@ -1,3 +1,48 @@
+!> @brief A modern, portable Fortran module for path manipulation and basic directory operations.
+!! This module provides a clean interface for working with file system paths
+!! in a platform-independent way. It correctly handles both Unix (`/`) and Windows (`\`) path
+!! separators through conditional compilation and offers deferred-length character results
+!! for maximum flexibility.
+!!
+!! The module builds upon the `fpx_string` module for `string` type support and provides
+!! overloads of key procedures to accept either intrinsic `character(*)` or `type(string)`
+!! arguments.
+!!
+!! Features
+!! --------
+!! - Detection of absolute and rooted paths on Windows and Unix-like systems
+!! - Safe path joining that avoids duplicate separators
+!! - Extraction of directory part, filename (with or without extension)
+!! - Path splitting into head/tail components (similar to Python's `os.path.split`)
+!! - Retrieval of the current working directory (`cwd`)
+!! - Changing the current working directory (`chdir`)
+!!
+!! @note All path-returning functions return allocatable deferred-length characters.
+!! @note The public generic `join` interface works with any combination of `character` and `string`.
+!!
+!! @example
+!! ```fortran
+!! use fpx_path
+!! character(:), allocatable :: p1, p2, full
+!!
+!! p1 = "/home/user/docs"
+!! p2 = "report.pdf"
+!! full = join(p1, p2)                ! => "/home/user/docs/report.pdf"
+!!
+!! print *, is_absolute(full)         ! .true.  (on Unix)
+!! print *, filename(full)            ! "report"
+!! print *, filename(full,.true.)     ! "report.pdf"
+!! print *, dirpath(full)             ! "/home/user/docs"
+!! ```
+!!
+!! @example Windows example
+!! ```fortran
+!! use fpx_path
+!! character(:), allocatable :: p
+!! p = join("C:\Users", "Alice", "Documents")
+!! ! p == "C:\Users\Alice\Documents"
+!! print *, is_absolute(p)   ! .true.
+!! ```
 module fpx_path
     use, intrinsic :: iso_c_binding
     use fpx_string
@@ -34,6 +79,8 @@ module fpx_path
         end function
     end interface
     
+    !> Generic interface for joining two path components
+    !! Supports all combinations of character and string arguments
     interface join 
         module procedure :: join_character_character
         module procedure :: join_string_character
@@ -43,6 +90,18 @@ module fpx_path
     
     contains
     
+    !> @brief Returns .true. if the path is absolute.
+    !! On Unix a path is absolute when it starts with '/'.
+    !! On Windows a path is absolute when it starts with a drive letter followed by ':\'
+    !! (e.g. "C:\", "d:/temp").
+    !!
+    !! @param[in] filepath  Path to test
+    !! @return res          .true. if filepath is absolute
+    !!
+    !! @example
+    !!    print *, is_absolute("/home/user")   ! .true.  (Unix)
+    !!    print *, is_absolute("C:\\Temp")     ! .true.  (Windows)
+    !!    print *, is_absolute("docs/..")      ! .false.
     pure logical function is_absolute(filepath) result(res)
         character(*), intent(in)        :: filepath
 #ifdef _WIN32   
@@ -57,6 +116,12 @@ module fpx_path
 
     end function
     
+    !> @brief Returns .true. if the path is rooted (starts with a separator) or is absolute.
+    !! A rooted path begins with the platform separator ("\" on Windows, "/" elsewhere)
+    !! even if it is not a full absolute path (e.g. "\temp" on Windows).
+    !!
+    !! @param[in] filepath  Path to test
+    !! @return res          .true. if filepath is rooted
     pure logical function is_rooted(filepath) result(res)
         character(*), intent(in)        :: filepath
         !private 
@@ -70,6 +135,18 @@ module fpx_path
 #endif
     end function
     
+    !> @brief Extracts the filename part of a path.
+    !! By default the extension is stripped. If keepext=.true. the full filename
+    !! including extension is returned.
+    !!
+    !! @param[in] filepath   Full or relative path
+    !! @param[in] keepext    Optional; keep extension when .true.
+    !! @return res           Filename (without path)
+    !!
+    !! @example
+    !!    print *, filename("dir/file.txt")        ! "file"
+    !!    print *, filename("dir/file.txt",.true.) ! "file.txt"
+    !!    print *, filename("archive.tar.gz")      ! "archive.tar"
     pure function filename(filepath, keepext) result(res)
         character(*), intent(in)        :: filepath
         character(:), allocatable       :: res
@@ -91,6 +168,12 @@ module fpx_path
         end if
     end function
     
+    !> @brief Joins two path components with the correct platform separator.
+    !! Removes duplicate separators and trailing/leading whitespace.
+    !!
+    !! @param[in] path1  First path component
+    !! @param[in] path2  Second path component
+    !! @return res       Joined path
     pure function join_character_character(path1, path2) result(res)
         character(*), intent(in) :: path1
         character(*), intent(in) :: path2
@@ -104,6 +187,12 @@ module fpx_path
         res = temp // separator // trim(adjustl(path2))
     end function
     
+    !> @brief Joins character path with string path component.
+    !! Removes duplicate separators and trailing/leading whitespace.
+    !!
+    !! @param[in] path1  First path component
+    !! @param[in] path2  Second path component
+    !! @return res       Joined path
     pure function join_character_string(path1, path2) result(res)
         character(*), intent(in) :: path1
         type(string), intent(in) :: path2
@@ -117,6 +206,12 @@ module fpx_path
         res = temp // separator // trim(adjustl(path2%chars))
     end function
     
+    !> @brief Joins string path with character path component.
+    !! Removes duplicate separators and trailing/leading whitespace.
+    !!
+    !! @param[in] path1  First path component
+    !! @param[in] path2  Second path component
+    !! @return res       Joined path
     pure function join_string_character(path1, path2) result(res)
         type(string), intent(in) :: path1
         character(*), intent(in) :: path2
@@ -130,6 +225,12 @@ module fpx_path
         res = temp // separator // trim(adjustl(path2))
     end function
     
+    !> @brief Joins two string path components.
+    !! Removes duplicate separators and trailing/leading whitespace.
+    !!
+    !! @param[in] path1  First path component
+    !! @param[in] path2  Second path component
+    !! @return res       Joined path
     pure function join_string_string(path1, path2) result(res)
         type(string), intent(in) :: path1
         type(string), intent(in) :: path2
@@ -143,6 +244,12 @@ module fpx_path
         res = temp // separator // trim(adjustl(path2%chars))
     end function
     
+    !> @brief Returns the directory part of a path (everything before the last separator).
+    !! @param[in] filepath  Path to analyse
+    !! @return res          Directory component
+    !!
+    !! @example
+    !!    print *, dirpath("/home/user/file.txt")  ! "/home/user"
     pure function dirpath(filepath) result(res)
         character(*), intent(in) :: filepath
         character(:), allocatable :: res
@@ -152,6 +259,12 @@ module fpx_path
         call split_path(filepath, res, temp)
     end function
     
+    !> @brief Returns the base name (filename) part of a path.
+    !! @param[in] filepath  Path to analyse
+    !! @return res          Base name component
+    !!
+    !! @example
+    !!    print *, dirname("/home/user/file.txt")  ! "file.txt"
     pure function dirname(filepath) result(res)
         character(*), intent(in) :: filepath
         character(:), allocatable :: res
@@ -161,6 +274,10 @@ module fpx_path
         call split_path(filepath, temp, res)
     end function
     
+    !> @brief Splits a path into head (directory) and tail (basename) components.
+    !! @param[in]  filepath  Input path
+    !! @param[out] head      Directory part (includes trailing separator when appropriate)
+    !! @param[out] tail      Base name part
     pure subroutine split_path(filepath, head, tail)
         character(*), intent(in)                :: filepath
         character(:), allocatable, intent(out)  :: head
@@ -212,6 +329,15 @@ module fpx_path
         tail = temp(len(temp)-i+2:)
     end subroutine
     
+    !> @brief Returns the current working directory as a deferred-length character string.
+    !! Returns empty string on failure.
+    !!
+    !! @return res  Current working directory
+    !!
+    !! @example
+    !!    character(:), allocatable :: here
+    !!    here = cwd()
+    !!    print *, "We are in: ", here
     function cwd() result(res)
         character(:), allocatable :: res
         !private
@@ -231,6 +357,14 @@ module fpx_path
         end if
     end function
 
+    !> @brief Changes the current working directory.
+    !! @param[in]  path  Directory to change to
+    !! @param[out] err   Optional integer error code (0 = success, non-zero = failure)
+    !!
+    !! @example
+    !!    integer :: ierr
+    !!    call chdir("/tmp", ierr)
+    !!    if (ierr /= 0) stop "Failed to change directory"
     subroutine chdir(path, err)
         character(*) :: path
         integer, optional, intent(out) :: err
