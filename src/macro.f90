@@ -1,3 +1,44 @@
+!> @brief Macro management and expansion core of the fpx Fortran preprocessor
+!!
+!! This module implements a complete, standards-inspired macro system supporting:
+!! - Object-like and function-like macros
+!! - Variadic macros (`...` and `__VA_ARGS__`)
+!! - Parameter stringification (`#param`) and token pasting (`##`)
+!! - Built-in predefined macros: `__FILE__`, `__FILENAME__`, `__LINE__`, `__DATE__`, `__TIME__`, `__TIMESTAMP__`
+!! - Recursive expansion with circular dependency detection via digraph analysis
+!! - Dynamic macro table of `macro` objects with efficient addition, lookup, removal
+!! - Full support for nested macro calls and proper argument handling
+!!
+!! The design allows safe, repeated expansion while preventing infinite recursion.
+!! All operations are container-agnostic using allocatable dynamic arrays.
+!!
+!! @par Examples
+!!
+!! 1. Define and use simple macros:
+!! @code{.f90}
+!!    type(macro), allocatable :: macros(:)
+!!    call add(macros, macro("PI", "3.1415926535"))
+!!    call add(macros, macro("MSG(x)", "print *, 'Hello ', x"))
+!!"))
+!!    
+!!    print *, expand_all("area = PI * r**2", macros, "circle.F90", 10, .false.)
+!!    !> prints: area = 3.1415926535 * r**2
+!! @endcode
+!!
+!! 2. Variadic macro with stringification and pasting:
+!! @code{.f90}
+!!    call add(macros, macro("DEBUG_PRINT(...)", 'print *, "DEBUG[", __FILE__, ":", __LINE__, "]: ", __VA_ARGS__'))
+!!    print *, expand_all("DEBUG_PRINT('value =', x)", macros, "test.F90", 42, .false.)
+!!    !> prints: print *, "DEBUG[", "test.F90", ":", 42, "]: ", 'value =', x
+!! @endcode
+!!
+!! 3. Token pasting with ##:
+!! @code{.f90
+!!    call add(macros, macro("MAKE_VAR(name,num)", "var_name_##num"))
+!!    print *, expand_all("real :: MAKE_VAR(temp,42)", macros, "file.F90", 5, .false.)
+!!    !> prints: real :: var_name_42
+!!42
+!! @endcode
 module fpx_macro
     use fpx_constants
     use fpx_logging
@@ -22,6 +63,9 @@ module fpx_macro
     
     integer, parameter :: BUFFER_SIZE = 256
 
+    !> @brief Derived type representing a single preprocessor macro
+    !! Extends `string` with macro-specific fields: replacement value, parameters,
+    !! variadic flag, and cyclic self-reference detection.
     type, extends(string) :: macro
         character(:), allocatable :: value
         type(string), allocatable :: params(:)
@@ -31,10 +75,12 @@ module fpx_macro
         private
     end type
     
+    !> @brief Constructor interface for macro type
     interface macro
         module procedure :: macro_new
     end interface
-        
+    
+    !> @brief Add one or more macros to a dynamic table
     interface add 
         module procedure :: add_item
         module procedure :: add_item_from_name
@@ -42,28 +88,37 @@ module fpx_macro
         module procedure :: add_range
     end interface
    
+    !> @brief Remove all macros from a table
     interface clear
         module procedure  :: clear_item
     end interface
 
+    !> @brief Retrieve a macro by index
     interface get
         module procedure  :: get_item
     end interface
 
+    !> @brief Insert more macro to a dynamic table
     interface insert
         module procedure :: insert_item
     end interface
 
+    !> @brief Remove a macro at given index
     interface remove
         module procedure :: remove_item
     end interface
     
+    !> @brief Return current number of stored macros
     interface sizeof
         module procedure  :: size_item
     end interface
 
     contains
     
+    !> @brief Construct a new macro object
+    !! @param[in] name Mandatory macro name
+    !! @param[in] val  Optional replacement text (default: empty)
+    !! @return Initialized macro object
     type(macro) function macro_new(name, val) result(that)
         character(*), intent(in)            :: name
         character(*), intent(in), optional  :: val
@@ -79,6 +134,7 @@ module fpx_macro
         that%is_cyclic = that == that%value
     end function
     
+    !> @brief Set macro name only (used internally)
     subroutine set_default(this, name)
         class(macro), intent(inout)   :: this
         character(*), intent(in)        :: name
@@ -88,6 +144,7 @@ module fpx_macro
         this%is_cyclic = this == this%value
     end subroutine
     
+    !> @brief Set both name and replacement value (used internally)
     subroutine set_with_value(this, name, value)
         class(macro), intent(inout)   :: this
         character(*), intent(in)        :: name
@@ -98,6 +155,15 @@ module fpx_macro
         this%is_cyclic = this == this%value
     end subroutine
     
+    !> @brief Fully expand a line including predefined macros (__FILE__, __LINE__, etc.)
+    !! First performs normal macro expansion via expand_macros(), then substitutes
+    !! standard predefined tokens with current file/line/date information.
+    !! @param[in]  line     Input source line
+    !! @param[in]  macros   Current macro table
+    !! @param[in]  filepath Current source file path
+    !! @param[in]  iline   Current line number
+    !! @param[out] stitch   Set to .true.true. if result ends with '&' (Fortran continuation)
+    !! @return Expanded line with all macros and predefined tokens replaced
     function expand_all(line, macros, filepath, iline, stitch) result(expanded)
         character(*), intent(in)            :: line
         type(macro), intent(in)             :: macros(:)
@@ -186,6 +252,20 @@ module fpx_macro
         end do
     end function
     
+    !> @brief Core recursive macro expander (handles function-like, variadic, #, ##)
+    !!
+    !! Performs actual macro replacement with full support for:
+    !! - Function-like macros with argument collection
+    !! - Stringification (`#param`)
+    !! - Token pasting (`##`)
+    !! - Variadic macros and `__VA_ARGS__`, `__VA_OPT__`
+    !! - Recursion with cycle detection via digraph
+    !! - Proper handling of nested parentheses and quoted strings
+    !!
+    !! @param[in]  line   Input line
+    !! @param[in]  macros Current macro table
+    !! @param[out] stitch .true. if final line ends with '&'
+    !! @return Line with user-defined macros expanded (predefined tokens untouched)
     function expand_macros(line, macros, stitch) result(expanded)
         character(*), intent(in)    :: line
         type(macro), intent(in)     :: macros(:)
@@ -476,6 +556,9 @@ module fpx_macro
         end function
     end function
     
+    !> @brief Detect whether expanding macro at index `idx` would cause a cycle
+    !! Builds a dependency graph from macro replacement texts and checks for circular paths.
+    !! Used during expansion to avoid infinite recursion.
     logical function is_circular(macros, idx) result(res)
         type(macro), intent(in) :: macros(:)
         integer, intent(in)     :: idx
@@ -530,6 +613,11 @@ module fpx_macro
         res = graph%is_circular(idx)
     end function
 
+    !> @brief Check if a macro with given name exists in table
+    !! @param[in] name   Macro name to test
+    !! @param[in] macros Current macro table
+    !! @param[inout] idx Optional: returns index (1-based) if found
+    !! @return .true. if macro is defined
     logical function is_defined(name, macros, idx) result(res)
         character(*), intent(in)    :: name
         type(macro), intent(in)   :: macros(:)
@@ -547,6 +635,9 @@ module fpx_macro
         end do
     end function
 
+    !> @brief Generic conversion of polymorphic value to string
+    !! Used internally during macro argument stringification and debugging.
+    !! Supports integers, reals, logicals, characters, and complex.
     function tostring(any)
         class(*), intent(in) :: any
         !private
@@ -574,6 +665,9 @@ module fpx_macro
         end subroutine
     end function
     
+    !> @brief Internal helper: grow dynamic macro array in chunks for efficiency
+    !! Adds a new macro to the allocatable array, growing in BUFFER_SIZE increments.
+    !! Also detects direct self-references (A → A) and marks both sides as cyclic.
     subroutine add_to(vec, val, n, chunk_size, finished)
         type(macro), allocatable, intent(inout) :: vec(:)
         type(macro), intent(in)                 :: val
@@ -618,6 +712,7 @@ module fpx_macro
         end do
     end subroutine
     
+    !> @brief Add a complete macro object to the table
     subroutine add_item(this, arg)
         type(macro), intent(inout), allocatable :: this(:)
         type(macro), intent(in)                 :: arg
@@ -628,6 +723,7 @@ module fpx_macro
         call add_to(this, arg, count, BUFFER_SIZE, finished = .true.)
     end subroutine
     
+    !> @brief Add macro by name only (value = empty)
     subroutine add_item_from_name(this, name)
         type(macro), intent(inout), allocatable :: this(:)
         character(*), intent(in)                :: name
@@ -638,6 +734,7 @@ module fpx_macro
         call add_to(this, macro(name), count, BUFFER_SIZE, finished = .true.)
     end subroutine
     
+    !> @brief Add macro with name and replacement text
     subroutine add_item_from_name_and_value(this, name, value)
         type(macro), intent(inout), allocatable :: this(:)
         character(*), intent(in)                :: name
@@ -650,6 +747,7 @@ module fpx_macro
         call add_to(this, macro(name, value), count, BUFFER_SIZE, finished = .true.)
     end subroutine
     
+    !> @brief Add multiple macros at once
     subroutine add_range(this, args)
         type(macro), intent(inout), allocatable :: this(:)
         type(macro), intent(in)                 :: args(:)
@@ -663,6 +761,7 @@ module fpx_macro
         end do
     end subroutine
     
+    !> @brief Remove all macros from table
     subroutine clear_item(this)
         type(macro), intent(inout), allocatable :: this(:)
        
@@ -670,6 +769,7 @@ module fpx_macro
         allocate(this(0))
     end subroutine
 
+    !> @brief Retrieve macro by 1-based index
     function get_item(this, key) result(res)
         type(macro), intent(inout)  :: this(:)
         integer, intent(in)         :: key
@@ -683,6 +783,7 @@ module fpx_macro
         end if
     end function
     
+    !> @brief Insert macro at specific position
     subroutine insert_item(this, i, arg)
         type(macro), intent(inout), allocatable :: this(:)
         integer, intent(in)                     :: i
@@ -700,12 +801,14 @@ module fpx_macro
         this(i) = arg
     end subroutine
 
+    !> @brief Return number of defined macros
     integer function size_item(this) result(res)
         type(macro), intent(inout), allocatable  :: this(:)
         
         res = merge(size(this), 0, allocated(this))
     end function
     
+    !> @brief Remove macro at given index
     subroutine remove_item(this, i)
         type(macro), intent(inout), allocatable :: this(:)
         integer, intent(in)                     :: i

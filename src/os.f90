@@ -1,7 +1,41 @@
-!> This module contains procedures that interact with the programming environment.
+!> @brief Operating system detection utilities for the fpx preprocessor
+!! This lightweight module provides reliable runtime detection of the current operating
+!! system on Unix-like platforms (Linux, macOS, FreeBSD, OpenBSD, Solaris) and Windows
+!! (including Cygwin, MSYS, and native Windows). Detection is performed only once per
+!! thread (using OpenMP threadprivate storage) and then cached for fast subsequent calls.
+!! The implementation first checks common environment variables (`OSTYPE`, `OS`),
+!! then falls back to the presence of OS-specific files. This makes it robust across
+!! native systems, containers, WSL, Cygwin, and cross-compilation environments.
 !!
-!! * [get_os_type] -- Determine the OS type
-!! * [get_env] -- return the value of an environment variable
+!! @par Examples
+!!
+!! 1. Basic OS detection:
+!! @code{.f90}
+!!    use fpx_os
+!!    integer :: my_os
+!!    my_os = get_os_type()
+!!    print *, "Running on: ", OS_NAME(my_os)
+!!    !> prints e.g. "Running on: Linux"
+!! @endcode
+!!
+!! 2. Conditional compilation based on OS:
+!! @code{.f90}
+!!    use fpx_os
+!!    if (os_is_unix()) then
+!!        ! Unix-specific code (Linux, macOS, BSD, etc.)
+!!        call system("gcc --version")
+!!    else
+!!        ! Windows-specific code
+!!        call execute_command_line("gfortran --version")
+!!    end if
+!! @endcode
+!!
+!! 3. Using the cached value explicitly:
+!! @code{.f90}
+!!    integer :: os_type
+!!    os_type = get_os_type()           ! detects and caches
+!!    print *, os_is_unix(os_type)      ! fast, no re-detection
+!! @endcode
 module fpx_os
     implicit none; private
     
@@ -21,7 +55,11 @@ module fpx_os
     
 contains
 
-    !> Return string describing the OS type flag
+    !> @brief Return a human-readable string describing the OS type flag
+    !! Converts any of the OS_* integer constants into its corresponding name.
+    !! Useful for logging, error messages, or user output.
+    !! @param[in] os OS identifier from get_os_type()
+    !! @return    Allocated character string with the OS name
     pure function OS_NAME(os)
         integer, intent(in) :: os
         character(:), allocatable :: OS_NAME
@@ -39,16 +77,19 @@ contains
         end select
     end function
 
-    !> Determine the OS type
-    !! Returns one of OS_UNKNOWN, OS_LINUX, OS_MACOS, OS_WINDOWS, OS_CYGWIN,
-    !! OS_SOLARIS, OS_FREEBSD, OS_OPENBSD.
+    !> @brief Determine the current operating system type
     !!
-    !! At first, the environment variable `OS` is checked, which is usually
-    !! found on Windows. Then, `OSTYPE` is read in and compared with common
-    !! names. If this fails too, check the existence of files that can be
-    !! found on specific system types only.
+    !! Returns one of the OS_* constants. Detection is performed only on the first call
+    !! and cached in threadprivate storage for subsequent fast access.
     !!
-    !! Returns OS_UNKNOWN if the operating system cannot be determined.
+    !! Detection strategy:
+    !! 1. Environment variable `OSTYPE` (common on Unix-like systems)
+    !! 2. Environment variable `OS` (set on Windows)
+    !! 3. Presence of OS-specific files (/etc/os-release, /usr/bin/sw_vers, etc.)
+    !!
+    !! Returns OS_UNKNOWN if no reliable indicator is found.
+    !!
+    !! @return OS identifier (OS_LINUX, OS_MACOS, OS_WINDOWS, ...)
     integer function get_os_type() result(r)
         character(len=255) :: val
         integer            :: length, rc
@@ -161,9 +202,11 @@ contains
         end if
     end function
 
-    !> Compare the output of [[get_os_type]] or the optional
-    !! passed INTEGER value to the value for OS_WINDOWS
-    !! and return .TRUE. if they match and .FALSE. otherwise
+    !> @brief Return .true. if the current (or supplied) OS is Unix-like
+    !! Convenience wrapper that returns .true. for any non-Windows platform.
+    !! Useful for writing portable code that needs different handling on Windows.
+    !! @param[in] os Optional OS identifier; if absent get_os_type() is called
+    !! @return   .true. if OS is not Windows, .false. otherwise
     logical function os_is_unix(os)
         integer, intent(in), optional :: os
         integer :: build_os
