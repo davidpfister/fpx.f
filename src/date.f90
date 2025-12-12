@@ -1,3 +1,43 @@
+!> @brief Lightweight, high-performance date/time handling for the fpx preprocessor
+!! This module provides a compact `datetime` type and essential operations
+!! used primarily for expanding the standard predefined macros:
+!! - `__DATE__` → e.g. "Aug-12-2025"
+!! - `__TIME__` → e.g. "14:35:27"
+!! - `__TIMESTAMP__` → e.g. "Tue-Aug-2025 14:35:27"
+!!
+!! Features:
+!! - `now()` returns current local date/time using `date_and_time()`
+!! - Flexible string formatting via `to_string(fmt)`
+!! - Parsing from common string formats (ISO, US, RFC-like)
+!! - Day-of-week calculation via Zeller’s congruence
+!! - Elemental and pure functions where possible for performance
+!! - Minimal memory footprint using small integer kinds (`int8`, `int16`)
+!!
+!! Used internally by `fpx_macro` during `__DATE__`, `__TIME__`, and `__TIMESTAMP__` expansion.
+!!
+!! @par Examples
+!!
+!! 1. Expand standard predefined macros (as done internally):
+!! @code{.f90}
+!!    type(datetime) :: dt
+!!    dt = now()
+!!    print *, '__DATE__      → ', dt%to_string('MMM-dd-yyyy')      ! "Aug-12-2025"
+!!    print *, '__TIME__      → ', dt%to_string('HH:mm:ss')          ! "14:35:27"
+!!    print *, '__TIMESTAMP__ → ', dt%to_string('ddd-MMM-yyyy HH:mm:ss') ! "Tue-Aug-2025 14:35:27"
+!! @endcode
+!!
+!! 2. Parse date from string:
+!! @code{.f90}
+!!    type(datetime) :: build_time
+!!    build_time = datetime("2025-08-12 09:30:00")
+!!    print *, "Build on: ", build_time%to_string('dddd, MMMM dd, yyyy')
+!!    !> Build on: Tuesday, August 12, 2025
+!! @endcode
+!!
+!! 3. Get current time for logging:
+!! @code{.f90}
+!!    print *, "Preprocessing started at ", now()%to_string('HH:mm:ss')
+!! @endcode
 module fpx_date
     use, intrinsic :: iso_fortran_env, only: i1 => int8, &
                                              i2 => int16
@@ -5,6 +45,9 @@ module fpx_date
     
     public :: now
     
+    !> @brief Compact representation of date and time
+    !! Stores all components in minimal integer kinds to reduce memory usage.
+    !! All fields are public for easy access.
     type, public :: datetime
         private
         integer(i2), public  :: year
@@ -19,12 +62,14 @@ module fpx_date
         procedure, pass(this), public :: parse => datetime_parse
     end type
     
+    !> @brief Constructor interface for datetime
     interface datetime
         module procedure :: datetime_new, datetime_new_from_string
     end interface
     
     contains
     
+    !> @brief Construct datetime with optional components (defaults to zero)
      elemental function datetime_new(year, month, day, hour, minute, second, millisecond) result(that)
         integer, intent(in), optional   :: year
         integer, intent(in), optional   :: month
@@ -44,6 +89,7 @@ module fpx_date
         that%millisecond = 0_i2; if (present(millisecond)) that%millisecond = int(millisecond, kind=i2)
     end function
     
+    !> @brief Construct datetime from string with optional format
     elemental function datetime_new_from_string(string, fmt) result(that)
         character(*), intent(in)            :: string
         character(*), intent(in), optional  :: fmt
@@ -56,6 +102,8 @@ module fpx_date
         end if
     end function
     
+    !> @brief Return current local date and time
+    !! Uses intrinsic `date_and_time()` and populates all fields including milliseconds.
     function now() result(res)
         type(datetime)  :: res  
         !private
@@ -102,29 +150,33 @@ module fpx_date
         if (weekday < 0) weekday = 6
     end function
     
+    !> @brief Parse date/time from string using common formats
+    !!
+    !! Supports ISO, US, and abbreviated month formats.
+    !! On error, defaults to Unix epoch (1970-01-01 00:00:00)
     ! Perform conversion to ISO string
-    !d: Represents the day of the month as a number from 1 through 31.
-    !dd: Represents the day of the month as a number from 01 through 31.
-    !ddd: Represents the abbreviated name of the day (Mon, Tues, Wed, etc).
-    !dddd: Represents the full name of the day (Monday, Tuesday, etc).
-    !h: 12-hour clock hour (e.g. 4).
-    !hh: 12-hour clock, with a leading 0 (e.g. 06)
-    !H: 24-hour clock hour (e.g. 15)
-    !HH: 24-hour clock hour, with a leading 0 (e.g. 22)
-    !m: Minutes
-    !mm: Minutes with a leading zero
-    !M: Month number(eg.3)
-    !MM: Month number with leading zero(eg.04)
-    !MMM: Abbreviated Month Name (e.g. Dec)
-    !MMMM: Full month name (e.g. December)
-    !s: Seconds
-    !ss: Seconds with leading zero
-    !t: Abbreviated AM / PM (e.g. A or P)
-    !tt: AM / PM (e.g. AM or PM
-    !y: Year, no leading zero (e.g. 2015 would be 15)
-    !yy: Year, leading zero (e.g. 2015 would be 015)
-    !yyy: Year, (e.g. 2015)
-    !yyyy: Year, (e.g. 2015)
+    !! d: Represents the day of the month as a number from 1 through 31.
+    !! dd: Represents the day of the month as a number from 01 through 31.
+    !! ddd: Represents the abbreviated name of the day (Mon, Tues, Wed, etc).
+    !! dddd: Represents the full name of the day (Monday, Tuesday, etc).
+    !! h: 12-hour clock hour (e.g. 4).
+    !! hh: 12-hour clock, with a leading 0 (e.g. 06)
+    !! H: 24-hour clock hour (e.g. 15)
+    !! HH: 24-hour clock hour, with a leading 0 (e.g. 22)
+    !! m: Minutes
+    !! mm: Minutes with a leading zero
+    !! M: Month number(eg.3)
+    !! MM: Month number with leading zero(eg.04)
+    !! MMM: Abbreviated Month Name (e.g. Dec)
+    !! MMMM: Full month name (e.g. December)
+    !! s: Seconds
+    !! ss: Seconds with leading zero
+    !! t: Abbreviated AM / PM (e.g. A or P)
+    !! tt: AM / PM (e.g. AM or PM
+    !! y: Year, no leading zero (e.g. 2015 would be 15)
+    !! yy: Year, leading zero (e.g. 2015 would be 015)
+    !! yyy: Year, (e.g. 2015)
+    !! yyyy: Year, (e.g. 2015)
     elemental subroutine datetime_parse(this, string, fmt)
         class(datetime), intent(inout)      :: this
         character(*), intent(in)            :: string
@@ -233,6 +285,9 @@ module fpx_date
         end if
     end subroutine
     
+    !> @brief Format datetime as string using flexible format codes
+    !! Supports many common patterns including those required for `__DATE__` and `__TIMESTAMP__`.
+    !! Default format: 'yyyy-MM-ddTHH:mm:ss'
     function datetime_to_string(this, fmt) result(res)
         class(datetime), intent(in)          :: this
         character(*), intent(in), optional  :: fmt

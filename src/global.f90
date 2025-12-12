@@ -1,3 +1,53 @@
+!> @brief Central global configuration and shared state for the fpx Fortran preprocessor
+!! This module defines a single global instance `global` of type `global_settings`
+!! that holds all persistent, user-configurable state used across the entire preprocessing session:
+!!
+!! - `macros(:)`         : Dynamic table of all defined macros (object-like and function-like)
+!! - `undef(:)`          : List of symbols explicitly undefined via `#undef`
+!! - `includedir(:)`     : User-specified include search directories for `#include <...>`
+!! - `expand_macros`     : Master switch to enable/disable macro expansion (default: .true.)
+!! - `exclude_comments`  : When .true., strip C-style /*...*/ and Fortran ! comments from output
+!!
+!! The design uses a single public variable `global` so that all fpx modules can access
+!! and modify the same configuration without passing arguments everywhere.
+!! This is safe in single-threaded use (typical for preprocessing) and allows easy
+!! customization from driver programs or interactive sessions.
+!!
+!! @par Examples
+!!
+!! 1. Add custom include paths before preprocessing:
+!! @code{.f90}
+!!    use fpx_global
+!!    
+!!    global%includedir = [ "./include", "/usr/local/include/fortran", "../common" ]
+!!    call preprocess("main.F90", "main.f90")
+!!    !> All #include <file.h> will search these directories
+!! @endcode
+!!
+!! 2. Predefine common macros (e.g. for conditional compilation):
+!! @code{.f90}
+!!    use fpx_global
+!!    use fpx_macro, only: add
+!!    
+!!    call add(global%macros, macro("DEBUG", "1"))
+!!    call add(global%macros, macro("MPI_VERSION", "3"))
+!!    call add(global%macros, macro("USE_OPENMP", "1"))
+!!    
+!!    call preprocess("src/app.F90")
+!!    !> Code can now use #ifdef DEBUG, #if MPI_VERSION >= 3, etc.
+!! @endcode
+!!
+!! 3. Disable macro expansion temporarily (pass-through mode):
+!! @code{.f90}
+!!    global%expand_macros = .false.   ! Only handle #include and conditionals
+!!    call preprocess("raw_source.F90", "clean.F90")
+!! @endcode
+!!
+!! 4. Strip all comments from final output:
+!! @code{.f90}
+!!    global%exclude_comments = .true.
+!!    call preprocess("messy.F90", "clean_no_comments.f90")
+!! @endcode
 module fpx_global
     use fpx_constants
     use fpx_string
@@ -6,8 +56,9 @@ module fpx_global
     
     implicit none; private
     
-    
-    
+    !> @brief Global preprocessor configuration and shared runtime state
+    !! All components of fpx read from and write to this single instance.
+    !! Users can safely modify its public components at any time.
     type, public :: global_settings
         private
         type(macro), allocatable, public    :: macros(:)
@@ -17,6 +68,12 @@ module fpx_global
         logical, public                     :: exlude_comments = .false.
     end type
     
+    !> @brief The single global instance used throughout fpx
+    !! Initialized automatically with sensible defaults:
+    !! - Empty macro and undef tables
+    !! - No include directories
+    !! - Macro expansion enabled
+    !! - Comments preserved
     type(global_settings), public :: global
     
     contains

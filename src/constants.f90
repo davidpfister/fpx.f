@@ -19,6 +19,7 @@ module fpx_constants
     !> @brief Maximum number of parameters in a signature, set to 10 to ensure manageable interfaces
     integer, parameter, public :: MAX_PARAMS = 10
     
+    !> @brief Maximum chunk size
     integer, parameter, public :: CHKSIZE = 72
             
 end module

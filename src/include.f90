@@ -1,7 +1,44 @@
-!The directory containing the first source file.
-!The current working directory where the compilation is taking place (if different from the above directory).
-!Any directory or directories specified using the I option. If multiple directories are specified, they are searched in the order specified on the command input, from left to right.
-!On Linux* systems, any directories indicated using environment variable CPATH. On Windows* systems, any directories indicated using environment variable INCLUDE.
+!> @brief Include file handling and resolution for the fpx Fortran preprocessor
+!!
+!! This module implements robust and standard-compliant processing of `#include` directives
+!! with full support for:
+!! - Both forms: `#include "file.h"` (local/user) and `#include <file.h>` (system)
+!! - Relative paths resolved against the directory of the parent source file
+!! - Search in user-defined include directories (`global%includedir`)
+!! - Fallback to current working directory
+!! - Proper error reporting with file name and line number context
+!! - Recursion safety through integration with the main preprocessor loop
+!! - Seamless integration via the abstract `preprocess` procedure pointer
+!!
+!! The routine correctly strips quotes or angle brackets, performs path resolution,
+!! checks file existence, opens the file, and recursively invokes the main preprocessing
+!! engine on the included content using the same macro environment.
+!!
+!! @par Examples
+!!
+!! 1. Include a local header from the same directory:
+!! @code{.f90}
+!!    #include "config.h"
+!!    !> fpx will look for ./config.h relative to the current source file
+!! @endcode
+!!
+!! 2. Include a system header using angle brackets:
+!! @code{.f90}
+!!    #include <iso_c_binding.h>
+!!    !> Searched in all directories from global%includedir, then in cwd()
+!! @endcode
+!!
+!! 3. Using from the driver program (adding include paths):
+!! @code{.f90}
+!!    use fpx_global
+!!    global%includedir = [ "/usr/include", "./include", "./headers" ]
+!!    call preprocess("main.F90", "main.f90")
+!!    !> All #include <...> will search these directories in order
+!! @endcode
+!!
+!! 4. Verbose error reporting when a file is not found:
+!!    $ fpx -v src/utils.F90
+!!    Error: Cannot find include file 'missing.h' at src/utils.F90:27
 module fpx_include
     use iso_fortran_env, only : iostat_end
     use fpx_constants
@@ -15,6 +52,10 @@ module fpx_include
 
     public :: handle_include
 
+    !> @brief Abstract interface for the main preprocessing routine (used for recursion)
+    !!
+    !! Allows handle_include to recursively call the top-level preprocess_unit routine
+    !! without creating circular module dependencies.
     interface
         subroutine read_unit(iunit, ounit, macros, from_include)
             import macro
@@ -27,6 +68,17 @@ module fpx_include
 
 contains
 
+    !> @brief Process a #include directive encountered during preprocessing
+    !! Resolves the include file name (quoted or angle-bracketed), searches for the file
+    !! using standard rules (parent directory first, then global include paths, then cwd),
+    !! opens it, and recursively preprocesses its contents into the output unit.
+    !! @param[in] input        Full line containing the #include directive
+    !! @param[in] ounit        Output unit where preprocessed content is written
+    !! @param[in] parent_file  Path of the file containing the #include
+    !! @param[in] iline        Line number in parent file (for error messages)
+    !! @param[in] preprocess   Procedure pointer to the main line-by-line preprocessor
+    !! @param[inout] macros    Current macro table (shared across recursion levels)
+    !! @param[in] token        Usually 'INCLUDE' – the directive keyword
     recursive subroutine handle_include(input, ounit, parent_file, iline, preprocess, macros, token)
         character(*), intent(in)                :: input
         integer, intent(in)                     :: ounit

@@ -1,3 +1,41 @@
+!> @brief Main entry point and command-line driver for the fpx Fortran preprocessor
+!! This is the standalone executable program that parses command-line arguments
+!! and launches the fpx preprocessing engine. It supports a rich set of options
+!! compatible with traditional C/Fortran preprocessors while adding modern features.
+!!
+!! Supported command-line options:
+!! - `-Dname` or `-Dname=value` → define macro (object-like)
+!! - `-Uname`                   → undefine macro (add to global%undef)
+!! - `-Ipath`                   → add directory to include search path
+!! - `-o outfile`               → specify output file
+!! - `-v`                       → print version and exit
+!! - `-h`, `-?`                 → display help message and exit
+!!
+!! Input can be a file or stdin; output can be a file or stdout.
+!! The program integrates fully with the fpx library: all global settings
+!! (`global%macros`, `global%includedir`, etc.) are populated here.
+!!
+!! @par Examples
+!!
+!! 1. Basic preprocessing:
+!!    $ fpx input.F90 -o output.f90
+!!
+!! 2. Define macros and add include path:
+!!    $ fpx -DDEBUG=1 -DMPI -I./include src/main.F90
+!!
+!! 3. Predefine version and process from stdin:
+!!    $ cat source.F90 | fpx -D_VERSION='"1.5.0"' -o preprocessed.f90
+!!
+!! 4. Interactive mode (stdin → stdout):
+!!    $ fpx
+!!    [in]  #define PI 3.14
+!!    [out] 
+!!    [in]  real :: r = PI
+!!    [out] real :: r = 3.14
+!!
+!! 5. Show version or help:
+!!    $ fpx -v
+!!    $ fpx -h
 #include <app.inc>
 console(main)
     main(args)
