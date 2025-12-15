@@ -1,3 +1,4 @@
+!> @defgroup group_global fpx_global
 !> @brief Central global configuration and shared state for the fpx Fortran preprocessor
 !! This module defines a single global instance `global` of type `global_settings`
 !! that holds all persistent, user-configurable state used across the entire preprocessing session:
@@ -48,6 +49,7 @@
 !!    global%exclude_comments = .true.
 !!    call preprocess("messy.F90", "clean_no_comments.f90")
 !! @endcode
+!! @{
 module fpx_global
     use fpx_constants
     use fpx_string
@@ -79,3 +81,4 @@ module fpx_global
     contains
     
 end module
+!! @}

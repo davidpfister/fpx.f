@@ -1,5 +1,5 @@
+!> @defgroup group_graph fpx_graph
 !> @brief Lightweight directed graph implementation for cycle detection in macro expansion
-!!
 !! This module provides a compact, allocation-efficient directed graph (`digraph`) specifically
 !! designed for detecting circular dependencies during macro expansion in the fpx preprocessor.
 !!
@@ -40,6 +40,7 @@
 !! @endcode
 !!
 !! The graph is automatically deallocated when it goes out of scope thanks to the finalizer.
+!! @{
 module fpx_graph
     implicit none; private
     
@@ -158,3 +159,4 @@ contains
     end subroutine
 
 end module
+!! @}

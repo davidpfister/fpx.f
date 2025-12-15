@@ -1,3 +1,4 @@
+!> @defgroup group_macro fpx_macro
 !> @brief Macro management and expansion core of the fpx Fortran preprocessor
 !!
 !! This module implements a complete, standards-inspired macro system supporting:
@@ -39,6 +40,7 @@
 !!    !> prints: real :: var_name_42
 !!42
 !! @endcode
+!! @{
 module fpx_macro
     use fpx_constants
     use fpx_logging
@@ -840,3 +842,4 @@ module fpx_macro
         end if
     end subroutine
 end module
+!! @}

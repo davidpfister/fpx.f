@@ -1,3 +1,4 @@
+!> @defgroup group_date fpx_date
 !> @brief Lightweight, high-performance date/time handling for the fpx preprocessor
 !! This module provides a compact `datetime` type and essential operations
 !! used primarily for expanding the standard predefined macros:
@@ -38,6 +39,7 @@
 !! @code{.f90}
 !!    print *, "Preprocessing started at ", now()%to_string('HH:mm:ss')
 !! @endcode
+!! @{
 module fpx_date
     use, intrinsic :: iso_fortran_env, only: i1 => int8, &
                                              i2 => int16
@@ -421,3 +423,4 @@ module fpx_date
         res = trim(res)
     end function
 end module
+!! @}

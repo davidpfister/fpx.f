@@ -1,6 +1,8 @@
+!> @defgroup group_constants fpx_constants
 !> @brief Module defining constants for the FPX library
 !!        This module provides a set of public integer constants used to enforce limits
 !!        in the FPX library, such as maximum line lengths, depths, and parameter counts.
+!! @{
 module fpx_constants
     implicit none; private
 
@@ -23,3 +25,4 @@ module fpx_constants
     integer, parameter, public :: CHKSIZE = 72
             
 end module
+!! @}

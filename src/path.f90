@@ -1,3 +1,4 @@
+!> @defgroup group_path fpx_path
 !> @brief A modern, portable Fortran module for path manipulation and basic directory operations.
 !! This module provides a clean interface for working with file system paths
 !! in a platform-independent way. It correctly handles both Unix (`/`) and Windows (`\`) path
@@ -43,6 +44,7 @@
 !! ! p == "C:\Users\Alice\Documents"
 !! print *, is_absolute(p)   ! .true.
 !! ```
+!! @{
 module fpx_path
     use, intrinsic :: iso_c_binding
     use fpx_string
@@ -375,3 +377,4 @@ module fpx_path
         if (present(err)) err = loc_err
     end subroutine
 end module
+!! @}

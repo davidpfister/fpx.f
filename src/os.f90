@@ -1,3 +1,4 @@
+!> @defgroup group_os fpx_os
 !> @brief Operating system detection utilities for the fpx preprocessor
 !! This lightweight module provides reliable runtime detection of the current operating
 !! system on Unix-like platforms (Linux, macOS, FreeBSD, OpenBSD, Solaris) and Windows
@@ -36,6 +37,7 @@
 !!    os_type = get_os_type()           ! detects and caches
 !!    print *, os_is_unix(os_type)      ! fast, no re-detection
 !! @endcode
+!! @{
 module fpx_os
     implicit none; private
     
@@ -218,3 +220,4 @@ contains
         os_is_unix = build_os /= OS_WINDOWS
     end function
 end module
+!! @}

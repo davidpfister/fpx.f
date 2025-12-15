@@ -1,3 +1,4 @@
+!> @defgroup group_logging fpx_logging
 !> @brief Global logging and verbosity control for the fpx Fortran preprocessor
 !!
 !! This tiny but essential module that provides a single public logical flag `verbose`
@@ -42,6 +43,7 @@
 !!    $ fpx -v input.F90
 !!    !> (implementation sets verbose = .true. from command-line “-v”)
 !!    !> You will see every macro expansion, #ifdef state, include path, etc.
+!! @{
 module fpx_logging
     implicit none; private
     
@@ -53,3 +55,4 @@ module fpx_logging
     logical, public :: verbose
     
 end module
+!! @}

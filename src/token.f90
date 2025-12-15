@@ -1,3 +1,4 @@
+!> @defgroup group_token fpx_token
 !> @brief Module implementing a full C-preprocessor-style constant expression evaluator using a top-down recursive descent parser.
 !! The module provides the ability to evaluate integer constant expressions of the kind used in
 !! classical preprocessor. This includes support for:
@@ -59,6 +60,7 @@
 !!    This design guarantees correct operator precedence without the need for an explicit
 !!    abstract syntax tree or stack-based shunting-yard algorithm, while remaining easy to
 !!    read, maintain, and extend.
+!! @{
 module fpx_token
     use fpx_string
     use fpx_constants
@@ -84,18 +86,65 @@ module fpx_token
     !> @brief Kind parameter for token type enumeration.
     integer, parameter :: tokens_enum = kind(unknown)
 
-    !> @brief Represents a single token in a parsed expression.
+    !> @class token
+    !! @brief Represents a single token in a parsed expression.
     !! Holds the string value of the token and its classified type.
+    !! @par
+    !! <h2>Constructors</h2>
+    !! Initializes a new instance of the @ref token class
+    !! <h3>token(character(:), integer)</h3>
+    !! @verbatim type(token) function token(character(:) value, integer type) @endverbatim
+    !! 
+    !! @param[in] value
+    !! @param[in] type
+    !!
+    !! @b Examples
+    !! ```fortran
+    !! a = token('9', number)
+    !! ```
+    !! @b Remarks
     type, public :: token
         character(:), allocatable   :: value
         integer(tokens_enum)        :: type
     end type
     
+    !> @interface strtol
     !> @brief Converts a string to integer.
-    !! @interface strtol
+    !! @par
+    !! <h2>Methods</h2>
+    !!
+    !! <h3>strtol(character(*) str, (optional) logical success)</h3>
+    !! 
+    !! @param[in]  str      String to convert
+    !! @param[out] success  Optional flag indicating successful conversion
+    !! @return Converted integer value
+    !! 
+    !! <h2> </h2>
+    !! <h3>value(character(*) str, integer base, (optional) logical success)</h3>
+    !! 
+    !! Converts a string to integer with explicit base handling.
+    !! Supports base 2, 8, 10, 16 and prefixes `0x`, `0b`.
+    !! @param[in]    str      String to convert
+    !! @param[inout] base     0 = auto-detect, otherwise forces given base
+    !! @param[out]   success  Optional flag indicating successful conversion
+    !! @return Converted integer value
+    !!
+    !! <h2> Examples </h2>
+    !! The following demonstrate a call to the `strtol` interface.
+    !! @code{.f90}
+    !!  integer :: i
+    !!  logical :: success
+    !!
+    !!  i = strtol('    123', 0, success = res)
+    !!  ! i = 123
+    !! @endcode
+    !!
+    !! <h2> Remarks </h2>
     interface strtol
+    !! @cond
         module procedure :: strtol_default
         module procedure :: strtol_with_base
+    !! @endcond
     end interface
 
     contains
@@ -104,10 +153,13 @@ module fpx_token
     !! Tokenizes the input expression, expands macros where appropriate,
     !! parses it according to operator precedence, and computes the integer result.
     !! Returns .true. if evaluation succeeded and the result is non-zero.
+    !!
     !! @param[in] expr   Expression string to evaluate
     !! @param[in] macros Array of defined macros for substitution and `defined()` checks
     !! @param[out] val   Optional integer result of the evaluation
     !! @return .true. if the expression evaluated successfully to non-zero, .false. otherwise
+    !! @n@n
+    !! @b Remarks
     logical function evaluate_expression(expr, macros, val) result(res)
         character(*), intent(in)        :: expr
         type(macro), intent(in)         :: macros(:)
@@ -138,6 +190,8 @@ module fpx_token
     !> @brief Tests whether a single character is a decimal digit ('0'-'9').
     !! @param[in] ch Character to test
     !! @return .true. if ch is a digit
+    !! @n@n
+    !! @b Remarks
     logical elemental function is_digit(ch) result(res)
         character(*), intent(in) :: ch
         
@@ -149,6 +203,8 @@ module fpx_token
     !! @param[in]  str Input string starting at current position
     !! @param[out] pos Length of the typeless constant (0 if not typeless)
     !! @return .true. if the prefix is a valid typeless constant in non-base-10
+    !! @n@n
+    !! @b Remarks
     logical function is_typeless(str, pos) result(res)
         character(*), intent(in)    :: str
         integer, intent(out)        :: pos
@@ -165,11 +221,7 @@ module fpx_token
         if (pos > 0) i = strtol(str(:pos - 1), base, success = res)
         if (base == 10) res = .false.
     end function
-    
-    !> @brief Converts a string to integer, auto-detecting base (wrapper).
-    !! @param[in]  str      String to convert
-    !! @param[out] success  Optional flag indicating successful conversion
-    !! @return Converted integer value
+        
     integer function strtol_default(str, success) result(val)
         character(*), intent(in)        :: str
         logical, intent(out), optional  :: success
@@ -179,13 +231,7 @@ module fpx_token
         base = 0
         val = strtol_with_base(str, base, success)
     end function
-    
-    !> @brief Converts a string to integer with explicit base handling.
-    !! Supports base 2, 8, 10, 16 and prefixes `0x`, `0b`.
-    !! @param[in]    str      String to convert
-    !! @param[inout] base     0 = auto-detect, otherwise forces given base
-    !! @param[out]   success  Optional flag indicating successful conversion
-    !! @return Converted integer value
+        
     integer function strtol_with_base(str, base, success) result(val)
         character(*), intent(in)        :: str
         integer, intent(inout)          :: base
@@ -280,6 +326,8 @@ module fpx_token
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
     !! @param[in] macros    Defined macros for expansion and `defined()` checks
     !! @return Integer value of the parsed expression
+    !! @n@n
+    !! @b Remarks
     recursive integer function parse_expression(tokens, ntokens, pos, macros) result(val)
         type(token), intent(in)   :: tokens(:)
         integer, intent(in)         :: ntokens
@@ -295,6 +343,8 @@ module fpx_token
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
     !! @param[in] macros    Defined macros for expansion and `defined()` checks
     !! @return Integer value of the parsed expression
+    !! @n@n
+    !! @b Remarks
     recursive integer function parse_or(tokens, ntokens, pos, macros) result(val)
         type(token), intent(in)   :: tokens(:)
         integer, intent(in)         :: ntokens
@@ -318,6 +368,8 @@ module fpx_token
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
     !! @param[in] macros    Defined macros for expansion and `defined()` checks
     !! @return Integer value of the parsed expression
+    !! @n@n
+    !! @b Remarks
     recursive integer function parse_and(tokens, ntokens, pos, macros) result(val)
         type(token), intent(in)   :: tokens(:)
         integer, intent(in)         :: ntokens
@@ -342,6 +394,8 @@ module fpx_token
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
     !! @param[in] macros    Defined macros for expansion and `defined()` checks
     !! @return Integer value of the parsed expression
+    !! @n@n
+    !! @b Remarks
     recursive integer function parse_bitwise_or(tokens, ntokens, pos, macros) result(val)
         type(token), intent(in)   :: tokens(:)
         integer, intent(in)       :: ntokens
@@ -366,6 +420,8 @@ module fpx_token
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
     !! @param[in] macros    Defined macros for expansion and `defined()` checks
     !! @return Integer value of the parsed expression
+    !! @n@n
+    !! @b Remarks
     recursive integer function parse_bitwise_xor(tokens, ntokens, pos, macros) result(val)
         type(token), intent(in)   :: tokens(:)
         integer, intent(in)       :: ntokens
@@ -390,6 +446,8 @@ module fpx_token
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
     !! @param[in] macros    Defined macros for expansion and `defined()` checks
     !! @return Integer value of the parsed expression
+    !! @n@n
+    !! @b Remarks
     recursive integer function parse_bitwise_and(tokens, ntokens, pos, macros) result(val)
         type(token), intent(in)   :: tokens(:)
         integer, intent(in)       :: ntokens
@@ -414,6 +472,8 @@ module fpx_token
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
     !! @param[in] macros    Defined macros for expansion and `defined()` checks
     !! @return Integer value of the parsed expression
+    !! @n@n
+    !! @b Remarks
     recursive integer function parse_equality(tokens, ntokens, pos, macros) result(val)
         type(token), intent(in)   :: tokens(:)
         integer, intent(in)         :: ntokens
@@ -445,6 +505,8 @@ module fpx_token
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
     !! @param[in] macros    Defined macros for expansion and `defined()` checks
     !! @return Integer value of the parsed expression
+    !! @n@n
+    !! @b Remarks
     recursive integer function parse_relational(tokens, ntokens, pos, macros) result(val)
         type(token), intent(in)   :: tokens(:)
         integer, intent(in)       :: ntokens
@@ -485,6 +547,8 @@ module fpx_token
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
     !! @param[in] macros    Defined macros for expansion and `defined()` checks
     !! @return Integer value of the parsed expression
+    !! @n@n
+    !! @b Remarks
     recursive integer function parse_shifting(tokens, ntokens, pos, macros) result(val)
         type(token), intent(in)   :: tokens(:)
         integer, intent(in)       :: ntokens
@@ -516,6 +580,8 @@ module fpx_token
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
     !! @param[in] macros    Defined macros for expansion and `defined()` checks
     !! @return Integer value of the parsed expression
+    !! @n@n
+    !! @b Remarks
     recursive integer function parse_additive(tokens, ntokens, pos, macros) result(val)
         type(token), intent(in)   :: tokens(:)
         integer, intent(in)       :: ntokens
@@ -547,6 +613,8 @@ module fpx_token
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
     !! @param[in] macros    Defined macros for expansion and `defined()` checks
     !! @return Integer value of the parsed expression
+    !! @n@n
+    !! @b Remarks
     recursive integer function parse_multiplicative(tokens, ntokens, pos, macros) result(val)
         type(token), intent(in)   :: tokens(:)
         integer, intent(in)       :: ntokens
@@ -582,6 +650,8 @@ module fpx_token
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
     !! @param[in] macros    Defined macros for expansion and `defined()` checks
     !! @return Integer value of the parsed expression
+    !! @n@n
+    !! @b Remarks
     recursive integer function parse_power(tokens, ntokens, pos, macros) result(val)
         type(token), intent(in)   :: tokens(:)
         integer, intent(in)       :: ntokens
@@ -607,6 +677,8 @@ module fpx_token
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
     !! @param[in] macros    Defined macros for expansion and `defined()` checks
     !! @return Integer value of the parsed expression
+    !! @n@n
+    !! @b Remarks
     recursive integer function parse_unary(tokens, ntokens, pos, macros) result(val)
         type(token), intent(in)   :: tokens(:)
         integer, intent(in)       :: ntokens
@@ -640,6 +712,8 @@ module fpx_token
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
     !! @param[in] macros    Defined macros for expansion and `defined()` checks
     !! @return Integer value of the parsed expression
+    !! @n@n
+    !! @b Remarks
     recursive integer function parse_atom(tokens, ntokens, pos, macros) result(val)
         type(token), intent(in)     :: tokens(:)
         integer, intent(in)         :: ntokens
@@ -698,6 +772,8 @@ module fpx_token
     !! @param[in]  expr     Expression string to tokenize
     !! @param[out] tokens   Allocated array receiving the tokens
     !! @param[out] ntokens  Number of tokens produced
+    !! @n@n
+    !! @b Remarks
     subroutine tokenize(expr, tokens, ntokens)
         character(*), intent(in)                :: expr
         type(token), allocatable, intent(out) :: tokens(:)
@@ -829,3 +905,4 @@ module fpx_token
         end do
     end subroutine
 end module
+!> @}

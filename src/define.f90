@@ -1,3 +1,4 @@
+!> @defgroup group_define fpx_define
 !> @brief Processing of #define and #undef preprocessor directives
 !! This module implements the core logic for handling macro definition and removal
 !! during preprocessing in the fpx Fortran preprocessor. It supports:
@@ -43,6 +44,7 @@
 !!    verbose = .true.
 !!    call preprocess("input.F90")   ! Will show all macro definitions/undefs
 !! @endcode
+!! @{
 module fpx_define
     use fpx_constants
     use fpx_logging
@@ -223,3 +225,4 @@ contains
         end if
     end subroutine
 end module
+!! @}

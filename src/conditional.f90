@@ -1,3 +1,4 @@
+!> @defgroup group_conditional fpx_conditional
 !> @brief Full-featured conditional compilation (#if / #ifdef / #else / #endif) for the fpx preprocessor
 !! This module implements standard-conforming conditional compilation with support for:
 !! - `#if` with arbitrary constant expressions (using `evaluate_expression`)
@@ -51,6 +52,7 @@
 !!       use mpi_f08
 !!    #endif
 !! @endcode
+!! @{
 module fpx_conditional
     use fpx_constants
     use fpx_logging
@@ -251,3 +253,4 @@ contains
     end subroutine
 
 end module
+!! @}

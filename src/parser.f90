@@ -1,3 +1,4 @@
+!> @defgroup group_parser fpx_parser
 !> @brief Fortran Preprocessor (fpx) – core parsing and preprocessing module
 !!
 !! This module implements a full-featured, modern Fortran preprocessor supporting:
@@ -44,6 +45,7 @@
 !!     [out] real :: x = 3.1415926535*2
 !!     [in]  (empty line or "quit" to exit)
 !! @endcode
+!! @{
 module fpx_parser
     use, intrinsic :: iso_fortran_env, only: stdout => output_unit, iostat_end, stdin => input_unit
     use, intrinsic :: iso_c_binding, only: c_char, c_size_t,c_ptr, c_null_ptr, c_associated
@@ -386,5 +388,5 @@ contains
             
         end if
     end function
-
 end module
+!! @}

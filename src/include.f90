@@ -1,3 +1,4 @@
+!> @defgroup group_include fpx_include
 !> @brief Include file handling and resolution for the fpx Fortran preprocessor
 !!
 !! This module implements robust and standard-compliant processing of `#include` directives
@@ -39,6 +40,7 @@
 !! 4. Verbose error reporting when a file is not found:
 !!    $ fpx -v src/utils.F90
 !!    Error: Cannot find include file 'missing.h' at src/utils.F90:27
+!! @{
 module fpx_include
     use iso_fortran_env, only : iostat_end
     use fpx_constants
@@ -149,3 +151,4 @@ contains
         close (iunit)
     end subroutine
 end module
+!! @}

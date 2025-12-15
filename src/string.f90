@@ -1,5 +1,5 @@
+!> @defgroup group_string fpx_string
 !> @brief Minimal yet powerful variable-length string type with modern Fortran features.
-!!
 !! This module implements a lightweight `string` derived type that behaves like
 !! a true variable-length character string while remaining fully compatible with
 !! intrinsic Fortran character operations.
@@ -51,6 +51,7 @@
 !!
 !! @note All procedures are `pure` or `elemental` when possible for maximum performance
 !!       and usability in array contexts.
+!! @{
 module fpx_string
     use fpx_constants
     implicit none; private
@@ -593,3 +594,4 @@ module fpx_string
         end do
     end function
 end module
+!! @}
