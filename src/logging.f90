@@ -1,5 +1,6 @@
-!> @defgroup group_logging fpx_logging
-!> @brief Global logging and verbosity control for the fpx Fortran preprocessor
+!> @file
+!! @defgroup group_logging Logging
+!! Global logging and verbosity control for the fpx Fortran preprocessor
 !!
 !! This tiny but essential module that provides a single public logical flag `verbose`
 !! to enable or disable detailed diagnostic output throughout the entire fpx tool
@@ -20,30 +21,29 @@
 !! The flag is intentionally public and module-level so it can be set from anywhere
 !! (command-line driver, interactive mode, or library user).
 !!
-!! @par Examples
+!! <h2  class="groupheader">Examples</h2>
 !!
 !! 1. Enable verbose output from the main program:
 !! @code{.f90}
-!!    use fpx_logging, only: verbose
-!!    use fpx_parser
-!!    
 !!    verbose = .true.           ! Turn on all diagnostic messages
-!!    call preprocess("src/main.F90", "build/main.f90")
+!!    call preprocess('src/main.F90', 'build/main.f90')
+!!    ...
 !! @endcode
 !!
 !! 2. Temporarily enable verbosity for a single file processing:
 !! @code{.f90}
-!!    use fpx_logging, only: verbose
 !!    verbose = .true.
-!!    call preprocess("debug_this.F90")
+!!    call preprocess('debug_this.F90')
 !!    verbose = .false.          ! Turn off again
+!!    ...
 !! @endcode
 !!
 !! 3. Interactive session with full insight:
+!! @code{.txt}
 !!    $ fpx -v input.F90
 !!    !> (implementation sets verbose = .true. from command-line “-v”)
 !!    !> You will see every macro expansion, #ifdef state, include path, etc.
-!! @{
+!! @endcode
 module fpx_logging
     implicit none; private
     
@@ -52,7 +52,7 @@ module fpx_logging
     !! Set to `.true.` to get detailed step-by-step information about
     !! preprocessing actions. Safe to modify at any time – the change takes
     !! effect immediately for all subsequent operations.
+    !! @ingroup group_logging
     logical, public :: verbose
     
 end module
-!! @}

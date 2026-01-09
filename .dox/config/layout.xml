@@ -117,12 +117,12 @@
     </memberdecl>
     <detaileddescription title=""/>
     <memberdef>
-      <inlineclasses title=""/>
-      <defines title=""/>
-      <typedefs title=""/>
-      <enums title=""/>
-      <functions title=""/>
-      <variables title=""/>
+      <inlineclasses title="" visible="no" />
+      <defines title="" visible="no" />
+      <typedefs title="" visible="no" />
+      <enums title="" visible="no" />
+      <functions title="" visible="no" />
+      <variables title="" visible="no" />
     </memberdef>
     <authorsection/>
   </file>
@@ -140,7 +140,7 @@
       <classes visible="yes"/>
       <defines title="" visible="no"/>
       <typedefs title="" visible="no"/>
-      <enums title="" visible="no"/>
+      <enums title="" visible="yes"/>
       <enumvalues title=""/>
       <variables title="Variables" visible="no"/>
       <functions title="Methods" visible="no"/>
@@ -161,7 +161,7 @@
       <typedefs title=""/>
       <enums title="" visible="no"/>
       <enumvalues title=""/>
-      <variables title="Variables" visible="no"/>
+      <variables title="Variables" visible="yes"/>
       <functions title="Methods"/>
       <signals title=""/>
       <publicslots title=""/>

@@ -1,5 +1,6 @@
-!> @defgroup group_conditional fpx_conditional
-!> @brief Full-featured conditional compilation (#if / #ifdef / #else / #endif) for the fpx preprocessor
+!> @file
+!! @defgroup group_conditional Conditional
+!! Full-featured conditional compilation (#if / #ifdef / #else / #endif) for the fpx preprocessor
 !! This module implements standard-conforming conditional compilation with support for:
 !! - `#if` with arbitrary constant expressions (using `evaluate_expression`)
 !! - `#ifdef` / `#ifndef` for testing macro existence
@@ -8,51 +9,54 @@
 !! - Proper nesting up to `MAX_COND_DEPTH` levels
 !! - Correct "first-match" semantics — once a branch is taken, later `#elif`/`#else` are skipped
 !! - Integration with macro expansion via `is_defined()` and expression evaluator
-!! - Comprehensive diagnostics when `verbose = .true.true.`
+!! - Comprehensive diagnostics when `verbose = .true.`
 !!
 !! The state is maintained in a global stack (`cond_stack`) with `cond_depth` tracking nesting.
 !! The function `is_active()` is used throughout the preprocessor to decide whether a line
 !! should be emitted or skipped.
 !!
-!! @par Examples
+!! <h2  class="groupheader">Examples</h2>
 !!
 !! 1. Classic include guard pattern:
 !! @code{.f90}
-!!    #ifndef MY_HEADER_H
-!!    #define MY_HEADER_H
+!!  #ifndef MY_HEADER_H
+!!  #define MY_HEADER_H
 !!
-!!    ! ... header content ...
+!!  ! ... header content ...
 !!
-!!    #endif
+!!  #endif
+!!  !...
 !! @endcode
 !!
 !! 2. Feature selection with #if and #elif:
-!! @code{.f90
-!!    #if DEBUG >= 2
-!!       print *, "Extra verbose debugging enabled"
-!!    #elif DEBUG == 1
-!!       print *, "Standard debugging"
-!!    #else
-!!       ! Silent mode
-!!    #endif
+!! @code{.f90}
+!!  #if DEBUG >= 2
+!!     print *, 'Extra verbose debugging enabled'
+!!  #elif DEBUG == 1
+!!     print *, 'Standard debugging'
+!!  #else
+!!     ! Silent mode
+!!  #endif
+!!  !..
 !! @endcode
 !!
 !! 3. Cross-platform code selection:
 !! @code{.f90}
-!!    #ifdef _OPENMP
-!!       use omp_lib
-!!    #else
-!!       integer, parameter :: omp_get_thread_num() = 0
-!!    #endif
+!!  #ifdef _OPENMP
+!!     use omp_lib
+!!  #else
+!!     integer, parameter :: omp_get_thread_num = 0
+!!  #endif
+!!  !...
 !! @endcode
 !!
 !! 4. Complex expression in #if (requires `evaluate_expression` support):
 !! @code{.f90}
-!!    #if defined(USE_MPI) && (MPI_VERSION >= 3)
-!!       use mpi_f08
-!!    #endif
+!!  #if defined(USE_MPI) && (MPI_VERSION >= 3)
+!!     use mpi_f08
+!!  #endif
+!!  !...
 !! @endcode
-!! @{
 module fpx_conditional
     use fpx_constants
     use fpx_logging
@@ -70,25 +74,39 @@ module fpx_conditional
               handle_endif, &
               is_active
 
-    !> @brief State of a single conditional block
+    !> State of a single conditional block
+    !! <h2  class="groupheader">Constructors</h2>
+    !! Initializes a new instance of the @ref cond_state type
+    !! <h3>cond_state(logical, logical)</h3>
+    !! @verbatim type(cond_state) function cond_state(logical active, logical has_met) @endverbatim
+    !! 
+    !! @param[in] active whether code in this block should be emitted
+    !! @param[in] has_met whether a true branch has already been taken at this nesting level
+    !! 
+    !! @return The constructed @ref cond_state object.
     !!
-    !! `active`  – whether code in this block should be emitted  
-    !! `has_met` – whether a true branch has already been taken at this nesting level
+    !! <h2  class="groupheader">Remarks</h2>
+    !! @ingroup group_conditional
     type, public :: cond_state
-        logical :: active
-        logical :: has_met
+        logical :: active !< Indicate whether the condition is active
+        logical :: has_met  !< Indicates whether the condition has been met
     end type
 
     !> @brief Global stack of conditional states (depth-limited)
+    !! @ingroup group_conditional
     type(cond_state), public :: cond_stack(MAX_COND_DEPTH)
 
     !> @brief Current nesting depth of conditional directives (0 = outside any #if)
+    !! @ingroup group_conditional
     integer, public :: cond_depth = 0
 
 contains
 
-    !> @brief Determine if current line is inside an active conditional block
+    !> Determine if current line is inside an active conditional block
     !! @return .true. if all enclosing #if/#elif/#else branches are active
+    !!
+    !! @b Remarks
+    !! @ingroup group_conditional
     logical function is_active() result(res)
         integer :: i
         res = .true.
@@ -100,7 +118,7 @@ contains
         end do
     end function
 
-    !> @brief Process a #if directive with constant expression evaluation
+    !> Process a #if directive with constant expression evaluation
     !! Evaluates the expression after #if using `evaluate_expression()` and pushes
     !! a new state onto the conditional stack.
     !! @param[in] line      Full source line containing the directive
@@ -108,6 +126,9 @@ contains
     !! @param[in] line_num  Line number (for error messages)
     !! @param[in] macros    Current macro table
     !! @param[in] token     Usually 'IF'
+    !!
+    !! @b Remarks
+    !! @ingroup group_conditional
     subroutine handle_if(line, filename, line_num, macros, token)
         character(*), intent(in)    :: line, filename
         integer, intent(in)         :: line_num
@@ -134,7 +155,15 @@ contains
         if (verbose) print *, "#if result: ", result, ", cond_depth = ", cond_depth, ", active = ", cond_stack(cond_depth + 1)%active
     end subroutine
 
-    !> @brief Process #ifdef – test if a macro is defined
+    !> Process #ifdef – test if a macro is defined
+    !! @param[in] line      Full source line containing the directive
+    !! @param[in] filename  Current file (for error messages)
+    !! @param[in] line_num  Line number (for error messages)
+    !! @param[in] macros    Current macro table
+    !! @param[in] token     Usually 'IFDEF'
+    !!
+    !! @b Remarks
+    !! @ingroup group_conditional
     subroutine handle_ifdef(line, filename, line_num, macros, token)
         character(*), intent(in)        :: line
         character(*), intent(in)        :: filename
@@ -160,7 +189,15 @@ contains
         cond_stack(cond_depth + 1)%has_met = defined
     end subroutine
 
-    !> @brief Process #ifndef – test if a macro is NOT defined
+    !> Process #ifndef – test if a macro is NOT defined
+    !! @param[in] line      Full source line containing the directive
+    !! @param[in] filename  Current file (for error messages)
+    !! @param[in] line_num  Line number (for error messages)
+    !! @param[in] macros    Current macro table
+    !! @param[in] token     Usually 'IFNDEF'
+    !!
+    !! @b Remarks
+    !! @ingroup group_conditional
     subroutine handle_ifndef(line, filename, line_num, macros, token)
         character(*), intent(in)        :: line
         character(*), intent(in)        :: filename
@@ -186,8 +223,16 @@ contains
         cond_stack(cond_depth + 1)%has_met = .not. defined
     end subroutine
 
-    !> @brief Process #elif – alternative branch after #if/#elif
+    !> Process #elif – alternative branch after #if/#elif
     !! Only activates if no previous branch in the group was taken.
+    !! @param[in] line      Full source line containing the directive
+    !! @param[in] filename  Current file (for error messages)
+    !! @param[in] line_num  Line number (for error messages)
+    !! @param[in] macros    Current macro table
+    !! @param[in] token     Usually 'ELIF'
+    !!
+    !! @b Remarks
+    !! @ingroup group_conditional
     subroutine handle_elif(line, filename, line_num, macros, token)
         character(*), intent(in)    :: line, filename
         integer, intent(in)         :: line_num
@@ -215,8 +260,16 @@ contains
         end if
     end subroutine
 
-    !> @brief Process #else – final fallback branch
+    !> Process #else – final fallback branch
     !! Activates only if no previous #if/#elif branch was true.
+    !! @param[in] line      Full source line containing the directive
+    !! @param[in] filename  Current file (for error messages)
+    !! @param[in] line_num  Line number (for error messages)
+    !! @param[in] macros    Current macro table
+    !! @param[in] token     Usually 'ELSE'
+    !!
+    !! @b Remarks
+    !! @ingroup group_conditional
     subroutine handle_else(filename, line_num)
         character(*), intent(in) :: filename
         integer, intent(in) :: line_num
@@ -237,8 +290,16 @@ contains
         if (verbose) print *, "#else at depth ", cond_depth, ", active = ", cond_stack(cond_depth + 1)%active
     end subroutine
 
-    !> @brief Process #endif – end of conditional block
+    !> Process #endif – end of conditional block
     !! Pops the top state from the stack. Reports error on unmatched #endif.
+    !! @param[in] line      Full source line containing the directive
+    !! @param[in] filename  Current file (for error messages)
+    !! @param[in] line_num  Line number (for error messages)
+    !! @param[in] macros    Current macro table
+    !! @param[in] token     Usually 'ENDIF'
+    !!
+    !! @b Remarks
+    !! @ingroup group_conditional
     subroutine handle_endif(filename, line_num)
         character(*), intent(in) :: filename
         integer, intent(in) :: line_num
@@ -253,4 +314,3 @@ contains
     end subroutine
 
 end module
-!! @}

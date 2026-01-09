@@ -27,9 +27,6 @@
 # Introduction
 <!-- ABOUT THE PROJECT -->
 ## About the Project
-<p align="center">
-  <img src="">
-</p>
 
 Fortran, the venerable language of scientific computing, has powered simulations of galaxies, weather systems, and quantum phenomena for over seven decades. Its enduring strength lies in its clarity, performance, and mathematical soul, qualities that resonate deeply with its community of developers. Yet, nestled within this ecosystem is a contentious tool: the preprocessor. From its ad hoc beginnings in the 1970s to its modern incarnations in tools like `cpp`, `fpp`, and `fypp`, preprocessing has been both a lifeline and a lightning rod for Fortran developers. 
 
@@ -60,7 +57,7 @@ To build that library you need
 
 - a Fortran 2008 compliant compiler, or better, a Fortran 2018 compliant compiler (Intel Fortran and gfortran compilers are known to work well for _fpx.f_).
 
-The following compilers are tested on the default branch of _benchmark.f_:
+The following compilers are tested on the default branch of _fpx.f_:
 
 <center>
 
@@ -77,37 +74,37 @@ Unit test rely on the the header file [`assertion.inc`](https://github.com/david
 
 Linting, indentation, and styling is done with [fprettify](https://github.com/fortran-lang/fprettify) with the following settings
 ```bash
-fprettify .\src\ -r --case 1 1 1 1 -i 4 --strict-indent --enable-replacements --strip-comments --c-relations
+   fprettify './src/' -r --case 1 1 1 1 -i 4 --strict-indent --enable-replacements --strip-comments --c-relations
 ```
 
 ### Installation
 
 #### Get the code
 ```bash
-git clone https://github.com/davidpfister/fpx.f
-cd fpx.f
+   git clone https://github.com/davidpfister/fpx.f
+   cd fpx.f
 ```
 
 #### Build with fpm
 
 The repo can be build using _fpm_
 ```bash
-fpm build --flag '-ffree-line-length-none'
+   fpm build
 ```
 For convenience, the  repo also contains a response file that can be invoked as follows: 
-```
-fpm @build
+```bash
+   fpm @build
 ```
 (For the Windows users, that command does not work in Powershell since '@' is a reserved symbol. One should use the '--%' as follows: `fpm --% @build`.
 This is linked to the following [issue](https://github.com/urbanjost/M_CLI2/issues/19))
 
 Building with ifort requires to specify the compiler name (gfortran by default)
 ```bash
-fpm @build --compiler ifort
+   fpm @build --compiler ifort
 ```
 Alternatively, the compiler can be set using fpm environment variables.
 ```bash
-set FPM_FC=ifort
+   set FPM_FC=ifort
 ```
 
 Besides the build command, several commands are also available:
@@ -120,13 +117,13 @@ option clean --all
 
 @rebuild
 system rmdir /s /q build
-option build --flag '-ffree-line-length-none'
+option build
 
 @build
-option build --flag '-ffree-line-length-none'
+option build
 
 @test
-options test --flag '-ffree-line-length-none'
+options test --flag 'D_QUIET'
 
 @doc
 option clean --all
@@ -153,15 +150,19 @@ The project was originally developed on Windows with Visual Studio 2019. The rep
 ### Command line
 The preprocessor `fpx` can be used from the command-line using your favorite shell. 
 The following options are available:
-> |Option|Definition|
-> |:--|:--| 
-> |-D\<macro>|Define a \<macro> with no value.| 
-> |-D\<macro>=\<val>|Define a \<macro> with \<val> as its value.| 
-> |-U\<macro>|Undefine \<macro>'|
-> |-I\<dir>|Add \<dir> to the end of the global include paths.| 
-> |-h, -?|Display this help.|
-> |-o|Output file path with name and extension.|
-> |-v|Display the version of the program.|
+<center>
+
+|Option|Definition|
+|:--|:--| 
+|-D\<macro>|Define a \<macro> with no value.| 
+|-D\<macro>=\<val>|Define a \<macro> with \<val> as its value.| 
+|-U\<macro>|Undefine \<macro>'|
+|-I\<dir>|Add \<dir> to the end of the global include paths.| 
+|-h, -?|Display this help.|
+|-o|Output file path with name and extension.|
+|-v|Display the version of the program.|
+
+</center>
 
 Using the file preprocessor could not be easier. The function simply takes as arguments the input and output file paths. 
 
@@ -204,7 +205,7 @@ Before opening a bug report:
 A good bug report should include all information needed to reproduce the bug.
 Please be as detailed as possible:
 
-1. Which version of _benchmark.f_ are you using? Please be specific.
+1. Which version of _fpx.f_ are you using? Please be specific.
 2. What are the steps to reproduce the issue?
 3. What is the expected outcome?
 4. What happens instead?
@@ -230,7 +231,7 @@ Don't forget to give the project a star! Thanks again!
    The body of the PR should at least include a bullet-point summary of the
    changes, and a detailed description is encouraged.
    If the PR completely addresses the issue you opened in step 1, include in
-   the PR description the following line: ```Fixes #<issue-number>```. If your PR implements a feature that adds or changes the behavior of _benchmark.f_,
+   the PR description the following line: ```Fixes #<issue-number>```. If your PR implements a feature that adds or changes the behavior of _fpx.f_,
    your PR must also include appropriate changes to the documentation and associated units tests.
 
 In brief, 

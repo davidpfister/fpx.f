@@ -164,7 +164,7 @@ ALWAYS_DETAILED_SEC    = YES
 # operators of the base classes will not be shown.
 # The default value is: NO.
 
-INLINE_INHERITED_MEMB  = YES
+INLINE_INHERITED_MEMB  = NO
 
 # If the FULL_PATH_NAMES tag is set to YES, doxygen will prepend the full path
 # before files name in the file list and in the header files. If set to NO the
@@ -505,7 +505,7 @@ EXTRACT_ALL            = NO
 # be included in the documentation.
 # The default value is: NO.
 
-EXTRACT_PRIVATE        = NO
+EXTRACT_PRIVATE        = YES
 
 # If the EXTRACT_PRIV_VIRTUAL tag is set to YES, documented private virtual
 # methods of a class will be included in the documentation.
@@ -772,7 +772,7 @@ SHOW_FILES             = YES
 # Folder Tree View (if specified).
 # The default value is: YES.
 
-SHOW_NAMESPACES        = YES
+SHOW_NAMESPACES        = NO
 
 # The FILE_VERSION_FILTER tag can be used to specify a program or script that
 # doxygen should invoke to get the current version for each file (typically from
@@ -1130,7 +1130,7 @@ FILTER_SOURCE_FILES    = NO
 # *.ext= (so without naming a filter).
 # This tag requires that the tag FILTER_SOURCE_FILES is set to YES.
 
-FILTER_SOURCE_PATTERNS = 
+FILTER_SOURCE_PATTERNS =
 
 # If the USE_MDFILE_AS_MAINPAGE tag refers to the name of a markdown file that
 # is part of the input, its contents will be placed on the main page
@@ -1172,7 +1172,7 @@ INLINE_SOURCES         = NO
 # Fortran comments will always remain visible.
 # The default value is: YES.
 
-STRIP_CODE_COMMENTS    = YES
+STRIP_CODE_COMMENTS    = NO
 
 # If the REFERENCED_BY_RELATION tag is set to YES then for each documented
 # entity all documented functions referencing it will be listed.
@@ -1390,10 +1390,7 @@ HTML_EXTRA_FILES       = ./config//doxygen-awesome-css-2.2.0/doxygen-awesome-dar
                          ./config//doxygen-awesome-css-2.2.0/doxygen-awesome-fragment-copy-button.js \
                          ./config//doxygen-awesome-css-2.2.0/doxygen-awesome-paragraph-link.js \
                          ./config//doxygen-awesome-css-2.2.0/doxygen-awesome-interactive-toc.js \
-                         ./config//doxygen-awesome-css-2.2.0/doxygen-awesome-tabs.js \
-                         ./config//highlight.js \
-                         ./config//MathJax.js \
-                         ./config//devibeans.css
+                         ./config//doxygen-awesome-css-2.2.0/doxygen-awesome-tabs.js
 
 # The HTML_COLORSTYLE tag can be used to specify if the generated HTML output
 # should be rendered with a dark or light theme.
@@ -1813,7 +1810,7 @@ MATHJAX_FORMAT         = HTML-CSS
 # - in case of MathJax version 3: https://cdn.jsdelivr.net/npm/mathjax@3
 # This tag requires that the tag USE_MATHJAX is set to YES.
 
-MATHJAX_RELPATH        = ./mathjax
+MATHJAX_RELPATH        = https://cdn.jsdelivr.net/npm/mathjax@3
 
 # The MATHJAX_EXTENSIONS tag can be used to specify one or more MathJax
 # extension names that should be enabled during MathJax rendering. For example
@@ -2768,3 +2765,5 @@ GENERATE_LEGEND        = YES
 # The default value is: YES.
 
 DOT_CLEANUP            = YES
+
+PAGE_OUTLINE_PANEL     = NO 

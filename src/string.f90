@@ -1,5 +1,6 @@
-!> @defgroup group_string fpx_string
-!> @brief Minimal yet powerful variable-length string type with modern Fortran features.
+!> @file
+!! @defgroup group_string String
+!! Minimal yet powerful variable-length string type with modern Fortran features.
 !! This module implements a lightweight `string` derived type that behaves like
 !! a true variable-length character string while remaining fully compatible with
 !! intrinsic Fortran character operations.
@@ -15,22 +16,28 @@
 !! The design is intentionally minimal — it provides only what's necessary for
 !! robust string handling in scientific and preprocessing applications,
 !! avoiding the bloat of larger string libraries while remaining fast and standards-compliant.
+!! @note All procedures are `pure` or `elemental` when possible for maximum performance
+!!       and usability in array contexts.
 !!
+!! <h2 class="groupheader">Examples</h2>
 !! @par Basic Usage
 !! @code{.f90}
-!! use fpx_string
 !! type(string) :: s, t
 !! character(:), allocatable :: line
 !!
-!! s = "Hello"              ! Assignment from literal
-!! t = s // " World!"       ! Concatenation
+!! s = 'Hello'              ! Assignment from literal
+!! t = s // ' World!'       ! Concatenation
 !! print *, t%chars         ! Output: Hello World!
 !!
-!! if (s == "Hello") print *, "Equal!"
-!! if (.not. (s == "hello")) print *, "Case sensitive"
+!! if (s == 'Hello') then
+!!      print *, 'Equal'
+!! else
+!!      print *, 'Case sensitive'
+!! endif
 !!
 !! print *, len(t)          ! -> 12
 !! print *, len_trim(t)     ! -> 12
+!! ...
 !! @endcode
 !!
 !! @par Array and Container Support
@@ -38,20 +45,18 @@
 !! type(string) :: words(3)
 !! logical      :: found
 !!
-!! words = [string("apple"), string("banana"), string("cherry")]
-!! found = words .contains. "banana"     ! --> .true.
-!! found = words .contains. string("date") ! --> .false.
+!! words = [string('apple'), string('banana'), string('cherry')]
+!! found = words .contains. 'banana'     ! --> .true.
+!! found = words .contains. string('date') ! --> .false.
+!! ...
 !! @endcode
 !!
 !! @par Advanced: Source Code Processing
 !! @code{.f90}
 !! character(len=:), allocatable :: code_line
-!! code_line = uppercase("program hello_world  ! comment")  ! --> "PROGRAM HELLO_WORLD  ! comment"
+!! code_line = uppercase('program hello_world  ! comment')  ! --> 'PROGRAM HELLO_WORLD  ! comment'
+!! ...
 !! @endcode
-!!
-!! @note All procedures are `pure` or `elemental` when possible for maximum performance
-!!       and usability in array contexts.
-!! @{
 module fpx_string
     use fpx_constants
     implicit none; private
@@ -69,15 +74,17 @@ module fpx_string
               concat,       &
               writechk,     &
               uppercase
-        
+    
+    !> @struct string
+    !! @ingroup group_string
     !> @brief Represents text as a sequence of ASCII code units.
     !!        The derived type wraps an allocatable character array.
     !!
     !! <h2>Examples</h2>
-    !! ```fortran
+    !! @code{.f90}
     !! type(string) :: s
     !! s = 'foo'
-    !! ```
+    !! @endcode
     !!
     !! <h2>Remarks</h2>
     !! @par
@@ -93,10 +100,13 @@ module fpx_string
     !! @param[in] chars 
     !! 
     !! @b Examples
-    !! ```fortran
+    !! @code{.f90}
     !! type(string) :: s
     !! s = string('foo')
-    !! ```
+    !! @endcode
+    !! @return The constructed string object.
+    !!
+    !! @b Remarks
     type, public :: string
         character(:), allocatable :: chars !< Variable length character array
     contains
@@ -114,24 +124,44 @@ module fpx_string
          generic :: write (formatted)    => write_formatted !! Formatted output.
     end type
     
+    !> @interface len
+    !! @ingroup group_string
+    !> @brief Return the length of a string
+    !! <h2> Remarks </h2>
     interface len
         module procedure :: string_len
     end interface
     
+    !> @interface len_trim
+    !! @ingroup group_string
+    !> @brief Return the trimmed length of a string
+    !! <h2> Remarks </h2>
     interface len_trim
         module procedure :: string_len_trim
     end interface
     
+    !> @interface trim
+    !! @ingroup group_string
+    !> @brief Return the trimmed string
+    !! <h2> Remarks </h2>
     interface trim
         module procedure :: string_trim
     end interface
     
+    !> @interface concat
+    !! @ingroup group_string
+    !> @brief Concatenation operator
+    !! <h2> Remarks </h2>
     interface operator(//)
         module procedure :: string_concat_string
         module procedure :: string_concat_character
         module procedure :: character_concat_string
     end interface
     
+    !> @interface contains
+    !! @ingroup group_string
+    !> @brief Check whether a string belongs to a list or not
+    !! <h2> Remarks </h2>
     interface operator(.contains.)
         module procedure :: strings_contain_string
         module procedure :: strings_contain_character
@@ -141,17 +171,19 @@ module fpx_string
     
     contains
     
-    !> @brief Assignment overloading. Assign a character array to a string.
+    !> Assignment overloading. Assign a character array to a string.
     !! @param[inout] lhs string
     !! @param[in]    rhs character(*)
     !! 
     !! @b Examples
-    !! ```fortran
+    !! @code{.f90}
     !! type(string) :: s
     !! 
     !! s = 'foo'
-    !! ```
+    !! @endcode
+    !!
     !! @b Remarks
+    !! @ingroup group_string
     subroutine character_assign_string(lhs, rhs)
         class(string), intent(inout)   :: lhs
         character(*), intent(in)       :: rhs
@@ -160,20 +192,22 @@ module fpx_string
         allocate(lhs%chars, source = rhs)
     end subroutine
     
-    !> @brief Assignment overloading. Assign a string to a character array.
+    !> Assignment overloading. Assign a string to a character array.
     !! @param[inout] lhs character(:), allocatable
     !! @param[in]    rhs string
     !! 
     !! @b Examples
-    !! ```fortran
+    !! @code{.f90}
     !! type(string) :: s
     !! character(:), allocatable :: c
     !! 
     !! s = 'foo'
     !! c = s
     !! ! The value of c is now 'foo'
-    !! ```
+    !! @endcode
+    !!
     !! @b Remarks
+    !! @ingroup group_string
     subroutine string_assign_character(lhs, rhs)
         character(:), allocatable, intent(inout) :: lhs
         class(string), intent(in)                :: rhs
@@ -181,19 +215,22 @@ module fpx_string
         lhs = rhs%chars
     end subroutine
     
-    !> @brief Length of the string entity.
+    !> Length of the string entity.
     !! @param[in] this string  
     !! 
     !! @b Examples
-    !! ```fortran
+    !! @code{.f90}
     !! type(string) :: s
     !! integer :: l
     !! 
     !! s = string('foo ')
     !! l = len(s)
     !! ! The value of l is 4
-    !! ```
+    !! @endcode
     !! @return An integer corresponding to the length of the string.
+    !!
+    !! @b Remarks
+    !! @ingroup group_string
     elemental integer function string_len(this) result(res)
         class(string), intent(in) :: this
          
@@ -204,19 +241,22 @@ module fpx_string
         end if
     end function
     
-    !> @brief Length of the string entity without trailing blanks (len_trim).
+    !> Length of the string entity without trailing blanks (len_trim).
     !! @param[in] this string  
     !! 
     !! @b Examples
-    !! ```fortran
+    !! @code{.f90}
     !! type(string) :: s
     !! integer :: l
     !! 
     !! s = string('foo ')
     !! l = len_trim(s)
     !! ! The value of l is 3
-    !! ```
+    !! @endcode
     !! @return An integer corresponding to the trimmed length of the string.
+    !!
+    !! @b Remarks
+    !! @ingroup group_string
     pure integer function string_len_trim(this) result(res)
          class(string), intent(in) :: this
          
@@ -227,9 +267,12 @@ module fpx_string
         end if
     end function
     
-    !> @brief Returns a copy of the string with trailing blanks removed.
+    !> Returns a copy of the string with trailing blanks removed.
     !! @param[in] this string
     !! @return Trimmed character string (deferred length).
+    !!
+    !! @b Remarks
+    !! @ingroup group_string
     pure function string_trim(this) result(res)
         class(string), intent(in) :: this
         character(:), allocatable :: res
@@ -241,10 +284,13 @@ module fpx_string
         end if
     end function
     
-    !> @brief Concatenation of two string objects.
+    !> Concatenation of two string objects.
     !! @param[in] lhs left-hand side string
     !! @param[in] rhs right-hand side string
     !! @return New concatenated string.
+    !!
+    !! @b Remarks
+    !! @ingroup group_string
     pure function string_concat_string(lhs, rhs) result(res)
         class(string), intent(in) :: lhs
         class(string), intent(in) :: rhs
@@ -261,10 +307,13 @@ module fpx_string
         end if
     end function
     
-    !> @brief Concatenation of string and character expression.
+    !> Concatenation of string and character expression.
     !! @param[in] lhs string
     !! @param[in] rhs character expression
     !! @return New concatenated string.
+    !!
+    !! @b Remarks
+    !! @ingroup group_string
     pure function string_concat_character(lhs, rhs) result(res)
         class(string), intent(in)   :: lhs
         character(*), intent(in)    :: rhs
@@ -277,10 +326,13 @@ module fpx_string
         end if
     end function
     
-    !> @brief Concatenation of character expression and string.
+    !> Concatenation of character expression and string.
     !! @param[in] lhs character expression
     !! @param[in] rhs string
     !! @return New concatenated string.
+    !!
+    !! @b Remarks
+    !! @ingroup group_string
     pure function character_concat_string(lhs, rhs) result(res)
         character(*), intent(in)    :: lhs
         class(string), intent(in)   :: rhs
@@ -293,10 +345,13 @@ module fpx_string
         end if
     end function
     
-    !> @brief Equality comparison between two string objects.
+    !> Equality comparison between two string objects.
     !! @param[in] lhs left-hand side
     !! @param[in] rhs right-hand side
     !! @return .true. if the strings are equal, .false. otherwise.
+    !!
+    !! @b Remarks
+    !! @ingroup group_string
     elemental function string_eq_string(lhs, rhs) result(res)
         class(string), intent(in) :: lhs !! Left hand side.
         type(string), intent(in) :: rhs !! Right hand side.
@@ -309,10 +364,13 @@ module fpx_string
         end if
     end function
 
-    !> @brief Equality comparison between string and character expression.
+    !> Equality comparison between string and character expression.
     !! @param[in] lhs string
     !! @param[in] rhs character expression
     !! @return .true. if equal, .false. otherwise.
+    !!
+    !! @b Remarks
+    !! @ingroup group_string
     elemental function string_eq_character(lhs, rhs) result(res)
         class(string), intent(in) :: lhs !! Left hand side.
         character(*), intent(in) :: rhs !! Right hand side.
@@ -325,10 +383,13 @@ module fpx_string
         end if
     end function
 
-    !> @brief Equality comparison (reversed) between character expression and string.
+    !> Equality comparison (reversed) between character expression and string.
     !! @param[in] lhs character expression
     !! @param[in] rhs string
     !! @return .true. if equal, .false. otherwise.
+    !!
+    !! @b Remarks
+    !! @ingroup group_string
     elemental function character_eq_string(lhs, rhs) result(res)
         character(*), intent(in) :: lhs !! Left hand side.
         class(string), intent(in) :: rhs !! Right hand side.
@@ -341,6 +402,10 @@ module fpx_string
         end if
     end function
     
+    !! write for user defined derived type
+    !!
+    !! @b Remarks
+    !! @ingroup group_string
     subroutine write_formatted(dtv, unit, iotype, v_list, iostat, iomsg)
         class(string), intent(in)   :: dtv 
         integer, intent(in)         :: unit !! Logical unit.
@@ -356,13 +421,16 @@ module fpx_string
         end if
     end subroutine
     
-    !> @brief Formatted write support for the string type.
+    !> Formatted write support for the string type.
     !! @param[in]    dtv     string object
     !! @param[in]    unit    logical unit
     !! @param[in]    iotype  edit descriptor string
     !! @param[in]    v_list  list of values for edit descriptors
     !! @param[out]   iostat  I/O status
     !! @param[inout] iomsg   I/O message
+    !!
+    !! @b Remarks
+    !! @ingroup group_string
     logical function starts_with(str, arg1, idx) result(res)
         character(*), intent(in) :: str
         character(*), intent(in) :: arg1
@@ -375,9 +443,12 @@ module fpx_string
         if (present(idx)) idx = i
     end function
     
-    !> @brief Returns the first non-blank character of a string.
+    !> Returns the first non-blank character of a string.
     !! @param[in] str input string
     !! @return First character (space if empty)
+    !!
+    !! @b Remarks
+    !! @ingroup group_string
     character function head(str) result(res)
         character(*), intent(in) :: str
         
@@ -387,9 +458,12 @@ module fpx_string
         res = str(1:1)
     end function
     
-    !> @brief Returns the last non-blank character of a string.
+    !> Returns the last non-blank character of a string.
     !! @param[in] str input string
     !! @return Last character (space if empty)
+    !!
+    !! @b Remarks
+    !! @ingroup group_string
     character function tail(str) result(res)
         character(*), intent(in) :: str
         !private
@@ -401,10 +475,13 @@ module fpx_string
         res = str(n:n)
     end function
     
-    !> @brief Smart concatenation that removes continuation markers (&) and handles line-continuation rules.
+    !> Smart concatenation that removes continuation markers (&) and handles line-continuation rules.
     !! @param[in] str1 first line
     !! @param[in] str2 second line
     !! @return Concatenated string with proper continuation handling
+    !!
+    !! @b Remarks
+    !! @ingroup group_string
     function concat(str1, str2) result(res)
         character(*), intent(in) :: str1
         character(*), intent(in) :: str2
@@ -438,7 +515,7 @@ module fpx_string
         res = str1(:n1)//str2(n2:)
     end function
     
-    !> @brief Convert string to upper case (respects contents of quotes).
+    !> Convert string to upper case (respects contents of quotes).
     !! @param[in] str input string
     !! @return Upper-case version of the string
     !!
@@ -449,6 +526,9 @@ module fpx_string
     !! output = uppercase(input)
     !! if (output == 'TEST') print*, 'OK'
     !! @endcode
+    !!
+    !! @b Remarks
+    !! @ingroup group_string
     pure function uppercase(str) result(res)
         character(*), intent(in) :: str
         character(len_trim(str)) :: res
@@ -479,9 +559,12 @@ module fpx_string
         end do
     end function
     
-    !> @brief Write a long line split into chunks of size CHKSIZE with continuation (&).
+    !> Write a long line split into chunks of size CHKSIZE with continuation (&).
     !! @param[in] unit logical unit
     !! @param[in] str  string to write
+    !!
+    !! @b Remarks
+    !! @ingroup group_string
     subroutine writechk(unit, str)
         integer, intent(in)         :: unit
         character(*), intent(in)    :: str
@@ -498,10 +581,13 @@ module fpx_string
         write (unit, '(A)') str(n*CHKSIZE+1:)
     end subroutine
     
-    !> @brief Returns the previous non-blank character before position pos (updates pos).
+    !> Returns the previous non-blank character before position pos (updates pos).
     !! @param[in]    line input line
     !! @param[inout] pos  current position (moved backward)
     !! @return Previous non-blank character
+    !!
+    !! @b Remarks
+    !! @ingroup group_string
     character(1) function previous(line, pos) result(res)
         character(*), intent(in)    :: line
         integer, intent(inout)      :: pos
@@ -518,10 +604,13 @@ module fpx_string
         end if
     end function    
     
-    !> @brief Checks whether an array of string contains a given string.
+    !> Checks whether an array of string contains a given string.
     !! @param[in] lhs array of string
     !! @param[in] rhs string to search for
     !! @return .true. if rhs is present in lhs
+    !!
+    !! @b Remarks
+    !! @ingroup group_string
     logical function strings_contain_string(lhs, rhs) result(res)
         type(string), intent(in)    :: lhs(:)
         type(string), intent(in)    :: rhs
@@ -537,10 +626,13 @@ module fpx_string
         end do
     end function
     
-    !> @brief Checks whether an array of string contains a given character expression.
+    !> Checks whether an array of string contains a given character expression.
     !! @param[in] lhs array of string
     !! @param[in] rhs character expression to search for
     !! @return .true. if rhs is present in lhs
+    !!
+    !! @b Remarks
+    !! @ingroup group_string
     logical function strings_contain_character(lhs, rhs) result(res)
         type(string), intent(in)    :: lhs(:)
         character(*), intent(in)    :: rhs
@@ -556,10 +648,13 @@ module fpx_string
         end do
     end function
     
-    !> @brief Checks whether an array of character contains a given character expression.
+    !> Checks whether an array of character contains a given character expression.
     !! @param[in] lhs array of character
     !! @param[in] rhs character expression to search for
     !! @return .true. if rhs is present in lhs
+    !!
+    !! @b Remarks
+    !! @ingroup group_string
     logical function characters_contain_character(lhs, rhs) result(res)
         character(*), intent(in)    :: lhs(:)
         character(*), intent(in)    :: rhs
@@ -575,10 +670,13 @@ module fpx_string
         end do
     end function
     
-    !> @brief Checks whether an array of character contains a given string.
+    !> Checks whether an array of character contains a given string.
     !! @param[in] lhs array of character
     !! @param[in] rhs string to search for
     !! @return .true. if rhs is present in lhs
+    !!
+    !! @b Remarks
+    !! @ingroup group_string
     logical function characters_contain_string(lhs, rhs) result(res)
         character(*), intent(in)    :: lhs(:)
         type(string), intent(in)    :: rhs
@@ -594,4 +692,3 @@ module fpx_string
         end do
     end function
 end module
-!! @}

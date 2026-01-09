@@ -1,5 +1,6 @@
-!> @defgroup group_global fpx_global
-!> @brief Central global configuration and shared state for the fpx Fortran preprocessor
+!> @file
+!! @defgroup group_global Global
+!! Central global configuration and shared state for the fpx Fortran preprocessor
 !! This module defines a single global instance `global` of type `global_settings`
 !! that holds all persistent, user-configurable state used across the entire preprocessing session:
 !!
@@ -13,43 +14,40 @@
 !! and modify the same configuration without passing arguments everywhere.
 !! This is safe in single-threaded use (typical for preprocessing) and allows easy
 !! customization from driver programs or interactive sessions.
-!!
-!! @par Examples
+!! <h2  class="groupheader">Examples</h2>
 !!
 !! 1. Add custom include paths before preprocessing:
 !! @code{.f90}
-!!    use fpx_global
 !!    
-!!    global%includedir = [ "./include", "/usr/local/include/fortran", "../common" ]
-!!    call preprocess("main.F90", "main.f90")
-!!    !> All #include <file.h> will search these directories
+!!    global%includedir = [ './include', '/usr/local/include/fortran', '../common' ]
+!!    call preprocess('main.F90', 'main.f90')
+!!    !#include <file.h> will search these directories
 !! @endcode
 !!
 !! 2. Predefine common macros (e.g. for conditional compilation):
 !! @code{.f90}
-!!    use fpx_global
-!!    use fpx_macro, only: add
 !!    
-!!    call add(global%macros, macro("DEBUG", "1"))
-!!    call add(global%macros, macro("MPI_VERSION", "3"))
-!!    call add(global%macros, macro("USE_OPENMP", "1"))
+!!    call add(global%macros, macro('DEBUG', '1'))
+!!    call add(global%macros, macro('MPI_VERSION', '3'))
+!!    call add(global%macros, macro('USE_OPENMP', '1'))
 !!    
-!!    call preprocess("src/app.F90")
+!!    call preprocess('src/app.F90')
 !!    !> Code can now use #ifdef DEBUG, #if MPI_VERSION >= 3, etc.
 !! @endcode
 !!
 !! 3. Disable macro expansion temporarily (pass-through mode):
 !! @code{.f90}
 !!    global%expand_macros = .false.   ! Only handle #include and conditionals
-!!    call preprocess("raw_source.F90", "clean.F90")
+!!    call preprocess('raw_source.F90', 'clean.F90')
+!!    ...
 !! @endcode
 !!
 !! 4. Strip all comments from final output:
 !! @code{.f90}
 !!    global%exclude_comments = .true.
-!!    call preprocess("messy.F90", "clean_no_comments.f90")
+!!    call preprocess('messy.F90', 'clean_no_comments.f90')
+!!    ...
 !! @endcode
-!! @{
 module fpx_global
     use fpx_constants
     use fpx_string
@@ -58,9 +56,24 @@ module fpx_global
     
     implicit none; private
     
-    !> @brief Global preprocessor configuration and shared runtime state
+    !> Global preprocessor configuration and shared runtime state
     !! All components of fpx read from and write to this single instance.
     !! Users can safely modify its public components at any time.
+    !! <h2  class="groupheader">Examples</h2>
+    !! @code{.f90}
+    !!    use fpx_global
+    !!
+    !!    call add(global%macros, macro('__LFORTRAN__','1'))
+    !!    call add(global%macros, macro('__VERSION__'))
+    !!    call add(global%macros, macro('__LFORTRAN_MAJOR__'))
+    !!    call add(global%macros, macro('__LFORTRAN_MINOR__'))
+    !!    call add(global%macros, macro('__LFORTRAN_PATCHLEVEL__'))
+    !! @endcode
+    !! <h2  class="groupheader">Remarks</h2>
+    !! @par
+    !! The global settings are accessed through the global variable 
+    !! @ref global
+    !! @ingroup group_global
     type, public :: global_settings
         private
         type(macro), allocatable, public    :: macros(:)
@@ -71,14 +84,7 @@ module fpx_global
     end type
     
     !> @brief The single global instance used throughout fpx
-    !! Initialized automatically with sensible defaults:
-    !! - Empty macro and undef tables
-    !! - No include directories
-    !! - Macro expansion enabled
-    !! - Comments preserved
+    !! Initialized automatically with sensible defaults values.
+    !! @ingroup group_global 
     type(global_settings), public :: global
-    
-    contains
-    
 end module
-!! @}

@@ -1,18 +1,18 @@
-# FPX: Fortran preprocesser extended
+# A bit of History {#introduction}
 
-## Introduction: The Love-Hate Dance of Fortran and Preprocessing
+[TOC]
 
-Fortran, the venerable language of scientific computing, has powered simulations of galaxies, weather systems, and quantum phenomena for over seven decades. Its enduring strength lies in its clarity, performance, and mathematical soul—qualities that resonate deeply with its community of developers. Yet, nestled within this ecosystem is a contentious tool: the preprocessor. From its ad hoc beginnings in the 1970s to its modern incarnations in tools like `cpp`, `fpp`, and `fypp`, preprocessing has been both a lifeline and a lightning rod for Fortran developers. It enables portability across diverse platforms, conditional compilation for debugging, and code generation for complex libraries—capabilities critical to Fortran’s role in high-performance computing. But it also sparks fierce debate, with many Fortraners decrying its tendency to obscure code, disrupt the language’s elegant simplicity, and introduce bugs that haunt scientific precision. This article explores the pivotal uses of preprocessing in Fortran, delving into the passionate love-hate relationship that defines its place in the community—a tug-of-war between pragmatic necessity and a purist’s devotion to Fortran’s unadulterated clarity.
+Fortran has powered simulations of galaxies, weather systems, and quantum phenomena for over seven decades. Its enduring strength lies in its clarity, performance, and mathematical soul—qualities that resonate deeply with its community of developers. Yet, nestled within this ecosystem is a contentious tool: the preprocessor. From its ad hoc beginnings in the 1970s to its modern incarnations in tools like `cpp`, `fpp`, and `fypp`, preprocessing has been both a lifeline and a lightning rod for Fortran developers. It enables portability across diverse platforms, conditional compilation for debugging, and code generation for complex libraries—capabilities critical to Fortran’s role in high-performance computing. But it also sparks fierce debate, with many Fortraners decrying its tendency to obscure code, disrupt the language’s elegant simplicity, and introduce bugs that haunt scientific precision. This article explores the pivotal uses of preprocessing in Fortran, delving into the passionate love-hate relationship that defines its place in the community—a tug-of-war between pragmatic necessity and a purist’s devotion to Fortran’s unadulterated clarity.
 
-## A Brief History of Preprocessing in Fortran and the CoCo Standardization Attempt
+## A Brief History of Preprocessing
 
-Fortran, born in the 1950s for scientific and numerical computing, was designed for clarity and performance on early computers. Preprocessing—modifying source code before compilation—was not part of its original vision. As Fortran evolved, the need for portability, code reuse, and conditional compilation grew, particularly in large-scale scientific projects. This led to the adoption of preprocessing tools, though their integration into Fortran’s ecosystem has been uneven and controversial. Below is a concise history of preprocessing in Fortran, culminating in the notable attempt to standardize it with CoCo.
+Fortran, born in the 1950s for scientific and numerical computing, was designed for clarity and performance on early computers. Preprocessing was not part of its original vision. As Fortran evolved, the need for portability, code reuse, and conditional compilation grew, particularly in large-scale scientific projects. This led to the adoption of preprocessing tools, though their integration into Fortran’s ecosystem has been uneven and controversial. Below is a concise history of preprocessing in Fortran, culminating in the notable attempt to standardize it with CoCo.
 
 ### Early Days: Ad Hoc Preprocessing (1950s–1970s)
 In Fortran’s infancy (Fortran I, II, IV), preprocessing was virtually nonexistent. Developers relied on manual code edits or rudimentary scripts to handle tasks like platform-specific tweaks. Early computers varied widely in architecture, so scientists often customized code by hand for each system—a tedious process. Some used external tools, like simple text processors, to automate repetitive changes, but these were bespoke and non-standard. Fortran 66 and 77, with their rigid structure, offered no built-in preprocessing capabilities, leaving developers to cobble together solutions.
 
 ### Rise of External Preprocessors (1980s)
-By the 1980s, Fortran 77 was the workhorse of scientific computing, and large projects—like climate models or finite element simulations—demanded portability across diverse hardware (e.g., Cray, VAX, IBM). The C preprocessor (`cpp`), developed for C, became a popular stopgap. Its `#define`, `#ifdef`, and `#include` directives allowed Fortran developers to write flexible code for multiple platforms. Files with `.F` or `.F77` extensions signaled preprocessing, distinguishing them from raw `.f` files. However, `cpp` was a poor fit: its C-centric syntax clashed with Fortran’s column-based formatting, and it could mangle Fortran’s fixed-form source, leading to errors. Dedicated Fortran preprocessors, like `fpp`, emerged to address these issues, offering better integration but lacking universal adoption.
+By the 1980s, Fortran 77 was the workhorse of scientific computing, and large projects—like climate models or finite element simulations—demanded portability across diverse hardware (e.g., Cray, VAX, IBM). The C preprocessor (`cpp`), developed for C, became a popular stopgap. Its `#define`, `#ifdef`, and `#include` directives allowed Fortran developers to write flexible code for multiple platforms. Files with `.F` or `.F77` extensions signaled preprocessing, distinguishing them from raw `.f` files. However, `cpp` was a imperfect fit: its C-centric syntax clashed with Fortran’s column-based formatting, and it could mangle Fortran’s fixed-form source, leading to errors. Dedicated Fortran preprocessors, like `fpp`, emerged to address these issues, offering better integration but lacking universal adoption.
 
 ### Fortran 90/95: Reduced Need, Persistent Use (1990s)
 Fortran 90 introduced modules, parameterized types, and dynamic memory, giving developers native tools for modularity and portability. These features reduced reliance on preprocessing for tasks like code reuse or constant definition. For example, modules replaced many `#include` use cases, and `PARAMETER` statements handled constants better than `#define`. Still, preprocessing persisted in large codebases, especially for conditional compilation (e.g., enabling/disabling debug code) or legacy Fortran 77 projects. Tools like `cpp` and `fpp` remained common, though their use was often seen as a necessary evil due to debugging challenges and code obfuscation.
@@ -64,6 +64,7 @@ In modern Fortran (referring to standards like Fortran 2003, 2008, 2018, and the
       PRINT *, "Entering subroutine X with N =", N
       CALL CHECK_BOUNDS(array, N)
     #endif
+    !...
     ```
 - **Platform-Specific Code**:
   - Scientific software often runs on diverse systems—Linux clusters, GPUs, or supercomputers like those using Intel, AMD, or Cray architectures. Preprocessing lets developers tailor code to specific compilers, hardware, or libraries (e.g., MPI vs. OpenMP).
@@ -74,6 +75,7 @@ In modern Fortran (referring to standards like Fortran 2003, 2008, 2018, and the
     #else
       data_local = data
     #endif
+    !...
     ```
 - **Feature Toggles**:
   - In large projects, preprocessing enables or disables optional features (e.g., experimental algorithms or legacy compatibility) without maintaining separate codebases.
@@ -95,20 +97,22 @@ In modern Fortran (referring to standards like Fortran 2003, 2008, 2018, and the
   - Example:
     ```fortran
     #ifdef __GFORTRAN__
-      CALL GET_ENVIRONMENT_VARIABLE("PATH", path_var)
+      call GETENV("PATH", path_var)
     #else
-      CALL GETENV("PATH", path_var)
+      call GET_ENVIRONMENT_VARIABLE("PATH", path_var)
     #endif
+    !...
     ```
 - **Library Dependencies**:
   - Scientific codes often link to external libraries like BLAS, LAPACK, or FFTW. Preprocessing manages variations in library availability or interfaces.
   - Example:
     ```fortran
     #ifdef HAVE_MKL
-      CALL DGEMM('N', 'N', m, n, k, alpha, A, m, B, k, beta, C, m)
+      call DGEMM('N', 'N', m, n, k, alpha, A, m, B, k, beta, C, m)
     #else
-      CALL CUSTOM_GEMM(m, n, k, A, B, C)
+      call CUSTOM_GEMM(m, n, k, A, B, C)
     #endif
+    !...
     ```
 - **Precision Control**:
   - Fortran’s `KIND` system allows flexible numeric precision, but preprocessing is used to enforce consistent precision across platforms or to switch between single/double precision for performance.
@@ -160,7 +164,7 @@ In modern Fortran (referring to standards like Fortran 2003, 2008, 2018, and the
 **Why It Persists**:
 - Modules are superior for modularity, but `#include` is entrenched in legacy workflows and simpler for small, shared snippets. It’s also used when interfacing with C-style build systems.
 
-### 4. **Macro Definitions for Code Reuse**
+### Macro Definitions for Code Reuse
 **What It Is**: Macros (`#define`) create reusable code snippets or constants, reducing duplication or simplifying complex expressions.
 
 **Common Uses**:
@@ -215,6 +219,7 @@ In modern Fortran (referring to standards like Fortran 2003, 2008, 2018, and the
     #ifdef HAVE_HDF5
       CALL write_hdf5_file(data)
     #endif
+    !...
     ```
 - **Automated Code Generation**:
   - Tools like `fypp` or custom scripts generate Fortran code for specific cases (e.g., different precisions or dimensions), embedded in the build process.
@@ -227,35 +232,3 @@ In modern Fortran (referring to standards like Fortran 2003, 2008, 2018, and the
 
 **Why It Persists**:
 - Modern build systems rely on preprocessing to manage complexity, and Fortran’s role in HPC demands integration with tools like MPI, CUDA, or HDF5, where preprocessing simplifies configuration.
-
-## Context in Modern Fortran
-Modern Fortran’s features—modules, submodules, generics, and `KIND`-based precision—have reduced preprocessing’s necessity compared to Fortran 77 days. For example:
-- **Modules** replace `#include` for code organization.
-- **Generic procedures** handle type-specific routines, reducing macro-based code generation.
-- **Submodules** improve modularity for large projects.
-- **Parameterized derived types** manage precision or array sizes natively.
-
-Yet, preprocessing thrives in:
-- **Legacy Codebases**: Many HPC projects (e.g., climate models, CFD solvers) maintain Fortran 77/90 code, where preprocessing is entrenched.
-- **HPC and Portability**: Cross-platform software needs preprocessing to handle diverse architectures, especially in supercomputing.
-- **Performance Optimization**: Conditional compilation strips unnecessary code, critical for simulations running on exascale systems.
-- **Community Tools**: Projects like the Fortran Standard Library embrace `fypp` for its modern approach to code generation, showing preprocessing isn’t just for legacy.
-
-### Evidence from Open-Source
-On GitHub, preprocessing appears in prominent Fortran projects:
-- **WRF (Weather Research and Forecasting)**: Uses `cpp` for platform-specific code and feature toggles.
-- **PETSc**: Relies on preprocessing for library configurations and precision control.
-- **Fortran stdlib**: Employs `fypp` for generic code generation.
-- **MPAS (Model for Prediction Across Scales)**: Uses preprocessing for parallelization options (MPI vs. serial).
-
-Smaller repos or educational code tend to avoid preprocessing, favoring pure Fortran for simplicity.
-
-## Summary
-In modern Fortran, preprocessing is most commonly used for:
-1. **Conditional Compilation**: Debug/production switches, platform-specific code, feature toggles.
-2. **Portability**: Handling compilers, libraries, and precision.
-3. **File Inclusion**: Sharing constants or legacy code.
-4. **Macros**: Simplifying repetitive code or enabling code generation.
-5. **Build   **Build Integration**: Configuring builds and testing.
-
-These uses are prevalent in HPC, scientific computing, and legacy projects, driven by the need for flexibility and performance. While modern Fortran reduces preprocessing’s role, it remains a cornerstone for large, portable, or performance-critical software, balancing pragmatism with the language’s push for clarity and power.

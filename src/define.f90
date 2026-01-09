@@ -1,5 +1,6 @@
-!> @defgroup group_define fpx_define
-!> @brief Processing of #define and #undef preprocessor directives
+!> @file
+!! @defgroup group_define Define
+!! Processing of #define and #undef preprocessor directives
 !! This module implements the core logic for handling macro definition and removal
 !! during preprocessing in the fpx Fortran preprocessor. It supports:
 !! - Object-like macros: `#define NAME value`
@@ -13,21 +14,22 @@
 !!
 !! The routines are designed to be robust against malformed input and provide
 !! clear diagnostics when `verbose = .true.`.
-!!
-!! @par Examples
+!! <h2  class="groupheader">Examples</h2>
 !!
 !! 1. Define simple object-like macros:
 !! @code{.f90}
 !!    #define PI 3.141592653589793
 !!    #define DEBUG 1
 !!    #define MAX_SIZE 1024
+!!    ...
 !! @endcode
 !!
 !! 2. Define function-like and variadic macros:
 !! @code{.f90}
 !!    #define SQR(x) ((x)*(x))
-!!    #define LOG_MSG(level, ...)  print *, "[LOG:", level, "]", __VA_ARGS__
+!!    #define LOG_MSG(level, ...)  print *, '[LOG:', level, ']', __VA_ARGS__
 !!    #define CONCAT(a,b) a ## _ ## b
+!!    ...
 !! @endcode
 !!
 !! 3. Undefine a macro:
@@ -42,9 +44,9 @@
 !!    use fpx_logging, only: verbose
 !!    
 !!    verbose = .true.
-!!    call preprocess("input.F90")   ! Will show all macro definitions/undefs
+!!    call preprocess('input.F90')   ! Will show all macro definitions/undefs
+!!    ...
 !! @endcode
-!! @{
 module fpx_define
     use fpx_constants
     use fpx_logging
@@ -59,7 +61,7 @@ module fpx_define
 
 contains
 
-    !> @brief Process a #define directive and register or update a macro
+    !> Process a #define directive and register or update a macro
     !! Parses the line after `#define`, distinguishes between object-like and
     !! function-like forms, handles variadic `...`, extracts parameters correctly,
     !! and stores the macro in the active macro table. Existing macros are
@@ -68,6 +70,9 @@ contains
     !! @param[in]    line    Full source line containing the #define
     !! @param[inout] macros  Current macro table (updated in-place)
     !! @param[in]    token   Usually 'DEFINE' – keyword matched in uppercase
+    !! 
+    !! @b Remarks
+    !! @ingroup group_define
     subroutine handle_define(line, macros, token)
         character(*), intent(in)                    :: line
         type(macro), allocatable, intent(inout)     :: macros(:)
@@ -194,12 +199,15 @@ contains
         end if
     end subroutine
 
-    !> @brief Process a #undef directive and remove a macro from the table
+    !> Process a #undef directive and remove a macro from the table
     !! Finds the named macro in the current table and removes it.
     !! Issues a warning if the macro was not previously defined.
     !! @param[in]    line    Full source line containing the #undef
     !! @param[inout] macros  Current macro table (updated in-place)
     !! @param[in]    token   Usually 'UNDEF' – keyword matched in uppercase
+    !! 
+    !! @b Remarks
+    !! @ingroup group_define
     subroutine handle_undef(line, macros, token)
         character(*), intent(in)                    :: line
         type(macro), allocatable, intent(inout)     :: macros(:)
@@ -225,4 +233,3 @@ contains
         end if
     end subroutine
 end module
-!! @}

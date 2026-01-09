@@ -1,5 +1,6 @@
-!> @defgroup group_token fpx_token
-!> @brief Module implementing a full C-preprocessor-style constant expression evaluator using a top-down recursive descent parser.
+!> @file
+!! @defgroup group_token Token
+!! Module implementing a full C-preprocessor-style constant expression evaluator using a top-down recursive descent parser.
 !! The module provides the ability to evaluate integer constant expressions of the kind used in
 !! classical preprocessor. This includes support for:
 !! - All C-style arithmetic, bitwise, logical, relational, and conditional operators
@@ -11,7 +12,7 @@
 !! The implementation consists of two major phases:
 !!
 !! 1. Tokenization
-!!    The input string is scanned and converted into a sequence of @ref token objects.
+!!    The input string is scanned and converted into a sequence of @link fpx_token::token token @endlink objects.
 !!    The tokenizer recognizes multi-character operators (`&&`, `||`, `==`, `!=`, `<=`, `>=`, `<<`, `>>`, `**`),
 !!    the `defined` operator (with or without parentheses), numbers in all supported bases,
 !!    identifiers, and parentheses. Whitespace is ignored except as a token separator.
@@ -54,13 +55,12 @@
 !!    the logging module (used only for debugging).
 !!
 !!    Public interface:
-!!    - @ref evaluate_expression : high-level function that tokenizes and evaluates in one call
-!!    - @ref parse_expression     : low-level entry point for already-tokenized input
+!!    - @link fpx_token::evaluate_expression evaluate_expression @endlink: high-level function that tokenizes and evaluates in one call
+!!    - @link fpx_token::parse_expression parse_expression @endlink: low-level entry point for already-tokenized input
 !!
 !!    This design guarantees correct operator precedence without the need for an explicit
 !!    abstract syntax tree or stack-based shunting-yard algorithm, while remaining easy to
 !!    read, maintain, and extend.
-!! @{
 module fpx_token
     use fpx_string
     use fpx_constants
@@ -69,11 +69,16 @@ module fpx_token
 
     implicit none; private
 
-    public ::   evaluate_expression, &
-                parse_expression
+    public :: evaluate_expression, &
+              parse_expression
+
+    !> @brief Kind parameter for token type enumeration. Values are (`unknown`, `number`, `operator`, `identifier`, `parenthesis`, `defined`)
+    !! @ingroup group_token
+    integer, parameter :: tokens_enum = kind(unknown)
 
     !> @brief Token kinds used in expression parsing.
     !! Enumeration defining the possible types of tokens recognized by the tokenizer.
+    !! @ingroup group_token
     enum, bind(c)
         enumerator :: unknown = -1
         enumerator :: number = 0
@@ -83,15 +88,11 @@ module fpx_token
         enumerator :: defined = 4
     end enum
 
-    !> @brief Kind parameter for token type enumeration.
-    integer, parameter :: tokens_enum = kind(unknown)
-
-    !> @class token
-    !! @brief Represents a single token in a parsed expression.
+    !> Represents a single token in a parsed expression.
     !! Holds the string value of the token and its classified type.
     !! @par
-    !! <h2>Constructors</h2>
-    !! Initializes a new instance of the @ref token class
+    !! <h2 class="groupheader">Constructors</h2>
+    !! Initializes a new instance of the @link fpx_token::token token @endlink class
     !! <h3>token(character(:), integer)</h3>
     !! @verbatim type(token) function token(character(:) value, integer type) @endverbatim
     !! 
@@ -99,28 +100,29 @@ module fpx_token
     !! @param[in] type
     !!
     !! @b Examples
-    !! ```fortran
+    !! @code{.f90}
     !! a = token('9', number)
-    !! ```
-    !! @b Remarks
+    !! @endcode
+    !!
+    !! <h2 class="groupheader">Remarks</h2>
+    !! @ingroup group_token
     type, public :: token
         character(:), allocatable   :: value
         integer(tokens_enum)        :: type
     end type
     
-    !> @interface strtol
-    !> @brief Converts a string to integer.
+    !> Converts a string to integer.
     !! @par
-    !! <h2>Methods</h2>
+    !! <h2 class="groupheader">Methods</h2>
     !!
-    !! <h3>strtol(character(*) str, (optional) logical success)</h3>
+    !! @code{.f90}strtol(character(*) str, (optional) logical success)@endcode
     !! 
     !! @param[in]  str      String to convert
     !! @param[out] success  Optional flag indicating successful conversion
     !! @return Converted integer value
     !! 
     !! <h2> </h2>
-    !! <h3>value(character(*) str, integer base, (optional) logical success)</h3>
+    !! @code{.f90}strtol(character(*) str, integer base, (optional) logical success)@endcode
     !! 
     !! Converts a string to integer with explicit base handling.
     !! Supports base 2, 8, 10, 16 and prefixes `0x`, `0b`.
@@ -129,7 +131,7 @@ module fpx_token
     !! @param[out]   success  Optional flag indicating successful conversion
     !! @return Converted integer value
     !!
-    !! <h2> Examples </h2>
+    !! <h2 class="groupheader"> Examples </h2>
     !! The following demonstrate a call to the `strtol` interface.
     !! @code{.f90}
     !!  integer :: i
@@ -139,7 +141,8 @@ module fpx_token
     !!  ! i = 123
     !! @endcode
     !!
-    !! <h2> Remarks </h2>
+    !! <h2 class="groupheader"> Remarks </h2>
+    !! @ingroup group_token
     interface strtol
     !! @cond
         module procedure :: strtol_default
@@ -149,7 +152,7 @@ module fpx_token
 
     contains
 
-    !> @brief Evaluates a preprocessor-style expression with macro substitution.
+    !> Evaluates a preprocessor-style expression with macro substitution.
     !! Tokenizes the input expression, expands macros where appropriate,
     !! parses it according to operator precedence, and computes the integer result.
     !! Returns .true. if evaluation succeeded and the result is non-zero.
@@ -158,8 +161,9 @@ module fpx_token
     !! @param[in] macros Array of defined macros for substitution and `defined()` checks
     !! @param[out] val   Optional integer result of the evaluation
     !! @return .true. if the expression evaluated successfully to non-zero, .false. otherwise
-    !! @n@n
+    !!
     !! @b Remarks
+    !! @ingroup group_token
     logical function evaluate_expression(expr, macros, val) result(res)
         character(*), intent(in)        :: expr
         type(macro), intent(in)         :: macros(:)
@@ -187,24 +191,26 @@ module fpx_token
         if (present(val)) val = result
     end function
 
-    !> @brief Tests whether a single character is a decimal digit ('0'-'9').
+    !> Tests whether a single character is a decimal digit ('0'-'9').
     !! @param[in] ch Character to test
     !! @return .true. if ch is a digit
-    !! @n@n
+    !!
     !! @b Remarks
+    !! @ingroup group_token
     logical elemental function is_digit(ch) result(res)
         character(*), intent(in) :: ch
         
         res = verify(ch, '0123456789') == 0
     end function
     
-    !> @brief Detects whether a string starts a typeless constant (hex, octal, binary).
+    !> Detects whether a string starts a typeless constant (hex, octal, binary).
     !! Used to avoid treating them as identifiers during tokenization.
     !! @param[in]  str Input string starting at current position
     !! @param[out] pos Length of the typeless constant (0 if not typeless)
     !! @return .true. if the prefix is a valid typeless constant in non-base-10
-    !! @n@n
+    !!
     !! @b Remarks
+    !! @ingroup group_token
     logical function is_typeless(str, pos) result(res)
         character(*), intent(in)    :: str
         integer, intent(out)        :: pos
@@ -319,15 +325,16 @@ module fpx_token
         if (present(success)) success = is_valid
     end function
 
-    !> @brief Parses a sequence of tokens starting at position `pos` as a full expression.
+    !> Parses a sequence of tokens starting at position `pos` as a full expression.
     !! Entry point for the recursive descent parser. Delegates to parse_or().
     !! @param[in] tokens    Array of tokens to parse
     !! @param[in] ntokens   Number of valid tokens in the array
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
     !! @param[in] macros    Defined macros for expansion and `defined()` checks
     !! @return Integer value of the parsed expression
-    !! @n@n
+    !!
     !! @b Remarks
+    !! @ingroup group_token
     recursive integer function parse_expression(tokens, ntokens, pos, macros) result(val)
         type(token), intent(in)   :: tokens(:)
         integer, intent(in)         :: ntokens
@@ -337,14 +344,15 @@ module fpx_token
         val = parse_or(tokens, ntokens, pos, macros)
     end function
 
-    !> @brief Parses logical OR expressions (`||`).
+    !> Parses logical OR expressions (`||`).
     !! @param[in] tokens    Array of tokens to parse
     !! @param[in] ntokens   Number of valid tokens in the array
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
     !! @param[in] macros    Defined macros for expansion and `defined()` checks
     !! @return Integer value of the parsed expression
-    !! @n@n
+    !!
     !! @b Remarks
+    !! @ingroup group_token
     recursive integer function parse_or(tokens, ntokens, pos, macros) result(val)
         type(token), intent(in)   :: tokens(:)
         integer, intent(in)         :: ntokens
@@ -362,14 +370,15 @@ module fpx_token
         val = left
     end function
 
-    !> @brief Parses logical AND expressions (`&&`).
+    !> Parses logical AND expressions (`&&`).
     !! @param[in] tokens    Array of tokens to parse
     !! @param[in] ntokens   Number of valid tokens in the array
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
     !! @param[in] macros    Defined macros for expansion and `defined()` checks
     !! @return Integer value of the parsed expression
-    !! @n@n
+    !!
     !! @b Remarks
+    !! @ingroup group_token
     recursive integer function parse_and(tokens, ntokens, pos, macros) result(val)
         type(token), intent(in)   :: tokens(:)
         integer, intent(in)         :: ntokens
@@ -388,14 +397,15 @@ module fpx_token
         val = left
     end function
     
-    !> @brief Parses bitwise OR expressions (`|`).
+    !> Parses bitwise OR expressions (`|`).
     !! @param[in] tokens    Array of tokens to parse
     !! @param[in] ntokens   Number of valid tokens in the array
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
     !! @param[in] macros    Defined macros for expansion and `defined()` checks
     !! @return Integer value of the parsed expression
-    !! @n@n
+    !!
     !! @b Remarks
+    !! @ingroup group_token
     recursive integer function parse_bitwise_or(tokens, ntokens, pos, macros) result(val)
         type(token), intent(in)   :: tokens(:)
         integer, intent(in)       :: ntokens
@@ -414,14 +424,15 @@ module fpx_token
         val = left
     end function
     
-    !> @brief Parses bitwise XOR expressions (`^`).
+    !> Parses bitwise XOR expressions (`^`).
     !! @param[in] tokens    Array of tokens to parse
     !! @param[in] ntokens   Number of valid tokens in the array
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
     !! @param[in] macros    Defined macros for expansion and `defined()` checks
     !! @return Integer value of the parsed expression
-    !! @n@n
+    !!
     !! @b Remarks
+    !! @ingroup group_token
     recursive integer function parse_bitwise_xor(tokens, ntokens, pos, macros) result(val)
         type(token), intent(in)   :: tokens(:)
         integer, intent(in)       :: ntokens
@@ -440,14 +451,15 @@ module fpx_token
         val = left
     end function
     
-    !> @brief Parses bitwise AND expressions (`&`).
+    !> Parses bitwise AND expressions (`&`).
     !! @param[in] tokens    Array of tokens to parse
     !! @param[in] ntokens   Number of valid tokens in the array
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
     !! @param[in] macros    Defined macros for expansion and `defined()` checks
     !! @return Integer value of the parsed expression
-    !! @n@n
+    !!
     !! @b Remarks
+    !! @ingroup group_token
     recursive integer function parse_bitwise_and(tokens, ntokens, pos, macros) result(val)
         type(token), intent(in)   :: tokens(:)
         integer, intent(in)       :: ntokens
@@ -466,14 +478,15 @@ module fpx_token
         val = left
     end function
 
-    !> @brief Parses equality/inequality expressions (`==`, `!=`).
+    !> Parses equality/inequality expressions (`==`, `!=`).
     !! @param[in] tokens    Array of tokens to parse
     !! @param[in] ntokens   Number of valid tokens in the array
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
     !! @param[in] macros    Defined macros for expansion and `defined()` checks
     !! @return Integer value of the parsed expression
-    !! @n@n
+    !!
     !! @b Remarks
+    !! @ingroup group_token
     recursive integer function parse_equality(tokens, ntokens, pos, macros) result(val)
         type(token), intent(in)   :: tokens(:)
         integer, intent(in)         :: ntokens
@@ -499,14 +512,15 @@ module fpx_token
         val = left
     end function
 
-    !> @brief Parses relational expressions (`<`, `>`, `<=`, `>=`).
+    !> Parses relational expressions (`<`, `>`, `<=`, `>=`).
     !! @param[in] tokens    Array of tokens to parse
     !! @param[in] ntokens   Number of valid tokens in the array
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
     !! @param[in] macros    Defined macros for expansion and `defined()` checks
     !! @return Integer value of the parsed expression
-    !! @n@n
+    !!
     !! @b Remarks
+    !! @ingroup group_token
     recursive integer function parse_relational(tokens, ntokens, pos, macros) result(val)
         type(token), intent(in)   :: tokens(:)
         integer, intent(in)       :: ntokens
@@ -541,14 +555,15 @@ module fpx_token
         val = left
     end function
     
-    !> @brief Parses shift expressions (`<<`, `>>`).
+    !> Parses shift expressions (`<<`, `>>`).
     !! @param[in] tokens    Array of tokens to parse
     !! @param[in] ntokens   Number of valid tokens in the array
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
     !! @param[in] macros    Defined macros for expansion and `defined()` checks
     !! @return Integer value of the parsed expression
-    !! @n@n
+    !!
     !! @b Remarks
+    !! @ingroup group_token
     recursive integer function parse_shifting(tokens, ntokens, pos, macros) result(val)
         type(token), intent(in)   :: tokens(:)
         integer, intent(in)       :: ntokens
@@ -574,14 +589,15 @@ module fpx_token
         val = left
     end function
 
-    !> @brief Parses additive expressions (`+`, `-`).
+    !> Parses additive expressions (`+`, `-`).
     !! @param[in] tokens    Array of tokens to parse
     !! @param[in] ntokens   Number of valid tokens in the array
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
     !! @param[in] macros    Defined macros for expansion and `defined()` checks
     !! @return Integer value of the parsed expression
-    !! @n@n
+    !!
     !! @b Remarks
+    !! @ingroup group_token
     recursive integer function parse_additive(tokens, ntokens, pos, macros) result(val)
         type(token), intent(in)   :: tokens(:)
         integer, intent(in)       :: ntokens
@@ -607,14 +623,15 @@ module fpx_token
         val = left
     end function
     
-    !> @brief Parses multiplicative expressions (`*`, `/`, `%`).
+    !> Parses multiplicative expressions (`*`, `/`, `%`).
     !! @param[in] tokens    Array of tokens to parse
     !! @param[in] ntokens   Number of valid tokens in the array
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
     !! @param[in] macros    Defined macros for expansion and `defined()` checks
     !! @return Integer value of the parsed expression
-    !! @n@n
+    !!
     !! @b Remarks
+    !! @ingroup group_token
     recursive integer function parse_multiplicative(tokens, ntokens, pos, macros) result(val)
         type(token), intent(in)   :: tokens(:)
         integer, intent(in)       :: ntokens
@@ -644,14 +661,15 @@ module fpx_token
         val = left
     end function
     
-    !> @brief Parses exponentiation (`**`). Right-associative.
+    !> Parses exponentiation (`**`). Right-associative.
     !! @param[in] tokens    Array of tokens to parse
     !! @param[in] ntokens   Number of valid tokens in the array
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
     !! @param[in] macros    Defined macros for expansion and `defined()` checks
     !! @return Integer value of the parsed expression
-    !! @n@n
+    !!
     !! @b Remarks
+    !! @ingroup group_token
     recursive integer function parse_power(tokens, ntokens, pos, macros) result(val)
         type(token), intent(in)   :: tokens(:)
         integer, intent(in)       :: ntokens
@@ -671,14 +689,15 @@ module fpx_token
         val = left
     end function
     
-    !> @brief Parses unary operators (`!`, `-`, `+`, `~`).
+    !> Parses unary operators (`!`, `-`, `+`, `~`).
     !! @param[in] tokens    Array of tokens to parse
     !! @param[in] ntokens   Number of valid tokens in the array
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
     !! @param[in] macros    Defined macros for expansion and `defined()` checks
     !! @return Integer value of the parsed expression
-    !! @n@n
+    !!
     !! @b Remarks
+    !! @ingroup group_token
     recursive integer function parse_unary(tokens, ntokens, pos, macros) result(val)
         type(token), intent(in)   :: tokens(:)
         integer, intent(in)       :: ntokens
@@ -706,14 +725,15 @@ module fpx_token
         end if
     end function
 
-    !> @brief Parses primary expressions: numbers, identifiers, `defined(...)`, parentheses.
+    !> Parses primary expressions: numbers, identifiers, `defined(...)`, parentheses.
     !! @param[in] tokens    Array of tokens to parse
     !! @param[in] ntokens   Number of valid tokens in the array
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
     !! @param[in] macros    Defined macros for expansion and `defined()` checks
     !! @return Integer value of the parsed expression
-    !! @n@n
+    !!
     !! @b Remarks
+    !! @ingroup group_token
     recursive integer function parse_atom(tokens, ntokens, pos, macros) result(val)
         type(token), intent(in)     :: tokens(:)
         integer, intent(in)         :: ntokens
@@ -765,15 +785,16 @@ module fpx_token
         end if
     end function
 
-    !> @brief Tokenizes a preprocessor expression into an array of token structures.
+    !> Tokenizes a preprocessor expression into an array of token structures.
     !! Handles whitespace, multi-character operators (`&&`, `||`, `==`, etc.),
     !! the `defined` operator (with or without parentheses), numbers in various bases,
     !! identifiers, and parentheses.
     !! @param[in]  expr     Expression string to tokenize
     !! @param[out] tokens   Allocated array receiving the tokens
     !! @param[out] ntokens  Number of tokens produced
-    !! @n@n
+    !!
     !! @b Remarks
+    !! @ingroup group_token
     subroutine tokenize(expr, tokens, ntokens)
         character(*), intent(in)                :: expr
         type(token), allocatable, intent(out) :: tokens(:)
@@ -905,4 +926,3 @@ module fpx_token
         end do
     end subroutine
 end module
-!> @}

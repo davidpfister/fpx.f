@@ -1,5 +1,6 @@
-!> @defgroup group_include fpx_include
-!> @brief Include file handling and resolution for the fpx Fortran preprocessor
+!> @file
+!! @defgroup group_include Include
+!! Include file handling and resolution for the fpx Fortran preprocessor
 !!
 !! This module implements robust and standard-compliant processing of `#include` directives
 !! with full support for:
@@ -15,32 +16,26 @@
 !! checks file existence, opens the file, and recursively invokes the main preprocessing
 !! engine on the included content using the same macro environment.
 !!
-!! @par Examples
+!! <h2  class="groupheader">Examples</h2>
 !!
-!! 1. Include a local header from the same directory:
+!! 1. Include a local header from the same directory using quote or angle brackets:
 !! @code{.f90}
-!!    #include "config.h"
+!!    #include <config.h>
 !!    !> fpx will look for ./config.h relative to the current source file
 !! @endcode
 !!
-!! 2. Include a system header using angle brackets:
+!! 2. Using from the driver program (adding include paths):
 !! @code{.f90}
-!!    #include <iso_c_binding.h>
-!!    !> Searched in all directories from global%includedir, then in cwd()
-!! @endcode
-!!
-!! 3. Using from the driver program (adding include paths):
-!! @code{.f90}
-!!    use fpx_global
-!!    global%includedir = [ "/usr/include", "./include", "./headers" ]
-!!    call preprocess("main.F90", "main.f90")
+!!    global%includedir = ['/usr/include', './include', './headers']
+!!    call preprocess('main.F90', 'main.f90')
 !!    !> All #include <...> will search these directories in order
 !! @endcode
 !!
-!! 4. Verbose error reporting when a file is not found:
+!! 3. Verbose error reporting when a file is not found:
+!! @code{.txt}
 !!    $ fpx -v src/utils.F90
 !!    Error: Cannot find include file 'missing.h' at src/utils.F90:27
-!! @{
+!! @endcode
 module fpx_include
     use iso_fortran_env, only : iostat_end
     use fpx_constants
@@ -54,10 +49,12 @@ module fpx_include
 
     public :: handle_include
 
-    !> @brief Abstract interface for the main preprocessing routine (used for recursion)
-    !!
+    !> Abstract interface for the main preprocessing routine (used for recursion)
     !! Allows handle_include to recursively call the top-level preprocess_unit routine
     !! without creating circular module dependencies.
+    !!
+    !! @b Remarks
+    !! @ingroup group_include
     interface
         subroutine read_unit(iunit, ounit, macros, from_include)
             import macro
@@ -70,7 +67,7 @@ module fpx_include
 
 contains
 
-    !> @brief Process a #include directive encountered during preprocessing
+    !> Process a #include directive encountered during preprocessing
     !! Resolves the include file name (quoted or angle-bracketed), searches for the file
     !! using standard rules (parent directory first, then global include paths, then cwd),
     !! opens it, and recursively preprocesses its contents into the output unit.
@@ -81,6 +78,9 @@ contains
     !! @param[in] preprocess   Procedure pointer to the main line-by-line preprocessor
     !! @param[inout] macros    Current macro table (shared across recursion levels)
     !! @param[in] token        Usually 'INCLUDE' – the directive keyword
+    !!
+    !! @b Remarks
+    !! @ingroup group_include
     recursive subroutine handle_include(input, ounit, parent_file, iline, preprocess, macros, token)
         character(*), intent(in)                :: input
         integer, intent(in)                     :: ounit
@@ -151,4 +151,3 @@ contains
         close (iunit)
     end subroutine
 end module
-!! @}

@@ -1,5 +1,6 @@
-!> @defgroup group_parser fpx_parser
-!> @brief Fortran Preprocessor (fpx) – core parsing and preprocessing module
+!> @file
+!! @defgroup group_parser Parser
+!! Fortran Preprocessor (fpx) – core parsing and preprocessing module
 !!
 !! This module implements a full-featured, modern Fortran preprocessor supporting:
 !! - C-style line continuations with `\` and `\\`
@@ -15,25 +16,26 @@
 !! The preprocessor is designed to be standards-conforming where possible while adding
 !! useful extensions (variadic macros, better diagnostics, include path handling).
 !!
-!! @par Examples
+!! <h2 class="groupheader">Examples</h2>
 !!
 !! 1. Preprocess a file to stdout:
 !! @code{.f90}
-!!    call preprocess("input.F90")
+!!    call preprocess('input.F90')
 !! @endcode
 !!
 !! 2. Preprocess a file and write to another file:
 !! @code{.f90}
-!!    call preprocess("src/main.F90", "preprocessed/main.F90")
+!!    call preprocess('src/main.F90', 'preprocessed/main.F90')
 !! @endcode
 !!
 !! 3. Use in a build system with unit numbers:
 !! @code{.f90}
 !!    integer :: iu, ou
-!!    open(newunit=iu, file="input.F90")
-!!    open(newunit=ou, file="output.F90")
+!!    open(newunit=iu, file='input.F90')
+!!    open(newunit=ou, file='output.F90')
 !!    call preprocess(iu, ou)
 !!    close(iu); close(ou)
+!!    ...
 !! @endcode
 !!
 !! 4. Interactive mode (stdin to stdout):
@@ -43,9 +45,8 @@
 !!     [out] 
 !!     [in]  real :: x = PI*2
 !!     [out] real :: x = 3.1415926535*2
-!!     [in]  (empty line or "quit" to exit)
+!!     [in]  (empty line or 'quit' to exit)
 !! @endcode
-!! @{
 module fpx_parser
     use, intrinsic :: iso_fortran_env, only: stdout => output_unit, iostat_end, stdin => input_unit
     use, intrinsic :: iso_c_binding, only: c_char, c_size_t,c_ptr, c_null_ptr, c_associated
@@ -64,34 +65,40 @@ module fpx_parser
     public :: preprocess,  & 
               global
 
-    !> @brief Generic interface to start preprocessing from various sources/sinks
+    !> Generic interface to start preprocessing from various sources/sinks
     !!
     !! Allows preprocessing:
     !! - file to stdout
     !! - file to file
     !! - unit to file
     !! - unit to unit (most flexible, used internally for #include)
+    !! 
+    !! @b Remarks
+    !! @ingroup group_parser
     interface preprocess
         module procedure :: preprocess_file
         module procedure :: preprocess_file_to_unit
         module procedure :: preprocess_unit_to_file
         module procedure :: preprocess_unit_to_unit
     end interface
-    
-    character(256) :: name                         !< Current source file name (without path)
-    logical        :: c_continue, f_continue       !< Flags for C-style and Fortran-style continuation
-    logical        :: in_comment, reprocess, stitch!< Internal state flags
-    character(:), allocatable :: res, tmp           !< Accumulated result and temporary line buffers
-    character(MAX_LINE_LEN)   :: line, continued_line !< Raw and continued input line
-    integer :: iline, icontinuation                !< Current line number and continuation position
+
+    character(256) :: name                              !< Current source file name (without path)
+    logical        :: c_continue, f_continue            !< Flags for C-style and Fortran-style continuation
+    logical        :: in_comment, reprocess, stitch     !< Internal state flags
+    character(:), allocatable :: res, tmp               !< Accumulated result and temporary line buffers
+    character(MAX_LINE_LEN)   :: line, continued_line   !< Raw and continued input line
+    integer :: iline, icontinuation                     !< Current line number and continuation position
     
 contains
 
-    !> @brief Preprocess a file and write result to an optional output file (default: stdout)
+    !> Preprocess a file and write result to an optional output file (default: stdout)
     !! Opens the input file, determines the base filename for error messages,
     !! opens the output file if requested, and delegates to the unit-to-unit routine.
     !! @param[in] filepath   Path to the input source file
     !! @param[in] outputfile Optional path to the output file; if absent output goes to stdout
+    !!
+    !! @b Remarks
+    !! @ingroup group_parser
     subroutine preprocess_file(filepath, outputfile)
         character(*), intent(in)            :: filepath
         character(*), intent(in), optional  :: outputfile
@@ -126,9 +133,12 @@ contains
         if (ounit /= stdout) close (ounit)
     end subroutine
     
-    !> @brief Preprocess from an already-open input unit and write to a file
+    !> Preprocess from an already-open input unit and write to a file
     !! @param[in] iunit Input unit (must already be open for reading)
     !! @param[in] ofile Output filename
+    !!
+    !! @b Remarks
+    !! @ingroup group_parser
     subroutine preprocess_unit_to_file(iunit, ofile)
         integer, intent(in)         :: iunit
         character(*), intent(in)    :: ofile
@@ -151,9 +161,12 @@ contains
         if (ounit /= stdout) close (ounit)
     end subroutine
     
-    !> @brief Preprocess a file and write to an already-open output unit
+    !> Preprocess a file and write to an already-open output unit
     !! @param[in] ifile Input filename
     !! @param[in] ounit Output unit (already open for writing)
+    !!
+    !! @b Remarks
+    !! @ingroup group_parser
     subroutine preprocess_file_to_unit(ifile, ounit)
         character(*), intent(in)    :: ifile
         integer, intent(in)         :: ounit
@@ -177,11 +190,14 @@ contains
         if (ounit /= stdout) close (ounit)
     end subroutine
     
-    !> @brief Core preprocessing routine: read from iunit, write to ounit
+    !> Core preprocessing routine: read from iunit, write to ounit
     !! Sets up a clean macro environment for the top-level file,
     !! resets conditional compilation state, and calls the worker routine.
     !! @param[in] iunit Input unit
     !! @param[in] ounit Output unit
+    !!
+    !! @b Remarks
+    !! @ingroup group_parser
     subroutine preprocess_unit_to_unit(iunit, ounit)
         integer, intent(in) :: iunit
         integer, intent(in) :: ounit
@@ -205,7 +221,7 @@ contains
         deallocate (macros)
     end subroutine
 
-    !> @brief Worker routine that reads lines, handles continuations, comments and directives
+    !> Worker routine that reads lines, handles continuations, comments and directives
     !! This is the main loop that:
     !! - reads lines with interactive prompt when iunit==stdin
     !! - handles both `\` and `&` continuations
@@ -216,6 +232,9 @@ contains
     !! @param[in]    ounit       Output unit
     !! @param[inout] macros(:)   Current macro table (passed by value between include levels)
     !! @param[in]    from_include True if called recursively from #include
+    !!
+    !! @b Remarks
+    !! @ingroup group_parser
     subroutine preprocess_unit(iunit, ounit, macros, from_include)
         integer, intent(in)                     :: iunit
         integer, intent(in)                     :: ounit
@@ -312,7 +331,7 @@ contains
         end if
     end subroutine
 
-    !> @brief Process a single (possibly continued) line – handles directives and macro expansion
+    !> Process a single (possibly continued) line – handles directives and macro expansion
     !! Responsibilities:
     !! - Strip or terminate C-style block comments (`/* ... */`)
     !! - Detect and delegate preprocessor directives (`#define`, `#include`, conditionals, etc.)
@@ -325,6 +344,9 @@ contains
     !! @param[inout] macros(:)    Macro table
     !! @param[out]   stch         Set to .true. if the expanded line ends with `&` (stitch next line)
     !! @return                    Processed line (directives removed, macros expanded)
+    !!
+    !! @b Remarks
+    !! @ingroup group_parser
     recursive function process_line(current_line, ounit, filepath, linenum, macros, stch) result(rst)
         character(*), intent(in)                :: current_line
         integer, intent(in)                     :: ounit
@@ -389,4 +411,3 @@ contains
         end if
     end function
 end module
-!! @}

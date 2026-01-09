@@ -1,0 +1,27 @@
+var searchData=
+[
+  ['a_20bit_20of_20history_0',['A bit of History',['../introduction.html',1,'pages']]],
+  ['a_20brief_20history_20of_20preprocessing_1',['A Brief History of Preprocessing',['../introduction.html#autotoc_md11',1,'']]],
+  ['a_20bug_2',['Reporting a bug',['../index.html#autotoc_md44',1,'']]],
+  ['a_20file_20to_20another_20file_3',['Minimal example – preprocess a file to another file',['../usage.html#autotoc_md28',1,'']]],
+  ['a_20library_20in_20your_20own_20code_4',['Using fpx as a Library (in your own code)',['../cheatsheet.html#autotoc_md6',1,'']]],
+  ['about_20the_20project_5',['About the Project',['../index.html#autotoc_md32',1,'']]],
+  ['across_20systems_6',['Portability Across Systems',['../introduction.html#autotoc_md19',1,'']]],
+  ['active_7',['active',['../structfpx__conditional_1_1cond__state.html#ab0eb9f0c9503e1e709be6c50db53ca9f',1,'fpx_conditional::cond_state']]],
+  ['ad_20hoc_20preprocessing_201950s–1970s_8',['Early Days: Ad Hoc Preprocessing (1950s–1970s)',['../introduction.html#autotoc_md12',1,'']]],
+  ['add_9',['add',['../interfacefpx__macro_1_1add.html',1,'fpx_macro']]],
+  ['add_5fedge_10',['add_edge',['../structfpx__graph_1_1digraph.html#a05d6c024ecc6f31c0f92efeb094c8ff1',1,'fpx_graph::digraph']]],
+  ['add_5fitem_11',['add_item',['../interfacefpx__macro_1_1add.html#acdf3a520eaec90aef07c6fc4cfd810a5',1,'fpx_macro::add::add_item()'],['../group__group__macro.html#gacdf3a520eaec90aef07c6fc4cfd810a5',1,'fpx_macro::add_item()']]],
+  ['add_5fitem_5ffrom_5fname_12',['add_item_from_name',['../interfacefpx__macro_1_1add.html#a3f4c719b92a7dfa4d6647905fd660b71',1,'fpx_macro::add::add_item_from_name()'],['../group__group__macro.html#ga3f4c719b92a7dfa4d6647905fd660b71',1,'fpx_macro::add_item_from_name()']]],
+  ['add_5fitem_5ffrom_5fname_5fand_5fvalue_13',['add_item_from_name_and_value',['../interfacefpx__macro_1_1add.html#a827ade4b8ee2220c2204dd95e4f8642b',1,'fpx_macro::add::add_item_from_name_and_value()'],['../group__group__macro.html#ga827ade4b8ee2220c2204dd95e4f8642b',1,'fpx_macro::add_item_from_name_and_value()']]],
+  ['add_5frange_14',['add_range',['../interfacefpx__macro_1_1add.html#a56af229dcb1d418a08258fb6a6594d8e',1,'fpx_macro::add::add_range()'],['../group__group__macro.html#ga56af229dcb1d418a08258fb6a6594d8e',1,'fpx_macro::add_range(this, args)']]],
+  ['add_5fto_15',['add_to',['../group__group__macro.html#ga114d12631f35686d100439764e3c03ba',1,'fpx_macro']]],
+  ['advanced_20macro_20tricks_16',['Advanced Macro Tricks',['../cheatsheet.html#autotoc_md4',1,'']]],
+  ['an_20embedded_20library_20in_20your_20own_20fortran_20program_17',['Using fpx as an Embedded Library in Your Own Fortran Program',['../usage.html#autotoc_md27',1,'']]],
+  ['and_20external_20tools_18',['Interfacing with Build Systems and External Tools',['../introduction.html#autotoc_md22',1,'']]],
+  ['another_20file_19',['Minimal example – preprocess a file to another file',['../usage.html#autotoc_md28',1,'']]],
+  ['as_20a_20library_20in_20your_20own_20code_20',['Using fpx as a Library (in your own code)',['../cheatsheet.html#autotoc_md6',1,'']]],
+  ['as_20an_20embedded_20library_20in_20your_20own_20fortran_20program_21',['Using fpx as an Embedded Library in Your Own Fortran Program',['../usage.html#autotoc_md27',1,'']]],
+  ['assignment_22',['assignment',['../structfpx__string_1_1string.html#a4a3c3898b4d385097118507fa6fedf74',1,'fpx_string::string::assignment(lhs, rhs)'],['../structfpx__string_1_1string.html#a4a3c3898b4d385097118507fa6fedf74',1,'fpx_string::string::assignment(lhs, rhs)']]],
+  ['attempt_20late_201990s–early_202000s_23',['The CoCo Standardization Attempt (Late 1990s–Early 2000s)',['../introduction.html#autotoc_md15',1,'']]]
+];
