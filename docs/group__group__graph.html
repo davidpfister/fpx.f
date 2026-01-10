@@ -134,15 +134,15 @@ $(function(){initNavTree('group__group__graph.html',''); initResizable(true); })
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">Definition</h2>
-<p>Lightweight directed graph implementation for cycle detection in macro expansion This module provides a compact, allocation-efficient directed graph (<code>digraph</code>) specifically designed for detecting circular dependencies during macro expansion in the fpx preprocessor. </p>
-<p>Key features:</p><ul>
+<p>Lightweight directed graph implementation for cycle detection in macro expansion This module provides a compact, allocation-efficient directed graph (<a class="el" href="structfpx__graph_1_1digraph.html">digraph</a>) specifically designed for detecting circular dependencies during macro expansion in the fpx preprocessor. </p>
+<p>Features:</p><ul>
 <li>Fixed-size adjacency list using a dense 2D integer array (fast access, no pointers)</li>
 <li>Dynamic edge insertion with automatic per-vertex size tracking</li>
 <li>Depth-first search (DFS) based) cycle detection starting from any vertex</li>
 <li>Automatic cleanup via finalizer</li>
 <li>No dynamic memory fragmentation – ideal for frequent creation/destruction during preprocessing</li>
 </ul>
-<p>Used internally by <code>fpx_macro</code> to prevent infinite recursion when a macro expands (directly or indirectly) to itself (e.g., <code>#define A B</code>, <code>#define B A</code>).</p>
+<p>Used internally by <a class="el" href="">fpx_macro</a> to prevent infinite recursion when a macro expands (directly or indirectly) to itself (e.g., <code>#define A B</code>, <code>#define B A</code>).</p>
 <h2 class="groupheader">Examples</h2>
 <ol type="1">
 <li>Detect circular macro dependency: <div class="fragment"><div class="line"><span class="keywordtype">type</span>(digraph) :: g</div>
@@ -157,7 +157,7 @@ $(function(){initNavTree('group__group__graph.html',''); initResizable(true); })
 <div class="line">print *, <span class="stringliteral">&#39;Circular macro chain detected:&#39;</span>, cycle</div>
 <div class="line">...</div>
 </div><!-- fragment --></li>
-<li>Safe expansion (used inside fpx_macro): <div class="fragment"><div class="line"><span class="keywordtype">type</span>(digraph) :: expansion_graph</div>
+<li>Safe expansion (used inside <a class="el" href="">fpx_macro</a>): <div class="fragment"><div class="line"><span class="keywordtype">type</span>(digraph) :: expansion_graph</div>
 <div class="line">expansion_graph = digraph(<span class="keyword">size</span>(macros))</div>
 <div class="line"><span class="keyword">call </span>expansion_graph%add_edge(current_macro_idx, referenced_macro_idx)</div>
 <div class="line"><span class="keywordflow">if</span> (expansion_graph%is_circular(referenced_macro_idx)) <span class="keywordflow">then</span></div>
@@ -213,129 +213,7 @@ Data Types</h2></td></tr>
 
 <p>Internal recursive DFS worker for cycle detection. </p>
 
-<p class="definition">Definition at line <a class="el" href="graph_8f90_source.html#l00163">163</a> of file <a class="el" href="graph_8f90_source.html">graph.f90</a>.</p>
-
-</div>
-</div>
-<a id="ga094a82c4a8c24782fe81c27c9185d41d" name="ga094a82c4a8c24782fe81c27c9185d41d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga094a82c4a8c24782fe81c27c9185d41d">&#9670;&#160;</a></span>graph_add_edge()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">subroutine graph_add_edge </td>
-          <td>(</td>
-          <td class="paramtype">class(<a class="el" href="structfpx__graph_1_1digraph.html">digraph</a>), intent(inout)</td>          <td class="paramname"><span class="paramname"><em>this</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">integer, intent(in)</td>          <td class="paramname"><span class="paramname"><em>source</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">integer, intent(in)</td>          <td class="paramname"><span class="paramname"><em>destination</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">logical, intent(out), optional</td>          <td class="paramname"><span class="paramname"><em>exists</em></span>&#160;)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Add a directed edge from source → destination Silently ignores invalid indices. Optional <code>exists</code> flag indicates if edge was already present. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">source</td><td>Source vertex (1-based) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">destination</td><td>Target vertex (1-based) </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">exists</td><td>(optional) .true. if edge already existed</td></tr>
-  </table>
-  </dd>
-</dl>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="graph_8f90_source.html#l00118">118</a> of file <a class="el" href="graph_8f90_source.html">graph.f90</a>.</p>
-
-</div>
-</div>
-<a id="gabd6e0740a31e254fba107eaea1a716ee" name="gabd6e0740a31e254fba107eaea1a716ee"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gabd6e0740a31e254fba107eaea1a716ee">&#9670;&#160;</a></span>graph_final()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">subroutine graph_final </td>
-          <td>(</td>
-          <td class="paramtype">type(<a class="el" href="structfpx__graph_1_1digraph.html">digraph</a>), intent(inout)</td>          <td class="paramname"><span class="paramname"><em>this</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Finalizer – automatically deallocate internal arrays when graph goes out of scope. </p>
-
-<p class="definition">Definition at line <a class="el" href="graph_8f90_source.html#l00192">192</a> of file <a class="el" href="graph_8f90_source.html">graph.f90</a>.</p>
-
-</div>
-</div>
-<a id="ga44dd202750aea9c716371da487cc6dd2" name="ga44dd202750aea9c716371da487cc6dd2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga44dd202750aea9c716371da487cc6dd2">&#9670;&#160;</a></span>graph_has_cycle_dfs()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">logical function graph_has_cycle_dfs </td>
-          <td>(</td>
-          <td class="paramtype">class(<a class="el" href="structfpx__graph_1_1digraph.html">digraph</a>), intent(in)</td>          <td class="paramname"><span class="paramname"><em>this</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">integer, intent(in)</td>          <td class="paramname"><span class="paramname"><em>start_vertex</em></span>&#160;)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Check whether a cycle exists in the graph reachable from start_vertex Uses standard DFS with recursion stack (back-edge detection). </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">start_vertex</td><td>Vertex from which to begin cycle search </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>.true. if a cycle is found in the component reachable from start_vertex</dd></dl>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="graph_8f90_source.html#l00143">143</a> of file <a class="el" href="graph_8f90_source.html">graph.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="graph_8f90_source.html#l00165">165</a> of file <a class="el" href="graph_8f90_source.html">graph.f90</a>.</p>
 
 </div>
 </div>

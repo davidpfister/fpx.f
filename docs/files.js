@@ -12,6 +12,6 @@ var files =
     [ "os.f90", "os_8f90.html", null ],
     [ "parser.f90", "parser_8f90.html", null ],
     [ "path.f90", "path_8f90.html", null ],
-    [ "string.f90", "string_8f90.html", "string_8f90" ],
+    [ "string.f90", "string_8f90.html", null ],
     [ "token.f90", "token_8f90.html", null ]
 ];

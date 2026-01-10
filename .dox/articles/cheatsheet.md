@@ -1,7 +1,5 @@
 # Cheatsheet {#cheatsheet}
-
 [TOC]  
-
 ## CLI Quick Commands
 ```bash
 fpx file.F90                  → print to screen
@@ -56,8 +54,8 @@ fpx -h                        → show help
 #define DEBUG_PRINT(...) print *, "[DEBUG] ", __FILE__, ":", __LINE__, " → ", __VA_ARGS__
 #define ASSERT(cond) if (.not.(cond)) then; error stop "Assertion failed: " // STRINGIFY(cond); end if
 
-integer :: CONCAT(var,123)   ! → var_123
-
+integer :: CONCAT(var,123)   ! var_123
+...
 @endcode
 
 ## Common Patterns
@@ -82,7 +80,7 @@ module my_module content
 #if defined(DEBUG) && DEBUG > 0
   print *, 'Debug mode active'
 #endif
-!...
+...
 @endcode
 
 ## Using fpx as a Library (in your own code)
@@ -93,6 +91,7 @@ use fpx_parser
 use fpx_global
 
 global%includedir = ['./inc', '../common']
+...
 @endcode
 
 Add predefined macros & preprocess
@@ -106,4 +105,5 @@ Add predefined macros & preprocess
 
   !preprocess
   call preprocess('src/main.F90', 'build/main.f90')
+  ...
 @endcode

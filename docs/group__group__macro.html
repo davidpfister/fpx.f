@@ -166,7 +166,7 @@ $(function(){initNavTree('group__group__macro.html',''); initResizable(true); })
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Data Types</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">type &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpx__macro_1_1macro.html">macro</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Derived type representing a single preprocessor macro Extends <code>string</code> with macro-specific fields: replacement value, parameters, variadic flag, and cyclic self-reference detection.  <a href="structfpx__macro_1_1macro.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Derived type representing a single preprocessor macro Extends <a class="el" href="structfpx__string_1_1string.html">string </a> with macro-specific fields: replacement value, parameters, variadic flag, and cyclic self-reference detection.  <a href="structfpx__macro_1_1macro.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">interface &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interfacefpx__macro_1_1add.html">add</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add one or more macros to a dynamic table.  <a href="interfacefpx__macro_1_1add.html#details">More...</a><br /></td></tr>
@@ -187,227 +187,34 @@ Data Types</h2></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return current number of stored macros.  <a href="interfacefpx__macro_1_1sizeof.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Variables</h2>
+<a id="ga23244cd1e6b3d8a76c5fd6f971bcddf8" name="ga23244cd1e6b3d8a76c5fd6f971bcddf8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga23244cd1e6b3d8a76c5fd6f971bcddf8">&#9670;&#160;</a></span>buffer_size</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">integer, parameter buffer_size = 256</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Default buffer size. </p>
+
+<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00065">65</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
+
+</div>
+</div>
 <h2 class="groupheader">Methods</h2>
-<a id="gacdf3a520eaec90aef07c6fc4cfd810a5" name="gacdf3a520eaec90aef07c6fc4cfd810a5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gacdf3a520eaec90aef07c6fc4cfd810a5">&#9670;&#160;</a></span>add_item()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">subroutine add_item </td>
-          <td>(</td>
-          <td class="paramtype">type(<a class="el" href="structfpx__macro_1_1macro.html">macro</a>), dimension(:), intent(inout), allocatable</td>          <td class="paramname"><span class="paramname"><em>this</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">type(<a class="el" href="structfpx__macro_1_1macro.html">macro</a>), intent(in)</td>          <td class="paramname"><span class="paramname"><em>arg</em></span>&#160;)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Add a complete macro object to the table. </p>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00784">784</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
-
-</div>
-</div>
-<a id="ga3f4c719b92a7dfa4d6647905fd660b71" name="ga3f4c719b92a7dfa4d6647905fd660b71"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga3f4c719b92a7dfa4d6647905fd660b71">&#9670;&#160;</a></span>add_item_from_name()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">subroutine add_item_from_name </td>
-          <td>(</td>
-          <td class="paramtype">type(<a class="el" href="structfpx__macro_1_1macro.html">macro</a>), dimension(:), intent(inout), allocatable</td>          <td class="paramname"><span class="paramname"><em>this</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">character(*), intent(in)</td>          <td class="paramname"><span class="paramname"><em>name</em></span>&#160;)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Add macro by name only (value = empty) </p>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00798">798</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
-
-</div>
-</div>
-<a id="ga827ade4b8ee2220c2204dd95e4f8642b" name="ga827ade4b8ee2220c2204dd95e4f8642b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga827ade4b8ee2220c2204dd95e4f8642b">&#9670;&#160;</a></span>add_item_from_name_and_value()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">subroutine add_item_from_name_and_value </td>
-          <td>(</td>
-          <td class="paramtype">type(<a class="el" href="structfpx__macro_1_1macro.html">macro</a>), dimension(:), intent(inout), allocatable</td>          <td class="paramname"><span class="paramname"><em>this</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">character(*), intent(in)</td>          <td class="paramname"><span class="paramname"><em>name</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">character(*), intent(in)</td>          <td class="paramname"><span class="paramname"><em>value</em></span>&#160;)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Add macro with name and replacement text. </p>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00812">812</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
-
-</div>
-</div>
-<a id="ga56af229dcb1d418a08258fb6a6594d8e" name="ga56af229dcb1d418a08258fb6a6594d8e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga56af229dcb1d418a08258fb6a6594d8e">&#9670;&#160;</a></span>add_range()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">subroutine add_range </td>
-          <td>(</td>
-          <td class="paramtype">type(<a class="el" href="structfpx__macro_1_1macro.html">macro</a>), dimension(:), intent(inout), allocatable</td>          <td class="paramname"><span class="paramname"><em>this</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">type(<a class="el" href="structfpx__macro_1_1macro.html">macro</a>), dimension(:), intent(in)</td>          <td class="paramname"><span class="paramname"><em>args</em></span>&#160;)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Add multiple macros at once. </p>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00828">828</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
-
-</div>
-</div>
-<a id="ga114d12631f35686d100439764e3c03ba" name="ga114d12631f35686d100439764e3c03ba"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga114d12631f35686d100439764e3c03ba">&#9670;&#160;</a></span>add_to()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">subroutine add_to </td>
-          <td>(</td>
-          <td class="paramtype">type(<a class="el" href="structfpx__macro_1_1macro.html">macro</a>), dimension(:), intent(inout), allocatable</td>          <td class="paramname"><span class="paramname"><em>vec</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">type(<a class="el" href="structfpx__macro_1_1macro.html">macro</a>), intent(in)</td>          <td class="paramname"><span class="paramname"><em>val</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">integer, intent(inout)</td>          <td class="paramname"><span class="paramname"><em>n</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">integer, intent(in)</td>          <td class="paramname"><span class="paramname"><em>chunk_size</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">logical, intent(in)</td>          <td class="paramname"><span class="paramname"><em>finished</em></span>&#160;)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Internal helper: grow dynamic macro array in chunks for efficiency Adds a new macro to the allocatable array, growing in BUFFER_SIZE increments. Also detects direct self-references (A → A) and marks both sides as cyclic. </p>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00736">736</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
-
-</div>
-</div>
-<a id="ga4f994e57053fe61253d895c1e91a56ce" name="ga4f994e57053fe61253d895c1e91a56ce"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga4f994e57053fe61253d895c1e91a56ce">&#9670;&#160;</a></span>clear_item()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">subroutine clear_item </td>
-          <td>(</td>
-          <td class="paramtype">type(<a class="el" href="structfpx__macro_1_1macro.html">macro</a>), dimension(:), intent(inout), allocatable</td>          <td class="paramname"><span class="paramname"><em>this</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Remove all macros from table. </p>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00845">845</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
-
-</div>
-</div>
 <a id="gabfa92166cee2f8dbd5947f0e61cc0101" name="gabfa92166cee2f8dbd5947f0e61cc0101"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#gabfa92166cee2f8dbd5947f0e61cc0101">&#9670;&#160;</a></span>expand_all()</h2>
 
@@ -456,7 +263,7 @@ Data Types</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>Expanded line with all macros and predefined tokens replaced</dd></dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00217">217</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00195">195</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
 
 </div>
 </div>
@@ -504,80 +311,7 @@ Data Types</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>Line with user-defined macros expanded (predefined tokens untouched)</dd></dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00322">322</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
-
-</div>
-</div>
-<a id="ga7604180d974de569928d3b87aee85320" name="ga7604180d974de569928d3b87aee85320"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga7604180d974de569928d3b87aee85320">&#9670;&#160;</a></span>get_item()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">type(<a class="el" href="structfpx__macro_1_1macro.html">macro</a>) function, allocatable get_item </td>
-          <td>(</td>
-          <td class="paramtype">type(<a class="el" href="structfpx__macro_1_1macro.html">macro</a>), dimension(:), intent(inout)</td>          <td class="paramname"><span class="paramname"><em>this</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">integer, intent(in)</td>          <td class="paramname"><span class="paramname"><em>key</em></span>&#160;)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Retrieve macro by 1-based index. </p>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00856">856</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
-
-</div>
-</div>
-<a id="ga78da0643c9a4a77730747c4f443632ef" name="ga78da0643c9a4a77730747c4f443632ef"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga78da0643c9a4a77730747c4f443632ef">&#9670;&#160;</a></span>insert_item()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">subroutine insert_item </td>
-          <td>(</td>
-          <td class="paramtype">type(<a class="el" href="structfpx__macro_1_1macro.html">macro</a>), dimension(:), intent(inout), allocatable</td>          <td class="paramname"><span class="paramname"><em>this</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">integer, intent(in)</td>          <td class="paramname"><span class="paramname"><em>i</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">type(<a class="el" href="structfpx__macro_1_1macro.html">macro</a>), intent(in)</td>          <td class="paramname"><span class="paramname"><em>arg</em></span>&#160;)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Insert macro at specific position. </p>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00873">873</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00300">300</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
 
 </div>
 </div>
@@ -611,7 +345,7 @@ Data Types</h2></td></tr>
 <p>Detect whether expanding macro at index <code>idx</code> would cause a cycle Builds a dependency graph from macro replacement texts and checks for circular paths. Used during expansion to avoid infinite recursion. </p>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00618">618</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00596">596</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
 
 </div>
 </div>
@@ -651,144 +385,7 @@ Data Types</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>.true. if macro is defined</dd></dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00680">680</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
-
-</div>
-</div>
-<a id="ga068e7d980a27b70532c743e01ff01b0c" name="ga068e7d980a27b70532c743e01ff01b0c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga068e7d980a27b70532c743e01ff01b0c">&#9670;&#160;</a></span>remove_item()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">subroutine remove_item </td>
-          <td>(</td>
-          <td class="paramtype">type(<a class="el" href="structfpx__macro_1_1macro.html">macro</a>), dimension(:), intent(inout), allocatable</td>          <td class="paramname"><span class="paramname"><em>this</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">integer, intent(in)</td>          <td class="paramname"><span class="paramname"><em>i</em></span>&#160;)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Remove macro at given index. </p>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00904">904</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
-
-</div>
-</div>
-<a id="ga0377b88e35b9cdbcd9ef417ab369f31f" name="ga0377b88e35b9cdbcd9ef417ab369f31f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga0377b88e35b9cdbcd9ef417ab369f31f">&#9670;&#160;</a></span>set_default()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">subroutine set_default </td>
-          <td>(</td>
-          <td class="paramtype">class(<a class="el" href="structfpx__macro_1_1macro.html">macro</a>), intent(inout)</td>          <td class="paramname"><span class="paramname"><em>this</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">character(*), intent(in)</td>          <td class="paramname"><span class="paramname"><em>name</em></span>&#160;)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Set macro name only (used internally) </p>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00182">182</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
-
-</div>
-</div>
-<a id="ga22c83771c00d2d6a1e9d086b15710f86" name="ga22c83771c00d2d6a1e9d086b15710f86"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga22c83771c00d2d6a1e9d086b15710f86">&#9670;&#160;</a></span>set_with_value()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">subroutine set_with_value </td>
-          <td>(</td>
-          <td class="paramtype">class(<a class="el" href="structfpx__macro_1_1macro.html">macro</a>), intent(inout)</td>          <td class="paramname"><span class="paramname"><em>this</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">character(*), intent(in)</td>          <td class="paramname"><span class="paramname"><em>name</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">character(*), intent(in)</td>          <td class="paramname"><span class="paramname"><em>value</em></span>&#160;)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Set both name and replacement value (used internally) </p>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00195">195</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
-
-</div>
-</div>
-<a id="gaf4a12610db54c0300058849a1374341d" name="gaf4a12610db54c0300058849a1374341d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gaf4a12610db54c0300058849a1374341d">&#9670;&#160;</a></span>size_item()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">integer function size_item </td>
-          <td>(</td>
-          <td class="paramtype">type(<a class="el" href="structfpx__macro_1_1macro.html">macro</a>), dimension(:), intent(inout), allocatable</td>          <td class="paramname"><span class="paramname"><em>this</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Return number of defined macros. </p>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00894">894</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00658">658</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
 
 </div>
 </div>
@@ -818,7 +415,7 @@ Data Types</h2></td></tr>
 <p>Generic conversion of polymorphic value to string Used internally during macro argument stringification and debugging. Supports integers, reals, logicals, characters, and complex. </p>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00703">703</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00681">681</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
 
 </div>
 </div>

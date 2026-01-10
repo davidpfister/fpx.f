@@ -35,6 +35,7 @@
 !!    integer :: os_type
 !!    os_type = get_os_type()           ! detects and caches
 !!    print *, os_is_unix(os_type)      ! fast, no re-detection
+!!    ...
 !! @endcode
 module fpx_os
     implicit none; private
@@ -43,14 +44,34 @@ module fpx_os
                 os_is_unix
     
                         public :: OS_NAME
+    !> @brief Unknown / undetected operating system
+    !! @ingroup group_os
     integer, parameter, public :: OS_UNKNOWN = 0
+    !> @brief Linux (any distribution, including GNU/Linux)
+    !! @ingroup group_os
     integer, parameter, public :: OS_LINUX   = 1
+    !> @brief macOS (Darwin-based Apple operating system)
+    !! @ingroup group_os
     integer, parameter, public :: OS_MACOS   = 2
+    !> @brief Microsoft Windows (native, 32-bit or 64-bit)
+    !! @ingroup group_os
     integer, parameter, public :: OS_WINDOWS = 3
+    !> @brief Cygwin POSIX environment on Windows
+    !! @ingroup group_os
     integer, parameter, public :: OS_CYGWIN  = 4
+    !> @brief Oracle Solaris / OpenSolaris derivatives
+    !! @ingroup group_os
     integer, parameter, public :: OS_SOLARIS = 5
+    !> @brief FreeBSD and its direct derivatives
+    !! @ingroup group_os
     integer, parameter, public :: OS_FREEBSD = 6
+    !> @brief OpenBSD
+    !! @ingroup group_os
     integer, parameter, public :: OS_OPENBSD = 7
+    !> @brief Microsoft Windows — explicitly 32-bit (x86) architecture.
+    !! 
+    !! Mainly useful when different behavior is needed between 32-bit and 64-bit Windows
+    !! @ingroup group_os
     integer, parameter, public :: OS_WINDOWSx86 = 8
     
 contains

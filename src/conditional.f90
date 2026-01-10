@@ -25,7 +25,7 @@
 !!  ! ... header content ...
 !!
 !!  #endif
-!!  !...
+!!  ...
 !! @endcode
 !!
 !! 2. Feature selection with #if and #elif:
@@ -47,7 +47,7 @@
 !!  #else
 !!     integer, parameter :: omp_get_thread_num = 0
 !!  #endif
-!!  !...
+!!  ...
 !! @endcode
 !!
 !! 4. Complex expression in #if (requires `evaluate_expression` support):
@@ -55,7 +55,7 @@
 !!  #if defined(USE_MPI) && (MPI_VERSION >= 3)
 !!     use mpi_f08
 !!  #endif
-!!  !...
+!!  ...
 !! @endcode
 module fpx_conditional
     use fpx_constants
@@ -262,11 +262,8 @@ contains
 
     !> Process #else – final fallback branch
     !! Activates only if no previous #if/#elif branch was true.
-    !! @param[in] line      Full source line containing the directive
     !! @param[in] filename  Current file (for error messages)
     !! @param[in] line_num  Line number (for error messages)
-    !! @param[in] macros    Current macro table
-    !! @param[in] token     Usually 'ELSE'
     !!
     !! @b Remarks
     !! @ingroup group_conditional
@@ -292,11 +289,8 @@ contains
 
     !> Process #endif – end of conditional block
     !! Pops the top state from the stack. Reports error on unmatched #endif.
-    !! @param[in] line      Full source line containing the directive
     !! @param[in] filename  Current file (for error messages)
     !! @param[in] line_num  Line number (for error messages)
-    !! @param[in] macros    Current macro table
-    !! @param[in] token     Usually 'ENDIF'
     !!
     !! @b Remarks
     !! @ingroup group_conditional

@@ -76,11 +76,11 @@ module fpx_global
     !! @ingroup group_global
     type, public :: global_settings
         private
-        type(macro), allocatable, public    :: macros(:)
-        type(string), allocatable, public   :: undef(:)
-        type(string), allocatable, public   :: includedir(:)
-        logical, public                     :: expand_macros = .true.
-        logical, public                     :: exlude_comments = .false.
+        type(macro), allocatable, public    :: macros(:)        !< List of global macros
+        type(string), allocatable, public   :: undef(:)         !< List of undefined macros
+        type(string), allocatable, public   :: includedir(:)    !< List of include directories
+        logical, public                     :: expand_macros = .true.   !< Boolean controlling the macro expansion. The macros are expanded by default.
+        logical, public                     :: exlude_comments = .false.    !< Boolean controlling the inclusion/exclusion of comments. The comments are kept by default.
     end type
     
     !> @brief The single global instance used throughout fpx

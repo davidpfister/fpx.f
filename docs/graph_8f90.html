@@ -146,19 +146,20 @@ Data Types</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions/Subroutines</h2></td></tr>
 <tr class="memitem:afa789df538e92afaf8f0c49c93c0de62" id="r_afa789df538e92afaf8f0c49c93c0de62"><td class="memItemLeft" align="right" valign="top">type(<a class="el" href="structfpx__graph_1_1digraph.html">digraph</a>) function&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afa789df538e92afaf8f0c49c93c0de62">graph_new</a> (vertices)</td></tr>
+<tr class="memdesc:afa789df538e92afaf8f0c49c93c0de62"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <br /></td></tr>
 <tr class="separator:afa789df538e92afaf8f0c49c93c0de62"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga094a82c4a8c24782fe81c27c9185d41d" id="r_ga094a82c4a8c24782fe81c27c9185d41d"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__graph.html#ga094a82c4a8c24782fe81c27c9185d41d">graph_add_edge</a> (this, source, destination, exists)</td></tr>
-<tr class="memdesc:ga094a82c4a8c24782fe81c27c9185d41d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a directed edge from source → destination Silently ignores invalid indices. Optional <code>exists</code> flag indicates if edge was already present.  <br /></td></tr>
-<tr class="separator:ga094a82c4a8c24782fe81c27c9185d41d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga44dd202750aea9c716371da487cc6dd2" id="r_ga44dd202750aea9c716371da487cc6dd2"><td class="memItemLeft" align="right" valign="top">logical function&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__graph.html#ga44dd202750aea9c716371da487cc6dd2">graph_has_cycle_dfs</a> (this, start_vertex)</td></tr>
-<tr class="memdesc:ga44dd202750aea9c716371da487cc6dd2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check whether a cycle exists in the graph reachable from start_vertex Uses standard DFS with recursion stack (back-edge detection).  <br /></td></tr>
-<tr class="separator:ga44dd202750aea9c716371da487cc6dd2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a094a82c4a8c24782fe81c27c9185d41d" id="r_a094a82c4a8c24782fe81c27c9185d41d"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a094a82c4a8c24782fe81c27c9185d41d">graph_add_edge</a> (this, source, destination, exists)</td></tr>
+<tr class="memdesc:a094a82c4a8c24782fe81c27c9185d41d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a directed edge from source → destination Silently ignores invalid indices. Optional <code>exists</code> flag indicates if edge was already present.  <br /></td></tr>
+<tr class="separator:a094a82c4a8c24782fe81c27c9185d41d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a44dd202750aea9c716371da487cc6dd2" id="r_a44dd202750aea9c716371da487cc6dd2"><td class="memItemLeft" align="right" valign="top">logical function&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a44dd202750aea9c716371da487cc6dd2">graph_has_cycle_dfs</a> (this, start_vertex)</td></tr>
+<tr class="memdesc:a44dd202750aea9c716371da487cc6dd2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check whether a cycle exists in the graph reachable from start_vertex Uses standard DFS with recursion stack (back-edge detection).  <br /></td></tr>
+<tr class="separator:a44dd202750aea9c716371da487cc6dd2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga41b8c3cc9c5098e140a23a11bc213e83" id="r_ga41b8c3cc9c5098e140a23a11bc213e83"><td class="memItemLeft" align="right" valign="top">recursive logical function&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__graph.html#ga41b8c3cc9c5098e140a23a11bc213e83">dfs_recursive</a> (this, vertex, visited, recursion_stack)</td></tr>
 <tr class="memdesc:ga41b8c3cc9c5098e140a23a11bc213e83"><td class="mdescLeft">&#160;</td><td class="mdescRight">Internal recursive DFS worker for cycle detection.  <br /></td></tr>
 <tr class="separator:ga41b8c3cc9c5098e140a23a11bc213e83"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gabd6e0740a31e254fba107eaea1a716ee" id="r_gabd6e0740a31e254fba107eaea1a716ee"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__graph.html#gabd6e0740a31e254fba107eaea1a716ee">graph_final</a> (this)</td></tr>
-<tr class="memdesc:gabd6e0740a31e254fba107eaea1a716ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Finalizer – automatically deallocate internal arrays when graph goes out of scope.  <br /></td></tr>
-<tr class="separator:gabd6e0740a31e254fba107eaea1a716ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abd6e0740a31e254fba107eaea1a716ee" id="r_abd6e0740a31e254fba107eaea1a716ee"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abd6e0740a31e254fba107eaea1a716ee">graph_final</a> (this)</td></tr>
+<tr class="memdesc:abd6e0740a31e254fba107eaea1a716ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Finalizer – automatically deallocate internal arrays when graph goes out of scope.  <br /></td></tr>
+<tr class="separator:abd6e0740a31e254fba107eaea1a716ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->
 </div><!-- doc-content -->

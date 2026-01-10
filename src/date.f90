@@ -61,7 +61,6 @@ module fpx_date
     !!    ...
     !! @endcode
     !! <h2  class="groupheader">Remarks</h2>
-    !! @par
     !! The date implementation proposed here is kept at the bare 
     !! minimum of what is required by the library. There are many 
     !! other implementations that can be found.
@@ -71,7 +70,7 @@ module fpx_date
     !! @verbatim type(datetime) function datetime(character(*) string, (optional) character(*) fmt) @endverbatim
     !! 
     !! @param[in] string date as string
-    !! @param[in] (optional) fmt date format
+    !! @param[in] fmt (optional) date format
     !! 
     !! @b Examples
     !! @code{.f90}
@@ -81,13 +80,13 @@ module fpx_date
     !! <h3>datetime(integer, integer, integer, integer, integer, integer, integer)</h3>
     !! @verbatim type(datetime) function datetime((optional) integer year, (optional) integer month, ...) @endverbatim
     !! 
-    !! @param[in]   (optional) year
-    !! @param[in]   (optional) month
-    !! @param[in]   (optional) day
-    !! @param[in]   (optional) hour
-    !! @param[in]   (optional) minute
-    !! @param[in]   (optional) second
-    !! @param[in]   (optional) millisecond
+    !! @param[in] year (optional)
+    !! @param[in] month (optional)
+    !! @param[in] day (optional)
+    !! @param[in] hour (optional)
+    !! @param[in] minute (optional)
+    !! @param[in] second (optional)
+    !! @param[in] millisecond (optional)
     !! 
     !! @b Examples
     !! @code{.f90}
@@ -100,18 +99,22 @@ module fpx_date
     !! @ingroup group_date
     type, public :: datetime
         private
-        integer(i2), public  :: year
-        integer(i1), public  :: month
-        integer(i1), public  :: day
-        integer(i1), public  :: hour
-        integer(i1), public  :: minute
-        integer(i1), public  :: second
-        integer(i2), public  :: millisecond
+        integer(i2), public  :: year    !< Year
+        integer(i1), public  :: month   !< Month
+        integer(i1), public  :: day     !< Day
+        integer(i1), public  :: hour    !< Hour
+        integer(i1), public  :: minute  !< Minute
+        integer(i1), public  :: second  !< Second
+        integer(i2), public  :: millisecond !< Millisecond
     contains
         procedure, pass(this), public :: to_string => datetime_to_string
         procedure, pass(this), public :: parse => datetime_parse
     end type
     
+    !> Constructor interface for @ref datetime type
+    !!
+    !! @b Remarks
+    !! @ingroup group_date
     interface datetime
         !! @cond
         module procedure :: datetime_new, datetime_new_from_string
@@ -120,7 +123,8 @@ module fpx_date
     
     contains
     
-     elemental function datetime_new(year, month, day, hour, minute, second, millisecond) result(that)
+    !> Constructor
+    elemental function datetime_new(year, month, day, hour, minute, second, millisecond) result(that)
         integer, intent(in), optional   :: year
         integer, intent(in), optional   :: month
         integer, intent(in), optional   :: day
@@ -355,7 +359,7 @@ module fpx_date
         character(*), intent(in), optional  :: fmt
         character(:), allocatable           :: res
         !private
-        character   :: sep
+        character   :: sep, dash
         character(:), allocatable :: dftfmt, tmp, tmp2
         integer :: ierr
         character(256) :: errmsg
@@ -367,6 +371,7 @@ module fpx_date
         end if
         ! Manager optional parameters
         sep = merge('T', ' ', index(dftfmt, 'T') > 0)
+        dash = merge('-', ' ', index(dftfmt, '-') > 0)
         
         allocate(character(25) :: res)
         ! Perform conversion to ISO string
@@ -396,84 +401,109 @@ module fpx_date
         end select
         
         select case (dftfmt)
-        case ('MMM-dd-yyyy')
-            write(res, '(a3,"-",i2.2,"-",i4.4)', iostat=ierr, iomsg = errmsg) &
+        case ('MMM-dd-yyyy','MMM dd yyyy')
+            write(res, '(a3,a1,i2.2,a1,i4.4)', iostat=ierr, iomsg = errmsg) &
                 tmp, &
+                dash, &
                 this%day, &
+                dash, &
                 this%year
-        case ('MMM-ddd-yyyy')
-            write(res, '(a3,"-",a3," ",i2.2,"-",i4.4)', iostat=ierr, iomsg = errmsg) &
+        case ('MMM-ddd-yyyy','MMM ddd yyyy')
+            write(res, '(a3,a1,a3," ",i2.2,a1,i4.4)', iostat=ierr, iomsg = errmsg) &
                 tmp, &
+                dash, &
                 tmp2, &
                 this%day, &
+                dash, &
                 this%year
-        case ('MMM-dd-yyyy HH:mm:ss','MMM-dd-yyyyTHH:mm:ss')
-            write(res, '(a3,"-",i2.2,"-",i4.4,a1,i2.2,2(":",i2.2))', iostat=ierr, iomsg = errmsg) &
+        case ('MMM-dd-yyyy HH:mm:ss','MMM-dd-yyyyTHH:mm:ss','MMM dd yyyy HH:mm:ss','MMM dd yyyyTHH:mm:ss')
+            write(res, '(a3,a1,i2.2,a1,i4.4,a1,i2.2,2(":",i2.2))', iostat=ierr, iomsg = errmsg) &
                 tmp, &
+                dash, &
                 this%day, &
+                dash, &
                 this%year, &
                 this%hour, &
                 this%minute, &
                 this%second
-        case ('MMM-ddd-yyyy HH:mm:ss','MMM-ddd-yyyyTHH:mm:ss')
-            write(res, '(a3,"-",a3," ",i2.2,"-",i4.4,a1,i2.2,2(":",i2.2))', iostat=ierr, iomsg = errmsg) &
+        case ('MMM-ddd-yyyy HH:mm:ss','MMM-ddd-yyyyTHH:mm:ss','MMM ddd yyyy HH:mm:ss','MMM ddd yyyyTHH:mm:ss')
+            write(res, '(a3,a1,a3," ",i2.2,a1,i4.4,a1,i2.2,2(":",i2.2))', iostat=ierr, iomsg = errmsg) &
                 tmp, &
+                dash, &
                 tmp2, &
                 this%day, &
+                dash, &
                 this%year, &
                 this%hour, &
                 this%minute, &
                 this%second
-        case ('yyyy-MM')
-            write(res, '(i4.4,"-",i2.2)', iostat=ierr, iomsg = errmsg) &
+        case ('yyyy-MM', 'yyyy MM')
+            write(res, '(i4.4,a1,i2.2)', iostat=ierr, iomsg = errmsg) &
                 this%year, &
+                dash, &
                 this%month
-        case ('yyyy-MM-dd')
-            write(res, '(i4.4,2("-",i2.2))', iostat=ierr, iomsg = errmsg) &
+        case ('yyyy-MM-dd', 'yyyy MM dd')
+            write(res, '(i4.4,2(a1,i2.2))', iostat=ierr, iomsg = errmsg) &
                 this%year, &
+                dash, &
                 this%month, &
+                dash, &
                 this%day
-        case ('yyyy-MM-ddd')
-            write(res, '(i4.4,"-",i2.2,"-",a3," ",i2.2)', iostat=ierr, iomsg = errmsg) &
+        case ('yyyy-MM-ddd', 'yyyy MM ddd')
+            write(res, '(i4.4,a1,i2.2,a1,a3," ",i2.2)', iostat=ierr, iomsg = errmsg) &
                 this%year, &
+                dash, &
                 this%month, &
+                dash, &
                 tmp2, &
                 this%day
-        case ('dd-MM-yyyy')
-            write(res, '(i2.2,"-",i2.2,"-",i4.4)', iostat=ierr, iomsg = errmsg) &
+        case ('dd-MM-yyyy', 'dd MM yyyy')
+            write(res, '(i2.2,a1,i2.2,a1,i4.4)', iostat=ierr, iomsg = errmsg) &
                 this%day, &
+                dash, &
                 this%month, &
+                dash, &
                 this%year
-        case ('ddd-MM-yyyy')
-            write(res, '(a3," ",i2.2,"-",i2.2,"-",i4.4)', iostat=ierr, iomsg = errmsg) &
+        case ('ddd-MM-yyyy', 'ddd MM yyyy')
+            write(res, '(a3,a1,i2.2," ",i2.2,a1,i4.4)', iostat=ierr, iomsg = errmsg) &
+                tmp2, &
+                dash, &
+                this%month, &
+                this%day, &
+                dash, &
+                this%year
+        case ('MM-dd-yyyy', 'MM dd yyyy')
+            write(res, '(i2.2,a1,i2.2,a1,i4.4)', iostat=ierr, iomsg = errmsg) &
+                this%month, &
+                dash, &
+                this%day, &
+                dash, &
+                this%year
+        case ('MM-ddd-yyyy', 'MM ddd yyyy')
+            write(res, '(i2.2,a1,a3," ",i2.2,a1,i4.4)', iostat=ierr, iomsg = errmsg) &
+                this%month, &
+                dash, &
                 tmp2, &
                 this%day, &
-                this%month, &
+                dash, &
                 this%year
-        case ('MM-dd-yyyy')
-            write(res, '(i2.2,"-",i2.2,"-",i4.4)', iostat=ierr, iomsg = errmsg) &
-                this%month, &
-                this%day, &
-                this%year
-        case ('MM-ddd-yyyy')
-            write(res, '(i2.2,"-",a3," ",i2.2,"-",i4.4)', iostat=ierr, iomsg = errmsg) &
-                this%month, &
-                tmp2, &
-                this%day, &
-                this%year
-        case ('yyyy-MM-ddTHH:mm:ss', 'yyyy-MM-dd HH:mm:ss')    
-            write(res, '(i4.4,2("-",i2.2),a1,i2.2,2(":",i2.2))', iostat=ierr, iomsg = errmsg) &
+        case ('yyyy-MM-ddTHH:mm:ss', 'yyyy-MM-dd HH:mm:ss', 'yyyy MM ddTHH:mm:ss', 'yyyy MM dd HH:mm:ss')    
+            write(res, '(i4.4,2(a1,i2.2),a1,i2.2,2(":",i2.2))', iostat=ierr, iomsg = errmsg) &
                 this%year, &
+                dash, &
                 this%month, &
+                dash, &
                 this%day, &
                 sep, &
                 this%hour, &
                 this%minute, &
                 this%second
-        case ('yyyy-MM-dddTHH:mm:ss', 'yyyy-MM-ddd HH:mm:ss')    
-            write(res, '(i4.4,"-",i2.2,"-",a3," ",i2.2,a1,i2.2,2(":",i2.2))', iostat=ierr, iomsg = errmsg) &
+        case ('yyyy-MM-dddTHH:mm:ss', 'yyyy-MM-ddd HH:mm:ss', 'yyyy MM dddTHH:mm:ss', 'yyyy MM ddd HH:mm:ss')    
+            write(res, '(i4.4,a1,i2.2,a1,a3," ",i2.2,a1,i2.2,2(":",i2.2))', iostat=ierr, iomsg = errmsg) &
                 this%year, &
+                dash, &
                 this%month, &
+                dash, &
                 tmp2, &
                 this%day, &
                 sep, &

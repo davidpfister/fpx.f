@@ -154,7 +154,7 @@ $(function(){initNavTree('group__group__conditional.html',''); initResizable(tru
 <div class="line"><span class="comment">! ... header content ...</span></div>
 <div class="line"> </div>
 <div class="line"><span class="preprocessor">#endif</span></div>
-<div class="line"><span class="preprocessor"></span>!...</div>
+<div class="line"><span class="preprocessor"></span>...</div>
 </div><!-- fragment --></li>
 <li>Feature selection with if and elif: <div class="fragment"><div class="line"><span class="preprocessor">#if DEBUG &gt;= 2</span></div>
 <div class="line"><span class="preprocessor"></span>   print *, <span class="stringliteral">&#39;Extra verbose debugging enabled&#39;</span></div>
@@ -170,12 +170,12 @@ $(function(){initNavTree('group__group__conditional.html',''); initResizable(tru
 <div class="line"><span class="preprocessor">#else</span></div>
 <div class="line"><span class="preprocessor"></span>   <span class="keywordtype">integer</span>, <span class="keywordtype">parameter</span> :: omp_get_thread_num = 0</div>
 <div class="line"><span class="preprocessor">#endif</span></div>
-<div class="line"><span class="preprocessor"></span>!...</div>
+<div class="line"><span class="preprocessor"></span>...</div>
 </div><!-- fragment --></li>
 <li>Complex expression in if (requires <code>evaluate_expression</code> support): <div class="fragment"><div class="line"><span class="preprocessor">#if defined(USE_MPI) &amp;&amp; (MPI_VERSION &gt;= 3)</span></div>
 <div class="line"><span class="preprocessor"></span>   <span class="keywordtype">use </span>mpi_f08</div>
 <div class="line"><span class="preprocessor">#endif</span></div>
-<div class="line"><span class="preprocessor"></span>!...</div>
+<div class="line"><span class="preprocessor"></span>...</div>
 </div><!-- fragment --> </li>
 </ol>
 <table class="memberdecls">
@@ -296,17 +296,14 @@ Data Types</h2></td></tr>
 <p>Process else – final fallback branch Activates only if no previous if/elif branch was true. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">line</td><td>Full source line containing the directive </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">filename</td><td>Current file (for error messages) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">line_num</td><td>Line number (for error messages) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">macros</td><td>Current macro table </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">token</td><td>Usually 'ELSE'</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">line_num</td><td>Line number (for error messages)</td></tr>
   </table>
   </dd>
 </dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="conditional_8f90_source.html#l00273">273</a> of file <a class="el" href="conditional_8f90_source.html">conditional.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="conditional_8f90_source.html#l00270">270</a> of file <a class="el" href="conditional_8f90_source.html">conditional.f90</a>.</p>
 
 </div>
 </div>
@@ -332,17 +329,14 @@ Data Types</h2></td></tr>
 <p>Process endif – end of conditional block Pops the top state from the stack. Reports error on unmatched endif. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">line</td><td>Full source line containing the directive </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">filename</td><td>Current file (for error messages) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">line_num</td><td>Line number (for error messages) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">macros</td><td>Current macro table </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">token</td><td>Usually 'ENDIF'</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">line_num</td><td>Line number (for error messages)</td></tr>
   </table>
   </dd>
 </dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="conditional_8f90_source.html#l00303">303</a> of file <a class="el" href="conditional_8f90_source.html">conditional.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="conditional_8f90_source.html#l00297">297</a> of file <a class="el" href="conditional_8f90_source.html">conditional.f90</a>.</p>
 
 </div>
 </div>

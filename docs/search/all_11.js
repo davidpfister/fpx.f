@@ -1,16 +1,25 @@
 var searchData=
 [
-  ['of_20external_20preprocessors_201980s_0',['Rise of External Preprocessors (1980s)',['../introduction.html#autotoc_md13',1,'']]],
+  ['of_20external_20preprocessors_201980s_0',['Rise of External Preprocessors (1980s)',['../introduction.html#autotoc_md12',1,'']]],
   ['of_20history_1',['A bit of History',['../introduction.html',1,'pages']]],
-  ['of_20preprocessing_2',['A Brief History of Preprocessing',['../introduction.html#autotoc_md11',1,'']]],
-  ['operator_3',['operator',['../structfpx__string_1_1string.html#a1db423e2395766b082c0139f025b3cda',1,'fpx_string::string::operator(lhs, rhs)'],['../structfpx__string_1_1string.html#a1db423e2395766b082c0139f025b3cda',1,'fpx_string::string::operator(lhs, rhs)'],['../structfpx__string_1_1string.html#a1db423e2395766b082c0139f025b3cda',1,'fpx_string::string::operator(lhs, rhs)']]],
+  ['of_20preprocessing_2',['A Brief History of Preprocessing',['../introduction.html#autotoc_md10',1,'']]],
+  ['operator_3',['operator',['../structfpx__string_1_1string.html#af7993dfb57ce263cb05a3b6ccb32a120',1,'fpx_string::string::operator(lhs, rhs)'],['../structfpx__string_1_1string.html#af7993dfb57ce263cb05a3b6ccb32a120',1,'fpx_string::string::operator(lhs, rhs)'],['../structfpx__string_1_1string.html#af7993dfb57ce263cb05a3b6ccb32a120',1,'fpx_string::string::operator(lhs, rhs)']]],
   ['operator_28_2econtains_2e_29_4',['operator(.contains.)',['../interfacefpx__string_1_1operator_07_8contains_8_08.html',1,'fpx_string']]],
   ['operator_28_2f_2f_29_5',['operator(//)',['../interfacefpx__string_1_1operator_07_2_2_08.html',1,'fpx_string']]],
-  ['options_6',['Most useful options',['../usage.html#autotoc_md25',1,'']]],
+  ['options_6',['Most useful options',['../usage.html#autotoc_md24',1,'']]],
   ['os_7',['OS',['../group__group__os.html',1,'']]],
   ['os_2ef90_8',['os.f90',['../os_8f90.html',1,'']]],
-  ['os_5fis_5funix_9',['os_is_unix',['../group__group__os.html#gaa68416bffd37d6eb53ae27cae0e406bb',1,'fpx_os']]],
-  ['os_5fname_10',['os_name',['../group__group__os.html#gadc3e8d033f0055d5f8f1b6398178db99',1,'fpx_os']]],
-  ['own_20code_11',['Using fpx as a Library (in your own code)',['../cheatsheet.html#autotoc_md6',1,'']]],
-  ['own_20fortran_20program_12',['Using fpx as an Embedded Library in Your Own Fortran Program',['../usage.html#autotoc_md27',1,'']]]
+  ['os_5fcygwin_9',['os_cygwin',['../group__group__os.html#gaea747ca4b17690fe52ab56cf44b0ef69',1,'fpx_os']]],
+  ['os_5ffreebsd_10',['os_freebsd',['../group__group__os.html#ga8a09a5ef377801c337f2ac24e992d811',1,'fpx_os']]],
+  ['os_5fis_5funix_11',['os_is_unix',['../group__group__os.html#gaa68416bffd37d6eb53ae27cae0e406bb',1,'fpx_os']]],
+  ['os_5flinux_12',['os_linux',['../group__group__os.html#ga48888fd96ebfb6cb7e1a1226f95a0764',1,'fpx_os']]],
+  ['os_5fmacos_13',['os_macos',['../group__group__os.html#ga92db930359a293df5384ccad9be01d63',1,'fpx_os']]],
+  ['os_5fname_14',['os_name',['../group__group__os.html#gadc3e8d033f0055d5f8f1b6398178db99',1,'fpx_os']]],
+  ['os_5fopenbsd_15',['os_openbsd',['../group__group__os.html#ga698996c20e3ab09940bb2ccbead24378',1,'fpx_os']]],
+  ['os_5fsolaris_16',['os_solaris',['../group__group__os.html#ga191e286694119bd0e2bdb78baa20e1be',1,'fpx_os']]],
+  ['os_5funknown_17',['os_unknown',['../group__group__os.html#ga9f56b2b83c7f13700be54bf358080e74',1,'fpx_os']]],
+  ['os_5fwindows_18',['os_windows',['../group__group__os.html#ga457d71d7a47f325da4b900d6f77df3ea',1,'fpx_os']]],
+  ['os_5fwindowsx86_19',['os_windowsx86',['../group__group__os.html#ga078acd1c2a938a3ad3b1244a4f30348a',1,'fpx_os']]],
+  ['own_20code_20',['Using fpx as a Library (in your own code)',['../cheatsheet.html#autotoc_md5',1,'']]],
+  ['own_20fortran_20program_21',['Using fpx as an Embedded Library in Your Own Fortran Program',['../usage.html#autotoc_md26',1,'']]]
 ];

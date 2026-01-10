@@ -137,7 +137,7 @@ $(function(){initNavTree('structfpx__macro_1_1macro.html',''); initResizable(tru
 
 <p>Inherits <a class="el" href="structfpx__string_1_1string.html">string</a>.</p>
 <a name="details" id="details"></a><h2 class="groupheader">Definition</h2>
-<div class="textblock"><p>Derived type representing a single preprocessor macro Extends <code>string</code> with macro-specific fields: replacement value, parameters, variadic flag, and cyclic self-reference detection. </p>
+<div class="textblock"><p>Derived type representing a single preprocessor macro Extends <a class="el" href="structfpx__string_1_1string.html">string </a> with macro-specific fields: replacement value, parameters, variadic flag, and cyclic self-reference detection. </p>
 <p>Constructor interface for macro type.</p>
 <h2 class="groupheader">Examples</h2>
 <div class="fragment"><div class="line"><span class="keywordtype">type</span>(macro), <span class="keywordtype">allocatable</span> :: macros(:)</div>
@@ -155,8 +155,9 @@ $(function(){initNavTree('structfpx__macro_1_1macro.html',''); initResizable(tru
 <div class="line">m = macro(<span class="stringliteral">&#39;_WIN32&#39;</span>)</div>
 </div><!-- fragment --> <dl class="section return"><dt>Returns</dt><dd>The constructed macro object.</dd></dl>
 <h2 class="groupheader">Remarks</h2>
+<p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00100">100</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00105">105</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
 </div><hr/>The documentation for this type was generated from the following file:<ul>
 <li><a class="el" href="macro_8f90_source.html">macro.f90</a></li>
 </ul>
@@ -164,12 +165,16 @@ $(function(){initNavTree('structfpx__macro_1_1macro.html',''); initResizable(tru
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Variables</h2></td></tr>
 <tr class="memitem:ac6ce9ddf35e848aac2064196b6f12756" id="r_ac6ce9ddf35e848aac2064196b6f12756"><td class="memItemLeft" align="right" valign="top">character(:), allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac6ce9ddf35e848aac2064196b6f12756">value</a></td></tr>
+<tr class="memdesc:ac6ce9ddf35e848aac2064196b6f12756"><td class="mdescLeft">&#160;</td><td class="mdescRight">Name of the macro.  <br /></td></tr>
 <tr class="separator:ac6ce9ddf35e848aac2064196b6f12756"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ade11c43053747c6dfb204c4475f6ae5b" id="r_ade11c43053747c6dfb204c4475f6ae5b"><td class="memItemLeft" align="right" valign="top">type(<a class="el" href="structfpx__string_1_1string.html">string</a>), dimension(:), allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ade11c43053747c6dfb204c4475f6ae5b">params</a></td></tr>
+<tr class="memdesc:ade11c43053747c6dfb204c4475f6ae5b"><td class="mdescLeft">&#160;</td><td class="mdescRight">List of parameter for function like macros.  <br /></td></tr>
 <tr class="separator:ade11c43053747c6dfb204c4475f6ae5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a37758531fbfb275a28be321c849604f0" id="r_a37758531fbfb275a28be321c849604f0"><td class="memItemLeft" align="right" valign="top">logical&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a37758531fbfb275a28be321c849604f0">is_variadic</a></td></tr>
+<tr class="memdesc:a37758531fbfb275a28be321c849604f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indicate whether the macro is variadic or not.  <br /></td></tr>
 <tr class="separator:a37758531fbfb275a28be321c849604f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a22bb2ebef576d9b02ac428400eb35b70" id="r_a22bb2ebef576d9b02ac428400eb35b70"><td class="memItemLeft" align="right" valign="top">logical&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a22bb2ebef576d9b02ac428400eb35b70">is_cyclic</a></td></tr>
+<tr class="memdesc:a22bb2ebef576d9b02ac428400eb35b70"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indicates whether the macro has cyclic dependencies or not.  <br /></td></tr>
 <tr class="separator:a22bb2ebef576d9b02ac428400eb35b70"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_attribs_structfpx__string_1_1string"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_attribs_structfpx__string_1_1string')"><img src="closed.png" alt="-"/>&#160;Variables inherited from <a class="el" href="structfpx__string_1_1string.html">string</a></td></tr>
 <tr class="memitem:a4b784a6a2638175406a6cbaab07608fd inherit pub_attribs_structfpx__string_1_1string" id="r_a4b784a6a2638175406a6cbaab07608fd"><td class="memItemLeft" align="right" valign="top">character(:), allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpx__string_1_1string.html#a4b784a6a2638175406a6cbaab07608fd">chars</a></td></tr>

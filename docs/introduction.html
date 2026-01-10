@@ -134,42 +134,42 @@ $(function(){initNavTree('introduction.html',''); initResizable(true); });
 <div class="toc"><h3>Table of Contents</h3>
 <ul>
   <li class="level1">
-    <a href="#autotoc_md11">A Brief History of Preprocessing</a>
+    <a href="#autotoc_md10">A Brief History of Preprocessing</a>
     <ul>
       <li class="level2">
-        <a href="#autotoc_md12">Early Days: Ad Hoc Preprocessing (1950s–1970s)</a>
+        <a href="#autotoc_md11">Early Days: Ad Hoc Preprocessing (1950s–1970s)</a>
       </li>
       <li class="level2">
-        <a href="#autotoc_md13">Rise of External Preprocessors (1980s)</a>
+        <a href="#autotoc_md12">Rise of External Preprocessors (1980s)</a>
       </li>
       <li class="level2">
-        <a href="#autotoc_md14">Fortran 90/95: Reduced Need, Persistent Use (1990s)</a>
+        <a href="#autotoc_md13">Fortran 90/95: Reduced Need, Persistent Use (1990s)</a>
       </li>
       <li class="level2">
-        <a href="#autotoc_md15">The CoCo Standardization Attempt (Late 1990s–Early 2000s)</a>
+        <a href="#autotoc_md14">The CoCo Standardization Attempt (Late 1990s–Early 2000s)</a>
       </li>
       <li class="level2">
-        <a href="#autotoc_md16">Modern Era: Preprocessing Today (2000s–2025)</a>
+        <a href="#autotoc_md15">Modern Era: Preprocessing Today (2000s–2025)</a>
       </li>
     </ul>
   </li>
   <li class="level1">
-    <a href="#autotoc_md17">Most frequent Usage</a>
+    <a href="#autotoc_md16">Most frequent Usage</a>
     <ul>
       <li class="level2">
-        <a href="#autotoc_md18">Conditional Compilation</a>
+        <a href="#autotoc_md17">Conditional Compilation</a>
       </li>
       <li class="level2">
-        <a href="#autotoc_md19">Portability Across Systems</a>
+        <a href="#autotoc_md18">Portability Across Systems</a>
       </li>
       <li class="level2">
-        <a href="#autotoc_md20">File Inclusion</a>
+        <a href="#autotoc_md19">File Inclusion</a>
       </li>
       <li class="level2">
-        <a href="#autotoc_md21">Macro Definitions for Code Reuse</a>
+        <a href="#autotoc_md20">Macro Definitions for Code Reuse</a>
       </li>
       <li class="level2">
-        <a href="#autotoc_md22">Interfacing with Build Systems and External Tools</a>
+        <a href="#autotoc_md21">Interfacing with Build Systems and External Tools</a>
       </li>
     </ul>
   </li>
@@ -177,19 +177,19 @@ $(function(){initNavTree('introduction.html',''); initResizable(true); });
 </div>
 <div class="textblock"><p><a class="anchor" id="md__c_1_2_users_2_david_pfister_2_git_hub_2sandbox_2fpx_8f_2_8dox_2articles_2introduction"></a></p>
 <p>Fortran has powered simulations of galaxies, weather systems, and quantum phenomena for over seven decades. Its enduring strength lies in its clarity, performance, and mathematical soul—qualities that resonate deeply with its community of developers. Yet, nestled within this ecosystem is a contentious tool: the preprocessor. From its ad hoc beginnings in the 1970s to its modern incarnations in tools like <code>cpp</code>, <code>fpp</code>, and <code>fypp</code>, preprocessing has been both a lifeline and a lightning rod for Fortran developers. It enables portability across diverse platforms, conditional compilation for debugging, and code generation for complex libraries—capabilities critical to Fortran’s role in high-performance computing. But it also sparks fierce debate, with many Fortraners decrying its tendency to obscure code, disrupt the language’s elegant simplicity, and introduce bugs that haunt scientific precision. This article explores the pivotal uses of preprocessing in Fortran, delving into the passionate love-hate relationship that defines its place in the community—a tug-of-war between pragmatic necessity and a purist’s devotion to Fortran’s unadulterated clarity.</p>
-<h1><a class="anchor" id="autotoc_md11"></a>
+<h1><a class="anchor" id="autotoc_md10"></a>
 A Brief History of Preprocessing</h1>
 <p>Fortran, born in the 1950s for scientific and numerical computing, was designed for clarity and performance on early computers. Preprocessing was not part of its original vision. As Fortran evolved, the need for portability, code reuse, and conditional compilation grew, particularly in large-scale scientific projects. This led to the adoption of preprocessing tools, though their integration into Fortran’s ecosystem has been uneven and controversial. Below is a concise history of preprocessing in Fortran, culminating in the notable attempt to standardize it with CoCo.</p>
-<h2><a class="anchor" id="autotoc_md12"></a>
+<h2><a class="anchor" id="autotoc_md11"></a>
 Early Days: Ad Hoc Preprocessing (1950s–1970s)</h2>
 <p>In Fortran’s infancy (Fortran I, II, IV), preprocessing was virtually nonexistent. Developers relied on manual code edits or rudimentary scripts to handle tasks like platform-specific tweaks. Early computers varied widely in architecture, so scientists often customized code by hand for each system—a tedious process. Some used external tools, like simple text processors, to automate repetitive changes, but these were bespoke and non-standard. Fortran 66 and 77, with their rigid structure, offered no built-in preprocessing capabilities, leaving developers to cobble together solutions.</p>
-<h2><a class="anchor" id="autotoc_md13"></a>
+<h2><a class="anchor" id="autotoc_md12"></a>
 Rise of External Preprocessors (1980s)</h2>
 <p>By the 1980s, Fortran 77 was the workhorse of scientific computing, and large projects—like climate models or finite element simulations—demanded portability across diverse hardware (e.g., Cray, VAX, IBM). The C preprocessor (<code>cpp</code>), developed for C, became a popular stopgap. Its <code>#define</code>, <code>#ifdef</code>, and <code>#include</code> directives allowed Fortran developers to write flexible code for multiple platforms. Files with <code>.F</code> or <code>.F77</code> extensions signaled preprocessing, distinguishing them from raw <code>.f</code> files. However, <code>cpp</code> was a imperfect fit: its C-centric syntax clashed with Fortran’s column-based formatting, and it could mangle Fortran’s fixed-form source, leading to errors. Dedicated Fortran preprocessors, like <code>fpp</code>, emerged to address these issues, offering better integration but lacking universal adoption.</p>
-<h2><a class="anchor" id="autotoc_md14"></a>
+<h2><a class="anchor" id="autotoc_md13"></a>
 Fortran 90/95: Reduced Need, Persistent Use (1990s)</h2>
 <p>Fortran 90 introduced modules, parameterized types, and dynamic memory, giving developers native tools for modularity and portability. These features reduced reliance on preprocessing for tasks like code reuse or constant definition. For example, modules replaced many <code>#include</code> use cases, and <code>PARAMETER</code> statements handled constants better than <code>#define</code>. Still, preprocessing persisted in large codebases, especially for conditional compilation (e.g., enabling/disabling debug code) or legacy Fortran 77 projects. Tools like <code>cpp</code> and <code>fpp</code> remained common, though their use was often seen as a necessary evil due to debugging challenges and code obfuscation.</p>
-<h2><a class="anchor" id="autotoc_md15"></a>
+<h2><a class="anchor" id="autotoc_md14"></a>
 The CoCo Standardization Attempt (Late 1990s–Early 2000s)</h2>
 <p>By the late 1990s, the Fortran community recognized preprocessing’s utility but also its chaos. Different preprocessors (<code>cpp</code>, <code>fpp</code>, custom tools) produced inconsistent behavior, and there was no standard way to write portable, preprocessable Fortran code. This led to the development of <b>CoCo</b> (Conditional Compilation), a proposed standard for Fortran preprocessing, spearheaded by the ISO/IEC Fortran committee (J3).</p>
 <p>CoCo aimed to integrate preprocessing directly into the Fortran language, defining a native syntax for directives like conditional compilation, macro expansion, and file inclusion. Unlike <code>cpp</code>, CoCo was designed with Fortran’s structure in mind, respecting its free- and fixed-form source and avoiding C’s pitfalls. Key goals included:</p><ul>
@@ -208,15 +208,15 @@ The CoCo Standardization Attempt (Late 1990s–Early 2000s)</h2>
 <li><b>Scope Concerns</b>: Some feared CoCo would bloat the language, encouraging macro-heavy code that clashed with Fortran’s scientific focus.</li>
 </ul>
 <p>By the early 2000s, CoCo faded as a proposal. The Fortran 2003 standard focused on object-oriented features and interoperability (e.g., with C), sidelining preprocessing standardization.</p>
-<h2><a class="anchor" id="autotoc_md16"></a>
+<h2><a class="anchor" id="autotoc_md15"></a>
 Modern Era: Preprocessing Today (2000s–2025)</h2>
 <p>Today, preprocessing in Fortran remains unstandardized but widely used. <code>cpp</code> and <code>fpp</code> are still common, especially in high-performance computing (HPC) projects like LAPACK, PETSc, or WRF, hosted on platforms like GitHub. Newer tools, like <code>fypp</code> (a Python-based preprocessor), have gained traction for their flexibility, particularly in projects like the Fortran Standard Library. Fortran 2008, 2018, and the upcoming 2023 standard introduced features like submodules and enhanced generics, further reducing preprocessing needs, but legacy code and cross-platform projects keep preprocessors relevant.</p>
 <p>The CoCo attempt left a legacy: it highlighted the community’s ambivalence toward preprocessing. While some developers value its power, others see it as a last resort, preferring Fortran’s native constructs. The lack of a standard means preprocessing remains a fragmented practice, with tools and conventions varying by project.</p>
 <p>Preprocessing in Fortran evolved from ad hoc scripts to external tools like <code>cpp</code>, driven by the need for portability and flexibility in scientific computing. The CoCo initiative sought to bring order by standardizing preprocessing, but resistance from a community valuing simplicity, combined with practical hurdles, led to its demise. Today, preprocessing endures as a pragmatic tool in Fortran’s ecosystem, neither fully embraced nor abandoned, reflecting the language’s balance between tradition and adaptation.</p>
 <p>In modern Fortran (referring to standards like Fortran 2003, 2008, 2018, and the upcoming 2023), preprocessing remains a practical tool despite the language’s evolution toward native constructs that reduce its necessity. While modern Fortran offers robust features like modules, derived types, and submodules, preprocessing is still widely used in specific scenarios, particularly in large-scale scientific, high-performance computing (HPC), and legacy projects. Below, I’ll expand on the <b>most common uses of preprocessing in modern Fortran</b>, focusing on their practical applications, prevalence, and integration with contemporary development practices, as seen in open-source projects and industry.</p>
-<h1><a class="anchor" id="autotoc_md17"></a>
+<h1><a class="anchor" id="autotoc_md16"></a>
 Most frequent Usage</h1>
-<h2><a class="anchor" id="autotoc_md18"></a>
+<h2><a class="anchor" id="autotoc_md17"></a>
 Conditional Compilation</h2>
 <p><b>What It Is</b>: Preprocessing directives like <code>#ifdef</code>, <code>#ifndef</code>, <code>#else</code>, and <code>#endif</code> allow developers to include or exclude code blocks based on predefined conditions, typically set at compile time.</p>
 <p><b>Common Uses</b>:</p><ul>
@@ -226,7 +226,7 @@ Conditional Compilation</h2>
 <div class="line"><span class="preprocessor"></span>  print *, <span class="stringliteral">&quot;Entering subroutine X with N =&quot;</span>, n</div>
 <div class="line">  <span class="keyword">CALL </span>check_bounds(array, n)</div>
 <div class="line"><span class="preprocessor">#endif</span></div>
-<div class="line"><span class="preprocessor"></span>!...</div>
+<div class="line"><span class="preprocessor"></span>...</div>
 </div><!-- fragment --></li>
 </ul>
 </li>
@@ -237,7 +237,7 @@ Conditional Compilation</h2>
 <div class="line"><span class="preprocessor">#else</span></div>
 <div class="line"><span class="preprocessor"></span>  data_local = <span class="keyword">data</span></div>
 <div class="line"><span class="preprocessor">#endif</span></div>
-<div class="line"><span class="preprocessor"></span>!...</div>
+<div class="line"><span class="preprocessor"></span>...</div>
 </div><!-- fragment --></li>
 </ul>
 </li>
@@ -254,7 +254,7 @@ Conditional Compilation</h2>
 <p><b>Why It Persists</b>:</p><ul>
 <li>Modern Fortran lacks a direct equivalent to conditional compilation. While <code>IF</code> statements can handle runtime conditions, they don’t exclude code from compilation, which impacts binary size and performance optimization.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md19"></a>
+<h2><a class="anchor" id="autotoc_md18"></a>
 Portability Across Systems</h2>
 <p><b>What It Is</b>: Preprocessing helps write code that adapts to different compilers, operating systems, or hardware by defining platform-specific macros or including system-dependent code.</p>
 <p><b>Common Uses</b>:</p><ul>
@@ -265,7 +265,7 @@ Portability Across Systems</h2>
 <div class="line"><span class="preprocessor">#else</span></div>
 <div class="line"><span class="preprocessor"></span>  <span class="keyword">call </span>get_environment_variable(<span class="stringliteral">&quot;PATH&quot;</span>, path_var)</div>
 <div class="line"><span class="preprocessor">#endif</span></div>
-<div class="line"><span class="preprocessor"></span>!...</div>
+<div class="line"><span class="preprocessor"></span>...</div>
 </div><!-- fragment --></li>
 </ul>
 </li>
@@ -276,7 +276,7 @@ Portability Across Systems</h2>
 <div class="line"><span class="preprocessor">#else</span></div>
 <div class="line"><span class="preprocessor"></span>  <span class="keyword">call </span>custom_gemm(m, n, k, a, b, c)</div>
 <div class="line"><span class="preprocessor">#endif</span></div>
-<div class="line"><span class="preprocessor"></span>!...</div>
+<div class="line"><span class="preprocessor"></span>...</div>
 </div><!-- fragment --></li>
 </ul>
 </li>
@@ -299,7 +299,7 @@ Portability Across Systems</h2>
 <p><b>Why It Persists</b>:</p><ul>
 <li>Despite Fortran’s <code>ISO_C_BINDING</code> and improved interoperability, hardware and library ecosystems remain fragmented. Preprocessing bridges these gaps more efficiently than rewriting code for each target.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md20"></a>
+<h2><a class="anchor" id="autotoc_md19"></a>
 File Inclusion</h2>
 <p><b>What It Is</b>: The <code>#include</code> directive inserts external files into the source code, often for shared definitions, constants, or interfaces.</p>
 <p><b>Common Uses</b>:</p><ul>
@@ -329,7 +329,7 @@ File Inclusion</h2>
 <p><b>Why It Persists</b>:</p><ul>
 <li>Modules are superior for modularity, but <code>#include</code> is entrenched in legacy workflows and simpler for small, shared snippets. It’s also used when interfacing with C-style build systems.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md21"></a>
+<h2><a class="anchor" id="autotoc_md20"></a>
 Macro Definitions for Code Reuse</h2>
 <p><b>What It Is</b>: Macros (<code>#define</code>) create reusable code snippets or constants, reducing duplication or simplifying complex expressions.</p>
 <p><b>Common Uses</b>:</p><ul>
@@ -369,7 +369,7 @@ Macro Definitions for Code Reuse</h2>
 <p><b>Why It Persists</b>:</p><ul>
 <li>Macros offer concise solutions for repetitive patterns, and tools like <code>fypp</code> extend this to template-like programming, which Fortran’s generics don’t fully replicate. However, overuse is frowned upon due to readability concerns.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md22"></a>
+<h2><a class="anchor" id="autotoc_md21"></a>
 Interfacing with Build Systems and External Tools</h2>
 <p><b>What It Is</b>: Preprocessing integrates Fortran code with build systems (e.g., CMake, Autotools) or external tools by defining flags or generating code.</p>
 <p><b>Common Uses</b>:</p><ul>
@@ -379,7 +379,7 @@ Interfacing with Build Systems and External Tools</h2>
 </div><!-- fragment --> Used in Fortran as: <div class="fragment"><div class="line"><span class="preprocessor">#ifdef HAVE_HDF5</span></div>
 <div class="line"><span class="preprocessor"></span>  <span class="keyword">CALL </span>write_hdf5_file(data)</div>
 <div class="line"><span class="preprocessor">#endif</span></div>
-<div class="line"><span class="preprocessor"></span>!...</div>
+<div class="line"><span class="preprocessor"></span>...</div>
 </div><!-- fragment --></li>
 </ul>
 </li>

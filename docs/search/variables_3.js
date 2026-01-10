@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['global_0',['global',['../group__group__global.html#ga8b8524880886f61f8c961589cffa7640',1,'fpx_global']]]
+  ['day_0',['day',['../structfpx__date_1_1datetime.html#af74408358a8c7c52d15e3c6205f2f4bf',1,'fpx_date::datetime']]]
 ];

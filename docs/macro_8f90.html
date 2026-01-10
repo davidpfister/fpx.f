@@ -141,7 +141,7 @@ $(function(){initNavTree('macro_8f90.html',''); initResizable(true); });
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Data Types</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">type &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpx__macro_1_1macro.html">macro</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Derived type representing a single preprocessor macro Extends <code>string</code> with macro-specific fields: replacement value, parameters, variadic flag, and cyclic self-reference detection.  <a href="structfpx__macro_1_1macro.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Derived type representing a single preprocessor macro Extends <a class="el" href="structfpx__string_1_1string.html">string </a> with macro-specific fields: replacement value, parameters, variadic flag, and cyclic self-reference detection.  <a href="structfpx__macro_1_1macro.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">interface &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interfacefpx__macro_1_1add.html">add</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add one or more macros to a dynamic table.  <a href="interfacefpx__macro_1_1add.html#details">More...</a><br /></td></tr>
@@ -167,12 +167,6 @@ Functions/Subroutines</h2></td></tr>
 <tr class="memitem:af24a4b1ccd5dda62d86947a164d6dc06" id="r_af24a4b1ccd5dda62d86947a164d6dc06"><td class="memItemLeft" align="right" valign="top">type(<a class="el" href="structfpx__macro_1_1macro.html">macro</a>) function&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af24a4b1ccd5dda62d86947a164d6dc06">macro_new</a> (name, val)</td></tr>
 <tr class="memdesc:af24a4b1ccd5dda62d86947a164d6dc06"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a new macro object.  <br /></td></tr>
 <tr class="separator:af24a4b1ccd5dda62d86947a164d6dc06"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga0377b88e35b9cdbcd9ef417ab369f31f" id="r_ga0377b88e35b9cdbcd9ef417ab369f31f"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__macro.html#ga0377b88e35b9cdbcd9ef417ab369f31f">set_default</a> (this, name)</td></tr>
-<tr class="memdesc:ga0377b88e35b9cdbcd9ef417ab369f31f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set macro name only (used internally)  <br /></td></tr>
-<tr class="separator:ga0377b88e35b9cdbcd9ef417ab369f31f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga22c83771c00d2d6a1e9d086b15710f86" id="r_ga22c83771c00d2d6a1e9d086b15710f86"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__macro.html#ga22c83771c00d2d6a1e9d086b15710f86">set_with_value</a> (this, name, value)</td></tr>
-<tr class="memdesc:ga22c83771c00d2d6a1e9d086b15710f86"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set both name and replacement value (used internally)  <br /></td></tr>
-<tr class="separator:ga22c83771c00d2d6a1e9d086b15710f86"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gabfa92166cee2f8dbd5947f0e61cc0101" id="r_gabfa92166cee2f8dbd5947f0e61cc0101"><td class="memItemLeft" align="right" valign="top">character(:) function, allocatable, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__macro.html#gabfa92166cee2f8dbd5947f0e61cc0101">expand_all</a> (line, macros, filepath, iline, stitch)</td></tr>
 <tr class="memdesc:gabfa92166cee2f8dbd5947f0e61cc0101"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fully expand a line including predefined macros (<b>FILE</b>, <b>LINE</b>, etc.) First performs normal macro expansion via expand_macros(), then substitutes standard predefined tokens with current file/line/date information.  <br /></td></tr>
 <tr class="separator:gabfa92166cee2f8dbd5947f0e61cc0101"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -192,41 +186,42 @@ Functions/Subroutines</h2></td></tr>
 <tr class="separator:ga610e027f53ef57bfa2ea2da1e97212d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a12a6f584514b3ca046c36ff235dd8a0e" id="r_a12a6f584514b3ca046c36ff235dd8a0e"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a12a6f584514b3ca046c36ff235dd8a0e">print_any</a> (any)</td></tr>
 <tr class="separator:a12a6f584514b3ca046c36ff235dd8a0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga114d12631f35686d100439764e3c03ba" id="r_ga114d12631f35686d100439764e3c03ba"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__macro.html#ga114d12631f35686d100439764e3c03ba">add_to</a> (vec, val, n, chunk_size, finished)</td></tr>
-<tr class="memdesc:ga114d12631f35686d100439764e3c03ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Internal helper: grow dynamic macro array in chunks for efficiency Adds a new macro to the allocatable array, growing in BUFFER_SIZE increments. Also detects direct self-references (A → A) and marks both sides as cyclic.  <br /></td></tr>
-<tr class="separator:ga114d12631f35686d100439764e3c03ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gacdf3a520eaec90aef07c6fc4cfd810a5" id="r_gacdf3a520eaec90aef07c6fc4cfd810a5"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__macro.html#gacdf3a520eaec90aef07c6fc4cfd810a5">add_item</a> (this, arg)</td></tr>
-<tr class="memdesc:gacdf3a520eaec90aef07c6fc4cfd810a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a complete macro object to the table.  <br /></td></tr>
-<tr class="separator:gacdf3a520eaec90aef07c6fc4cfd810a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga3f4c719b92a7dfa4d6647905fd660b71" id="r_ga3f4c719b92a7dfa4d6647905fd660b71"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__macro.html#ga3f4c719b92a7dfa4d6647905fd660b71">add_item_from_name</a> (this, name)</td></tr>
-<tr class="memdesc:ga3f4c719b92a7dfa4d6647905fd660b71"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add macro by name only (value = empty)  <br /></td></tr>
-<tr class="separator:ga3f4c719b92a7dfa4d6647905fd660b71"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga827ade4b8ee2220c2204dd95e4f8642b" id="r_ga827ade4b8ee2220c2204dd95e4f8642b"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__macro.html#ga827ade4b8ee2220c2204dd95e4f8642b">add_item_from_name_and_value</a> (this, name, value)</td></tr>
-<tr class="memdesc:ga827ade4b8ee2220c2204dd95e4f8642b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add macro with name and replacement text.  <br /></td></tr>
-<tr class="separator:ga827ade4b8ee2220c2204dd95e4f8642b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga56af229dcb1d418a08258fb6a6594d8e" id="r_ga56af229dcb1d418a08258fb6a6594d8e"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__macro.html#ga56af229dcb1d418a08258fb6a6594d8e">add_range</a> (this, args)</td></tr>
-<tr class="memdesc:ga56af229dcb1d418a08258fb6a6594d8e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add multiple macros at once.  <br /></td></tr>
-<tr class="separator:ga56af229dcb1d418a08258fb6a6594d8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga4f994e57053fe61253d895c1e91a56ce" id="r_ga4f994e57053fe61253d895c1e91a56ce"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__macro.html#ga4f994e57053fe61253d895c1e91a56ce">clear_item</a> (this)</td></tr>
-<tr class="memdesc:ga4f994e57053fe61253d895c1e91a56ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove all macros from table.  <br /></td></tr>
-<tr class="separator:ga4f994e57053fe61253d895c1e91a56ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga7604180d974de569928d3b87aee85320" id="r_ga7604180d974de569928d3b87aee85320"><td class="memItemLeft" align="right" valign="top">type(<a class="el" href="structfpx__macro_1_1macro.html">macro</a>) function, allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__macro.html#ga7604180d974de569928d3b87aee85320">get_item</a> (this, key)</td></tr>
-<tr class="memdesc:ga7604180d974de569928d3b87aee85320"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieve macro by 1-based index.  <br /></td></tr>
-<tr class="separator:ga7604180d974de569928d3b87aee85320"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga78da0643c9a4a77730747c4f443632ef" id="r_ga78da0643c9a4a77730747c4f443632ef"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__macro.html#ga78da0643c9a4a77730747c4f443632ef">insert_item</a> (this, i, arg)</td></tr>
-<tr class="memdesc:ga78da0643c9a4a77730747c4f443632ef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Insert macro at specific position.  <br /></td></tr>
-<tr class="separator:ga78da0643c9a4a77730747c4f443632ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaf4a12610db54c0300058849a1374341d" id="r_gaf4a12610db54c0300058849a1374341d"><td class="memItemLeft" align="right" valign="top">integer function&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__macro.html#gaf4a12610db54c0300058849a1374341d">size_item</a> (this)</td></tr>
-<tr class="memdesc:gaf4a12610db54c0300058849a1374341d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return number of defined macros.  <br /></td></tr>
-<tr class="separator:gaf4a12610db54c0300058849a1374341d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga068e7d980a27b70532c743e01ff01b0c" id="r_ga068e7d980a27b70532c743e01ff01b0c"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__macro.html#ga068e7d980a27b70532c743e01ff01b0c">remove_item</a> (this, i)</td></tr>
-<tr class="memdesc:ga068e7d980a27b70532c743e01ff01b0c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove macro at given index.  <br /></td></tr>
-<tr class="separator:ga068e7d980a27b70532c743e01ff01b0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a114d12631f35686d100439764e3c03ba" id="r_a114d12631f35686d100439764e3c03ba"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a114d12631f35686d100439764e3c03ba">add_to</a> (vec, val, n, chunk_size, finished)</td></tr>
+<tr class="memdesc:a114d12631f35686d100439764e3c03ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Internal helper: grow dynamic macro array in chunks for efficiency Adds a new macro to the allocatable array, growing in BUFFER_SIZE increments. Also detects direct self-references (A → A) and marks both sides as cyclic.  <br /></td></tr>
+<tr class="separator:a114d12631f35686d100439764e3c03ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acdf3a520eaec90aef07c6fc4cfd810a5" id="r_acdf3a520eaec90aef07c6fc4cfd810a5"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acdf3a520eaec90aef07c6fc4cfd810a5">add_item</a> (this, arg)</td></tr>
+<tr class="memdesc:acdf3a520eaec90aef07c6fc4cfd810a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a complete macro object to the table.  <br /></td></tr>
+<tr class="separator:acdf3a520eaec90aef07c6fc4cfd810a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3f4c719b92a7dfa4d6647905fd660b71" id="r_a3f4c719b92a7dfa4d6647905fd660b71"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3f4c719b92a7dfa4d6647905fd660b71">add_item_from_name</a> (this, name)</td></tr>
+<tr class="memdesc:a3f4c719b92a7dfa4d6647905fd660b71"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add macro by name only (value = empty)  <br /></td></tr>
+<tr class="separator:a3f4c719b92a7dfa4d6647905fd660b71"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a827ade4b8ee2220c2204dd95e4f8642b" id="r_a827ade4b8ee2220c2204dd95e4f8642b"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a827ade4b8ee2220c2204dd95e4f8642b">add_item_from_name_and_value</a> (this, name, value)</td></tr>
+<tr class="memdesc:a827ade4b8ee2220c2204dd95e4f8642b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add macro with name and replacement text.  <br /></td></tr>
+<tr class="separator:a827ade4b8ee2220c2204dd95e4f8642b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a56af229dcb1d418a08258fb6a6594d8e" id="r_a56af229dcb1d418a08258fb6a6594d8e"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a56af229dcb1d418a08258fb6a6594d8e">add_range</a> (this, args)</td></tr>
+<tr class="memdesc:a56af229dcb1d418a08258fb6a6594d8e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add multiple macros at once.  <br /></td></tr>
+<tr class="separator:a56af229dcb1d418a08258fb6a6594d8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4f994e57053fe61253d895c1e91a56ce" id="r_a4f994e57053fe61253d895c1e91a56ce"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4f994e57053fe61253d895c1e91a56ce">clear_item</a> (this)</td></tr>
+<tr class="memdesc:a4f994e57053fe61253d895c1e91a56ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove all macros from table.  <br /></td></tr>
+<tr class="separator:a4f994e57053fe61253d895c1e91a56ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7604180d974de569928d3b87aee85320" id="r_a7604180d974de569928d3b87aee85320"><td class="memItemLeft" align="right" valign="top">type(<a class="el" href="structfpx__macro_1_1macro.html">macro</a>) function, allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7604180d974de569928d3b87aee85320">get_item</a> (this, key)</td></tr>
+<tr class="memdesc:a7604180d974de569928d3b87aee85320"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieve macro by 1-based index.  <br /></td></tr>
+<tr class="separator:a7604180d974de569928d3b87aee85320"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a78da0643c9a4a77730747c4f443632ef" id="r_a78da0643c9a4a77730747c4f443632ef"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a78da0643c9a4a77730747c4f443632ef">insert_item</a> (this, i, arg)</td></tr>
+<tr class="memdesc:a78da0643c9a4a77730747c4f443632ef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Insert macro at specific position.  <br /></td></tr>
+<tr class="separator:a78da0643c9a4a77730747c4f443632ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af4a12610db54c0300058849a1374341d" id="r_af4a12610db54c0300058849a1374341d"><td class="memItemLeft" align="right" valign="top">integer function&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af4a12610db54c0300058849a1374341d">size_item</a> (this)</td></tr>
+<tr class="memdesc:af4a12610db54c0300058849a1374341d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return number of defined macros.  <br /></td></tr>
+<tr class="separator:af4a12610db54c0300058849a1374341d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a068e7d980a27b70532c743e01ff01b0c" id="r_a068e7d980a27b70532c743e01ff01b0c"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a068e7d980a27b70532c743e01ff01b0c">remove_item</a> (this, i)</td></tr>
+<tr class="memdesc:a068e7d980a27b70532c743e01ff01b0c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove macro at given index.  <br /></td></tr>
+<tr class="separator:a068e7d980a27b70532c743e01ff01b0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:a23244cd1e6b3d8a76c5fd6f971bcddf8" id="r_a23244cd1e6b3d8a76c5fd6f971bcddf8"><td class="memItemLeft" align="right" valign="top">integer, parameter&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a23244cd1e6b3d8a76c5fd6f971bcddf8">buffer_size</a> = 256</td></tr>
-<tr class="separator:a23244cd1e6b3d8a76c5fd6f971bcddf8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga23244cd1e6b3d8a76c5fd6f971bcddf8" id="r_ga23244cd1e6b3d8a76c5fd6f971bcddf8"><td class="memItemLeft" align="right" valign="top">integer, parameter&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__macro.html#ga23244cd1e6b3d8a76c5fd6f971bcddf8">buffer_size</a> = 256</td></tr>
+<tr class="memdesc:ga23244cd1e6b3d8a76c5fd6f971bcddf8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default buffer size.  <br /></td></tr>
+<tr class="separator:ga23244cd1e6b3d8a76c5fd6f971bcddf8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->
 </div><!-- doc-content -->

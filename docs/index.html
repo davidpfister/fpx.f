@@ -134,58 +134,58 @@ $(function(){initNavTree('index.html',''); initResizable(true); });
 <div class="toc"><h3>Table of Contents</h3>
 <ul>
   <li class="level1">
-    <a href="#autotoc_md31">Introduction</a>
+    <a href="#autotoc_md30">Introduction</a>
     <ul>
       <li class="level2">
-        <a href="#autotoc_md32">About the Project</a>
+        <a href="#autotoc_md31">About the Project</a>
       </li>
       <li class="level2">
-        <a href="#autotoc_md33">Getting Started</a>
+        <a href="#autotoc_md32">Getting Started</a>
         <ul>
           <li class="level3">
-            <a href="#autotoc_md34">Requirements</a>
+            <a href="#autotoc_md33">Requirements</a>
           </li>
           <li class="level3">
-            <a href="#autotoc_md35">Installation</a>
+            <a href="#autotoc_md34">Installation</a>
             <ul>
               <li class="level4">
-                <a href="#autotoc_md36">Get the code</a>
+                <a href="#autotoc_md35">Get the code</a>
               </li>
               <li class="level4">
-                <a href="#autotoc_md37">Build with fpm</a>
+                <a href="#autotoc_md36">Build with fpm</a>
               </li>
               <li class="level4">
-                <a href="#autotoc_md38">Build with Visual Studio 2019</a>
+                <a href="#autotoc_md37">Build with Visual Studio 2019</a>
               </li>
             </ul>
           </li>
         </ul>
       </li>
       <li class="level2">
-        <a href="#autotoc_md39">Usage</a>
+        <a href="#autotoc_md38">Usage</a>
         <ul>
           <li class="level3">
-            <a href="#autotoc_md40">Command line</a>
+            <a href="#autotoc_md39">Command line</a>
           </li>
           <li class="level3">
-            <a href="#autotoc_md41">Embedded</a>
+            <a href="#autotoc_md40">Embedded</a>
           </li>
           <li class="level3">
-            <a href="#autotoc_md42">Contributing</a>
+            <a href="#autotoc_md41">Contributing</a>
           </li>
           <li class="level3">
-            <a href="#autotoc_md43">Style</a>
+            <a href="#autotoc_md42">Style</a>
           </li>
           <li class="level3">
-            <a href="#autotoc_md44">Reporting a bug</a>
+            <a href="#autotoc_md43">Reporting a bug</a>
           </li>
           <li class="level3">
-            <a href="#autotoc_md45">Pull request</a>
+            <a href="#autotoc_md44">Pull request</a>
           </li>
         </ul>
       </li>
       <li class="level2">
-        <a href="#autotoc_md46">License</a>
+        <a href="#autotoc_md45">License</a>
       </li>
     </ul>
   </li>
@@ -197,9 +197,9 @@ $(function(){initNavTree('index.html',''); initResizable(true); });
  </p><div align="center"> <h3 align="center">fpx.f</h3>
 </div><div align="center"></div><div align="center"> </div><div align="center"> A fortran preprocessor in fortran for modern Fortran. <br  />
  <a href="https://github.com/davidpfister/fpx.f"><b>Explore the project »</b></a> <br  />
- </div><div align="center"> </div><h1><a class="anchor" id="autotoc_md31"></a>
+ </div><div align="center"> </div><h1><a class="anchor" id="autotoc_md30"></a>
 Introduction</h1>
-<h2><a class="anchor" id="autotoc_md32"></a>
+<h2><a class="anchor" id="autotoc_md31"></a>
 About the Project</h2>
 <p>Fortran, the venerable language of scientific computing, has powered simulations of galaxies, weather systems, and quantum phenomena for over seven decades. Its enduring strength lies in its clarity, performance, and mathematical soul, qualities that resonate deeply with its community of developers. Yet, nestled within this ecosystem is a contentious tool: the preprocessor. From its ad hoc beginnings in the 1970s to its modern incarnations in tools like <code>cpp</code>, <code>fpp</code>, and <code>fypp</code>, preprocessing has been both a lifeline and a lightning rod for Fortran developers.</p>
 <p>It enables portability across diverse platforms, conditional compilation for debugging, and code generation for complex libraries. These capabilities are critical to Fortran’s role in high-performance computing. But it also sparks fierce debate, with many Fortraners decrying its tendency to obscure code, disrupt the language’s elegant simplicity, and introduce bugs. <br  />
@@ -221,9 +221,9 @@ About the Project</h2>
 <li>and more... <br  />
 </li>
 </ul>
-<h2><a class="anchor" id="autotoc_md33"></a>
+<h2><a class="anchor" id="autotoc_md32"></a>
 Getting Started</h2>
-<h3><a class="anchor" id="autotoc_md34"></a>
+<h3><a class="anchor" id="autotoc_md33"></a>
 Requirements</h3>
 <p>To build that library you need</p>
 <ul>
@@ -243,13 +243,13 @@ Requirements</h3>
 </ul>
 <p>Unit test rely on the the header file <a href="https://github.com/davidpfister/fortiche/tree/master/src/assertion"><code>assertion.inc</code></a>. Since the whole framework fits in a single file, it has been added directly to the repo.</p>
 <p>Linting, indentation, and styling is done with <a href="https://github.com/fortran-lang/fprettify">fprettify</a> with the following settings </p><div class="fragment"><div class="line">fprettify &#39;./src/&#39; -r --case 1 1 1 1 -i 4 --strict-indent --enable-replacements --strip-comments --c-relations</div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md35"></a>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md34"></a>
 Installation</h3>
-<h4><a class="anchor" id="autotoc_md36"></a>
+<h4><a class="anchor" id="autotoc_md35"></a>
 Get the code</h4>
 <div class="fragment"><div class="line">git clone https://github.com/davidpfister/fpx.f</div>
 <div class="line">cd fpx.f</div>
-</div><!-- fragment --><h4><a class="anchor" id="autotoc_md37"></a>
+</div><!-- fragment --><h4><a class="anchor" id="autotoc_md36"></a>
 Build with fpm</h4>
 <p>The repo can be build using <em>fpm</em> </p><div class="fragment"><div class="line">fpm build</div>
 </div><!-- fragment --><p> For convenience, the repo also contains a response file that can be invoked as follows: </p><div class="fragment"><div class="line">fpm @build</div>
@@ -280,12 +280,12 @@ Build with fpm</h4>
 <div class="line">cpp.suffixes = [&quot;F90&quot;, &quot;f90&quot;]</div>
 <div class="line">cpp.macros = [&quot;_FPM&quot;]</div>
 </div><!-- fragment --><p> The <code>_FPM</code> macro is used to differentiate the build when compiling with <em>fpm</em> or <em>Visual Studio</em>. This is mostly present to adapt the hard coded paths that differs in both cases.</p>
-<h4><a class="anchor" id="autotoc_md38"></a>
+<h4><a class="anchor" id="autotoc_md37"></a>
 Build with Visual Studio 2019</h4>
 <p>The project was originally developed on Windows with Visual Studio 2019. The repo contains the solution file (<em>Fpx.f.sln</em>) to get you started with Visual Studio 2019.</p>
-<h2><a class="anchor" id="autotoc_md39"></a>
+<h2><a class="anchor" id="autotoc_md38"></a>
 Usage</h2>
-<h3><a class="anchor" id="autotoc_md40"></a>
+<h3><a class="anchor" id="autotoc_md39"></a>
 Command line</h3>
 <p>The preprocessor <code>fpx</code> can be used from the command-line using your favorite shell. The following options are available: </p><center></center><center><table class="markdownTable">
 <tr class="markdownTableHead">
@@ -306,7 +306,7 @@ Command line</h3>
 <td class="markdownTableBodyLeft">-v   </td><td class="markdownTableBodyLeft">Display the version of the program.   </td></tr>
 </table>
 </center><center></center><p>Using the file preprocessor could not be easier. The function simply takes as arguments the input and output file paths.</p>
-<h3><a class="anchor" id="autotoc_md41"></a>
+<h3><a class="anchor" id="autotoc_md40"></a>
 Embedded</h3>
 <div class="fragment"><div class="line"><span class="keyword">program</span> test</div>
 <div class="line">    <span class="keywordtype">use </span>fpx_parser</div>
@@ -315,14 +315,14 @@ Embedded</h3>
 <div class="line"><span class="keyword">end program</span></div>
 <div class="ttc" id="ainterfacefpx__parser_1_1preprocess_html"><div class="ttname"><a href="interfacefpx__parser_1_1preprocess.html">fpx_parser::preprocess</a></div><div class="ttdoc">Generic interface to start preprocessing from various sources/sinks.</div><div class="ttdef"><b>Definition</b> <a href="parser_8f90_source.html#l00078">parser.f90:78</a></div></div>
 </div><!-- fragment --><p><em>For more examples, please refer to the <a href="https://davidpfister.github.io/fpx.f/index.html">Documentation</a></em></p>
-<h3><a class="anchor" id="autotoc_md42"></a>
+<h3><a class="anchor" id="autotoc_md41"></a>
 Contributing</h3>
 <p>Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are <b>greatly appreciated</b>. So, thank you for considering contributing to <em>fpx.f</em>. Please review and follow these guidelines to make the contribution process simple and effective for all involved. In return, the developers will help address your problem, evaluate changes, and guide you through your pull requests.</p>
 <p>By contributing to <em>fpx.f</em>, you certify that you own or are allowed to share the content of your contribution under the same license.</p>
-<h3><a class="anchor" id="autotoc_md43"></a>
+<h3><a class="anchor" id="autotoc_md42"></a>
 Style</h3>
 <p>Please follow the style used in this repository for any Fortran code that you contribute. This allows focusing on substance rather than style.</p>
-<h3><a class="anchor" id="autotoc_md44"></a>
+<h3><a class="anchor" id="autotoc_md43"></a>
 Reporting a bug</h3>
 <p>A bug is a <em>demonstrable problem</em> caused by the code in this repository. Good bug reports are extremely valuable to us—thank you!</p>
 <p>Before opening a bug report:</p>
@@ -339,7 +339,7 @@ Reporting a bug</h3>
 <li>What happens instead?</li>
 </ol>
 <p>This information will help the developers diagnose the issue quickly and with minimal back-and-forth.</p>
-<h3><a class="anchor" id="autotoc_md45"></a>
+<h3><a class="anchor" id="autotoc_md44"></a>
 Pull request</h3>
 <p>If you have a suggestion that would make this project better, please create a pull request. You can also simply open an issue with the tag "enhancement". Don't forget to give the project a star! Thanks again!</p><ol type="1">
 <li>Open a <a href="https://github.com/davidpfister/fpx.f/issues/new">new issue</a> to describe a bug or propose a new feature. Refer to the earlier sections on how to write a good bug report or feature request.</li>
@@ -356,7 +356,7 @@ Pull request</h3>
 <li>Add tests for your feature or bug fix to be sure that it stays functional and useful</li>
 <li>Be open to constructive criticism and requests for improving your code.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md46"></a>
+<h2><a class="anchor" id="autotoc_md45"></a>
 License</h2>
 <p>Distributed under the MIT License. </p>
 </div></div><!-- PageDoc -->

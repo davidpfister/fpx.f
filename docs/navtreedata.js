@@ -25,25 +25,25 @@
 var NAVTREE =
 [
   [ "fpx.f", "index.html", [
-    [ "Introduction", "index.html#autotoc_md31", [
-      [ "About the Project", "index.html#autotoc_md32", null ],
-      [ "Getting Started", "index.html#autotoc_md33", [
-        [ "Requirements", "index.html#autotoc_md34", null ],
-        [ "Installation", "index.html#autotoc_md35", [
-          [ "Get the code", "index.html#autotoc_md36", null ],
-          [ "Build with fpm", "index.html#autotoc_md37", null ],
-          [ "Build with Visual Studio 2019", "index.html#autotoc_md38", null ]
+    [ "Introduction", "index.html#autotoc_md30", [
+      [ "About the Project", "index.html#autotoc_md31", null ],
+      [ "Getting Started", "index.html#autotoc_md32", [
+        [ "Requirements", "index.html#autotoc_md33", null ],
+        [ "Installation", "index.html#autotoc_md34", [
+          [ "Get the code", "index.html#autotoc_md35", null ],
+          [ "Build with fpm", "index.html#autotoc_md36", null ],
+          [ "Build with Visual Studio 2019", "index.html#autotoc_md37", null ]
         ] ]
       ] ],
-      [ "Usage", "index.html#autotoc_md39", [
-        [ "Command line", "index.html#autotoc_md40", null ],
-        [ "Embedded", "index.html#autotoc_md41", null ],
-        [ "Contributing", "index.html#autotoc_md42", null ],
-        [ "Style", "index.html#autotoc_md43", null ],
-        [ "Reporting a bug", "index.html#autotoc_md44", null ],
-        [ "Pull request", "index.html#autotoc_md45", null ]
+      [ "Usage", "index.html#autotoc_md38", [
+        [ "Command line", "index.html#autotoc_md39", null ],
+        [ "Embedded", "index.html#autotoc_md40", null ],
+        [ "Contributing", "index.html#autotoc_md41", null ],
+        [ "Style", "index.html#autotoc_md42", null ],
+        [ "Reporting a bug", "index.html#autotoc_md43", null ],
+        [ "Pull request", "index.html#autotoc_md44", null ]
       ] ],
-      [ "License", "index.html#autotoc_md46", null ]
+      [ "License", "index.html#autotoc_md45", null ]
     ] ],
     [ "Documentation", "pages.html", "pages" ],
     [ "API", "topics.html", "topics" ],
@@ -54,8 +54,7 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-"cheatsheet.html",
-"topics.html"
+"cheatsheet.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

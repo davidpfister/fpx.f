@@ -129,7 +129,6 @@ $(function(){initNavTree('structfpx__graph_1_1digraph.html',''); initResizable(t
 
 <div class="header">
   <div class="summary">
-<a href="#pub-attribs">Variables</a> &#124;
 <a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="structfpx__graph_1_1digraph-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">digraph Type Reference<div class="ingroups"><a class="el" href="group__group__graph.html">Graph</a></div></div></div>
@@ -137,6 +136,7 @@ $(function(){initNavTree('structfpx__graph_1_1digraph.html',''); initResizable(t
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">Definition</h2>
 <div class="textblock"><p>Directed graph with fixed vertex count and efficient cycle detection Stores edges in a dense adjacency matrix slice per vertex. Only the actually used portion of each row is tracked via <code>list_sizes</code>. </p>
+<p>Constructor interface for <a class="el" href="structfpx__graph_1_1digraph.html">digraph</a> type.</p>
 <h2 class="groupheader">Examples</h2>
 <div class="fragment"><div class="line"><span class="keywordtype">type</span>(digraph) :: g</div>
 <div class="line"><span class="keywordtype">logical</span>       :: cycle</div>
@@ -161,23 +161,24 @@ $(function(){initNavTree('structfpx__graph_1_1digraph.html',''); initResizable(t
 <div class="line">g = digraph(3)</div>
 </div><!-- fragment --> <dl class="section return"><dt>Returns</dt><dd>The constructed digraph object.</dd></dl>
 <h2 class="groupheader">Remarks</h2>
+<p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="graph_8f90_source.html#l00093">93</a> of file <a class="el" href="graph_8f90_source.html">graph.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="graph_8f90_source.html#l00096">96</a> of file <a class="el" href="graph_8f90_source.html">graph.f90</a>.</p>
 </div><hr/>The documentation for this type was generated from the following file:<ul>
 <li><a class="el" href="graph_8f90_source.html">graph.f90</a></li>
 </ul>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
-Variables</h2></td></tr>
-<tr class="memitem:addf38c8b71b60e1300a19c1bbb4b3aff" id="r_addf38c8b71b60e1300a19c1bbb4b3aff"><td class="memItemLeft" align="right" valign="top">integer, dimension(:,:), allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#addf38c8b71b60e1300a19c1bbb4b3aff">adjacency_list</a></td></tr>
-<tr class="separator:addf38c8b71b60e1300a19c1bbb4b3aff"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a18167e494ba3dea2bd6381637c5ab64a" id="r_a18167e494ba3dea2bd6381637c5ab64a"><td class="memItemLeft" align="right" valign="top">integer, dimension(:), allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a18167e494ba3dea2bd6381637c5ab64a">list_sizes</a></td></tr>
-<tr class="separator:a18167e494ba3dea2bd6381637c5ab64a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
-<tr class="memitem:ade61d405c85269178f0d7301a64f9db2" id="r_ade61d405c85269178f0d7301a64f9db2"><td class="memItemLeft" align="right" valign="top">integer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ade61d405c85269178f0d7301a64f9db2">vertices</a></td></tr>
-<tr class="separator:ade61d405c85269178f0d7301a64f9db2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaf9097e8f9f6353035e21fbac5cfcb29" id="r_aaf9097e8f9f6353035e21fbac5cfcb29"><td class="memItemLeft" align="right" valign="top">integer, private&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aaf9097e8f9f6353035e21fbac5cfcb29">vertices</a></td></tr>
+<tr class="memdesc:aaf9097e8f9f6353035e21fbac5cfcb29"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of vertices.  <br /></td></tr>
+<tr class="separator:aaf9097e8f9f6353035e21fbac5cfcb29"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5b8f3ca8dde306913abb6d45fffe164e" id="r_a5b8f3ca8dde306913abb6d45fffe164e"><td class="memItemLeft" align="right" valign="top">integer, dimension(:,:), allocatable, private&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5b8f3ca8dde306913abb6d45fffe164e">adjacency_list</a></td></tr>
+<tr class="memdesc:a5b8f3ca8dde306913abb6d45fffe164e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adjacency list containing the connection information between the vertices.  <br /></td></tr>
+<tr class="separator:a5b8f3ca8dde306913abb6d45fffe164e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a70d3f7a9d885d4f1d5fd5a07a08ab156" id="r_a70d3f7a9d885d4f1d5fd5a07a08ab156"><td class="memItemLeft" align="right" valign="top">integer, dimension(:), allocatable, private&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a70d3f7a9d885d4f1d5fd5a07a08ab156">list_sizes</a></td></tr>
+<tr class="memdesc:a70d3f7a9d885d4f1d5fd5a07a08ab156"><td class="mdescLeft">&#160;</td><td class="mdescRight">Actually used portion of each row of <a class="el" href="#a5b8f3ca8dde306913abb6d45fffe164e">adjacency_list</a>.  <br /></td></tr>
+<tr class="separator:a70d3f7a9d885d4f1d5fd5a07a08ab156"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Methods</h2>
 <a id="a05d6c024ecc6f31c0f92efeb094c8ff1" name="a05d6c024ecc6f31c0f92efeb094c8ff1"></a>
@@ -220,7 +221,7 @@ Private Attributes</h2></td></tr>
 </dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="graph_8f90_source.html#l00088">88</a> of file <a class="el" href="graph_8f90_source.html">graph.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="graph_8f90_source.html#l00087">87</a> of file <a class="el" href="graph_8f90_source.html">graph.f90</a>.</p>
 
 </div>
 </div>
@@ -253,11 +254,11 @@ Private Attributes</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>.true. if a cycle is found in the component reachable from start_vertex</dd></dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="graph_8f90_source.html#l00089">89</a> of file <a class="el" href="graph_8f90_source.html">graph.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="graph_8f90_source.html#l00088">88</a> of file <a class="el" href="graph_8f90_source.html">graph.f90</a>.</p>
 
 </div>
 </div>
-<h2 class="groupheader">Finalizer</h2>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a21cfa48f4b027b2883a80773b871a5df" name="a21cfa48f4b027b2883a80773b871a5df"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a21cfa48f4b027b2883a80773b871a5df">&#9670;&#160;</a></span>graph_final()</h2>
 
@@ -283,7 +284,7 @@ Private Attributes</h2></td></tr>
 
 <p>Finalizer – automatically deallocate internal arrays when graph goes out of scope. </p>
 
-<p class="definition">Definition at line <a class="el" href="graph_8f90_source.html#l00090">90</a> of file <a class="el" href="graph_8f90_source.html">graph.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="graph_8f90_source.html#l00089">89</a> of file <a class="el" href="graph_8f90_source.html">graph.f90</a>.</p>
 
 </div>
 </div>

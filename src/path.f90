@@ -2,20 +2,19 @@
 !! @defgroup group_path Path
 !! A modern, portable Fortran module for path manipulation and basic directory operations.
 !! This module provides a clean interface for working with file system paths
-!! in a platform-independent way. It correctly handles both Unix (`/`) and Windows (`\`) path
+!! in a platform-independent way. It correctly handles both Unix ('/') and Windows ('\') path
 !! separators through conditional compilation and offers deferred-length character results
 !! for maximum flexibility.
 !!
-!! The module builds upon the `fpx_string` module for `string` type support and provides
+!! The module builds upon the @link fpx_string fpx_string @endlink module for @link fpx_string::string string @endlink type support and provides
 !! overloads of key procedures to accept either intrinsic `character(*)` or `type(string)`
 !! arguments.
 !!
 !! Features
-!! --------
 !! - Detection of absolute and rooted paths on Windows and Unix-like systems
 !! - Safe path joining that avoids duplicate separators
 !! - Extraction of directory part, filename (with or without extension)
-!! - Path splitting into head/tail components (similar to Python's `os.path.split`)
+!! - Path splitting into head/tail components
 !! - Retrieval of the current working directory (`cwd`)
 !! - Changing the current working directory (`chdir`)
 !!
@@ -99,15 +98,16 @@ module fpx_path
     !> Returns .true. if the path is absolute.
     !! On Unix a path is absolute when it starts with '/'.
     !! On Windows a path is absolute when it starts with a drive letter followed by ':\'
-    !! (e.g. "C:\", "d:/temp").
+    !! (e.g. 'C:\', 'd:/temp').
     !!
     !! @param[in] filepath  Path to test
     !! @return res          .true. if filepath is absolute
     !!
     !! @code{.f90}
-    !!    print *, is_absolute("/home/user")   ! .true.  (Unix)
-    !!    print *, is_absolute("C:\\Temp")     ! .true.  (Windows)
-    !!    print *, is_absolute("docs/..")      ! .false.
+    !!    print *, is_absolute('/home/user')   ! .true.  (Unix)
+    !!    print *, is_absolute('C:\\Temp')     ! .true.  (Windows)
+    !!    print *, is_absolute('docs/..')      ! .false.
+    !!    ...
     !! @endcode
     !!
     !! @b Remarks
@@ -127,8 +127,8 @@ module fpx_path
     end function
     
     !> Returns .true. if the path is rooted (starts with a separator) or is absolute.
-    !! A rooted path begins with the platform separator ("\" on Windows, "/" elsewhere)
-    !! even if it is not a full absolute path (e.g. "\temp" on Windows).
+    !! A rooted path begins with the platform separator ('\' on Windows, '/' elsewhere)
+    !! even if it is not a full absolute path (e.g. '\temp' on Windows).
     !!
     !! @param[in] filepath  Path to test
     !! @return res          .true. if filepath is rooted
@@ -193,7 +193,6 @@ module fpx_path
     !! @return res       Joined path
     !!
     !! @b Remarks
-    !! @ingroup group_path
     pure function join_character_character(path1, path2) result(res)
         character(*), intent(in) :: path1
         character(*), intent(in) :: path2
@@ -215,7 +214,6 @@ module fpx_path
     !! @return res       Joined path
     !!
     !! @b Remarks
-    !! @ingroup group_path
     pure function join_character_string(path1, path2) result(res)
         character(*), intent(in) :: path1
         type(string), intent(in) :: path2
@@ -237,7 +235,6 @@ module fpx_path
     !! @return res       Joined path
     !!
     !! @b Remarks
-    !! @ingroup group_path
     pure function join_string_character(path1, path2) result(res)
         type(string), intent(in) :: path1
         character(*), intent(in) :: path2
@@ -259,7 +256,6 @@ module fpx_path
     !! @return res       Joined path
     !!
     !! @b Remarks
-    !! @ingroup group_path
     pure function join_string_string(path1, path2) result(res)
         type(string), intent(in) :: path1
         type(string), intent(in) :: path2

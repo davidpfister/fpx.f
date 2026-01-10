@@ -135,7 +135,7 @@ $(function(){initNavTree('group__group__string.html',''); initResizable(true); }
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">Definition</h2>
 <p>Minimal yet powerful variable-length string type with modern Fortran features. This module implements a lightweight <code>string</code> derived type that behaves like a true variable-length character string while remaining fully compatible with intrinsic Fortran character operations. </p>
-<p>Key features:</p><ul>
+<p>Features:</p><ul>
 <li>Automatic memory management via <code>allocatable character(:)</code></li>
 <li>Overloaded assignment (<code>=</code>) between <code>string</code> and <code>character(*)</code></li>
 <li>Overloaded operators: <code>//</code> (concatenation), <code>==</code> (equality), <code>.contains.</code> (membership)</li>
@@ -166,10 +166,9 @@ $(function(){initNavTree('group__group__string.html',''); initResizable(true); }
 <div class="line"><span class="keywordtype">logical</span>      :: found</div>
 <div class="line"> </div>
 <div class="line">words = [string(<span class="stringliteral">&#39;apple&#39;</span>), string(<span class="stringliteral">&#39;banana&#39;</span>), string(<span class="stringliteral">&#39;cherry&#39;</span>)]</div>
-<div class="line">found = words .<a class="code hl_interface" href="interfacecontains.html">contains</a>. <span class="stringliteral">&#39;banana&#39;</span>     <span class="comment">! --&gt; .true.</span></div>
-<div class="line">found = words .<a class="code hl_interface" href="interfacecontains.html">contains</a>. string(<span class="stringliteral">&#39;date&#39;</span>) <span class="comment">! --&gt; .false.</span></div>
+<div class="line">found = words .contains. <span class="stringliteral">&#39;banana&#39;</span>     <span class="comment">! --&gt; .true.</span></div>
+<div class="line">found = words .contains. string(<span class="stringliteral">&#39;date&#39;</span>) <span class="comment">! --&gt; .false.</span></div>
 <div class="line">...</div>
-<div class="ttc" id="ainterfacecontains_html"><div class="ttname"><a href="interfacecontains.html">contains</a></div><div class="ttdoc">Check whether a string belongs to a list or not.</div></div>
 </div><!-- fragment --></dd></dl>
 <dl class="section user"><dt>Advanced: Source Code Processing</dt><dd><div class="fragment"><div class="line"><span class="keywordtype">character(len=:)</span>, <span class="keywordtype">allocatable</span> :: code_line</div>
 <div class="line">code_line = uppercase(<span class="stringliteral">&#39;program hello_world  ! comment&#39;</span>)  <span class="comment">! --&gt; &#39;PROGRAM HELLO_WORLD  ! comment&#39;</span></div>
@@ -190,226 +189,14 @@ Data Types</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">interface &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interfacefpx__string_1_1trim.html">trim</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the trimmed string.  <a href="interfacefpx__string_1_1trim.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">interface &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interfaceconcat.html">concat</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Concatenation operator.  <a href="interfaceconcat.html#details">More...</a><br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">interface &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interfacefpx__string_1_1operator_07_2_2_08.html">operator(//)</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Concatenation operator.  <a href="interfacefpx__string_1_1operator_07_2_2_08.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">interface &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interfacecontains.html">contains</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check whether a string belongs to a list or not.  <a href="interfacecontains.html#details">More...</a><br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">interface &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interfacefpx__string_1_1operator_07_8contains_8_08.html">operator(.contains.)</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check whether a string belongs to a list or not.  <a href="interfacefpx__string_1_1operator_07_8contains_8_08.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Methods</h2>
-<a id="ga5fa07b60798ab4ceb6cf33b96d895681" name="ga5fa07b60798ab4ceb6cf33b96d895681"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga5fa07b60798ab4ceb6cf33b96d895681">&#9670;&#160;</a></span>character_assign_string()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">subroutine character_assign_string </td>
-          <td>(</td>
-          <td class="paramtype">class(<a class="el" href="structfpx__string_1_1string.html">string</a>), intent(inout)</td>          <td class="paramname"><span class="paramname"><em>lhs</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">character(*), intent(in)</td>          <td class="paramname"><span class="paramname"><em>rhs</em></span>&#160;)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Assignment overloading. Assign a character array to a string. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in,out]</td><td class="paramname">lhs</td><td>string </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">rhs</td><td>character(*)</td></tr>
-  </table>
-  </dd>
-</dl>
-<p><b>Examples</b> </p><div class="fragment"><div class="line"><span class="keywordtype">type</span>(string) :: s</div>
-<div class="line"> </div>
-<div class="line">s = <span class="stringliteral">&#39;foo&#39;</span></div>
-</div><!-- fragment --><p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00187">187</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
-
-</div>
-</div>
-<a id="ga15077d99187f2d9c111f3fb78f92cf4b" name="ga15077d99187f2d9c111f3fb78f92cf4b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga15077d99187f2d9c111f3fb78f92cf4b">&#9670;&#160;</a></span>character_concat_string()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">pure character(:) function, allocatable character_concat_string </td>
-          <td>(</td>
-          <td class="paramtype">character(*), intent(in)</td>          <td class="paramname"><span class="paramname"><em>lhs</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">class(<a class="el" href="structfpx__string_1_1string.html">string</a>), intent(in)</td>          <td class="paramname"><span class="paramname"><em>rhs</em></span>&#160;)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Concatenation of character expression and string. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">lhs</td><td>character expression </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">rhs</td><td>string </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>New concatenated string.</dd></dl>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00336">336</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
-
-</div>
-</div>
-<a id="ga10c0f1e0e71aa6f25e4e0c48674eed46" name="ga10c0f1e0e71aa6f25e4e0c48674eed46"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga10c0f1e0e71aa6f25e4e0c48674eed46">&#9670;&#160;</a></span>character_eq_string()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">elemental logical function character_eq_string </td>
-          <td>(</td>
-          <td class="paramtype">character(*), intent(in)</td>          <td class="paramname"><span class="paramname"><em>lhs</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">class(<a class="el" href="structfpx__string_1_1string.html">string</a>), intent(in)</td>          <td class="paramname"><span class="paramname"><em>rhs</em></span>&#160;)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Equality comparison (reversed) between character expression and string. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">lhs</td><td>character expression </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">rhs</td><td>string </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>.true. if equal, .false. otherwise.</dd></dl>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00393">393</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
-
-</div>
-</div>
-<a id="ga5a7725093fba9d2c024ab4fad37e278c" name="ga5a7725093fba9d2c024ab4fad37e278c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga5a7725093fba9d2c024ab4fad37e278c">&#9670;&#160;</a></span>characters_contain_character()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">logical function characters_contain_character </td>
-          <td>(</td>
-          <td class="paramtype">character(*), dimension(:), intent(in)</td>          <td class="paramname"><span class="paramname"><em>lhs</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">character(*), intent(in)</td>          <td class="paramname"><span class="paramname"><em>rhs</em></span>&#160;)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Checks whether an array of character contains a given character expression. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">lhs</td><td>array of character </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">rhs</td><td>character expression to search for </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>.true. if rhs is present in lhs</dd></dl>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00658">658</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
-
-</div>
-</div>
-<a id="ga40a4eebeb200e41d543d7e65c4341ca4" name="ga40a4eebeb200e41d543d7e65c4341ca4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga40a4eebeb200e41d543d7e65c4341ca4">&#9670;&#160;</a></span>characters_contain_string()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">logical function characters_contain_string </td>
-          <td>(</td>
-          <td class="paramtype">character(*), dimension(:), intent(in)</td>          <td class="paramname"><span class="paramname"><em>lhs</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">type(<a class="el" href="structfpx__string_1_1string.html">string</a>), intent(in)</td>          <td class="paramname"><span class="paramname"><em>rhs</em></span>&#160;)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Checks whether an array of character contains a given string. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">lhs</td><td>array of character </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">rhs</td><td>string to search for </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>.true. if rhs is present in lhs</dd></dl>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00680">680</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
-
-</div>
-</div>
 <a id="gadb259182cf539d22a0de67734b243059" name="gadb259182cf539d22a0de67734b243059"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#gadb259182cf539d22a0de67734b243059">&#9670;&#160;</a></span>concat()</h2>
 
@@ -417,7 +204,7 @@ Data Types</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">character(:) function, allocatable, public <a class="el" href="interfaceconcat.html">concat</a> </td>
+          <td class="memname">character(:) function, allocatable, public concat </td>
           <td>(</td>
           <td class="paramtype">character(*), intent(in)</td>          <td class="paramname"><span class="paramname"><em>str1</em></span>, </td>
         </tr>
@@ -440,7 +227,7 @@ Data Types</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>Concatenated string with proper continuation handling</dd></dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00485">485</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00534">534</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
 
 </div>
 </div>
@@ -469,7 +256,7 @@ Data Types</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>First character (space if empty)</dd></dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00452">452</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00501">501</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
 
 </div>
 </div>
@@ -503,7 +290,7 @@ Data Types</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>Previous non-blank character</dd></dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00591">591</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00640">640</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
 
 </div>
 </div>
@@ -531,445 +318,34 @@ Data Types</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Formatted write support for the string type. </p>
+<p>Checks if a string starts with a given prefix Returns <code>.true.</code> if the string <code>str</code> (after trimming leading/trailing whitespace) begins exactly with the substring <code>arg1</code>. The function uses <code>index()</code> after trimming both strings with <code>trim(adjustl())</code>. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">dtv</td><td>string object </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">unit</td><td>logical unit </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">iotype</td><td>edit descriptor string </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">v_list</td><td>list of values for edit descriptors </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">iostat</td><td>I/O status </td></tr>
-    <tr><td class="paramdir">[in,out]</td><td class="paramname">iomsg</td><td>I/O message</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">str</td><td>The string to be tested </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">arg1</td><td>The prefix to look for at the beginning of <code>str</code> </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">idx</td><td>(optional) If present, receives the starting position of <code>arg1</code> in the trimmed string (will be 1 if the function returns <code>.true.</code>, otherwise &gt;1 or 0)</td></tr>
   </table>
   </dd>
 </dl>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00434">434</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
-
-</div>
-</div>
-<a id="ga2180a2729b3e0ae64509f504640ec22c" name="ga2180a2729b3e0ae64509f504640ec22c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga2180a2729b3e0ae64509f504640ec22c">&#9670;&#160;</a></span>string_assign_character()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">subroutine string_assign_character </td>
-          <td>(</td>
-          <td class="paramtype">character(:), intent(inout), allocatable</td>          <td class="paramname"><span class="paramname"><em>lhs</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">class(<a class="el" href="structfpx__string_1_1string.html">string</a>), intent(in)</td>          <td class="paramname"><span class="paramname"><em>rhs</em></span>&#160;)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Assignment overloading. Assign a string to a character array. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in,out]</td><td class="paramname">lhs</td><td>character(:), allocatable </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">rhs</td><td>string</td></tr>
-  </table>
-  </dd>
-</dl>
-<p><b>Examples</b> </p><div class="fragment"><div class="line"><span class="keywordtype">type</span>(string) :: s</div>
-<div class="line"><span class="keywordtype">character(:)</span>, <span class="keywordtype">allocatable</span> :: c</div>
+<dl class="section return"><dt>Returns</dt><dd><code>.true.</code> if <code>str</code> starts with <code>arg1</code> (after trimming), <code>.false.</code> otherwise</dd></dl>
+<p><b>Note</b> </p><ul>
+<li>Leading and trailing whitespace of both <code>str</code> and <code>arg1</code> is ignored</li>
+<li>Comparison is case-sensitive</li>
+<li>Empty <code>arg1</code> will always return <code>.true.</code> (any string starts with empty string)</li>
+</ul>
+<p><b>Warning</b> The returned index (when requested) is the position <b>after trimming</b> of the input string, not in the original untrimmed string.</p>
+<p><b>Examples</b> </p><div class="fragment"><div class="line"><span class="keywordtype">character(80)</span> :: line = <span class="stringliteral">&#39;   hello world  &#39;</span></div>
+<div class="line"><span class="keywordtype">logical</span> :: ok</div>
+<div class="line"><span class="keywordtype">integer</span> :: pos</div>
 <div class="line"> </div>
-<div class="line">s = <span class="stringliteral">&#39;foo&#39;</span></div>
-<div class="line">c = s</div>
-<div class="line">! the <span class="keywordtype">value</span> of c is now <span class="stringliteral">&#39;foo&#39;</span></div>
+<div class="line">ok = starts_with(line, <span class="stringliteral">&#39;hello&#39;</span>)               <span class="comment">! → .true.</span></div>
+<div class="line">ok = starts_with(line, <span class="stringliteral">&#39;hello&#39;</span>, pos)          <span class="comment">! → .true. and pos = 1</span></div>
+<div class="line">ok = starts_with(line, <span class="stringliteral">&#39;world&#39;</span>)               <span class="comment">! → .false.</span></div>
+<div class="line">ok = starts_with(<span class="stringliteral">&#39;  test123  &#39;</span>, <span class="stringliteral">&#39;test&#39;</span>)       <span class="comment">! → .true.</span></div>
+<div class="line">...</div>
 </div><!-- fragment --><p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00211">211</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
-
-</div>
-</div>
-<a id="gaf17980cf28a65da4cc1e865fdd998b2c" name="gaf17980cf28a65da4cc1e865fdd998b2c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gaf17980cf28a65da4cc1e865fdd998b2c">&#9670;&#160;</a></span>string_concat_character()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">pure character(:) function, allocatable string_concat_character </td>
-          <td>(</td>
-          <td class="paramtype">class(<a class="el" href="structfpx__string_1_1string.html">string</a>), intent(in)</td>          <td class="paramname"><span class="paramname"><em>lhs</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">character(*), intent(in)</td>          <td class="paramname"><span class="paramname"><em>rhs</em></span>&#160;)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Concatenation of string and character expression. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">lhs</td><td>string </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">rhs</td><td>character expression </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>New concatenated string.</dd></dl>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00317">317</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
-
-</div>
-</div>
-<a id="ga138d3784805fd602b55bdacfa65f1abb" name="ga138d3784805fd602b55bdacfa65f1abb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga138d3784805fd602b55bdacfa65f1abb">&#9670;&#160;</a></span>string_concat_string()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">pure character(:) function, allocatable string_concat_string </td>
-          <td>(</td>
-          <td class="paramtype">class(<a class="el" href="structfpx__string_1_1string.html">string</a>), intent(in)</td>          <td class="paramname"><span class="paramname"><em>lhs</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">class(<a class="el" href="structfpx__string_1_1string.html">string</a>), intent(in)</td>          <td class="paramname"><span class="paramname"><em>rhs</em></span>&#160;)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Concatenation of two string objects. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">lhs</td><td>left-hand side string </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">rhs</td><td>right-hand side string </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>New concatenated string.</dd></dl>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00294">294</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
-
-</div>
-</div>
-<a id="ga3cb2b3d21ee75acb3a6a47ff28f64b4d" name="ga3cb2b3d21ee75acb3a6a47ff28f64b4d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga3cb2b3d21ee75acb3a6a47ff28f64b4d">&#9670;&#160;</a></span>string_eq_character()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">elemental logical function string_eq_character </td>
-          <td>(</td>
-          <td class="paramtype">class(<a class="el" href="structfpx__string_1_1string.html">string</a>), intent(in)</td>          <td class="paramname"><span class="paramname"><em>lhs</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">character(*), intent(in)</td>          <td class="paramname"><span class="paramname"><em>rhs</em></span>&#160;)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Equality comparison between string and character expression. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">lhs</td><td>string </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">rhs</td><td>character expression </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>.true. if equal, .false. otherwise.</dd></dl>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00374">374</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
-
-</div>
-</div>
-<a id="ga7b70310f6c8ee6b062d3950203c27465" name="ga7b70310f6c8ee6b062d3950203c27465"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga7b70310f6c8ee6b062d3950203c27465">&#9670;&#160;</a></span>string_eq_string()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">elemental logical function string_eq_string </td>
-          <td>(</td>
-          <td class="paramtype">class(<a class="el" href="structfpx__string_1_1string.html">string</a>), intent(in)</td>          <td class="paramname"><span class="paramname"><em>lhs</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">type(<a class="el" href="structfpx__string_1_1string.html">string</a>), intent(in)</td>          <td class="paramname"><span class="paramname"><em>rhs</em></span>&#160;)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Equality comparison between two string objects. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">lhs</td><td>left-hand side </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">rhs</td><td>right-hand side </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>.true. if the strings are equal, .false. otherwise.</dd></dl>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00355">355</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
-
-</div>
-</div>
-<a id="ga19967656406d8e98e6a7d66bdbfcb91b" name="ga19967656406d8e98e6a7d66bdbfcb91b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga19967656406d8e98e6a7d66bdbfcb91b">&#9670;&#160;</a></span>string_len()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">elemental integer function string_len </td>
-          <td>(</td>
-          <td class="paramtype">class(<a class="el" href="structfpx__string_1_1string.html">string</a>), intent(in)</td>          <td class="paramname"><span class="paramname"><em>this</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Length of the string entity. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">this</td><td>string <br  />
-</td></tr>
-  </table>
-  </dd>
-</dl>
-<p><b>Examples</b> </p><div class="fragment"><div class="line"><span class="keywordtype">type</span>(string) :: s</div>
-<div class="line"><span class="keywordtype">integer</span> :: l</div>
-<div class="line"> </div>
-<div class="line">s = string(<span class="stringliteral">&#39;foo &#39;</span>)</div>
-<div class="line">l = len(s)</div>
-<div class="line">! the <span class="keywordtype">value</span> of l is 4</div>
-</div><!-- fragment --> <dl class="section return"><dt>Returns</dt><dd>An integer corresponding to the length of the string.</dd></dl>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00234">234</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
-
-</div>
-</div>
-<a id="gaef295e9d95b8c97db0bff1e007aa518e" name="gaef295e9d95b8c97db0bff1e007aa518e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gaef295e9d95b8c97db0bff1e007aa518e">&#9670;&#160;</a></span>string_len_trim()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">pure integer function string_len_trim </td>
-          <td>(</td>
-          <td class="paramtype">class(<a class="el" href="structfpx__string_1_1string.html">string</a>), intent(in)</td>          <td class="paramname"><span class="paramname"><em>this</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Length of the string entity without trailing blanks (len_trim). </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">this</td><td>string <br  />
-</td></tr>
-  </table>
-  </dd>
-</dl>
-<p><b>Examples</b> </p><div class="fragment"><div class="line"><span class="keywordtype">type</span>(string) :: s</div>
-<div class="line"><span class="keywordtype">integer</span> :: l</div>
-<div class="line"> </div>
-<div class="line">s = string(<span class="stringliteral">&#39;foo &#39;</span>)</div>
-<div class="line">l = len_trim(s)</div>
-<div class="line">! the <span class="keywordtype">value</span> of l is 3</div>
-</div><!-- fragment --> <dl class="section return"><dt>Returns</dt><dd>An integer corresponding to the trimmed length of the string.</dd></dl>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00260">260</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
-
-</div>
-</div>
-<a id="ga43dc2858966a82313eb97b95a4c8fdf1" name="ga43dc2858966a82313eb97b95a4c8fdf1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga43dc2858966a82313eb97b95a4c8fdf1">&#9670;&#160;</a></span>string_trim()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">pure character(:) function, allocatable string_trim </td>
-          <td>(</td>
-          <td class="paramtype">class(<a class="el" href="structfpx__string_1_1string.html">string</a>), intent(in)</td>          <td class="paramname"><span class="paramname"><em>this</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Returns a copy of the string with trailing blanks removed. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">this</td><td>string </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Trimmed character string (deferred length).</dd></dl>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00276">276</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
-
-</div>
-</div>
-<a id="ga2160ddf26e3dddfd05e620a46157b294" name="ga2160ddf26e3dddfd05e620a46157b294"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga2160ddf26e3dddfd05e620a46157b294">&#9670;&#160;</a></span>strings_contain_character()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">logical function strings_contain_character </td>
-          <td>(</td>
-          <td class="paramtype">type(<a class="el" href="structfpx__string_1_1string.html">string</a>), dimension(:), intent(in)</td>          <td class="paramname"><span class="paramname"><em>lhs</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">character(*), intent(in)</td>          <td class="paramname"><span class="paramname"><em>rhs</em></span>&#160;)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Checks whether an array of string contains a given character expression. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">lhs</td><td>array of string </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">rhs</td><td>character expression to search for </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>.true. if rhs is present in lhs</dd></dl>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00636">636</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
-
-</div>
-</div>
-<a id="ga2c57ffe961e9ae1df1da3ac591248ae1" name="ga2c57ffe961e9ae1df1da3ac591248ae1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga2c57ffe961e9ae1df1da3ac591248ae1">&#9670;&#160;</a></span>strings_contain_string()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">logical function strings_contain_string </td>
-          <td>(</td>
-          <td class="paramtype">type(<a class="el" href="structfpx__string_1_1string.html">string</a>), dimension(:), intent(in)</td>          <td class="paramname"><span class="paramname"><em>lhs</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">type(<a class="el" href="structfpx__string_1_1string.html">string</a>), intent(in)</td>          <td class="paramname"><span class="paramname"><em>rhs</em></span>&#160;)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Checks whether an array of string contains a given string. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">lhs</td><td>array of string </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">rhs</td><td>string to search for </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>.true. if rhs is present in lhs</dd></dl>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00614">614</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00483">483</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
 
 </div>
 </div>
@@ -998,7 +374,7 @@ Data Types</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>Last character (space if empty)</dd></dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00467">467</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00516">516</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
 
 </div>
 </div>
@@ -1031,7 +407,7 @@ Data Types</h2></td></tr>
 <div class="line"><span class="keywordflow">if</span> (output == <span class="stringliteral">&#39;TEST&#39;</span>) print*, <span class="stringliteral">&#39;OK&#39;</span></div>
 </div><!-- fragment --><p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00532">532</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00581">581</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
 
 </div>
 </div>
@@ -1064,7 +440,7 @@ Data Types</h2></td></tr>
 </dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00568">568</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00617">617</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
 
 </div>
 </div>

@@ -1,17 +1,17 @@
 !> @file
 !! @defgroup group_graph Graph
 !! Lightweight directed graph implementation for cycle detection in macro expansion
-!! This module provides a compact, allocation-efficient directed graph (`digraph`) specifically
+!! This module provides a compact, allocation-efficient directed graph (@link fpx_graph::digraph digraph@endlink) specifically
 !! designed for detecting circular dependencies during macro expansion in the fpx preprocessor.
 !!
-!! Key features:
+!! Features:
 !! - Fixed-size adjacency list using a dense 2D integer array (fast access, no pointers)
 !! - Dynamic edge insertion with automatic per-vertex size tracking
 !! - Depth-first search (DFS) based) cycle detection starting from any vertex
 !! - Automatic cleanup via finalizer
 !! - No dynamic memory fragmentation – ideal for frequent creation/destruction during preprocessing
 !!
-!! Used internally by `fpx_macro` to prevent infinite recursion when a macro expands
+!! Used internally by @link fpx_macro fpx_macro@endlink to prevent infinite recursion when a macro expands
 !! (directly or indirectly) to itself (e.g., `#define A B`, `#define B A`).
 !!
 !! <h2  class="groupheader">Examples</h2>
@@ -31,7 +31,7 @@
 !!    ...
 !! @endcode
 !!
-!! 2. Safe expansion (used inside fpx_macro):
+!! 2. Safe expansion (used inside @link fpx_macro fpx_macro@endlink):
 !! @code{.f90}
 !!    type(digraph) :: expansion_graph
 !!    expansion_graph = digraph(size(macros))
@@ -79,10 +79,9 @@ module fpx_graph
     !! <h2  class="groupheader">Remarks</h2>
     !! @ingroup group_graph
     type, public :: digraph
-        private
-        integer :: vertices
-        integer, allocatable :: adjacency_list(:,:)
-        integer, allocatable :: list_sizes(:)
+        integer, private :: vertices !< Number of vertices
+        integer, allocatable, private :: adjacency_list(:,:) !< Adjacency list containing the connection information between the vertices.
+        integer, allocatable, private :: list_sizes(:) !< Actually used portion of each row of @ref adjacency_list.
     contains
         private
         procedure, pass(this), public :: add_edge => graph_add_edge
@@ -90,6 +89,10 @@ module fpx_graph
         final :: graph_final
     end type
     
+    !> Constructor interface for @ref digraph type
+    !!
+    !! @b Remarks
+    !! @ingroup group_graph
     interface digraph
         !! @cond
         module procedure :: graph_new
@@ -98,6 +101,7 @@ module fpx_graph
 
 contains
 
+    !> Constructor
     type(digraph) function graph_new(vertices) result(that)
         integer, intent(in) :: vertices
         integer :: i
@@ -114,7 +118,6 @@ contains
     !! @param[out]   exists      (optional) .true. if edge already existed
     !!
     !! @b Remarks
-    !! @ingroup group_graph
     subroutine graph_add_edge(this, source, destination, exists)
         class(digraph), intent(inout)   :: this
         integer, intent(in)             :: source
@@ -139,7 +142,6 @@ contains
     !! @return .true. if a cycle is found in the component reachable from start_vertex
     !!
     !! @b Remarks
-    !! @ingroup group_graph
     logical function graph_has_cycle_dfs(this, start_vertex) result(has_cycle)
         class(digraph), intent(in) :: this
         integer, intent(in) :: start_vertex
@@ -188,7 +190,6 @@ contains
     end function
 
     !> Finalizer – automatically deallocate internal arrays when graph goes out of scope
-    !! @ingroup group_graph
     subroutine graph_final(this)
         type(digraph), intent(inout) :: this
         if (allocated(this%adjacency_list)) deallocate(this%adjacency_list)

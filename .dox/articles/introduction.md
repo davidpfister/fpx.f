@@ -64,7 +64,7 @@ In modern Fortran (referring to standards like Fortran 2003, 2008, 2018, and the
       PRINT *, "Entering subroutine X with N =", N
       CALL CHECK_BOUNDS(array, N)
     #endif
-    !...
+    ...
     ```
 - **Platform-Specific Code**:
   - Scientific software often runs on diverse systems—Linux clusters, GPUs, or supercomputers like those using Intel, AMD, or Cray architectures. Preprocessing lets developers tailor code to specific compilers, hardware, or libraries (e.g., MPI vs. OpenMP).
@@ -75,7 +75,7 @@ In modern Fortran (referring to standards like Fortran 2003, 2008, 2018, and the
     #else
       data_local = data
     #endif
-    !...
+    ...
     ```
 - **Feature Toggles**:
   - In large projects, preprocessing enables or disables optional features (e.g., experimental algorithms or legacy compatibility) without maintaining separate codebases.
@@ -101,7 +101,7 @@ In modern Fortran (referring to standards like Fortran 2003, 2008, 2018, and the
     #else
       call GET_ENVIRONMENT_VARIABLE("PATH", path_var)
     #endif
-    !...
+    ...
     ```
 - **Library Dependencies**:
   - Scientific codes often link to external libraries like BLAS, LAPACK, or FFTW. Preprocessing manages variations in library availability or interfaces.
@@ -112,7 +112,7 @@ In modern Fortran (referring to standards like Fortran 2003, 2008, 2018, and the
     #else
       call CUSTOM_GEMM(m, n, k, A, B, C)
     #endif
-    !...
+    ...
     ```
 - **Precision Control**:
   - Fortran’s `KIND` system allows flexible numeric precision, but preprocessing is used to enforce consistent precision across platforms or to switch between single/double precision for performance.
@@ -219,7 +219,7 @@ In modern Fortran (referring to standards like Fortran 2003, 2008, 2018, and the
     #ifdef HAVE_HDF5
       CALL write_hdf5_file(data)
     #endif
-    !...
+    ...
     ```
 - **Automated Code Generation**:
   - Tools like `fypp` or custom scripts generate Fortran code for specific cases (e.g., different precisions or dimensions), embedded in the build process.

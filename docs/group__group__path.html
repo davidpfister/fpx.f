@@ -134,15 +134,13 @@ $(function(){initNavTree('group__group__path.html',''); initResizable(true); });
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">Definition</h2>
-<p>A modern, portable Fortran module for path manipulation and basic directory operations. This module provides a clean interface for working with file system paths in a platform-independent way. It correctly handles both Unix (<code>/</code>) and Windows (<code>\</code>) path separators through conditional compilation and offers deferred-length character results for maximum flexibility. </p>
-<p>The module builds upon the <code>fpx_string</code> module for <code>string</code> type support and provides overloads of key procedures to accept either intrinsic <code>character(*)</code> or <code>type(string)</code> arguments.</p>
-<h2><a class="anchor" id="autotoc_md0"></a>
-Features</h2>
-<ul>
+<p>A modern, portable Fortran module for path manipulation and basic directory operations. This module provides a clean interface for working with file system paths in a platform-independent way. It correctly handles both Unix ('/') and Windows ('\') path separators through conditional compilation and offers deferred-length character results for maximum flexibility. </p>
+<p>The module builds upon the <a class="el" href="">fpx_string </a> module for <a class="el" href="structfpx__string_1_1string.html">string </a> type support and provides overloads of key procedures to accept either intrinsic <code>character(*)</code> or <code>type(string)</code> arguments.</p>
+<p>Features</p><ul>
 <li>Detection of absolute and rooted paths on Windows and Unix-like systems</li>
 <li>Safe path joining that avoids duplicate separators</li>
 <li>Extraction of directory part, filename (with or without extension)</li>
-<li>Path splitting into head/tail components (similar to Python's <code>os.path.split</code>)</li>
+<li>Path splitting into head/tail components</li>
 <li>Retrieval of the current working directory (<code>cwd</code>)</li>
 <li>Changing the current working directory (<code>chdir</code>)</li>
 </ul>
@@ -206,7 +204,7 @@ Data Types</h2></td></tr>
 </dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="path_8f90_source.html#l00414">414</a> of file <a class="el" href="path_8f90_source.html">path.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="path_8f90_source.html#l00410">410</a> of file <a class="el" href="path_8f90_source.html">path.f90</a>.</p>
 
 </div>
 </div>
@@ -229,7 +227,7 @@ Data Types</h2></td></tr>
 </div><!-- fragment --></dd></dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="path_8f90_source.html#l00384">384</a> of file <a class="el" href="path_8f90_source.html">path.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="path_8f90_source.html#l00380">380</a> of file <a class="el" href="path_8f90_source.html">path.f90</a>.</p>
 
 </div>
 </div>
@@ -259,7 +257,7 @@ Data Types</h2></td></tr>
 <div class="fragment"><div class="line">print *, dirname(<span class="stringliteral">&#39;/home/user/file.txt&#39;</span>)  ! <span class="stringliteral">&#39;file.txt&#39;</span></div>
 </div><!-- fragment --><p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="path_8f90_source.html#l00305">305</a> of file <a class="el" href="path_8f90_source.html">path.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="path_8f90_source.html#l00301">301</a> of file <a class="el" href="path_8f90_source.html">path.f90</a>.</p>
 
 </div>
 </div>
@@ -289,7 +287,7 @@ Data Types</h2></td></tr>
 <div class="fragment"><div class="line">print *, dirpath(<span class="stringliteral">&#39;/home/user/file.txt&#39;</span>)  ! <span class="stringliteral">&#39;/home/user&#39;</span></div>
 </div><!-- fragment --><p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="path_8f90_source.html#l00286">286</a> of file <a class="el" href="path_8f90_source.html">path.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="path_8f90_source.html#l00282">282</a> of file <a class="el" href="path_8f90_source.html">path.f90</a>.</p>
 
 </div>
 </div>
@@ -331,6 +329,39 @@ Data Types</h2></td></tr>
 
 </div>
 </div>
+<a id="gafc78d35964a533e133a57e4b841f7834" name="gafc78d35964a533e133a57e4b841f7834"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gafc78d35964a533e133a57e4b841f7834">&#9670;&#160;</a></span>is_absolute()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">pure logical function is_absolute </td>
+          <td>(</td>
+          <td class="paramtype">character(*), intent(in)</td>          <td class="paramname"><span class="paramname"><em>filepath</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns .true. if the path is absolute. On Unix a path is absolute when it starts with '/'. On Windows a path is absolute when it starts with a drive letter followed by ':\C:\', 'd:/temp'). </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">filepath</td><td>Path to test </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>res .true. if filepath is absolute</dd></dl>
+<div class="fragment"><div class="line">print *, is_absolute(<span class="stringliteral">&#39;/home/user&#39;</span>)   <span class="comment">! .true.  (Unix)</span></div>
+<div class="line">print *, is_absolute(<span class="stringliteral">&#39;C:\\Temp&#39;</span>)     <span class="comment">! .true.  (Windows)</span></div>
+<div class="line">print *, is_absolute(<span class="stringliteral">&#39;docs/..&#39;</span>)      <span class="comment">! .false.</span></div>
+<div class="line">...</div>
+</div><!-- fragment --><p><b>Remarks</b> </p>
+
+<p class="definition">Definition at line <a class="el" href="path_8f90_source.html#l00115">115</a> of file <a class="el" href="path_8f90_source.html">path.f90</a>.</p>
+
+</div>
+</div>
 <a id="gad078c4cc1b67c2165a367d9a3e141adf" name="gad078c4cc1b67c2165a367d9a3e141adf"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#gad078c4cc1b67c2165a367d9a3e141adf">&#9670;&#160;</a></span>is_rooted()</h2>
 
@@ -346,9 +377,7 @@ Data Types</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Returns .true. if the path is absolute. On Unix a path is absolute when it starts with '/'. On Windows a path is absolute when it starts with a drive letter followed by ':\:'. </p>
-<p>Returns .true. if the path is rooted (starts with a separator) or is absolute. A rooted path begins with the platform separator ("\" on Windows, "/" elsewhere)
-even if it is not a full absolute path (e.g. "\temp" on Windows).</p>
+<p>Returns .true. if the path is rooted (starts with a separator) or is absolute. A rooted path begins with the platform separator ('\' on Windows, '/' elsewhere) even if it is not a full absolute path (e.g. '\temp' on Windows). </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">filepath</td><td>Path to test </td></tr>
@@ -359,142 +388,6 @@ even if it is not a full absolute path (e.g. "\temp" on Windows).</p>
 <p><b>Remarks</b> </p>
 
 <p class="definition">Definition at line <a class="el" href="path_8f90_source.html#l00138">138</a> of file <a class="el" href="path_8f90_source.html">path.f90</a>.</p>
-
-</div>
-</div>
-<a id="gae90f10f0b9c263751cdffdd11d57f5b0" name="gae90f10f0b9c263751cdffdd11d57f5b0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gae90f10f0b9c263751cdffdd11d57f5b0">&#9670;&#160;</a></span>join_character_character()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">pure character(:) function, allocatable join_character_character </td>
-          <td>(</td>
-          <td class="paramtype">character(*), intent(in)</td>          <td class="paramname"><span class="paramname"><em>path1</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">character(*), intent(in)</td>          <td class="paramname"><span class="paramname"><em>path2</em></span>&#160;)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Joins two path components with the correct platform separator. Removes duplicate separators and trailing/leading whitespace. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">path1</td><td>First path component </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">path2</td><td>Second path component </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>res Joined path</dd></dl>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="path_8f90_source.html#l00197">197</a> of file <a class="el" href="path_8f90_source.html">path.f90</a>.</p>
-
-</div>
-</div>
-<a id="ga80f7ef90f9330578901a31bc7c8611c0" name="ga80f7ef90f9330578901a31bc7c8611c0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga80f7ef90f9330578901a31bc7c8611c0">&#9670;&#160;</a></span>join_character_string()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">pure character(:) function, allocatable join_character_string </td>
-          <td>(</td>
-          <td class="paramtype">character(*), intent(in)</td>          <td class="paramname"><span class="paramname"><em>path1</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">type(<a class="el" href="structfpx__string_1_1string.html">string</a>), intent(in)</td>          <td class="paramname"><span class="paramname"><em>path2</em></span>&#160;)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Joins character path with string path component. Removes duplicate separators and trailing/leading whitespace. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">path1</td><td>First path component </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">path2</td><td>Second path component </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>res Joined path</dd></dl>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="path_8f90_source.html#l00219">219</a> of file <a class="el" href="path_8f90_source.html">path.f90</a>.</p>
-
-</div>
-</div>
-<a id="gac548ef67858ca3cc318f5cecffd492ad" name="gac548ef67858ca3cc318f5cecffd492ad"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gac548ef67858ca3cc318f5cecffd492ad">&#9670;&#160;</a></span>join_string_character()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">pure character(:) function, allocatable join_string_character </td>
-          <td>(</td>
-          <td class="paramtype">type(<a class="el" href="structfpx__string_1_1string.html">string</a>), intent(in)</td>          <td class="paramname"><span class="paramname"><em>path1</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">character(*), intent(in)</td>          <td class="paramname"><span class="paramname"><em>path2</em></span>&#160;)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Joins string path with character path component. Removes duplicate separators and trailing/leading whitespace. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">path1</td><td>First path component </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">path2</td><td>Second path component </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>res Joined path</dd></dl>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="path_8f90_source.html#l00241">241</a> of file <a class="el" href="path_8f90_source.html">path.f90</a>.</p>
-
-</div>
-</div>
-<a id="ga003662531cae6f864b1b05ca52502864" name="ga003662531cae6f864b1b05ca52502864"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga003662531cae6f864b1b05ca52502864">&#9670;&#160;</a></span>join_string_string()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">pure character(:) function, allocatable join_string_string </td>
-          <td>(</td>
-          <td class="paramtype">type(<a class="el" href="structfpx__string_1_1string.html">string</a>), intent(in)</td>          <td class="paramname"><span class="paramname"><em>path1</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">type(<a class="el" href="structfpx__string_1_1string.html">string</a>), intent(in)</td>          <td class="paramname"><span class="paramname"><em>path2</em></span>&#160;)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Joins two string path components. Removes duplicate separators and trailing/leading whitespace. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">path1</td><td>First path component </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">path2</td><td>Second path component </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>res Joined path</dd></dl>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="path_8f90_source.html#l00263">263</a> of file <a class="el" href="path_8f90_source.html">path.f90</a>.</p>
 
 </div>
 </div>
@@ -533,7 +426,7 @@ even if it is not a full absolute path (e.g. "\temp" on Windows).</p>
 </dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="path_8f90_source.html#l00321">321</a> of file <a class="el" href="path_8f90_source.html">path.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="path_8f90_source.html#l00317">317</a> of file <a class="el" href="path_8f90_source.html">path.f90</a>.</p>
 
 </div>
 </div>

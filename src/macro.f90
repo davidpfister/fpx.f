@@ -60,10 +60,12 @@ module fpx_macro
               expand_all, &
               is_defined
     
+    !> @brief Default buffer size
+    !! @ingroup group_macro
     integer, parameter :: BUFFER_SIZE = 256
 
     !> Derived type representing a single preprocessor macro
-    !! Extends `string` with macro-specific fields: replacement value, parameters,
+    !! Extends @link fpx_string::string string @endlink with macro-specific fields: replacement value, parameters,
     !! variadic flag, and cyclic self-reference detection.
     !! <h2 class="groupheader">Examples</h2>
     !! @code{.f90}
@@ -88,15 +90,18 @@ module fpx_macro
     !! <h2  class="groupheader">Remarks</h2>
     !! @ingroup group_macro
     type, extends(string) :: macro
-        character(:), allocatable :: value
-        type(string), allocatable :: params(:)
-        logical :: is_variadic
-        logical :: is_cyclic
+        character(:), allocatable :: value !< Name of the macro
+        type(string), allocatable :: params(:) !< List of parameter for function like macros
+        logical :: is_variadic !< Indicate whether the macro is variadic or not.
+        logical :: is_cyclic    !< Indicates whether the macro has cyclic dependencies or not.
     contains
         private
     end type
     
     !> @brief Constructor interface for macro type
+    !!
+    !! @b Remarks
+    !! @ingroup group_macro
     interface macro
         !! @cond
         module procedure :: macro_new
@@ -174,34 +179,7 @@ module fpx_macro
         that%is_variadic = .false.
         that%is_cyclic = that == that%value
     end function
-    
-    !> Set macro name only (used internally)
-    !!
-    !! @b Remarks
-    !! @ingroup group_macro
-    subroutine set_default(this, name)
-        class(macro), intent(inout)   :: this
-        character(*), intent(in)        :: name
         
-        this = trim(name)
-        this%value = ''
-        this%is_cyclic = this == this%value
-    end subroutine
-    
-    !> Set both name and replacement value (used internally)
-    !!
-    !! @b Remarks
-    !! @ingroup group_macro
-    subroutine set_with_value(this, name, value)
-        class(macro), intent(inout)   :: this
-        character(*), intent(in)        :: name
-        character(*), intent(in)        :: value
-        
-        this = trim(name)
-        this%value = value
-        this%is_cyclic = this == this%value
-    end subroutine
-    
     !> Fully expand a line including predefined macros (__FILE__, __LINE__, etc.)
     !! First performs normal macro expansion via expand_macros(), then substitutes
     !! standard predefined tokens with current file/line/date information.
@@ -295,8 +273,8 @@ module fpx_macro
             if (pos > 0) then
                 if (pos > 0) then
                     start = pos + len('__TIMESTAMP__')
-                    expanded = trim(expanded(:pos - 1)//'"'//date%to_string('ddd-MM-yyyy')//' '//date%to_string('HH:mm:ss')//'"'//trim(expanded(start:)))
-                    if (verbose) print *, "Substituted __TIMESTAMP__ with '", date%to_string('ddd-MM-yyyy')//' '//date%to_string('HH:mm:ss'), "', expanded: '", trim(expanded), "'"
+                    expanded = trim(expanded(:pos - 1)//'"'//date%to_string('ddd MM yyyy')//' '//date%to_string('HH:mm:ss')//'"'//trim(expanded(start:)))
+                    if (verbose) print *, "Substituted __TIMESTAMP__ with '", date%to_string('ddd MM yyyy')//' '//date%to_string('HH:mm:ss'), "', expanded: '", trim(expanded), "'"
                 end if
             end if
         end do
@@ -336,7 +314,7 @@ module fpx_macro
         
         stitch = stitch .or. paren_level > 0
     contains
-    
+        !> @private
         recursive function expand_macros_internal(line, imacro, macros) result(expanded)
             character(*), intent(in)    :: line
             integer, intent(in)         :: imacro
@@ -708,6 +686,7 @@ module fpx_macro
 
         call print_any(any); tostring = trim(line)
     contains
+        !> @private
         subroutine print_any(any)
             use, intrinsic :: iso_fortran_env, only: int8, int16, int32, int64, real32, real64, real128
             class(*), intent(in)     :: any
@@ -732,7 +711,6 @@ module fpx_macro
     !! Also detects direct self-references (A → A) and marks both sides as cyclic.
     !!
     !! @b Remarks
-    !! @ingroup group_macro
     subroutine add_to(vec, val, n, chunk_size, finished)
         type(macro), allocatable, intent(inout) :: vec(:)
         type(macro), intent(in)                 :: val
@@ -780,7 +758,6 @@ module fpx_macro
     !> Add a complete macro object to the table
     !!
     !! @b Remarks
-    !! @ingroup group_macro
     subroutine add_item(this, arg)
         type(macro), intent(inout), allocatable :: this(:)
         type(macro), intent(in)                 :: arg
@@ -794,7 +771,6 @@ module fpx_macro
     !> Add macro by name only (value = empty)
     !!
     !! @b Remarks
-    !! @ingroup group_macro
     subroutine add_item_from_name(this, name)
         type(macro), intent(inout), allocatable :: this(:)
         character(*), intent(in)                :: name
@@ -808,7 +784,6 @@ module fpx_macro
     !> Add macro with name and replacement text
     !!
     !! @b Remarks
-    !! @ingroup group_macro
     subroutine add_item_from_name_and_value(this, name, value)
         type(macro), intent(inout), allocatable :: this(:)
         character(*), intent(in)                :: name
@@ -824,7 +799,6 @@ module fpx_macro
     !> Add multiple macros at once
     !!
     !! @b Remarks
-    !! @ingroup group_macro
     subroutine add_range(this, args)
         type(macro), intent(inout), allocatable :: this(:)
         type(macro), intent(in)                 :: args(:)
@@ -841,7 +815,6 @@ module fpx_macro
     !> Remove all macros from table
     !!
     !! @b Remarks
-    !! @ingroup group_macro
     subroutine clear_item(this)
         type(macro), intent(inout), allocatable :: this(:)
        
@@ -852,7 +825,6 @@ module fpx_macro
     !> Retrieve macro by 1-based index
     !!
     !! @b Remarks
-    !! @ingroup group_macro
     function get_item(this, key) result(res)
         type(macro), intent(inout)  :: this(:)
         integer, intent(in)         :: key
@@ -869,7 +841,6 @@ module fpx_macro
     !> Insert macro at specific position
     !!
     !! @b Remarks
-    !! @ingroup group_macro
     subroutine insert_item(this, i, arg)
         type(macro), intent(inout), allocatable :: this(:)
         integer, intent(in)                     :: i
@@ -890,7 +861,6 @@ module fpx_macro
     !> Return number of defined macros
     !!
     !! @b Remarks
-    !! @ingroup group_macro
     integer function size_item(this) result(res)
         type(macro), intent(inout), allocatable  :: this(:)
         
@@ -900,7 +870,6 @@ module fpx_macro
     !> Remove macro at given index
     !!
     !! @b Remarks
-    !! @ingroup group_macro
     subroutine remove_item(this, i)
         type(macro), intent(inout), allocatable :: this(:)
         integer, intent(in)                     :: i

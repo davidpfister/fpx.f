@@ -1,4 +1,6 @@
 var searchData=
 [
-  ['undef_0',['undef',['../structfpx__global_1_1global__settings.html#ad9026b64059afc75e29d30195bf91959',1,'fpx_global::global_settings']]]
+  ['value_0',['value',['../structfpx__macro_1_1macro.html#ac6ce9ddf35e848aac2064196b6f12756',1,'fpx_macro::macro::value'],['../structfpx__token_1_1token.html#ac6ce9ddf35e848aac2064196b6f12756',1,'fpx_token::token::value']]],
+  ['verbose_1',['verbose',['../group__group__logging.html#gae355b6081c8a7c696837dd711719c998',1,'fpx_logging']]],
+  ['vertices_2',['vertices',['../structfpx__graph_1_1digraph.html#aaf9097e8f9f6353035e21fbac5cfcb29',1,'fpx_graph::digraph']]]
 ];

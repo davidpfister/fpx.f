@@ -15,7 +15,7 @@
 !! The program integrates fully with the fpx library: all global settings
 !! (`global%macros`, `global%includedir`, etc.) are populated here.
 !!
-!! @par Examples
+!! <h2  class="groupheader">Examples</h2>
 !!
 !! 1. Basic preprocessing:
 !!    $ fpx input.F90 -o output.f90

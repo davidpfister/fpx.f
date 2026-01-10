@@ -152,49 +152,54 @@ Data Types</h2></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the trimmed string.  <a href="interfacefpx__string_1_1trim.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">interface &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interfacefpx__string_1_1operator_07_2_2_08.html">operator(//)</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Concatenation operator.  <a href="interfacefpx__string_1_1operator_07_2_2_08.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">interface &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interfacefpx__string_1_1operator_07_8contains_8_08.html">operator(.contains.)</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check whether a string belongs to a list or not.  <a href="interfacefpx__string_1_1operator_07_8contains_8_08.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions/Subroutines</h2></td></tr>
-<tr class="memitem:ga5fa07b60798ab4ceb6cf33b96d895681" id="r_ga5fa07b60798ab4ceb6cf33b96d895681"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__string.html#ga5fa07b60798ab4ceb6cf33b96d895681">character_assign_string</a> (lhs, rhs)</td></tr>
-<tr class="memdesc:ga5fa07b60798ab4ceb6cf33b96d895681"><td class="mdescLeft">&#160;</td><td class="mdescRight">Assignment overloading. Assign a character array to a string.  <br /></td></tr>
-<tr class="separator:ga5fa07b60798ab4ceb6cf33b96d895681"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga2180a2729b3e0ae64509f504640ec22c" id="r_ga2180a2729b3e0ae64509f504640ec22c"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__string.html#ga2180a2729b3e0ae64509f504640ec22c">string_assign_character</a> (lhs, rhs)</td></tr>
-<tr class="memdesc:ga2180a2729b3e0ae64509f504640ec22c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Assignment overloading. Assign a string to a character array.  <br /></td></tr>
-<tr class="separator:ga2180a2729b3e0ae64509f504640ec22c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga19967656406d8e98e6a7d66bdbfcb91b" id="r_ga19967656406d8e98e6a7d66bdbfcb91b"><td class="memItemLeft" align="right" valign="top">elemental integer function&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__string.html#ga19967656406d8e98e6a7d66bdbfcb91b">string_len</a> (this)</td></tr>
-<tr class="memdesc:ga19967656406d8e98e6a7d66bdbfcb91b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Length of the string entity.  <br /></td></tr>
-<tr class="separator:ga19967656406d8e98e6a7d66bdbfcb91b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaef295e9d95b8c97db0bff1e007aa518e" id="r_gaef295e9d95b8c97db0bff1e007aa518e"><td class="memItemLeft" align="right" valign="top">pure integer function&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__string.html#gaef295e9d95b8c97db0bff1e007aa518e">string_len_trim</a> (this)</td></tr>
-<tr class="memdesc:gaef295e9d95b8c97db0bff1e007aa518e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Length of the string entity without trailing blanks (len_trim).  <br /></td></tr>
-<tr class="separator:gaef295e9d95b8c97db0bff1e007aa518e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga43dc2858966a82313eb97b95a4c8fdf1" id="r_ga43dc2858966a82313eb97b95a4c8fdf1"><td class="memItemLeft" align="right" valign="top">pure character(:) function, allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__string.html#ga43dc2858966a82313eb97b95a4c8fdf1">string_trim</a> (this)</td></tr>
-<tr class="memdesc:ga43dc2858966a82313eb97b95a4c8fdf1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a copy of the string with trailing blanks removed.  <br /></td></tr>
-<tr class="separator:ga43dc2858966a82313eb97b95a4c8fdf1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga138d3784805fd602b55bdacfa65f1abb" id="r_ga138d3784805fd602b55bdacfa65f1abb"><td class="memItemLeft" align="right" valign="top">pure character(:) function, allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__string.html#ga138d3784805fd602b55bdacfa65f1abb">string_concat_string</a> (lhs, rhs)</td></tr>
-<tr class="memdesc:ga138d3784805fd602b55bdacfa65f1abb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Concatenation of two string objects.  <br /></td></tr>
-<tr class="separator:ga138d3784805fd602b55bdacfa65f1abb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaf17980cf28a65da4cc1e865fdd998b2c" id="r_gaf17980cf28a65da4cc1e865fdd998b2c"><td class="memItemLeft" align="right" valign="top">pure character(:) function, allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__string.html#gaf17980cf28a65da4cc1e865fdd998b2c">string_concat_character</a> (lhs, rhs)</td></tr>
-<tr class="memdesc:gaf17980cf28a65da4cc1e865fdd998b2c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Concatenation of string and character expression.  <br /></td></tr>
-<tr class="separator:gaf17980cf28a65da4cc1e865fdd998b2c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga15077d99187f2d9c111f3fb78f92cf4b" id="r_ga15077d99187f2d9c111f3fb78f92cf4b"><td class="memItemLeft" align="right" valign="top">pure character(:) function, allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__string.html#ga15077d99187f2d9c111f3fb78f92cf4b">character_concat_string</a> (lhs, rhs)</td></tr>
-<tr class="memdesc:ga15077d99187f2d9c111f3fb78f92cf4b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Concatenation of character expression and string.  <br /></td></tr>
-<tr class="separator:ga15077d99187f2d9c111f3fb78f92cf4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga7b70310f6c8ee6b062d3950203c27465" id="r_ga7b70310f6c8ee6b062d3950203c27465"><td class="memItemLeft" align="right" valign="top">elemental logical function&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__string.html#ga7b70310f6c8ee6b062d3950203c27465">string_eq_string</a> (lhs, rhs)</td></tr>
-<tr class="memdesc:ga7b70310f6c8ee6b062d3950203c27465"><td class="mdescLeft">&#160;</td><td class="mdescRight">Equality comparison between two string objects.  <br /></td></tr>
-<tr class="separator:ga7b70310f6c8ee6b062d3950203c27465"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga3cb2b3d21ee75acb3a6a47ff28f64b4d" id="r_ga3cb2b3d21ee75acb3a6a47ff28f64b4d"><td class="memItemLeft" align="right" valign="top">elemental logical function&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__string.html#ga3cb2b3d21ee75acb3a6a47ff28f64b4d">string_eq_character</a> (lhs, rhs)</td></tr>
-<tr class="memdesc:ga3cb2b3d21ee75acb3a6a47ff28f64b4d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Equality comparison between string and character expression.  <br /></td></tr>
-<tr class="separator:ga3cb2b3d21ee75acb3a6a47ff28f64b4d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga10c0f1e0e71aa6f25e4e0c48674eed46" id="r_ga10c0f1e0e71aa6f25e4e0c48674eed46"><td class="memItemLeft" align="right" valign="top">elemental logical function&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__string.html#ga10c0f1e0e71aa6f25e4e0c48674eed46">character_eq_string</a> (lhs, rhs)</td></tr>
-<tr class="memdesc:ga10c0f1e0e71aa6f25e4e0c48674eed46"><td class="mdescLeft">&#160;</td><td class="mdescRight">Equality comparison (reversed) between character expression and string.  <br /></td></tr>
-<tr class="separator:ga10c0f1e0e71aa6f25e4e0c48674eed46"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5fa07b60798ab4ceb6cf33b96d895681" id="r_a5fa07b60798ab4ceb6cf33b96d895681"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5fa07b60798ab4ceb6cf33b96d895681">character_assign_string</a> (lhs, rhs)</td></tr>
+<tr class="memdesc:a5fa07b60798ab4ceb6cf33b96d895681"><td class="mdescLeft">&#160;</td><td class="mdescRight">Assignment overloading. Assign a character array to a string.  <br /></td></tr>
+<tr class="separator:a5fa07b60798ab4ceb6cf33b96d895681"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2180a2729b3e0ae64509f504640ec22c" id="r_a2180a2729b3e0ae64509f504640ec22c"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2180a2729b3e0ae64509f504640ec22c">string_assign_character</a> (lhs, rhs)</td></tr>
+<tr class="memdesc:a2180a2729b3e0ae64509f504640ec22c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Assignment overloading. Assign a string to a character array.  <br /></td></tr>
+<tr class="separator:a2180a2729b3e0ae64509f504640ec22c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a19967656406d8e98e6a7d66bdbfcb91b" id="r_a19967656406d8e98e6a7d66bdbfcb91b"><td class="memItemLeft" align="right" valign="top">elemental integer function&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a19967656406d8e98e6a7d66bdbfcb91b">string_len</a> (this)</td></tr>
+<tr class="memdesc:a19967656406d8e98e6a7d66bdbfcb91b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Length of the string entity.  <br /></td></tr>
+<tr class="separator:a19967656406d8e98e6a7d66bdbfcb91b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aef295e9d95b8c97db0bff1e007aa518e" id="r_aef295e9d95b8c97db0bff1e007aa518e"><td class="memItemLeft" align="right" valign="top">pure integer function&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aef295e9d95b8c97db0bff1e007aa518e">string_len_trim</a> (this)</td></tr>
+<tr class="memdesc:aef295e9d95b8c97db0bff1e007aa518e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Length of the string entity without trailing blanks (len_trim).  <br /></td></tr>
+<tr class="separator:aef295e9d95b8c97db0bff1e007aa518e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a43dc2858966a82313eb97b95a4c8fdf1" id="r_a43dc2858966a82313eb97b95a4c8fdf1"><td class="memItemLeft" align="right" valign="top">pure character(:) function, allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a43dc2858966a82313eb97b95a4c8fdf1">string_trim</a> (this)</td></tr>
+<tr class="memdesc:a43dc2858966a82313eb97b95a4c8fdf1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a copy of the string with trailing blanks removed.  <br /></td></tr>
+<tr class="separator:a43dc2858966a82313eb97b95a4c8fdf1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a138d3784805fd602b55bdacfa65f1abb" id="r_a138d3784805fd602b55bdacfa65f1abb"><td class="memItemLeft" align="right" valign="top">pure character(:) function, allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a138d3784805fd602b55bdacfa65f1abb">string_concat_string</a> (lhs, rhs)</td></tr>
+<tr class="memdesc:a138d3784805fd602b55bdacfa65f1abb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Concatenation of two string objects.  <br /></td></tr>
+<tr class="separator:a138d3784805fd602b55bdacfa65f1abb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af17980cf28a65da4cc1e865fdd998b2c" id="r_af17980cf28a65da4cc1e865fdd998b2c"><td class="memItemLeft" align="right" valign="top">pure character(:) function, allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af17980cf28a65da4cc1e865fdd998b2c">string_concat_character</a> (lhs, rhs)</td></tr>
+<tr class="memdesc:af17980cf28a65da4cc1e865fdd998b2c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Concatenation of string and character expression.  <br /></td></tr>
+<tr class="separator:af17980cf28a65da4cc1e865fdd998b2c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a15077d99187f2d9c111f3fb78f92cf4b" id="r_a15077d99187f2d9c111f3fb78f92cf4b"><td class="memItemLeft" align="right" valign="top">pure character(:) function, allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a15077d99187f2d9c111f3fb78f92cf4b">character_concat_string</a> (lhs, rhs)</td></tr>
+<tr class="memdesc:a15077d99187f2d9c111f3fb78f92cf4b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Concatenation of character expression and string.  <br /></td></tr>
+<tr class="separator:a15077d99187f2d9c111f3fb78f92cf4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7b70310f6c8ee6b062d3950203c27465" id="r_a7b70310f6c8ee6b062d3950203c27465"><td class="memItemLeft" align="right" valign="top">elemental logical function&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7b70310f6c8ee6b062d3950203c27465">string_eq_string</a> (lhs, rhs)</td></tr>
+<tr class="memdesc:a7b70310f6c8ee6b062d3950203c27465"><td class="mdescLeft">&#160;</td><td class="mdescRight">Equality comparison between two string objects.  <br /></td></tr>
+<tr class="separator:a7b70310f6c8ee6b062d3950203c27465"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3cb2b3d21ee75acb3a6a47ff28f64b4d" id="r_a3cb2b3d21ee75acb3a6a47ff28f64b4d"><td class="memItemLeft" align="right" valign="top">elemental logical function&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3cb2b3d21ee75acb3a6a47ff28f64b4d">string_eq_character</a> (lhs, rhs)</td></tr>
+<tr class="memdesc:a3cb2b3d21ee75acb3a6a47ff28f64b4d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Equality comparison between string and character expression.  <br /></td></tr>
+<tr class="separator:a3cb2b3d21ee75acb3a6a47ff28f64b4d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a10c0f1e0e71aa6f25e4e0c48674eed46" id="r_a10c0f1e0e71aa6f25e4e0c48674eed46"><td class="memItemLeft" align="right" valign="top">elemental logical function&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a10c0f1e0e71aa6f25e4e0c48674eed46">character_eq_string</a> (lhs, rhs)</td></tr>
+<tr class="memdesc:a10c0f1e0e71aa6f25e4e0c48674eed46"><td class="mdescLeft">&#160;</td><td class="mdescRight">Equality comparison (reversed) between character expression and string.  <br /></td></tr>
+<tr class="separator:a10c0f1e0e71aa6f25e4e0c48674eed46"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a068b58e8e77c2b5e93337b4823ab68fd" id="r_a068b58e8e77c2b5e93337b4823ab68fd"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a068b58e8e77c2b5e93337b4823ab68fd">write_formatted</a> (dtv, unit, iotype, v_list, iostat, iomsg)</td></tr>
+<tr class="memdesc:a068b58e8e77c2b5e93337b4823ab68fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Formatted output procedure for user-defined type <a class="el" href="structfpx__string_1_1string.html">string</a> (UDTIO) This procedure is called automatically when a formatted WRITE statement is used <br  />
+ with a variable of type <code>string</code> (when using the DT edit descriptor or default <br  />
+ formatted output for the type).  <br /></td></tr>
 <tr class="separator:a068b58e8e77c2b5e93337b4823ab68fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gae5571ae03556ef6798087ca88b1ffd26" id="r_gae5571ae03556ef6798087ca88b1ffd26"><td class="memItemLeft" align="right" valign="top">logical function, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__string.html#gae5571ae03556ef6798087ca88b1ffd26">starts_with</a> (str, arg1, idx)</td></tr>
-<tr class="memdesc:gae5571ae03556ef6798087ca88b1ffd26"><td class="mdescLeft">&#160;</td><td class="mdescRight">Formatted write support for the string type.  <br /></td></tr>
+<tr class="memdesc:gae5571ae03556ef6798087ca88b1ffd26"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if a string starts with a given prefix Returns <code>.true.</code> if the string <code>str</code> (after trimming leading/trailing whitespace) begins exactly with the substring <code>arg1</code>. The function uses <code>index()</code> after trimming both strings with <code>trim(adjustl())</code>.  <br /></td></tr>
 <tr class="separator:gae5571ae03556ef6798087ca88b1ffd26"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gafaf25b317ddf986a177b9984e58b75ad" id="r_gafaf25b317ddf986a177b9984e58b75ad"><td class="memItemLeft" align="right" valign="top">character function, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__string.html#gafaf25b317ddf986a177b9984e58b75ad">head</a> (str)</td></tr>
 <tr class="memdesc:gafaf25b317ddf986a177b9984e58b75ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the first non-blank character of a string.  <br /></td></tr>
@@ -214,18 +219,18 @@ Functions/Subroutines</h2></td></tr>
 <tr class="memitem:gad5ed5d996518e663bf692512469bd632" id="r_gad5ed5d996518e663bf692512469bd632"><td class="memItemLeft" align="right" valign="top">character(1) function, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__string.html#gad5ed5d996518e663bf692512469bd632">previous</a> (line, pos)</td></tr>
 <tr class="memdesc:gad5ed5d996518e663bf692512469bd632"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the previous non-blank character before position pos (updates pos).  <br /></td></tr>
 <tr class="separator:gad5ed5d996518e663bf692512469bd632"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga2c57ffe961e9ae1df1da3ac591248ae1" id="r_ga2c57ffe961e9ae1df1da3ac591248ae1"><td class="memItemLeft" align="right" valign="top">logical function&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__string.html#ga2c57ffe961e9ae1df1da3ac591248ae1">strings_contain_string</a> (lhs, rhs)</td></tr>
-<tr class="memdesc:ga2c57ffe961e9ae1df1da3ac591248ae1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks whether an array of string contains a given string.  <br /></td></tr>
-<tr class="separator:ga2c57ffe961e9ae1df1da3ac591248ae1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga2160ddf26e3dddfd05e620a46157b294" id="r_ga2160ddf26e3dddfd05e620a46157b294"><td class="memItemLeft" align="right" valign="top">logical function&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__string.html#ga2160ddf26e3dddfd05e620a46157b294">strings_contain_character</a> (lhs, rhs)</td></tr>
-<tr class="memdesc:ga2160ddf26e3dddfd05e620a46157b294"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks whether an array of string contains a given character expression.  <br /></td></tr>
-<tr class="separator:ga2160ddf26e3dddfd05e620a46157b294"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga5a7725093fba9d2c024ab4fad37e278c" id="r_ga5a7725093fba9d2c024ab4fad37e278c"><td class="memItemLeft" align="right" valign="top">logical function&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__string.html#ga5a7725093fba9d2c024ab4fad37e278c">characters_contain_character</a> (lhs, rhs)</td></tr>
-<tr class="memdesc:ga5a7725093fba9d2c024ab4fad37e278c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks whether an array of character contains a given character expression.  <br /></td></tr>
-<tr class="separator:ga5a7725093fba9d2c024ab4fad37e278c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga40a4eebeb200e41d543d7e65c4341ca4" id="r_ga40a4eebeb200e41d543d7e65c4341ca4"><td class="memItemLeft" align="right" valign="top">logical function&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__string.html#ga40a4eebeb200e41d543d7e65c4341ca4">characters_contain_string</a> (lhs, rhs)</td></tr>
-<tr class="memdesc:ga40a4eebeb200e41d543d7e65c4341ca4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks whether an array of character contains a given string.  <br /></td></tr>
-<tr class="separator:ga40a4eebeb200e41d543d7e65c4341ca4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2c57ffe961e9ae1df1da3ac591248ae1" id="r_a2c57ffe961e9ae1df1da3ac591248ae1"><td class="memItemLeft" align="right" valign="top">logical function&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2c57ffe961e9ae1df1da3ac591248ae1">strings_contain_string</a> (lhs, rhs)</td></tr>
+<tr class="memdesc:a2c57ffe961e9ae1df1da3ac591248ae1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks whether an array of string contains a given string.  <br /></td></tr>
+<tr class="separator:a2c57ffe961e9ae1df1da3ac591248ae1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2160ddf26e3dddfd05e620a46157b294" id="r_a2160ddf26e3dddfd05e620a46157b294"><td class="memItemLeft" align="right" valign="top">logical function&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2160ddf26e3dddfd05e620a46157b294">strings_contain_character</a> (lhs, rhs)</td></tr>
+<tr class="memdesc:a2160ddf26e3dddfd05e620a46157b294"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks whether an array of string contains a given character expression.  <br /></td></tr>
+<tr class="separator:a2160ddf26e3dddfd05e620a46157b294"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5a7725093fba9d2c024ab4fad37e278c" id="r_a5a7725093fba9d2c024ab4fad37e278c"><td class="memItemLeft" align="right" valign="top">logical function&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5a7725093fba9d2c024ab4fad37e278c">characters_contain_character</a> (lhs, rhs)</td></tr>
+<tr class="memdesc:a5a7725093fba9d2c024ab4fad37e278c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks whether an array of character contains a given character expression.  <br /></td></tr>
+<tr class="separator:a5a7725093fba9d2c024ab4fad37e278c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a40a4eebeb200e41d543d7e65c4341ca4" id="r_a40a4eebeb200e41d543d7e65c4341ca4"><td class="memItemLeft" align="right" valign="top">logical function&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a40a4eebeb200e41d543d7e65c4341ca4">characters_contain_string</a> (lhs, rhs)</td></tr>
+<tr class="memdesc:a40a4eebeb200e41d543d7e65c4341ca4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks whether an array of character contains a given string.  <br /></td></tr>
+<tr class="separator:a40a4eebeb200e41d543d7e65c4341ca4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->
 </div><!-- doc-content -->

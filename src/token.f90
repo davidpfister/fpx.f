@@ -13,7 +13,7 @@
 !!
 !! 1. Tokenization
 !!    The input string is scanned and converted into a sequence of @link fpx_token::token token @endlink objects.
-!!    The tokenizer recognizes multi-character operators (`&&`, `||`, `==`, `!=`, `<=`, `>=`, `<<`, `>>`, `**`),
+!!    The tokenizer recognizes multi-character operators ('&&', '||', '==', '!=', '<=', '>=', '<<', '>>', '**'),
 !!    the `defined` operator (with or without parentheses), numbers in all supported bases,
 !!    identifiers, and parentheses. Whitespace is ignored except as a token separator.
 !!
@@ -72,10 +72,6 @@ module fpx_token
     public :: evaluate_expression, &
               parse_expression
 
-    !> @brief Kind parameter for token type enumeration. Values are (`unknown`, `number`, `operator`, `identifier`, `parenthesis`, `defined`)
-    !! @ingroup group_token
-    integer, parameter :: tokens_enum = kind(unknown)
-
     !> @brief Token kinds used in expression parsing.
     !! Enumeration defining the possible types of tokens recognized by the tokenizer.
     !! @ingroup group_token
@@ -88,9 +84,12 @@ module fpx_token
         enumerator :: defined = 4
     end enum
 
+    !> @brief Kind parameter for token type enumeration. Values are (`unknown`, `number`, `operator`, `identifier`, `parenthesis`, `defined`)
+    !! @ingroup group_token
+    integer, parameter :: tokens_enum = kind(unknown)
+
     !> Represents a single token in a parsed expression.
     !! Holds the string value of the token and its classified type.
-    !! @par
     !! <h2 class="groupheader">Constructors</h2>
     !! Initializes a new instance of the @link fpx_token::token token @endlink class
     !! <h3>token(character(:), integer)</h3>
@@ -107,12 +106,11 @@ module fpx_token
     !! <h2 class="groupheader">Remarks</h2>
     !! @ingroup group_token
     type, public :: token
-        character(:), allocatable   :: value
-        integer(tokens_enum)        :: type
+        character(:), allocatable   :: value !< Token value
+        integer(tokens_enum)        :: type !< Token type, from the enum @ref tokens_enum.
     end type
     
     !> Converts a string to integer.
-    !! @par
     !! <h2 class="groupheader">Methods</h2>
     !!
     !! @code{.f90}strtol(character(*) str, (optional) logical success)@endcode
@@ -121,7 +119,6 @@ module fpx_token
     !! @param[out] success  Optional flag indicating successful conversion
     !! @return Converted integer value
     !! 
-    !! <h2> </h2>
     !! @code{.f90}strtol(character(*) str, integer base, (optional) logical success)@endcode
     !! 
     !! Converts a string to integer with explicit base handling.

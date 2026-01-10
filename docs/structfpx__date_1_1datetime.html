@@ -136,19 +136,19 @@ $(function(){initNavTree('structfpx__date_1_1datetime.html',''); initResizable(t
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">Definition</h2>
 <div class="textblock"><p>Compact representation of date and time Stores all components in minimal integer kinds to reduce memory usage. All fields are public for easy access. </p>
+<p>Constructor interface for <a class="el" href="structfpx__date_1_1datetime.html">datetime</a> type.</p>
 <h2 class="groupheader">Examples</h2>
 <div class="fragment"><div class="line"><span class="keywordtype">type</span>(datetime) :: bt</div>
 <div class="line">bt = datetime(<span class="stringliteral">&#39;2025-08-12 09:30:00&#39;</span>)</div>
 <div class="line">print *, <span class="stringliteral">&#39;build on: &#39;</span>, bt%to_string(<span class="stringliteral">&#39;ddd-MMM-yyyy&#39;</span>)</div>
 <div class="line">...</div>
 </div><!-- fragment --> <h2 class="groupheader">Remarks</h2>
-<dl class="section user"><dt></dt><dd>The date implementation proposed here is kept at the bare minimum of what is required by the library. There are many other implementations that can be found. <h2 class="groupheader">Constructors</h2>
-</dd></dl>
+<p>The date implementation proposed here is kept at the bare minimum of what is required by the library. There are many other implementations that can be found. </p><h2 class="groupheader">Constructors</h2>
 <p>Initializes a new instance of the <a class="el" href="structfpx__date_1_1datetime.html">datetime</a> class </p><h3>datetime(character(*), character(*))</h3>
 <pre class="fragment">type(datetime) function datetime(character(*) string, (optional) character(*) fmt) </pre><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">string</td><td>date as string </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">(optional)</td><td>fmt date format</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">fmt</td><td>(optional) date format</td></tr>
   </table>
   </dd>
 </dl>
@@ -157,13 +157,13 @@ $(function(){initNavTree('structfpx__date_1_1datetime.html',''); initResizable(t
 </div><!-- fragment --> <h3>datetime(integer, integer, integer, integer, integer, integer, integer)</h3>
 <pre class="fragment">type(datetime) function datetime((optional) integer year, (optional) integer month, ...) </pre><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">(optional)</td><td>year </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">(optional)</td><td>month </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">(optional)</td><td>day </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">(optional)</td><td>hour </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">(optional)</td><td>minute </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">(optional)</td><td>second </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">(optional)</td><td>millisecond</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">year</td><td>(optional) </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">month</td><td>(optional) </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">day</td><td>(optional) </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">hour</td><td>(optional) </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">minute</td><td>(optional) </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">second</td><td>(optional) </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">millisecond</td><td>(optional)</td></tr>
   </table>
   </dd>
 </dl>
@@ -171,8 +171,9 @@ $(function(){initNavTree('structfpx__date_1_1datetime.html',''); initResizable(t
 <div class="line">d = datetime(1970, 1, 1)</div>
 </div><!-- fragment --> <dl class="section return"><dt>Returns</dt><dd>The constructed datetime object.</dd></dl>
 <h2 class="groupheader">Remarks</h2>
+<p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="date_8f90_source.html#l00115">115</a> of file <a class="el" href="date_8f90_source.html">date.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="date_8f90_source.html#l00118">118</a> of file <a class="el" href="date_8f90_source.html">date.f90</a>.</p>
 </div><hr/>The documentation for this type was generated from the following file:<ul>
 <li><a class="el" href="date_8f90_source.html">date.f90</a></li>
 </ul>
@@ -180,18 +181,25 @@ $(function(){initNavTree('structfpx__date_1_1datetime.html',''); initResizable(t
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Variables</h2></td></tr>
 <tr class="memitem:ab31da52ea429141ab33e05070392e360" id="r_ab31da52ea429141ab33e05070392e360"><td class="memItemLeft" align="right" valign="top">integer(i2), public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab31da52ea429141ab33e05070392e360">year</a></td></tr>
+<tr class="memdesc:ab31da52ea429141ab33e05070392e360"><td class="mdescLeft">&#160;</td><td class="mdescRight">Year.  <br /></td></tr>
 <tr class="separator:ab31da52ea429141ab33e05070392e360"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ace49b7b9bce457afc711e152a0b05e48" id="r_ace49b7b9bce457afc711e152a0b05e48"><td class="memItemLeft" align="right" valign="top">integer(i1), public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ace49b7b9bce457afc711e152a0b05e48">month</a></td></tr>
+<tr class="memdesc:ace49b7b9bce457afc711e152a0b05e48"><td class="mdescLeft">&#160;</td><td class="mdescRight">Month.  <br /></td></tr>
 <tr class="separator:ace49b7b9bce457afc711e152a0b05e48"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af74408358a8c7c52d15e3c6205f2f4bf" id="r_af74408358a8c7c52d15e3c6205f2f4bf"><td class="memItemLeft" align="right" valign="top">integer(i1), public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af74408358a8c7c52d15e3c6205f2f4bf">day</a></td></tr>
+<tr class="memdesc:af74408358a8c7c52d15e3c6205f2f4bf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Day.  <br /></td></tr>
 <tr class="separator:af74408358a8c7c52d15e3c6205f2f4bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8f46f95091ad95db43e8ec4d788c3385" id="r_a8f46f95091ad95db43e8ec4d788c3385"><td class="memItemLeft" align="right" valign="top">integer(i1), public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8f46f95091ad95db43e8ec4d788c3385">hour</a></td></tr>
+<tr class="memdesc:a8f46f95091ad95db43e8ec4d788c3385"><td class="mdescLeft">&#160;</td><td class="mdescRight">Hour.  <br /></td></tr>
 <tr class="separator:a8f46f95091ad95db43e8ec4d788c3385"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6a89f2f1df2c00e9e57429450f1b6769" id="r_a6a89f2f1df2c00e9e57429450f1b6769"><td class="memItemLeft" align="right" valign="top">integer(i1), public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6a89f2f1df2c00e9e57429450f1b6769">minute</a></td></tr>
+<tr class="memdesc:a6a89f2f1df2c00e9e57429450f1b6769"><td class="mdescLeft">&#160;</td><td class="mdescRight">Minute.  <br /></td></tr>
 <tr class="separator:a6a89f2f1df2c00e9e57429450f1b6769"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ade1fd9849046b488743ff7967e72b51a" id="r_ade1fd9849046b488743ff7967e72b51a"><td class="memItemLeft" align="right" valign="top">integer(i1), public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ade1fd9849046b488743ff7967e72b51a">second</a></td></tr>
+<tr class="memdesc:ade1fd9849046b488743ff7967e72b51a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Second.  <br /></td></tr>
 <tr class="separator:ade1fd9849046b488743ff7967e72b51a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a92dbe951f9ce476e8f6e8f73a1ab61a0" id="r_a92dbe951f9ce476e8f6e8f73a1ab61a0"><td class="memItemLeft" align="right" valign="top">integer(i2), public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a92dbe951f9ce476e8f6e8f73a1ab61a0">millisecond</a></td></tr>
+<tr class="memdesc:a92dbe951f9ce476e8f6e8f73a1ab61a0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Millisecond.  <br /></td></tr>
 <tr class="separator:a92dbe951f9ce476e8f6e8f73a1ab61a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Methods</h2>
@@ -246,7 +254,7 @@ Variables</h2></td></tr>
 </ul>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="date_8f90_source.html#l00112">112</a> of file <a class="el" href="date_8f90_source.html">date.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="date_8f90_source.html#l00111">111</a> of file <a class="el" href="date_8f90_source.html">date.f90</a>.</p>
 
 </div>
 </div>
@@ -272,7 +280,7 @@ Variables</h2></td></tr>
 <p>Format datetime as string using flexible format codes Supports many common patterns including those required for <code>__DATE__</code> and <code>__TIMESTAMP__</code>. Default format: 'yyyy-MM-ddTHH:mm:ss'. </p>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="date_8f90_source.html#l00111">111</a> of file <a class="el" href="date_8f90_source.html">date.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="date_8f90_source.html#l00110">110</a> of file <a class="el" href="date_8f90_source.html">date.f90</a>.</p>
 
 </div>
 </div>

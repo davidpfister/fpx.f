@@ -1,8 +1,6 @@
 # Basic Usage {#usage}
-
 [TOC]  
-
-**A fast, pure-Fortran, standards-compatible preprocessor written in Fortran**
+**fpx: A fast, pure-Fortran, standards-compatible preprocessor written in Fortran**
 
 Perfect for Fortran projects that need `#include`, `#define`, `#ifdef`, macro expansion, `__FILE__`, `__LINE__`, `__DATE__`, etc. — all without leaving the Fortran ecosystem.
 

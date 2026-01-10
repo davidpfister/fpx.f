@@ -5,7 +5,7 @@
 !! a true variable-length character string while remaining fully compatible with
 !! intrinsic Fortran character operations.
 !!
-!! Key features:
+!! Features:
 !! - Automatic memory management via `allocatable character(:)`
 !! - Overloaded assignment (`=`) between `string` and `character(*)`
 !! - Overloaded operators: `//` (concatenation), `==` (equality), `.contains.` (membership)
@@ -75,24 +75,16 @@ module fpx_string
               writechk,     &
               uppercase
     
-    !> @struct string
-    !! @ingroup group_string
-    !> @brief Represents text as a sequence of ASCII code units.
+    !> Represents text as a sequence of ASCII code units.
     !!        The derived type wraps an allocatable character array.
     !!
-    !! <h2>Examples</h2>
+    !! <h2 class="groupheader">Examples</h2>
     !! @code{.f90}
     !! type(string) :: s
     !! s = 'foo'
     !! @endcode
     !!
-    !! <h2>Remarks</h2>
-    !! @par
-    !! The string implementation proposed here is kept at the bare 
-    !! minimum of what is required by the library. There are many 
-    !! other implementations that can be found.
-    !!
-    !! <h2>Constructors</h2>
+    !! <h2 class="groupheader">Constructors</h2>
     !! Initializes a new instance of the string class
     !! <h3>string(character(:))</h3>
     !! @verbatim type(string) function string(character(:) chars) @endverbatim
@@ -106,62 +98,69 @@ module fpx_string
     !! @endcode
     !! @return The constructed string object.
     !!
-    !! @b Remarks
+    !! <h2 class="groupheader">Remarks</h2>
+    !! The string implementation proposed here is kept at the bare 
+    !! minimum of what is required by the library. There are many 
+    !! other implementations that can be found.
+    !!
+    !! @ingroup group_string
     type, public :: string
         character(:), allocatable :: chars !< Variable length character array
     contains
+        !! @cond
         procedure, pass(lhs), private    :: character_assign_string
         procedure, pass(rhs), private    :: string_assign_character
+        procedure, pass(lhs), private    :: string_eq_string !! Equal to string logical operator.
+        procedure, pass(lhs), private    :: string_eq_character !! Equal to character logical operator.
+        procedure, pass(rhs), private    :: character_eq_string !! Equal to character (inverted) logical operator.
+        procedure, pass(dtv), private    :: write_formatted !! Formatted output.
+        !! @endcond
         generic, public :: assignment(=) => character_assign_string, &
                                             string_assign_character
-        procedure, private, pass(lhs)    :: string_eq_string !! Equal to string logical operator.
-        procedure, private, pass(lhs)    :: string_eq_character !! Equal to character logical operator.
-        procedure, private, pass(rhs)    :: character_eq_string !! Equal to character (inverted) logical operator.
-        generic :: operator(==)          => string_eq_string, &
+        generic, public :: operator(==)  => string_eq_string, &
                                             string_eq_character, &
-                                            character_eq_string !! Equal operator overloading.
-         procedure, private, pass(dtv)   :: write_formatted !! Formatted output.
-         generic :: write (formatted)    => write_formatted !! Formatted output.
+                                            character_eq_string
+        generic, public :: write(formatted) => write_formatted
     end type
     
-    !> @interface len
+    !> Return the length of a string
+    !!
+    !! @b Remarks
     !! @ingroup group_string
-    !> @brief Return the length of a string
-    !! <h2> Remarks </h2>
     interface len
         module procedure :: string_len
     end interface
     
-    !> @interface len_trim
+    !> Return the trimmed length of a string
+    !!
+    !! @b Remarks
     !! @ingroup group_string
-    !> @brief Return the trimmed length of a string
-    !! <h2> Remarks </h2>
     interface len_trim
         module procedure :: string_len_trim
     end interface
     
-    !> @interface trim
+    !> Return the trimmed string
+    !!
+    !! @b Remarks
     !! @ingroup group_string
-    !> @brief Return the trimmed string
-    !! <h2> Remarks </h2>
     interface trim
         module procedure :: string_trim
     end interface
     
-    !> @interface concat
+    !> Concatenation operator
+    !!
+    !! @b Remarks
     !! @ingroup group_string
-    !> @brief Concatenation operator
-    !! <h2> Remarks </h2>
     interface operator(//)
         module procedure :: string_concat_string
         module procedure :: string_concat_character
         module procedure :: character_concat_string
     end interface
     
-    !> @interface contains
+    !> Check whether a string belongs to a list or not
+    !!
+    !! @b Remarks
     !! @ingroup group_string
-    !> @brief Check whether a string belongs to a list or not
-    !! <h2> Remarks </h2>
     interface operator(.contains.)
         module procedure :: strings_contain_string
         module procedure :: strings_contain_character
@@ -183,7 +182,6 @@ module fpx_string
     !! @endcode
     !!
     !! @b Remarks
-    !! @ingroup group_string
     subroutine character_assign_string(lhs, rhs)
         class(string), intent(inout)   :: lhs
         character(*), intent(in)       :: rhs
@@ -207,7 +205,6 @@ module fpx_string
     !! @endcode
     !!
     !! @b Remarks
-    !! @ingroup group_string
     subroutine string_assign_character(lhs, rhs)
         character(:), allocatable, intent(inout) :: lhs
         class(string), intent(in)                :: rhs
@@ -230,7 +227,6 @@ module fpx_string
     !! @return An integer corresponding to the length of the string.
     !!
     !! @b Remarks
-    !! @ingroup group_string
     elemental integer function string_len(this) result(res)
         class(string), intent(in) :: this
          
@@ -256,7 +252,6 @@ module fpx_string
     !! @return An integer corresponding to the trimmed length of the string.
     !!
     !! @b Remarks
-    !! @ingroup group_string
     pure integer function string_len_trim(this) result(res)
          class(string), intent(in) :: this
          
@@ -272,7 +267,6 @@ module fpx_string
     !! @return Trimmed character string (deferred length).
     !!
     !! @b Remarks
-    !! @ingroup group_string
     pure function string_trim(this) result(res)
         class(string), intent(in) :: this
         character(:), allocatable :: res
@@ -290,7 +284,6 @@ module fpx_string
     !! @return New concatenated string.
     !!
     !! @b Remarks
-    !! @ingroup group_string
     pure function string_concat_string(lhs, rhs) result(res)
         class(string), intent(in) :: lhs
         class(string), intent(in) :: rhs
@@ -313,7 +306,6 @@ module fpx_string
     !! @return New concatenated string.
     !!
     !! @b Remarks
-    !! @ingroup group_string
     pure function string_concat_character(lhs, rhs) result(res)
         class(string), intent(in)   :: lhs
         character(*), intent(in)    :: rhs
@@ -332,7 +324,6 @@ module fpx_string
     !! @return New concatenated string.
     !!
     !! @b Remarks
-    !! @ingroup group_string
     pure function character_concat_string(lhs, rhs) result(res)
         character(*), intent(in)    :: lhs
         class(string), intent(in)   :: rhs
@@ -351,7 +342,6 @@ module fpx_string
     !! @return .true. if the strings are equal, .false. otherwise.
     !!
     !! @b Remarks
-    !! @ingroup group_string
     elemental function string_eq_string(lhs, rhs) result(res)
         class(string), intent(in) :: lhs !! Left hand side.
         type(string), intent(in) :: rhs !! Right hand side.
@@ -370,7 +360,6 @@ module fpx_string
     !! @return .true. if equal, .false. otherwise.
     !!
     !! @b Remarks
-    !! @ingroup group_string
     elemental function string_eq_character(lhs, rhs) result(res)
         class(string), intent(in) :: lhs !! Left hand side.
         character(*), intent(in) :: rhs !! Right hand side.
@@ -389,7 +378,6 @@ module fpx_string
     !! @return .true. if equal, .false. otherwise.
     !!
     !! @b Remarks
-    !! @ingroup group_string
     elemental function character_eq_string(lhs, rhs) result(res)
         character(*), intent(in) :: lhs !! Left hand side.
         class(string), intent(in) :: rhs !! Right hand side.
@@ -402,10 +390,45 @@ module fpx_string
         end if
     end function
     
-    !! write for user defined derived type
+    !> Formatted output procedure for user-defined type @ref string (UDTIO)
+    !! This procedure is called automatically when a formatted WRITE statement is used  
+    !! with a variable of type `string` (when using the DT edit descriptor or default  
+    !! formatted output for the type).
+    !!
+    !! It writes the content of the string component `dtv%chars` using a simple `A` format.  
+    !! If the string is not allocated, an empty string is written.
+    !!
+    !! @param[in] dtv       The @ref string object to be written (polymorphic dummy argument)
+    !! @param[in] unit      Fortran logical unit number
+    !! @param[in] iotype    String describing the edit descriptor ('DT' + optional string)
+    !! @param[in] v_list    Integer array containing the values from the DT edit descriptor  
+    !!                      (v_list is empty if no parentheses were used after DT)
+    !! @param[out] iostat   I/O status code (0 = success, positive = error, negative = end-of-file/end-of-record)
+    !! @param[inout] iomsg  Message describing the I/O error (if any)
+    !!
+    !! @b Note
+    !! - This implementation **ignores** `iotype` and `v_list` parameters  
+    !!   → the same simple character output is always performed
+    !! - The procedure always uses format `(A)`
+    !! - Empty (not allocated) string is written as empty line (zero characters)
+    !!
+    !! @b Warning
+    !! This is a minimal implementation of UDTIO formatted output.  
+    !! More sophisticated versions could:
+    !! - respect `iotype` (DT"..." or LISTDIRECTED)
+    !! - use `v_list` for width/precision control
+    !! - add quotation marks, escaping, etc.
+    !!
+    !! @b Examples
+    !! @code{.f90}
+    !! type(string) :: s
+    !! call s%set("Hello formatted world!")
+    !!
+    !! write(*, *)     s               ! may call write_formatted (depending on compiler)
+    !! write(*, '(DT)') s              ! explicitly calls write_formatted
+    !! @endcode
     !!
     !! @b Remarks
-    !! @ingroup group_string
     subroutine write_formatted(dtv, unit, iotype, v_list, iostat, iomsg)
         class(string), intent(in)   :: dtv 
         integer, intent(in)         :: unit !! Logical unit.
@@ -421,13 +444,39 @@ module fpx_string
         end if
     end subroutine
     
-    !> Formatted write support for the string type.
-    !! @param[in]    dtv     string object
-    !! @param[in]    unit    logical unit
-    !! @param[in]    iotype  edit descriptor string
-    !! @param[in]    v_list  list of values for edit descriptors
-    !! @param[out]   iostat  I/O status
-    !! @param[inout] iomsg   I/O message
+    !> Checks if a string starts with a given prefix
+    !! Returns `.true.` if the string `str` (after trimming leading/trailing whitespace)
+    !! begins exactly with the substring `arg1`.
+    !! The function uses `index()` after trimming both strings with `trim(adjustl())`.
+    !!
+    !! @param[in] str    The string to be tested
+    !! @param[in] arg1   The prefix to look for at the beginning of `str`
+    !! @param[out] idx  (optional) If present, receives the starting position of `arg1` in the trimmed string
+    !!                       (will be 1 if the function returns `.true.`, otherwise >1 or 0)
+    !!
+    !! @return `.true.` if `str` starts with `arg1` (after trimming), `.false.` otherwise
+    !!
+    !! @b Note
+    !! - Leading and trailing whitespace of both `str` and `arg1` is ignored
+    !! - Comparison is case-sensitive
+    !! - Empty `arg1` will always return `.true.` (any string starts with empty string)
+    !!
+    !! @b Warning
+    !! The returned index (when requested) is the position **after trimming** of the input string,
+    !! not in the original untrimmed string.
+    !!
+    !! @b Examples
+    !! @code{.f90}
+    !! character(80) :: line = '   hello world  '
+    !! logical :: ok
+    !! integer :: pos
+    !!
+    !! ok = starts_with(line, 'hello')               ! → .true.
+    !! ok = starts_with(line, 'hello', pos)          ! → .true. and pos = 1
+    !! ok = starts_with(line, 'world')               ! → .false.
+    !! ok = starts_with('  test123  ', 'test')       ! → .true.
+    !! ...
+    !! @endcode
     !!
     !! @b Remarks
     !! @ingroup group_string
@@ -610,7 +659,6 @@ module fpx_string
     !! @return .true. if rhs is present in lhs
     !!
     !! @b Remarks
-    !! @ingroup group_string
     logical function strings_contain_string(lhs, rhs) result(res)
         type(string), intent(in)    :: lhs(:)
         type(string), intent(in)    :: rhs
@@ -632,7 +680,6 @@ module fpx_string
     !! @return .true. if rhs is present in lhs
     !!
     !! @b Remarks
-    !! @ingroup group_string
     logical function strings_contain_character(lhs, rhs) result(res)
         type(string), intent(in)    :: lhs(:)
         character(*), intent(in)    :: rhs
@@ -654,7 +701,6 @@ module fpx_string
     !! @return .true. if rhs is present in lhs
     !!
     !! @b Remarks
-    !! @ingroup group_string
     logical function characters_contain_character(lhs, rhs) result(res)
         character(*), intent(in)    :: lhs(:)
         character(*), intent(in)    :: rhs
@@ -676,7 +722,6 @@ module fpx_string
     !! @return .true. if rhs is present in lhs
     !!
     !! @b Remarks
-    !! @ingroup group_string
     logical function characters_contain_string(lhs, rhs) result(res)
         character(*), intent(in)    :: lhs(:)
         type(string), intent(in)    :: rhs

@@ -150,9 +150,174 @@ $(function(){initNavTree('group__group__os.html',''); initResizable(true); });
 </div><!-- fragment --></li>
 <li>Using the cached value explicitly: <div class="fragment"><div class="line"><span class="keywordtype">integer</span> :: os_type</div>
 <div class="line">os_type = get_os_type()           <span class="comment">! detects and caches</span></div>
-<div class="line">print *, os_is_unix(os_type)      ! fast, no re-detection</div>
+<div class="line">print *, os_is_unix(os_type)      <span class="comment">! fast, no re-detection</span></div>
+<div class="line">...</div>
 </div><!-- fragment --> </li>
 </ol>
+<h2 class="groupheader">Variables</h2>
+<a id="gaea747ca4b17690fe52ab56cf44b0ef69" name="gaea747ca4b17690fe52ab56cf44b0ef69"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaea747ca4b17690fe52ab56cf44b0ef69">&#9670;&#160;</a></span>os_cygwin</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">integer, parameter, public os_cygwin = 4</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Cygwin POSIX environment on Windows. </p>
+
+<p class="definition">Definition at line <a class="el" href="os_8f90_source.html#l00061">61</a> of file <a class="el" href="os_8f90_source.html">os.f90</a>.</p>
+
+</div>
+</div>
+<a id="ga8a09a5ef377801c337f2ac24e992d811" name="ga8a09a5ef377801c337f2ac24e992d811"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga8a09a5ef377801c337f2ac24e992d811">&#9670;&#160;</a></span>os_freebsd</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">integer, parameter, public os_freebsd = 6</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>FreeBSD and its direct derivatives. </p>
+
+<p class="definition">Definition at line <a class="el" href="os_8f90_source.html#l00067">67</a> of file <a class="el" href="os_8f90_source.html">os.f90</a>.</p>
+
+</div>
+</div>
+<a id="ga48888fd96ebfb6cb7e1a1226f95a0764" name="ga48888fd96ebfb6cb7e1a1226f95a0764"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga48888fd96ebfb6cb7e1a1226f95a0764">&#9670;&#160;</a></span>os_linux</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">integer, parameter, public os_linux = 1</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Linux (any distribution, including GNU/Linux) </p>
+
+<p class="definition">Definition at line <a class="el" href="os_8f90_source.html#l00052">52</a> of file <a class="el" href="os_8f90_source.html">os.f90</a>.</p>
+
+</div>
+</div>
+<a id="ga92db930359a293df5384ccad9be01d63" name="ga92db930359a293df5384ccad9be01d63"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga92db930359a293df5384ccad9be01d63">&#9670;&#160;</a></span>os_macos</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">integer, parameter, public os_macos = 2</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>macOS (Darwin-based Apple operating system) </p>
+
+<p class="definition">Definition at line <a class="el" href="os_8f90_source.html#l00055">55</a> of file <a class="el" href="os_8f90_source.html">os.f90</a>.</p>
+
+</div>
+</div>
+<a id="ga698996c20e3ab09940bb2ccbead24378" name="ga698996c20e3ab09940bb2ccbead24378"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga698996c20e3ab09940bb2ccbead24378">&#9670;&#160;</a></span>os_openbsd</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">integer, parameter, public os_openbsd = 7</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>OpenBSD. </p>
+
+<p class="definition">Definition at line <a class="el" href="os_8f90_source.html#l00070">70</a> of file <a class="el" href="os_8f90_source.html">os.f90</a>.</p>
+
+</div>
+</div>
+<a id="ga191e286694119bd0e2bdb78baa20e1be" name="ga191e286694119bd0e2bdb78baa20e1be"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga191e286694119bd0e2bdb78baa20e1be">&#9670;&#160;</a></span>os_solaris</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">integer, parameter, public os_solaris = 5</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Oracle Solaris / OpenSolaris derivatives. </p>
+
+<p class="definition">Definition at line <a class="el" href="os_8f90_source.html#l00064">64</a> of file <a class="el" href="os_8f90_source.html">os.f90</a>.</p>
+
+</div>
+</div>
+<a id="ga9f56b2b83c7f13700be54bf358080e74" name="ga9f56b2b83c7f13700be54bf358080e74"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga9f56b2b83c7f13700be54bf358080e74">&#9670;&#160;</a></span>os_unknown</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">integer, parameter, public os_unknown = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Unknown / undetected operating system. </p>
+
+<p class="definition">Definition at line <a class="el" href="os_8f90_source.html#l00049">49</a> of file <a class="el" href="os_8f90_source.html">os.f90</a>.</p>
+
+</div>
+</div>
+<a id="ga457d71d7a47f325da4b900d6f77df3ea" name="ga457d71d7a47f325da4b900d6f77df3ea"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga457d71d7a47f325da4b900d6f77df3ea">&#9670;&#160;</a></span>os_windows</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">integer, parameter, public os_windows = 3</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Microsoft Windows (native, 32-bit or 64-bit) </p>
+
+<p class="definition">Definition at line <a class="el" href="os_8f90_source.html#l00058">58</a> of file <a class="el" href="os_8f90_source.html">os.f90</a>.</p>
+
+</div>
+</div>
+<a id="ga078acd1c2a938a3ad3b1244a4f30348a" name="ga078acd1c2a938a3ad3b1244a4f30348a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga078acd1c2a938a3ad3b1244a4f30348a">&#9670;&#160;</a></span>os_windowsx86</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">integer, parameter, public os_windowsx86 = 8</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Microsoft Windows — explicitly 32-bit (x86) architecture. </p>
+<p>Mainly useful when different behavior is needed between 32-bit and 64-bit Windows </p>
+
+<p class="definition">Definition at line <a class="el" href="os_8f90_source.html#l00075">75</a> of file <a class="el" href="os_8f90_source.html">os.f90</a>.</p>
+
+</div>
+</div>
 <h2 class="groupheader">Methods</h2>
 <a id="gab22409272fd1365aba83ea3faed5db94" name="gab22409272fd1365aba83ea3faed5db94"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#gab22409272fd1365aba83ea3faed5db94">&#9670;&#160;</a></span>get_os_type()</h2>
@@ -176,7 +341,7 @@ $(function(){initNavTree('group__group__os.html',''); initResizable(true); });
 <dl class="section return"><dt>Returns</dt><dd>OS identifier (OS_LINUX, OS_MACOS, OS_WINDOWS, ...)</dd></dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="os_8f90_source.html#l00098">98</a> of file <a class="el" href="os_8f90_source.html">os.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="os_8f90_source.html#l00119">119</a> of file <a class="el" href="os_8f90_source.html">os.f90</a>.</p>
 
 </div>
 </div>
@@ -205,7 +370,7 @@ $(function(){initNavTree('group__group__os.html',''); initResizable(true); });
 <dl class="section return"><dt>Returns</dt><dd>.true. if OS is not Windows, .false. otherwise</dd></dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="os_8f90_source.html#l00218">218</a> of file <a class="el" href="os_8f90_source.html">os.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="os_8f90_source.html#l00239">239</a> of file <a class="el" href="os_8f90_source.html">os.f90</a>.</p>
 
 </div>
 </div>
@@ -234,7 +399,7 @@ $(function(){initNavTree('group__group__os.html',''); initResizable(true); });
 <dl class="section return"><dt>Returns</dt><dd>Allocated character string with the OS name</dd></dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="os_8f90_source.html#l00066">66</a> of file <a class="el" href="os_8f90_source.html">os.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="os_8f90_source.html#l00087">87</a> of file <a class="el" href="os_8f90_source.html">os.f90</a>.</p>
 
 </div>
 </div>

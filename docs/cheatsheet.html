@@ -134,29 +134,29 @@ $(function(){initNavTree('cheatsheet.html',''); initResizable(true); });
 <div class="toc"><h3>Table of Contents</h3>
 <ul>
   <li class="level1">
-    <a href="#autotoc_md1">CLI Quick Commands</a>
+    <a href="#autotoc_md0">CLI Quick Commands</a>
   </li>
   <li class="level1">
-    <a href="#autotoc_md2">Most Common Directives</a>
+    <a href="#autotoc_md1">Most Common Directives</a>
   </li>
   <li class="level1">
-    <a href="#autotoc_md3">Built-in Predefined Macros</a>
+    <a href="#autotoc_md2">Built-in Predefined Macros</a>
   </li>
   <li class="level1">
-    <a href="#autotoc_md4">Advanced Macro Tricks</a>
+    <a href="#autotoc_md3">Advanced Macro Tricks</a>
   </li>
   <li class="level1">
-    <a href="#autotoc_md5">Common Patterns</a>
+    <a href="#autotoc_md4">Common Patterns</a>
   </li>
   <li class="level1">
-    <a href="#autotoc_md6">Using fpx as a Library (in your own code)</a>
+    <a href="#autotoc_md5">Using fpx as a Library (in your own code)</a>
   </li>
 </ul>
 </div>
 <div class="textblock"><p><a class="anchor" id="md__c_1_2_users_2_david_pfister_2_git_hub_2sandbox_2fpx_8f_2_8dox_2articles_2cheatsheet"></a></p>
 <p><br  />
-</p>
-<h1><a class="anchor" id="autotoc_md1"></a>
+ </p>
+<h1><a class="anchor" id="autotoc_md0"></a>
 CLI Quick Commands</h1>
 <div class="fragment"><div class="line">fpx file.F90                  → print to screen</div>
 <div class="line">fpx file.F90 -o out.f90       → write to file</div>
@@ -164,7 +164,7 @@ CLI Quick Commands</h1>
 <div class="line">fpx                           → interactive REPL (great for testing)</div>
 <div class="line">fpx -v                        → show version</div>
 <div class="line">fpx -h                        → show help</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md2"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md1"></a>
 Most Common Directives</h1>
 <center></center><center><table class="markdownTable">
 <tr class="markdownTableHead">
@@ -192,7 +192,7 @@ Most Common Directives</h1>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><code>#include &lt;iso_c_binding.h&gt;</code>   </td><td class="markdownTableBodyNone">System include (angle brackets)   </td></tr>
 </table>
-</center><center></center><h1><a class="anchor" id="autotoc_md3"></a>
+</center><center></center><h1><a class="anchor" id="autotoc_md2"></a>
 Built-in Predefined Macros</h1>
 <center></center><center><table class="markdownTable">
 <tr class="markdownTableHead">
@@ -210,7 +210,7 @@ Built-in Predefined Macros</h1>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><code>__TIMESTAMP__</code>   </td><td class="markdownTableBodyNone">"Tue Aug 12 2025 14:35:27"   </td></tr>
 </table>
-</center><center></center><h1><a class="anchor" id="autotoc_md4"></a>
+</center><center></center><h1><a class="anchor" id="autotoc_md3"></a>
 Advanced Macro Tricks</h1>
 <div class="fragment"><div class="line"><span class="preprocessor">#define STRINGIFY(x) #x</span></div>
 <div class="line"><span class="preprocessor"></span><span class="preprocessor">#define CONCAT(a,b)  a ## _ ## b</span></div>
@@ -218,8 +218,9 @@ Advanced Macro Tricks</h1>
 <div class="line"><span class="preprocessor">#define DEBUG_PRINT(...) print *, &quot;[DEBUG] &quot;, __FILE__, &quot;:&quot;, __LINE__, &quot; → &quot;, __VA_ARGS__</span></div>
 <div class="line"><span class="preprocessor"></span><span class="preprocessor">#define ASSERT(cond) if (.not.(cond)) then; error stop &quot;Assertion failed: &quot; // STRINGIFY(cond); end if</span></div>
 <div class="line"><span class="preprocessor"></span> </div>
-<div class="line"><span class="keywordtype">integer</span> :: CONCAT(var,123)   ! → var_123</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md5"></a>
+<div class="line"><span class="keywordtype">integer</span> :: CONCAT(var,123)   <span class="comment">! var_123</span></div>
+<div class="line">...</div>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md4"></a>
 Common Patterns</h1>
 <div class="fragment"><div class="line"><span class="comment">! Header guard (recommended)</span></div>
 <div class="line"><span class="preprocessor">#ifndef MY_MODULE_MOD</span></div>
@@ -240,13 +241,14 @@ Common Patterns</h1>
 <div class="line"><span class="preprocessor">#if defined(DEBUG) &amp;&amp; DEBUG &gt; 0</span></div>
 <div class="line"><span class="preprocessor"></span>  print *, <span class="stringliteral">&#39;Debug mode active&#39;</span></div>
 <div class="line"><span class="preprocessor">#endif</span></div>
-<div class="line"><span class="preprocessor"></span>!...</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md6"></a>
+<div class="line"><span class="preprocessor"></span>...</div>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md5"></a>
 Using fpx as a Library (in your own code)</h1>
 <p>Add include paths </p><div class="fragment"><div class="line"><span class="keywordtype">use </span>fpx_parser</div>
 <div class="line"><span class="keywordtype">use </span>fpx_global</div>
 <div class="line"> </div>
 <div class="line"><a class="code hl_variable" href="group__group__global.html#ga8b8524880886f61f8c961589cffa7640">global</a>%includedir = [<span class="stringliteral">&#39;./inc&#39;</span>, <span class="stringliteral">&#39;../common&#39;</span>]</div>
+<div class="line">...</div>
 <div class="ttc" id="agroup__group__global_html_ga8b8524880886f61f8c961589cffa7640"><div class="ttname"><a href="group__group__global.html#ga8b8524880886f61f8c961589cffa7640">fpx_global::global</a></div><div class="ttdeci">type(global_settings), public global</div><div class="ttdoc">The single global instance used throughout fpx Initialized automatically with sensible defaults value...</div><div class="ttdef"><b>Definition</b> <a href="global_8f90_source.html#l00089">global.f90:89</a></div></div>
 </div><!-- fragment --><p>Add predefined macros &amp; preprocess</p>
 <div class="fragment"><div class="line"><span class="keywordtype">use </span>fpx_parser</div>
@@ -257,6 +259,7 @@ Using fpx as a Library (in your own code)</h1>
 <div class="line"> </div>
 <div class="line"><span class="comment">!preprocess</span></div>
 <div class="line"><span class="keyword">call </span><a class="code hl_interface" href="interfacefpx__parser_1_1preprocess.html">preprocess</a>(<span class="stringliteral">&#39;src/main.F90&#39;</span>, <span class="stringliteral">&#39;build/main.f90&#39;</span>)</div>
+<div class="line">...</div>
 <div class="ttc" id="ainterfacefpx__parser_1_1preprocess_html"><div class="ttname"><a href="interfacefpx__parser_1_1preprocess.html">fpx_parser::preprocess</a></div><div class="ttdoc">Generic interface to start preprocessing from various sources/sinks.</div><div class="ttdef"><b>Definition</b> <a href="parser_8f90_source.html#l00078">parser.f90:78</a></div></div>
 </div><!-- fragment --> </div></div><!-- contents -->
 </div><!-- PageDoc -->
