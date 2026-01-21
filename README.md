@@ -32,7 +32,7 @@ Fortran, the venerable language of scientific computing, has powered simulations
 
 It enables portability across diverse platforms, conditional compilation for debugging, and code generation for complex libraries. These capabilities are critical to Fortran’s role in high-performance computing. But it also sparks fierce debate, with many Fortraners decrying its tendency to obscure code, disrupt the language’s elegant simplicity, and introduce bugs.   
 
-This project aims at providing a *simple*, *embeddable*, *open-source* preprocessor written in modern Fortran. `fpx` is a build on top of a C-compliant preprocessor, fine-tuned for the specificity of the Fortran language. 
+This project aims at providing a *simple*, *embeddable*, *open-source* preprocessor written in modern Fortran. `fpx` is mostly compliant to a C preprocessor, fine-tuned for the specificity of the Fortran language. 
 `fpx` is an embeddable preprocessor. It can be used as a command-line tool or directly embedded into any solution with the module `fpx_parser`.
 
 * [![fpm][fpm]][fpm-url]
