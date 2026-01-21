@@ -12,7 +12,7 @@
   <h3 align="center">fpx.f</h3>
 
   <p align="center">
-    A fortran preprocessor in fortran for modern Fortran.
+    A Fortran preprocessor in Fortran for modern Fortran.
     <br />
     <a href="https://github.com/davidpfister/fpx.f"><strong>Explore the project »</strong></a>
     <br />
