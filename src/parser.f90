@@ -49,7 +49,7 @@
 !! @endcode
 module fpx_parser
     use, intrinsic :: iso_fortran_env, only: stdout => output_unit, iostat_end, stdin => input_unit
-    use, intrinsic :: iso_c_binding, only: c_char, c_size_t,c_ptr, c_null_ptr, c_associated
+    use, intrinsic :: iso_c_binding, only: c_char, c_size_t, c_ptr, c_null_ptr, c_associated
     use fpx_constants
     use fpx_string
     use fpx_logging
@@ -63,7 +63,7 @@ module fpx_parser
     implicit none; private
 
     public :: preprocess,  &
-              global
+            global
 
     !> Generic interface to start preprocessing from various sources/sinks
     !!
@@ -106,22 +106,22 @@ contains
         integer :: iunit, ierr, n, ounit
         character(len=1, kind=c_char) :: buf(256)
 
-        open (newunit=iunit, file=filepath, status='old', action='read', iostat=ierr)
+        open(newunit=iunit, file=filepath, status='old', action='read', iostat=ierr)
         if (ierr /= 0) then
             if (verbose) print *, "Error opening input file: ", trim(filepath)
             return
         else
             if (c_associated(getcwd_c(buf, size(buf, kind=c_size_t)))) then
-               n = findloc(buf,achar(0),1)
-               name = filepath(n+1:)
+                n = findloc(buf, achar(0), 1)
+                name = filepath(n + 1:)
             end if
         end if
 
         if (present(outputfile)) then
-            open (newunit=ounit, file=outputfile, status='replace', action='write', iostat=ierr)
+            open(newunit=ounit, file=outputfile, status='replace', action='write', iostat=ierr)
             if (ierr /= 0) then
                 if (verbose) print *, "Error opening output file: ", trim(outputfile)
-                close (iunit)
+                close(iunit)
                 return
             end if
         else
@@ -129,8 +129,8 @@ contains
         end if
 
         call preprocess(iunit, ounit)
-        if (iunit /= stdin) close (iunit)
-        if (ounit /= stdout) close (ounit)
+        if (iunit /= stdin) close(iunit)
+        if (ounit /= stdout) close(ounit)
     end subroutine
 
     !> Preprocess from an already-open input unit and write to a file
@@ -146,19 +146,19 @@ contains
         integer :: ierr, ounit
 
         if (iunit /= stdin) then
-            inquire(unit = iunit, name = name)
+            inquire(unit = iunit, name=name)
         end if
 
-        open (newunit=ounit, file=ofile, status='replace', action='write', iostat=ierr)
+        open(newunit=ounit, file=ofile, status='replace', action='write', iostat=ierr)
         if (ierr /= 0) then
             if (verbose) print *, "Error opening output file: ", trim(ofile)
-            close (iunit)
+            close(iunit)
             return
         end if
 
         call preprocess(iunit, ounit)
-        if (iunit /= stdin) close (iunit)
-        if (ounit /= stdout) close (ounit)
+        if (iunit /= stdin) close(iunit)
+        if (ounit /= stdout) close(ounit)
     end subroutine
 
     !> Preprocess a file and write to an already-open output unit
@@ -174,20 +174,20 @@ contains
         integer :: iunit, ierr, n
         character(len=1, kind=c_char) :: buf(256)
 
-        open (newunit=iunit, file=ifile, status='old', action='read', iostat=ierr)
+        open(newunit=iunit, file=ifile, status='old', action='read', iostat=ierr)
         if (ierr /= 0) then
             if (verbose) print *, "Error opening input file: ", trim(ifile)
             return
         else
             if (c_associated(getcwd_c(buf, size(buf, kind=c_size_t)))) then
-               n = findloc(buf,achar(0),1)
-               name = ifile(n+1:)
+                n = findloc(buf, achar(0), 1)
+                name = ifile(n + 1:)
             end if
         end if
 
         call preprocess(iunit, ounit)
-        if (iunit /= stdin) close (iunit)
-        if (ounit /= stdout) close (ounit)
+        if (iunit /= stdin) close(iunit)
+        if (ounit /= stdout) close(ounit)
     end subroutine
 
     !> Core preprocessing routine: read from iunit, write to ounit
@@ -205,7 +205,7 @@ contains
         type(macro), allocatable :: macros(:)
 
         if (.not. allocated(global%macros)) allocate(global%macros(0))
-        allocate (macros(sizeof(global%macros)), source = global%macros)
+        allocate(macros(sizeof(global%macros)), source=global%macros)
         if (.not. allocated(global%undef)) allocate(global%undef(0))
         if (.not. allocated(global%includedir)) allocate(global%includedir(0))
 
@@ -218,7 +218,7 @@ contains
         continued_line = ''; res = ''
 
         call preprocess_unit(iunit, ounit, macros, .false.)
-        deallocate (macros)
+        deallocate(macros)
     end subroutine
 
     !> Worker routine that reads lines, handles continuations, comments and directives
@@ -248,15 +248,15 @@ contains
         interactive = iunit == stdin
 
         if (interactive) then
-            write (*, *)
-            write (*, *) '   Welcome to fpx, the extended Fortran preprocessor. '
-            write (*, *) '   The program can be exited at any time by hitting'
-            write (*, *) "   'Enter' at the prompt without entering any data, "
-            write (*, *) "   or with the 'quit' command."
+            write(*, *)
+            write(*, *) '   Welcome to fpx, the extended Fortran preprocessor. '
+            write(*, *) '   The program can be exited at any time by hitting'
+            write(*, *) "   'Enter' at the prompt without entering any data, "
+            write(*, *) "   or with the 'quit' command."
         end if
         do
-            if (interactive) write (*, '(/a)', advance='no') ' [in]  '  ! Command line prompt
-            read (iunit, '(A)', iostat=ierr) line
+            if (interactive) write(*, '(/a)', advance='no') ' [in]  '  ! Command line prompt
+            read(iunit, '(A)', iostat=ierr) line
 
             if (interactive) then
                 if (line == '') exit
@@ -270,22 +270,22 @@ contains
             if (.not. from_include) iline = iline + 1
 
             if (c_continue) then
-                continued_line = continued_line(:icontinuation)//trim(adjustl(line))
+                continued_line = continued_line(:icontinuation) // trim(adjustl(line))
             else
                 continued_line = trim(adjustl(line))
             end if
             n = len_trim(continued_line); if (n == 0) cycle
 
             ! Check for line continuation with '\'
-            if (verify(continued_line(n:n), '\') == 0 ) then
+            if (verify(continued_line(n:n), '\') == 0) then
                 ! Check for line break with '\\'
                 if (continued_line(len_trim(continued_line) - 1:len_trim(continued_line)) == '\\') then
                     c_continue = .true.
-                    continued_line = continued_line(:len_trim(continued_line) - 2)//new_line('A')  ! Strip '\\'
+                    continued_line = continued_line(:len_trim(continued_line) - 2) // new_line('A')  ! Strip '\\'
                     icontinuation = len_trim(continued_line)
                 else
                     c_continue = .true.
-                    icontinuation = len_trim(continued_line)-1
+                    icontinuation = len_trim(continued_line) - 1
                     continued_line = continued_line(:icontinuation)
                 end if
                 cycle
@@ -310,7 +310,7 @@ contains
                 else
                     if (reprocess) then
                         if (.not. in_comment .and. head(res) == '!') then
-                            write (ounit, '(A)') res
+                            write(ounit, '(A)') res
                             res = process_line(tmp, ounit, name, iline, macros, stitch)
                         else
                             res = process_line(concat(res, tmp), ounit, name, iline, macros, stitch)
@@ -319,8 +319,8 @@ contains
                     else
                         res = trim(tmp)
                     end if
-                    if (interactive) write (*, '(/a)', advance='no') ' [out] '  ! Command line prompt
-                    write (ounit, '(A)') res
+                    if (interactive) write(*, '(/a)', advance='no') ' [out] '  ! Command line prompt
+                    write(ounit, '(A)') res
                     res = ''
                 end if
             end if

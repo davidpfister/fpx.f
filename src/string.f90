@@ -62,18 +62,18 @@ module fpx_string
     implicit none; private
 
     public :: len,          &
-              len_trim,     &
-              trim,         &
-              operator(//), &
-              operator(.contains.)
+            len_trim,     &
+            trim,         &
+            operator(//), &
+            operator(.contains.)
 
     public :: starts_with,  &
-              head,         &
-              tail,         &
-              previous,     &
-              concat,       &
-              writechk,     &
-              uppercase
+            head,         &
+            tail,         &
+            previous,     &
+            concat,       &
+            writechk,     &
+            uppercase
 
     !> Represents text as a sequence of ASCII code units.
     !!        The derived type wraps an allocatable character array.
@@ -116,10 +116,10 @@ module fpx_string
         procedure, pass(dtv), private    :: write_formatted  !! Formatted output.
         !! @endcond
         generic, public :: assignment(=) => character_assign_string, &
-                                            string_assign_character
-        generic, public :: operator(==)  => string_eq_string, &
-                                            string_eq_character, &
-                                            character_eq_string
+                string_assign_character
+        generic, public :: operator(==) => string_eq_string, &
+                string_eq_character, &
+                character_eq_string
         generic, public :: write(formatted) => write_formatted
     end type
 
@@ -168,7 +168,7 @@ module fpx_string
         module procedure :: characters_contain_character
     end interface
 
-    contains
+contains
 
     !> Assignment overloading. Assign a character array to a string.
     !! @param[inout] lhs string
@@ -187,7 +187,7 @@ module fpx_string
         character(*), intent(in)       :: rhs
 
         if (allocated(lhs%chars)) deallocate(lhs%chars)
-        allocate(lhs%chars, source = rhs)
+        allocate(lhs%chars, source=rhs)
     end subroutine
 
     !> Assignment overloading. Assign a string to a character array.
@@ -253,7 +253,7 @@ module fpx_string
     !!
     !! @b Remarks
     pure integer function string_len_trim(this) result(res)
-         class(string), intent(in) :: this
+        class(string), intent(in) :: this
 
         if (allocated(this%chars)) then
             res = len_trim(this%chars)
@@ -438,9 +438,9 @@ module fpx_string
         character(*), intent(inout) :: iomsg  !! IO status message.
 
         if (allocated(dtv%chars)) then
-            write (unit, '(A)', iostat=iostat, iomsg=iomsg) dtv%chars
+            write(unit, '(A)', iostat=iostat, iomsg=iomsg) dtv%chars
         else
-            write (unit, '(A)', iostat=iostat, iomsg=iomsg) ''
+            write(unit, '(A)', iostat=iostat, iomsg=iomsg) ''
         end if
     end subroutine
 
@@ -543,10 +543,10 @@ module fpx_string
             n2 = 2
             if (tail(str1) == '&') n1 = len_trim(str1) - 1
             if (starts_with(str2, '!dir$') .or. starts_with(str2, '!DIR$') .or. &
-                starts_with(str2, '!dec$') .or. starts_with(str2, '!DEC$') .or. &
-                starts_with(str2, '!gcc$') .or. starts_with(str2, '!GCC$') .or. &
-                starts_with(str2, '!acc$') .or. starts_with(str2, '!ACC$') .or. &
-                starts_with(str2, '!$omp') .or. starts_with(str2, '!$OMP')) then
+                    starts_with(str2, '!dec$') .or. starts_with(str2, '!DEC$') .or. &
+                    starts_with(str2, '!gcc$') .or. starts_with(str2, '!GCC$') .or. &
+                    starts_with(str2, '!acc$') .or. starts_with(str2, '!ACC$') .or. &
+                    starts_with(str2, '!$omp') .or. starts_with(str2, '!$OMP')) then
                 n2 = 6
             end if
             if (head(adjustl(str2(n2:))) == '&') then
@@ -561,7 +561,7 @@ module fpx_string
         if (len(str1) > 0 .and. len(str2) >= n2) then
             if (str1(n1:n1) == ' ' .and. str2(n2:n2) == ' ') n2 = n2 + 1
         end if
-        res = str1(:n1)//str2(n2:)
+        res = str1(:n1) // str2(n2:)
     end function
 
     !> Convert string to upper case (respects contents of quotes).
@@ -624,10 +624,10 @@ module fpx_string
         if (head(str) /= '!') then
             n = floor(len(str) / real(CHKSIZE))
             do i = 1, n
-                write (unit, '(A)') str((i-1)*CHKSIZE+1:i*CHKSIZE) // '&'
+                write(unit, '(A)') str((i - 1) * CHKSIZE + 1:i * CHKSIZE) // '&'
             end do
         end if
-        write (unit, '(A)') str(n*CHKSIZE+1:)
+        write(unit, '(A)') str(n * CHKSIZE + 1:)
     end subroutine
 
     !> Returns the previous non-blank character before position pos (updates pos).

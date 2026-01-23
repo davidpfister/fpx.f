@@ -80,7 +80,7 @@ module fpx_graph
     !! @ingroup group_graph
     type, public :: digraph
         integer, private :: vertices  !< Number of vertices
-        integer, allocatable, private :: adjacency_list(:,:)  !< Adjacency list containing the connection information between the vertices.
+        integer, allocatable, private :: adjacency_list(:, :)  !< Adjacency list containing the connection information between the vertices.
         integer, allocatable, private :: list_sizes(:)  !< Actually used portion of each row of @ref adjacency_list.
     contains
         private
@@ -125,7 +125,7 @@ contains
         logical, intent(out), optional  :: exists
 
         if (source < 1 .or. source > this%vertices .or. &
-            destination < 1 .or. destination > this%vertices) then
+                destination < 1 .or. destination > this%vertices) then
             return  ! Skip invalid edges
         end if
 

@@ -57,7 +57,7 @@ module fpx_define
     implicit none; private
 
     public :: handle_define, &
-              handle_undef
+            handle_undef
 
 contains
 
@@ -143,12 +143,12 @@ contains
                     end do
                     macros(imacro)%params(i) = temp(paren_start:pos - 1)
                     if (verbose) print *, "Param ", i, ": '", macros(imacro)%params(i), &
-                        "', length = ", len_trim(macros(imacro)%params(i))
+                            "', length = ", len_trim(macros(imacro)%params(i))
                     i = i + 1
                     pos = pos + 1
                 end do
                 if (verbose) print *, "Defined variadic macro: ", trim(name), &
-                    "(", (macros(imacro)%params(i)//", ", i=1, npar), "...) = ", trim(val)
+                        "(", (macros(imacro)%params(i) // ", ", i = 1, npar), "...) = ", trim(val)
             else
                 macros(imacro)%is_variadic = .false.
                 if (allocated(macros(imacro)%params)) deallocate(macros(imacro)%params)
@@ -167,14 +167,14 @@ contains
                     end do
                     macros(imacro)%params(i) = temp(paren_start:pos - 1)
                     if (verbose) print *, "Param ", i, ": '", trim(macros(imacro)%params(i)), &
-                        "', length = ", len_trim(macros(imacro)%params(i))
+                            "', length = ", len_trim(macros(imacro)%params(i))
                     i = i + 1
                     if (pos <= len_trim(temp)) then
                         if (temp(pos:pos) == ',') pos = pos + 1
                     end if
                 end do
-                if (verbose) print *, "Defined macro: ", trim(name), "(", (macros(imacro)%params(i)//", ", i=1, npar - 1), &
-                    macros(imacro)%params(npar), ") = ", trim(val)
+                if (verbose) print *, "Defined macro: ", trim(name), "(", (macros(imacro)%params(i) // ", ", i = 1, npar - 1), &
+                        macros(imacro)%params(npar), ") = ", trim(val)
             end if
         else
             pos = index(temp, ' ')

@@ -55,7 +55,8 @@
 !!    the logging module (used only for debugging).
 !!
 !!    Public interface:
-!!    - @link fpx_token::evaluate_expression evaluate_expression @endlink: high-level function that tokenizes and evaluates in one call
+!!    - @link fpx_token::evaluate_expression evaluate_expression @endlink: high-level function that tokenizes and evaluates in one
+!! call
 !!    - @link fpx_token::parse_expression parse_expression @endlink: low-level entry point for already-tokenized input
 !!
 !!    This design guarantees correct operator precedence without the need for an explicit
@@ -70,7 +71,7 @@ module fpx_token
     implicit none; private
 
     public :: evaluate_expression, &
-              parse_expression
+            parse_expression
 
     !> @brief Token kinds used in expression parsing.
     !! Enumeration defining the possible types of tokens recognized by the tokenizer.
@@ -84,7 +85,8 @@ module fpx_token
         enumerator :: defined = 4
     end enum
 
-    !> @brief Kind parameter for token type enumeration. Values are (`unknown`, `number`, `operator`, `identifier`, `parenthesis`, `defined`)
+    !> @brief Kind parameter for token type enumeration. Values are (`unknown`, `number`, `operator`, `identifier`, `parenthesis`,
+    !`defined`)
     !! @ingroup group_token
     integer, parameter :: tokens_enum = kind(unknown)
 
@@ -141,13 +143,13 @@ module fpx_token
     !! <h2 class="groupheader"> Remarks </h2>
     !! @ingroup group_token
     interface strtol
-    !! @cond
+        !! @cond
         module procedure :: strtol_default
         module procedure :: strtol_with_base
-    !! @endcond
+        !! @endcond
     end interface
 
-    contains
+contains
 
     !> Evaluates a preprocessor-style expression with macro substitution.
     !! Tokenizes the input expression, expands macros where appropriate,
@@ -221,7 +223,7 @@ module fpx_token
                 exit
             end if
         end do
-        if (pos > 0) i = strtol(str(:pos - 1), base, success = res)
+        if (pos > 0) i = strtol(str(:pos - 1), base, success=res)
         if (base == 10) res = .false.
     end function
 
@@ -528,7 +530,7 @@ module fpx_token
 
         left = parse_shifting(tokens, ntokens, pos, macros)
         do while (pos <= ntokens .and. (tokens(pos)%value == '<' .or. tokens(pos)%value == '>' .or. &
-                                           tokens(pos)%value == '<=' .or. tokens(pos)%value == '>='))
+                tokens(pos)%value == '<=' .or. tokens(pos)%value == '>='))
             if (verbose) print *, "Parsing ", trim(tokens(pos)%value), " at pos ", pos
             if (tokens(pos)%value == '<') then
                 pos = pos + 1
@@ -680,7 +682,7 @@ module fpx_token
             if (verbose) print *, "Parsing ", trim(tokens(pos)%value), " at pos ", pos
             pos = pos + 1
             right = parse_unary(tokens, ntokens, pos, macros)
-            val = left ** right
+            val = left**right
             left = val
         end do
         val = left
@@ -802,10 +804,10 @@ module fpx_token
         logical :: in_word
         logical, save :: in_comment
 
-        if (allocated(tokens)) deallocate (tokens)
-        allocate (tokens(MAX_TOKENS))
+        if (allocated(tokens)) deallocate(tokens)
+        allocate(tokens(MAX_TOKENS))
         ntokens = 0
-        temp = trim(adjustl(expr))//' '
+        temp = trim(adjustl(expr)) // ' '
         len_expr = len_trim(temp)
         i = 1
         in_word = .false.
@@ -832,7 +834,7 @@ module fpx_token
                 i = i + 1
                 in_word = .false.
             else if (temp(i:i + 1) == '&&' .or. temp(i:i + 1) == '||' .or. temp(i:i + 1) == '==' .or. &
-                     temp(i:i + 1) == '!=' .or. temp(i:i + 1) == '<=' .or. temp(i:i + 1) == '>=') then
+                        temp(i:i + 1) == '!=' .or. temp(i:i + 1) == '<=' .or. temp(i:i + 1) == '>=') then
                 tokens(ntokens)%value = temp(i:i + 1)
                 tokens(ntokens)%type = operator
                 i = i + 2
@@ -853,14 +855,14 @@ module fpx_token
                 i = i + 2
                 in_word = .false.
             else if (temp(i:i) == '<' .or. temp(i:i) == '>' .or. temp(i:i) == '=' .or. &
-                     temp(i:i) == '+' .or. temp(i:i) == '-' .or. temp(i:i) == '*' .or. &
-                     temp(i:i) == '/' .or. temp(i:i) == '%') then
+                        temp(i:i) == '+' .or. temp(i:i) == '-' .or. temp(i:i) == '*' .or. &
+                        temp(i:i) == '/' .or. temp(i:i) == '%') then
                 tokens(ntokens)%value = temp(i:i)
                 tokens(ntokens)%type = operator
                 i = i + 1
                 in_word = .false.
             else if (temp(i:i) == '&' .or. temp(i:i) == '|' .or. temp(i:i) == '^' .or. &
-                     temp(i:i) == '~') then
+                        temp(i:i) == '~') then
                 tokens(ntokens)%value = temp(i:i)
                 tokens(ntokens)%type = operator
                 i = i + 1
@@ -907,7 +909,7 @@ module fpx_token
             else
                 pos = i
                 do while (pos <= len_expr .and. temp(pos:pos) /= ' ' .and. &
-                          temp(pos:pos) /= '(' .and. temp(pos:pos) /= ')')
+                        temp(pos:pos) /= '(' .and. temp(pos:pos) /= ')')
                     pos = pos + 1
                 end do
                 tokens(ntokens)%value = trim(temp(i:pos - 1))

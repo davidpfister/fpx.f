@@ -67,12 +67,12 @@ module fpx_conditional
     implicit none; private
 
     public :: handle_if, &
-              handle_ifdef, &
-              handle_ifndef, &
-              handle_elif, &
-              handle_else, &
-              handle_endif, &
-              is_active
+            handle_ifdef, &
+            handle_ifndef, &
+            handle_elif, &
+            handle_else, &
+            handle_endif, &
+            is_active
 
     !> State of a single conditional block
     !! <h2  class="groupheader">Constructors</h2>
@@ -152,7 +152,8 @@ contains
         cond_depth = cond_depth + 1
         cond_stack(cond_depth + 1)%active = result .and. parent_active
         cond_stack(cond_depth + 1)%has_met = result
-        if (verbose) print *, "#if result: ", result, ", cond_depth = ", cond_depth, ", active = ", cond_stack(cond_depth + 1)%active
+        if (verbose) print *, "#if result: ", result, ", cond_depth = ", cond_depth, ", active = ", cond_stack(cond_depth + 1)%&
+                active
     end subroutine
 
     !> Process #ifdef – test if a macro is defined

@@ -41,24 +41,24 @@ module fpx_os
     implicit none; private
 
     public ::   get_os_type, &
-                os_is_unix
+            os_is_unix
 
-                        public :: OS_NAME
+    public :: OS_NAME
     !> @brief Unknown / undetected operating system
     !! @ingroup group_os
     integer, parameter, public :: OS_UNKNOWN = 0
     !> @brief Linux (any distribution, including GNU/Linux)
     !! @ingroup group_os
-    integer, parameter, public :: OS_LINUX   = 1
+    integer, parameter, public :: OS_LINUX = 1
     !> @brief macOS (Darwin-based Apple operating system)
     !! @ingroup group_os
-    integer, parameter, public :: OS_MACOS   = 2
+    integer, parameter, public :: OS_MACOS = 2
     !> @brief Microsoft Windows (native, 32-bit or 64-bit)
     !! @ingroup group_os
     integer, parameter, public :: OS_WINDOWS = 3
     !> @brief Cygwin POSIX environment on Windows
     !! @ingroup group_os
-    integer, parameter, public :: OS_CYGWIN  = 4
+    integer, parameter, public :: OS_CYGWIN = 4
     !> @brief Oracle Solaris / OpenSolaris derivatives
     !! @ingroup group_os
     integer, parameter, public :: OS_SOLARIS = 5
@@ -89,15 +89,15 @@ contains
         character(:), allocatable :: OS_NAME
 
         select case (os)
-            case (OS_LINUX);   OS_NAME =  'Linux'
-            case (OS_MACOS);   OS_NAME =  'macOS'
-            case (OS_WINDOWS); OS_NAME =  'Windows'
-            case (OS_CYGWIN);  OS_NAME =  'Cygwin'
-            case (OS_SOLARIS); OS_NAME =  'Solaris'
-            case (OS_FREEBSD); OS_NAME =  'FreeBSD'
-            case (OS_OPENBSD); OS_NAME =  'OpenBSD'
-            case (OS_UNKNOWN); OS_NAME =  'Unknown'
-            case default     ; OS_NAME =  'UNKNOWN'
+        case (OS_LINUX);   OS_NAME = 'Linux'
+        case (OS_MACOS);   OS_NAME = 'macOS'
+        case (OS_WINDOWS); OS_NAME = 'Windows'
+        case (OS_CYGWIN);  OS_NAME = 'Cygwin'
+        case (OS_SOLARIS); OS_NAME = 'Solaris'
+        case (OS_FREEBSD); OS_NAME = 'FreeBSD'
+        case (OS_OPENBSD); OS_NAME = 'OpenBSD'
+        case (OS_UNKNOWN); OS_NAME = 'Unknown'
+        case default     ; OS_NAME = 'UNKNOWN'
         end select
     end function
 
@@ -201,7 +201,7 @@ contains
         end if
 
         ! Linux
-        inquire (file='/etc/os-release', exist=file_exists)
+        inquire(file='/etc/os-release', exist=file_exists)
 
         if (file_exists) then
             r = OS_LINUX
@@ -210,7 +210,7 @@ contains
         end if
 
         ! macOS
-        inquire (file='/usr/bin/sw_vers', exist=file_exists)
+        inquire(file='/usr/bin/sw_vers', exist=file_exists)
 
         if (file_exists) then
             r = OS_MACOS
@@ -219,7 +219,7 @@ contains
         end if
 
         ! FreeBSD
-        inquire (file='/bin/freebsd-version', exist=file_exists)
+        inquire(file='/bin/freebsd-version', exist=file_exists)
 
         if (file_exists) then
             r = OS_FREEBSD
