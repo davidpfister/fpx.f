@@ -58,6 +58,7 @@ module fpx_include
     interface
         subroutine read_unit(iunit, ounit, macros, from_include)
             import macro
+            implicit none
             integer, intent(in)                     :: iunit
             integer, intent(in)                     :: ounit
             type(macro), allocatable, intent(inout) :: macros(:)

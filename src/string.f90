@@ -429,6 +429,7 @@ contains
     !! @endcode
     !!
     !! @b Remarks
+    ! allow(assumed-size-character-intent)
     subroutine write_formatted(dtv, unit, iotype, v_list, iostat, iomsg)
         class(string), intent(in)   :: dtv
         integer, intent(in)         :: unit  !! Logical unit.

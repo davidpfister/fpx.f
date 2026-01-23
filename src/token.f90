@@ -86,7 +86,7 @@ module fpx_token
     end enum
 
     !> @brief Kind parameter for token type enumeration. Values are (`unknown`, `number`, `operator`, `identifier`, `parenthesis`,
-    !`defined`)
+    !! `defined`)
     !! @ingroup group_token
     integer, parameter :: tokens_enum = kind(unknown)
 

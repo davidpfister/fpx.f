@@ -1,15 +1,15 @@
 module  test_utils
     use fpx_path
-    
+
     implicit none; private
-    
+
     public :: getfiles,     &
               readruns,     &
               readline,     &
               getlines
-    
+
     contains
-    
+
     subroutine getfiles(dirpath, res)
         character(*), intent(in)                    :: dirpath
         character(256), allocatable, intent(out)    :: res(:)
@@ -23,7 +23,7 @@ module  test_utils
         call execute_command_line('ls *.?* '//dirpath//' > filecontent.txt')
 #endif
         allocate(res(0))
-        
+
         open(newunit=unit, file = 'filecontent.txt', action = 'read')
         do while (.true.)
             call readline(unit, line, ierr)
@@ -34,7 +34,7 @@ module  test_utils
         end do
         close(unit)
     end subroutine
-    
+
     subroutine getlines(filepath, res, keepall)
         character(*), intent(in)                    :: filepath
         character(256), allocatable, intent(out)    :: res(:)
@@ -47,22 +47,22 @@ module  test_utils
         character(1), parameter :: LF = char(10)            !< line feed.
         character(1), parameter :: CR = char(13)            !< carriage return.
         character(2), parameter :: CRLF = CR//LF            !< carriage return and line feed new line.
-        
-        
+
+
         if (present(keepall)) keep = keepall
         allocate(res(0))
-        
+
         inquire(file=filepath, exist=exists)
         if (.not. exists) return
-        
+
         open (newunit=unit, file=filepath, status='old', action='read', iostat=ierr)
         if (ierr /= 0) return
         count = 0
-        
+
         do while (.true.)
             call readline(unit, line, ierr)
             if (ierr /= 0) exit
-            
+
             if (.not. keep .and. len_trim(line) == 0) cycle
             tmp = '  '; tmp = trim(adjustl(line))
             if (.not. keep .and. (tmp(1:1) == '!' .or. tmp(1:1) == '#' .or. tmp(1:2) == '//')) cycle
@@ -81,12 +81,12 @@ module  test_utils
         logical :: exists
         integer :: idx, ierr, unit
         character(:), allocatable :: line
-        
+
         allocate(character(0) :: res)
-        
+
         inquire(file=filepath, exist=exists)
         if (.not. exists) return
-        
+
         open (newunit=unit, file=filepath, status='old', action='read', iostat=ierr)
         if (ierr /= 0) return
         do while (.true.)
@@ -97,9 +97,9 @@ module  test_utils
             res = res // trim(adjustl(line(idx + 1:)))
         end do
         close(unit)
-        
+
     end subroutine
-    
+
     subroutine readline(iunit, line, ierr)
         integer, intent(in)                     :: iunit
         character(:), allocatable, intent(out)  :: line
@@ -127,5 +127,5 @@ module  test_utils
 
         line = trim(line)
     end subroutine
-       
+
 end module

@@ -29,7 +29,7 @@
 !! 4. Interactive mode (stdin → stdout):
 !!    $ fpx
 !!    [in]  #define PI 3.14
-!!    [out] 
+!!    [out]
 !!    [in]  real :: r = PI
 !!    [out] real :: r = 3.14
 !!
@@ -45,7 +45,7 @@ console(main)
         use fpx_macro
         use fpx_parser
         use fpx_string
-        
+
         integer :: i, j, nargs
         character(:), allocatable :: infile, outfile
 #if defined(_VERSION)
@@ -93,9 +93,9 @@ console(main)
                                          '                             Preprocessor Option List', &
                                          '                             -----------------------', &
                                          '-D<macro>         Define a <macro> with no value.', &
-                                         '-D<macro>=<val>   Define a <macro> with <val> as its value.', & 
+                                         '-D<macro>=<val>   Define a <macro> with <val> as its value.', &
                                          '-U<macro>         Undefine <macro>', &
-                                         '-I<dir>           Add <dir> to the end of the global include paths.', & 
+                                         '-I<dir>           Add <dir> to the end of the global include paths.', &
                                          '-h, -?            Display this help', &
                                          '-o                Output file path with name and extension.', &
                                          '-v                Display the version of the program.'
@@ -112,7 +112,7 @@ console(main)
             end if
             i = i + 1
         end do
-    
+
         if (allocated(infile)) then
             if (allocated(outfile)) then
                 call preprocess(trim(infile), trim(outfile))
