@@ -29,3 +29,8 @@ implicit-external = false
 [[test]]
 name = "test"
 source-dir = "tests"
+
+[extra.fortitude.check]
+select = ["C", "E", "S"]
+ignore = ["S001", "S061", "C121", "C003"]
+line-length = 132

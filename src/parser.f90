@@ -42,7 +42,7 @@
 !! @code
 !!    $ ./fpx
 !!     [in]  #define PI 3.1415926535
-!!     [out] 
+!!     [out]
 !!     [in]  real :: x = PI*2
 !!     [out] real :: x = 3.1415926535*2
 !!     [in]  (empty line or 'quit' to exit)
@@ -62,7 +62,7 @@ module fpx_parser
 
     implicit none; private
 
-    public :: preprocess,  & 
+    public :: preprocess,  &
               global
 
     !> Generic interface to start preprocessing from various sources/sinks
@@ -72,7 +72,7 @@ module fpx_parser
     !! - file to file
     !! - unit to file
     !! - unit to unit (most flexible, used internally for #include)
-    !! 
+    !!
     !! @b Remarks
     !! @ingroup group_parser
     interface preprocess
@@ -88,7 +88,7 @@ module fpx_parser
     character(:), allocatable :: res, tmp               !< Accumulated result and temporary line buffers
     character(MAX_LINE_LEN)   :: line, continued_line   !< Raw and continued input line
     integer :: iline, icontinuation                     !< Current line number and continuation position
-    
+
 contains
 
     !> Preprocess a file and write result to an optional output file (default: stdout)
@@ -127,12 +127,12 @@ contains
         else
             ounit = stdout
         end if
-        
+
         call preprocess(iunit, ounit)
         if (iunit /= stdin) close (iunit)
         if (ounit /= stdout) close (ounit)
     end subroutine
-    
+
     !> Preprocess from an already-open input unit and write to a file
     !! @param[in] iunit Input unit (must already be open for reading)
     !! @param[in] ofile Output filename
@@ -148,19 +148,19 @@ contains
         if (iunit /= stdin) then
             inquire(unit = iunit, name = name)
         end if
- 
+
         open (newunit=ounit, file=ofile, status='replace', action='write', iostat=ierr)
         if (ierr /= 0) then
             if (verbose) print *, "Error opening output file: ", trim(ofile)
             close (iunit)
             return
         end if
-        
+
         call preprocess(iunit, ounit)
         if (iunit /= stdin) close (iunit)
         if (ounit /= stdout) close (ounit)
     end subroutine
-    
+
     !> Preprocess a file and write to an already-open output unit
     !! @param[in] ifile Input filename
     !! @param[in] ounit Output unit (already open for writing)
@@ -184,12 +184,12 @@ contains
                name = ifile(n+1:)
             end if
         end if
-        
+
         call preprocess(iunit, ounit)
         if (iunit /= stdin) close (iunit)
         if (ounit /= stdout) close (ounit)
     end subroutine
-    
+
     !> Core preprocessing routine: read from iunit, write to ounit
     !! Sets up a clean macro environment for the top-level file,
     !! resets conditional compilation state, and calls the worker routine.
@@ -203,20 +203,20 @@ contains
         integer, intent(in) :: ounit
         !private
         type(macro), allocatable :: macros(:)
-        
+
         if (.not. allocated(global%macros)) allocate(global%macros(0))
         allocate (macros(sizeof(global%macros)), source = global%macros)
         if (.not. allocated(global%undef)) allocate(global%undef(0))
         if (.not. allocated(global%includedir)) allocate(global%includedir(0))
-        
+
         cond_depth = 0
         cond_stack(1)%active = .true.
         cond_stack(1)%has_met = .false.
-        
+
         reprocess = .false.;  c_continue = .false.; f_continue = .false.
         icontinuation = 1; iline = 0
         continued_line = ''; res = ''
-        
+
         call preprocess_unit(iunit, ounit, macros, .false.)
         deallocate (macros)
     end subroutine
@@ -244,9 +244,9 @@ contains
         integer :: ierr, n
         character(:), allocatable :: uline
         logical :: interactive
-        
+
         interactive = iunit == stdin
-        
+
         if (interactive) then
             write (*, *)
             write (*, *) '   Welcome to fpx, the extended Fortran preprocessor. '
@@ -255,9 +255,9 @@ contains
             write (*, *) "   or with the 'quit' command."
         end if
         do
-            if (interactive) write (*, '(/a)', advance='no') ' [in]  ' ! Command line prompt 
+            if (interactive) write (*, '(/a)', advance='no') ' [in]  '  ! Command line prompt
             read (iunit, '(A)', iostat=ierr) line
-            
+
             if (interactive) then
                 if (line == '') exit
                 uline = uppercase(trim(adjustl(line)))
@@ -281,7 +281,7 @@ contains
                 ! Check for line break with '\\'
                 if (continued_line(len_trim(continued_line) - 1:len_trim(continued_line)) == '\\') then
                     c_continue = .true.
-                    continued_line = continued_line(:len_trim(continued_line) - 2)//new_line('A') ! Strip '\\'
+                    continued_line = continued_line(:len_trim(continued_line) - 2)//new_line('A')  ! Strip '\\'
                     icontinuation = len_trim(continued_line)
                 else
                     c_continue = .true.
@@ -294,16 +294,16 @@ contains
 
                 tmp = process_line(continued_line, ounit, name, iline, macros, stitch)
                 if (len_trim(tmp) == 0) cycle
-                    
+
                 in_comment = head(tmp) == '!'
-                           
+
                 if (merge(head(res) == '!', in_comment, len_trim(res) > 0)) then
                     f_continue = tail(tmp) == '&'
                 else
                     if (in_comment .and. f_continue) cycle
                     f_continue = .not. in_comment .and. tail(tmp) == '&'
                 end if
-                
+
                 if (f_continue .or. stitch) then
                     reprocess = .true.
                     res = concat(res, tmp)
@@ -319,7 +319,7 @@ contains
                     else
                         res = trim(tmp)
                     end if
-                    if (interactive) write (*, '(/a)', advance='no') ' [out] ' ! Command line prompt 
+                    if (interactive) write (*, '(/a)', advance='no') ' [out] '  ! Command line prompt
                     write (ounit, '(A)') res
                     res = ''
                 end if
@@ -368,7 +368,7 @@ contains
             trimmed_line = trimmed_line(comment_end + 2:)
             l_in_comment = .false.
         end if
-        
+
         if (l_in_comment) return
         comment_start = index(trimmed_line, '/*')
         if (comment_start > 0) then
@@ -401,13 +401,13 @@ contains
                 call handle_endif(filepath, linenum)
             end if
         else if (active) then
-            if (.not. global%expand_macros) then 
+            if (.not. global%expand_macros) then
                 rst = trimmed_line
             else
                 rst = adjustl(expand_all(trimmed_line, macros, filepath, linenum, stch))
                 if (verbose) print *, "Writing to output: '", trim(rst), "'"
             end if
-            
+
         end if
     end function
 end module

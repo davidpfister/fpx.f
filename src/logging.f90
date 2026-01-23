@@ -46,7 +46,7 @@
 !! @endcode
 module fpx_logging
     implicit none; private
-    
+
     !> @brief Master switch for verbose diagnostic output
     !! Default value is `.false.` (quiet mode).
     !! Set to `.true.` to get detailed step-by-step information about
@@ -54,5 +54,5 @@ module fpx_logging
     !! effect immediately for all subsequent operations.
     !! @ingroup group_logging
     logical, public :: verbose
-    
+
 end module

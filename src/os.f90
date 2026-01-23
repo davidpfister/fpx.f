@@ -39,10 +39,10 @@
 !! @endcode
 module fpx_os
     implicit none; private
-    
+
     public ::   get_os_type, &
                 os_is_unix
-    
+
                         public :: OS_NAME
     !> @brief Unknown / undetected operating system
     !! @ingroup group_os
@@ -69,11 +69,11 @@ module fpx_os
     !! @ingroup group_os
     integer, parameter, public :: OS_OPENBSD = 7
     !> @brief Microsoft Windows — explicitly 32-bit (x86) architecture.
-    !! 
+    !!
     !! Mainly useful when different behavior is needed between 32-bit and 64-bit Windows
     !! @ingroup group_os
     integer, parameter, public :: OS_WINDOWSx86 = 8
-    
+
 contains
 
     !> Return a human-readable string describing the OS type flag

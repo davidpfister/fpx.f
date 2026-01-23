@@ -94,7 +94,7 @@ module fpx_token
     !! Initializes a new instance of the @link fpx_token::token token @endlink class
     !! <h3>token(character(:), integer)</h3>
     !! @verbatim type(token) function token(character(:) value, integer type) @endverbatim
-    !! 
+    !!
     !! @param[in] value
     !! @param[in] type
     !!
@@ -106,21 +106,21 @@ module fpx_token
     !! <h2 class="groupheader">Remarks</h2>
     !! @ingroup group_token
     type, public :: token
-        character(:), allocatable   :: value !< Token value
-        integer(tokens_enum)        :: type !< Token type, from the enum @ref tokens_enum.
+        character(:), allocatable   :: value  !< Token value
+        integer(tokens_enum)        :: type  !< Token type, from the enum @ref tokens_enum.
     end type
-    
+
     !> Converts a string to integer.
     !! <h2 class="groupheader">Methods</h2>
     !!
     !! @code{.f90}strtol(character(*) str, (optional) logical success)@endcode
-    !! 
+    !!
     !! @param[in]  str      String to convert
     !! @param[out] success  Optional flag indicating successful conversion
     !! @return Converted integer value
-    !! 
+    !!
     !! @code{.f90}strtol(character(*) str, integer base, (optional) logical success)@endcode
-    !! 
+    !!
     !! Converts a string to integer with explicit base handling.
     !! Supports base 2, 8, 10, 16 and prefixes `0x`, `0b`.
     !! @param[in]    str      String to convert
@@ -196,10 +196,10 @@ module fpx_token
     !! @ingroup group_token
     logical elemental function is_digit(ch) result(res)
         character(*), intent(in) :: ch
-        
+
         res = verify(ch, '0123456789') == 0
     end function
-    
+
     !> Detects whether a string starts a typeless constant (hex, octal, binary).
     !! Used to avoid treating them as identifiers during tokenization.
     !! @param[in]  str Input string starting at current position
@@ -213,7 +213,7 @@ module fpx_token
         integer, intent(out)        :: pos
         !private
         integer :: i, base, n
-        
+
         pos = 0; base = 0; n = len(str)
         do i = 1, n
             if (verify(str(i:i), '0123456789xXaAbBcCdDeEfF') /= 0) then
@@ -224,17 +224,17 @@ module fpx_token
         if (pos > 0) i = strtol(str(:pos - 1), base, success = res)
         if (base == 10) res = .false.
     end function
-        
+
     integer function strtol_default(str, success) result(val)
         character(*), intent(in)        :: str
         logical, intent(out), optional  :: success
         !private
         integer :: base
-        
+
         base = 0
         val = strtol_with_base(str, base, success)
     end function
-        
+
     integer function strtol_with_base(str, base, success) result(val)
         character(*), intent(in)        :: str
         integer, intent(inout)          :: base
@@ -246,7 +246,7 @@ module fpx_token
         character(len=len_trim(str)) :: work_str
 
         val = 0; is_valid = .true.
-        work_str = adjustl(str) ! Remove leading spaces
+        work_str = adjustl(str)  ! Remove leading spaces
         len = len_trim(work_str)
 
         ! Handle base 0 (auto-detect)
@@ -286,7 +286,7 @@ module fpx_token
         ! Process each character
         do i = 1, len
             c = work_str(i:i)
-            digit = -1 ! Invalid digit marker
+            digit = -1  ! Invalid digit marker
 
             ! Convert character to digit
             isdigit = c >= '0' .and. c <= '9'
@@ -393,7 +393,7 @@ module fpx_token
         end do
         val = left
     end function
-    
+
     !> Parses bitwise OR expressions (`|`).
     !! @param[in] tokens    Array of tokens to parse
     !! @param[in] ntokens   Number of valid tokens in the array
@@ -420,7 +420,7 @@ module fpx_token
         end do
         val = left
     end function
-    
+
     !> Parses bitwise XOR expressions (`^`).
     !! @param[in] tokens    Array of tokens to parse
     !! @param[in] ntokens   Number of valid tokens in the array
@@ -447,7 +447,7 @@ module fpx_token
         end do
         val = left
     end function
-    
+
     !> Parses bitwise AND expressions (`&`).
     !! @param[in] tokens    Array of tokens to parse
     !! @param[in] ntokens   Number of valid tokens in the array
@@ -551,7 +551,7 @@ module fpx_token
         end do
         val = left
     end function
-    
+
     !> Parses shift expressions (`<<`, `>>`).
     !! @param[in] tokens    Array of tokens to parse
     !! @param[in] ntokens   Number of valid tokens in the array
@@ -619,7 +619,7 @@ module fpx_token
         end do
         val = left
     end function
-    
+
     !> Parses multiplicative expressions (`*`, `/`, `%`).
     !! @param[in] tokens    Array of tokens to parse
     !! @param[in] ntokens   Number of valid tokens in the array
@@ -657,7 +657,7 @@ module fpx_token
         end do
         val = left
     end function
-    
+
     !> Parses exponentiation (`**`). Right-associative.
     !! @param[in] tokens    Array of tokens to parse
     !! @param[in] ntokens   Number of valid tokens in the array
@@ -685,7 +685,7 @@ module fpx_token
         end do
         val = left
     end function
-    
+
     !> Parses unary operators (`!`, `-`, `+`, `~`).
     !! @param[in] tokens    Array of tokens to parse
     !! @param[in] ntokens   Number of valid tokens in the array
@@ -816,7 +816,7 @@ module fpx_token
                 in_word = .false.
                 cycle
             end if
-            
+
             if (.not. in_word) then
                 ntokens = ntokens + 1
                 if (ntokens > MAX_TOKENS) then

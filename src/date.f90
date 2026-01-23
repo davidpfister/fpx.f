@@ -47,9 +47,9 @@ module fpx_date
     use, intrinsic :: iso_fortran_env, only: i1 => int8, &
                                              i2 => int16
     implicit none; private
-    
+
     public :: now
-    
+
     !> Compact representation of date and time
     !! Stores all components in minimal integer kinds to reduce memory usage.
     !! All fields are public for easy access.
@@ -61,17 +61,17 @@ module fpx_date
     !!    ...
     !! @endcode
     !! <h2  class="groupheader">Remarks</h2>
-    !! The date implementation proposed here is kept at the bare 
-    !! minimum of what is required by the library. There are many 
+    !! The date implementation proposed here is kept at the bare
+    !! minimum of what is required by the library. There are many
     !! other implementations that can be found.
     !! <h2  class="groupheader">Constructors</h2>
     !! Initializes a new instance of the @ref datetime class
     !! <h3>datetime(character(*),  character(*))</h3>
     !! @verbatim type(datetime) function datetime(character(*) string, (optional) character(*) fmt) @endverbatim
-    !! 
+    !!
     !! @param[in] string date as string
     !! @param[in] fmt (optional) date format
-    !! 
+    !!
     !! @b Examples
     !! @code{.f90}
     !! type(datetime) :: d
@@ -79,7 +79,7 @@ module fpx_date
     !! @endcode
     !! <h3>datetime(integer, integer, integer, integer, integer, integer, integer)</h3>
     !! @verbatim type(datetime) function datetime((optional) integer year, (optional) integer month, ...) @endverbatim
-    !! 
+    !!
     !! @param[in] year (optional)
     !! @param[in] month (optional)
     !! @param[in] day (optional)
@@ -87,7 +87,7 @@ module fpx_date
     !! @param[in] minute (optional)
     !! @param[in] second (optional)
     !! @param[in] millisecond (optional)
-    !! 
+    !!
     !! @b Examples
     !! @code{.f90}
     !! type(datetime) :: d
@@ -105,12 +105,12 @@ module fpx_date
         integer(i1), public  :: hour    !< Hour
         integer(i1), public  :: minute  !< Minute
         integer(i1), public  :: second  !< Second
-        integer(i2), public  :: millisecond !< Millisecond
+        integer(i2), public  :: millisecond  !< Millisecond
     contains
         procedure, pass(this), public :: to_string => datetime_to_string
         procedure, pass(this), public :: parse => datetime_parse
     end type
-    
+
     !> Constructor interface for @ref datetime type
     !!
     !! @b Remarks
@@ -120,9 +120,9 @@ module fpx_date
         module procedure :: datetime_new, datetime_new_from_string
         !! @endcond
     end interface
-    
+
     contains
-    
+
     !> Constructor
     elemental function datetime_new(year, month, day, hour, minute, second, millisecond) result(that)
         integer, intent(in), optional   :: year
@@ -142,19 +142,19 @@ module fpx_date
         that%second = 0_i1; if (present(second)) that%second = int(second, kind=i1)
         that%millisecond = 0_i2; if (present(millisecond)) that%millisecond = int(millisecond, kind=i2)
     end function
-    
+
     elemental function datetime_new_from_string(string, fmt) result(that)
         character(*), intent(in)            :: string
         character(*), intent(in), optional  :: fmt
         type(datetime)                      :: that
-        
+
         if (present(fmt)) then
             call that%parse(string, fmt)
         else
             call that%parse(string)
         end if
     end function
-    
+
     !> Return current local date and time
     !! Uses intrinsic `date_and_time()` and populates all fields including milliseconds.
     !! @return the datetime object corresponding to the current time
@@ -162,10 +162,10 @@ module fpx_date
     !! @b Remarks
     !! @ingroup group_date
     function now() result(res)
-        type(datetime)  :: res  
+        type(datetime)  :: res
         !private
         integer :: values(9)
-        
+
         call date_and_time(values = values)
 
         res%year   = int(values(1), kind=i2)
@@ -176,7 +176,7 @@ module fpx_date
         res%second = int(values(7), kind=i1)
         res%millisecond = int(values(8), kind=i2)
     end function
-    
+
     !> Returns the day of the week calculated using Zeller's congruence.
     !! Returned value is an integer scalar in the range [0-6], such that:
     !! - 0: Sunday
@@ -209,7 +209,7 @@ module fpx_date
 
         if (weekday < 0) weekday = 6
     end function
-    
+
     !> Parse date/time from string using common formats
     !!
     !! Supports ISO, US, and abbreviated month formats.
@@ -250,7 +250,7 @@ module fpx_date
         character(256) :: errmsg
         character(len(string)) :: tmp
         character(:), allocatable :: dftfmt
-        
+
         if (present(fmt)) then
             dftfmt = fmt
         else
@@ -260,12 +260,12 @@ module fpx_date
                 dftfmt = 'yyyy-MM-dd HH:mm:ss'
             end if
         end if
-        
+
         tmp = string
-        
+
         this%year   = 0_i2; this%month  = 0_i1; this%day    = 0_i1
         this%hour   = 0_i1; this%minute = 0_i1; this%second = 0_i1; this%millisecond = 0_i2
-        
+
         select case (dftfmt)
         case ('MMM-dd-yyyy')
             select case (tmp(:3))
@@ -327,7 +327,7 @@ module fpx_date
                 this%month, &
                 this%day, &
                 this%year
-        case ('yyyy-MM-ddTHH:mm:ss', 'yyyy-MM-dd HH:mm:ss')    
+        case ('yyyy-MM-ddTHH:mm:ss', 'yyyy-MM-dd HH:mm:ss')
             read(tmp, '(i4.4,2(1x,i2.2),1x,i2.2,2(1x,i2.2))', iostat=ierr, iomsg = errmsg) &
                 this%year, &
                 this%month, &
@@ -335,19 +335,19 @@ module fpx_date
                 this%hour, &
                 this%minute, &
                 this%second
-        case ('HH:mm:ss')    
+        case ('HH:mm:ss')
             read(tmp, '(i2.2,2(1x,i2.2))', iostat=ierr, iomsg = errmsg) &
                 this%hour, &
                 this%minute, &
                 this%second
         end select
-        
+
         if(ierr > 0) then
             this%year   = 1970_i2; this%month  = 1_i1; this%day    = 1_i1
             this%hour   = 0_i1; this%minute = 0_i1; this%second = 0_i1; this%millisecond = 0_i2
         end if
     end subroutine
-    
+
     !> Format datetime as string using flexible format codes
     !! Supports many common patterns including those required for `__DATE__` and `__TIMESTAMP__`.
     !! Default format: 'yyyy-MM-ddTHH:mm:ss'
@@ -363,19 +363,19 @@ module fpx_date
         character(:), allocatable :: dftfmt, tmp, tmp2
         integer :: ierr
         character(256) :: errmsg
-        
+
         if (present(fmt)) then
             dftfmt = fmt
-        else 
+        else
             dftfmt = 'yyyy-MM-ddTHH:mm:ss'
         end if
         ! Manager optional parameters
         sep = merge('T', ' ', index(dftfmt, 'T') > 0)
         dash = merge('-', ' ', index(dftfmt, '-') > 0)
-        
+
         allocate(character(25) :: res)
         ! Perform conversion to ISO string
-        
+
         select case (this%month)
         case (1); tmp = 'Jan'
         case (2); tmp = 'Feb'
@@ -399,7 +399,7 @@ module fpx_date
         case (5); tmp2 = 'Fri'
         case (6); tmp2 = 'Sat'
         end select
-        
+
         select case (dftfmt)
         case ('MMM-dd-yyyy','MMM dd yyyy')
             write(res, '(a3,a1,i2.2,a1,i4.4)', iostat=ierr, iomsg = errmsg) &
@@ -487,7 +487,7 @@ module fpx_date
                 this%day, &
                 dash, &
                 this%year
-        case ('yyyy-MM-ddTHH:mm:ss', 'yyyy-MM-dd HH:mm:ss', 'yyyy MM ddTHH:mm:ss', 'yyyy MM dd HH:mm:ss')    
+        case ('yyyy-MM-ddTHH:mm:ss', 'yyyy-MM-dd HH:mm:ss', 'yyyy MM ddTHH:mm:ss', 'yyyy MM dd HH:mm:ss')
             write(res, '(i4.4,2(a1,i2.2),a1,i2.2,2(":",i2.2))', iostat=ierr, iomsg = errmsg) &
                 this%year, &
                 dash, &
@@ -498,7 +498,7 @@ module fpx_date
                 this%hour, &
                 this%minute, &
                 this%second
-        case ('yyyy-MM-dddTHH:mm:ss', 'yyyy-MM-ddd HH:mm:ss', 'yyyy MM dddTHH:mm:ss', 'yyyy MM ddd HH:mm:ss')    
+        case ('yyyy-MM-dddTHH:mm:ss', 'yyyy-MM-ddd HH:mm:ss', 'yyyy MM dddTHH:mm:ss', 'yyyy MM ddd HH:mm:ss')
             write(res, '(i4.4,a1,i2.2,a1,a3," ",i2.2,a1,i2.2,2(":",i2.2))', iostat=ierr, iomsg = errmsg) &
                 this%year, &
                 dash, &
@@ -510,12 +510,12 @@ module fpx_date
                 this%hour, &
                 this%minute, &
                 this%second
-        case ('HH:mm:ss')    
+        case ('HH:mm:ss')
             write(res, '(i2.2,2(":",i2.2))', iostat=ierr, iomsg = errmsg) &
                 this%hour, &
                 this%minute, &
                 this%second
-        end select        
+        end select
         res = trim(res)
     end function
 end module

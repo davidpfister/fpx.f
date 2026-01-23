@@ -103,7 +103,7 @@ contains
         else if (include_file(1:1) == '<') then
             include_file = include_file(2:index(include_file(2:), '>'))
         end if
-        
+
         ifile = include_file
         if (is_rooted(ifile)) then
             inquire(file=ifile, exist=exists)
@@ -127,7 +127,7 @@ contains
                         exit
                     end if
                 end do
-            
+
                 if (.not. exists) then
                     ifile = join(cwd(), include_file)
                     inquire(file=ifile, exist=exists)
@@ -140,13 +140,13 @@ contains
                 end if
             end if
         end if
-        
+
         open (newunit=iunit, file=include_file, status='old', action='read', iostat=ierr)
         if (ierr /= 0) then
             if (verbose) print *, "Error: Cannot open include file '", trim(include_file), "' at ", trim(parent_file), ":", iline
             return
         end if
-        
+
         call preprocess(iunit, ounit, macros, .true.)
         close (iunit)
     end subroutine
