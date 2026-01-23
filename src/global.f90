@@ -18,7 +18,7 @@
 !!
 !! 1. Add custom include paths before preprocessing:
 !! @code{.f90}
-!!    
+!!
 !!    global%includedir = [ './include', '/usr/local/include/fortran', '../common' ]
 !!    call preprocess('main.F90', 'main.f90')
 !!    !#include <file.h> will search these directories
@@ -26,11 +26,11 @@
 !!
 !! 2. Predefine common macros (e.g. for conditional compilation):
 !! @code{.f90}
-!!    
+!!
 !!    call add(global%macros, macro('DEBUG', '1'))
 !!    call add(global%macros, macro('MPI_VERSION', '3'))
 !!    call add(global%macros, macro('USE_OPENMP', '1'))
-!!    
+!!
 !!    call preprocess('src/app.F90')
 !!    !> Code can now use #ifdef DEBUG, #if MPI_VERSION >= 3, etc.
 !! @endcode
@@ -53,9 +53,9 @@ module fpx_global
     use fpx_string
     use fpx_logging
     use fpx_macro
-    
+
     implicit none; private
-    
+
     !> Global preprocessor configuration and shared runtime state
     !! All components of fpx read from and write to this single instance.
     !! Users can safely modify its public components at any time.
@@ -71,7 +71,7 @@ module fpx_global
     !! @endcode
     !! <h2  class="groupheader">Remarks</h2>
     !! @par
-    !! The global settings are accessed through the global variable 
+    !! The global settings are accessed through the global variable
     !! @ref global
     !! @ingroup group_global
     type, public :: global_settings
@@ -82,9 +82,9 @@ module fpx_global
         logical, public                     :: expand_macros = .true.   !< Boolean controlling the macro expansion. The macros are expanded by default.
         logical, public                     :: exlude_comments = .false.    !< Boolean controlling the inclusion/exclusion of comments. The comments are kept by default.
     end type
-    
+
     !> @brief The single global instance used throughout fpx
     !! Initialized automatically with sensible defaults values.
-    !! @ingroup group_global 
+    !! @ingroup group_global
     type(global_settings), public :: global
 end module

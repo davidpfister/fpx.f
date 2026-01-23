@@ -49,17 +49,17 @@ module fpx_macro
     implicit none; private
 
     public :: macro, &
-			  add, &
-			  get, &
-              insert, &
-              clear, &
-              remove, &
-              sizeof
-    
+            add, &
+            get, &
+            insert, &
+            clear, &
+            remove, &
+            sizeof
+
     public :: expand_macros, &
-              expand_all, &
-              is_defined
-    
+            expand_all, &
+            is_defined
+
     !> @brief Default buffer size
     !! @ingroup group_macro
     integer, parameter :: BUFFER_SIZE = 256
@@ -76,10 +76,10 @@ module fpx_macro
     !! Initializes a new instance of the @ref macro class
     !! <h3>macro(character(*),  character(*))</h3>
     !! @verbatim type(macro) function macro(character(*) name, (optional) character(*) val) @endverbatim
-    !! 
+    !!
     !! @param[in] name macro name
     !! @param[in] val  (optional) value of the macro
-    !! 
+    !!
     !! @b Examples
     !! @code{.f90}
     !! type(macro) :: m
@@ -90,14 +90,12 @@ module fpx_macro
     !! <h2  class="groupheader">Remarks</h2>
     !! @ingroup group_macro
     type, extends(string) :: macro
-        character(:), allocatable :: value !< Name of the macro
-        type(string), allocatable :: params(:) !< List of parameter for function like macros
-        logical :: is_variadic !< Indicate whether the macro is variadic or not.
+        character(:), allocatable :: value  !< Name of the macro
+        type(string), allocatable :: params(:)  !< List of parameter for function like macros
+        logical :: is_variadic  !< Indicate whether the macro is variadic or not.
         logical :: is_cyclic    !< Indicates whether the macro has cyclic dependencies or not.
-    contains
-        private
     end type
-    
+
     !> @brief Constructor interface for macro type
     !!
     !! @b Remarks
@@ -107,7 +105,7 @@ module fpx_macro
         module procedure :: macro_new
         !! @endcond
     end interface
-    
+
     !> Add one or more macros to a dynamic table
     !!
     !! @b Remarks
@@ -118,7 +116,7 @@ module fpx_macro
         module procedure :: add_item_from_name_and_value
         module procedure :: add_range
     end interface
-   
+
     !> Remove all macros from a table
     !!
     !! @b Remarks
@@ -150,7 +148,7 @@ module fpx_macro
     interface remove
         module procedure :: remove_item
     end interface
-    
+
     !> Return current number of stored macros
     !!
     !! @b Remarks
@@ -159,8 +157,8 @@ module fpx_macro
         module procedure  :: size_item
     end interface
 
-    contains
-    
+contains
+
     !> Construct a new macro object
     !! @param[in] name Mandatory macro name
     !! @param[in] val  Optional replacement text (default: empty)
@@ -168,18 +166,18 @@ module fpx_macro
     type(macro) function macro_new(name, val) result(that)
         character(*), intent(in)            :: name
         character(*), intent(in), optional  :: val
-        
+
         that = trim(name)
         if (present(val)) then
             that%value = val
-        else 
+        else
             that%value = ''
         end if
         allocate(that%params(0))
         that%is_variadic = .false.
         that%is_cyclic = that == that%value
     end function
-        
+
     !> Fully expand a line including predefined macros (__FILE__, __LINE__, etc.)
     !! First performs normal macro expansion via expand_macros(), then substitutes
     !! standard predefined tokens with current file/line/date information.
@@ -211,18 +209,18 @@ module fpx_macro
             pos = index(expanded, '__FILENAME__')
             if (pos > 0) then
                 start = pos + len('__FILENAME__')
-                expanded = trim(expanded(:pos - 1)//'"'//filename(filepath, .true.)//'"'//trim(expanded(start:)))
+                expanded = trim(expanded(:pos - 1) // '"' // filename(filepath, .true.) // '"' // trim(expanded(start:)))
                 if (verbose) print *, "Substituted __FILENAME__ with '", trim(filepath), "', expanded: '", trim(expanded), "'"
             end if
         end do
-        
+
         ! Substitute __FILE__ (relative path to working directory)
         pos = 1
         do while (pos > 0)
             pos = index(expanded, '__FILE__')
             if (pos > 0) then
                 start = pos + len('__FILE__')
-                expanded = trim(expanded(:pos - 1)//'"'//trim(filepath)//'"'//trim(expanded(start:)))
+                expanded = trim(expanded(:pos - 1) // '"' // trim(filepath) // '"' // trim(expanded(start:)))
                 if (verbose) print *, "Substituted __FILE__ with '", trim(filepath), "', expanded: '", trim(expanded), "'"
             end if
         end do
@@ -234,12 +232,12 @@ module fpx_macro
             if (pos > 0) then
                 if (pos > 0) then
                     start = pos + len('__LINE__')
-                    expanded = trim(expanded(:pos - 1)//tostring(iline)//trim(expanded(start:)))
+                    expanded = trim(expanded(:pos - 1) // tostring(iline) // trim(expanded(start:)))
                     if (verbose) print *, "Substituted __LINE__ with '", iline, "', expanded: '", trim(expanded), "'"
                 end if
             end if
         end do
-        
+
         ! Substitute __DATE__
         pos = 1
         do while (pos > 0)
@@ -247,12 +245,13 @@ module fpx_macro
             if (pos > 0) then
                 if (pos > 0) then
                     start = pos + len('__DATE__')
-                    expanded = trim(expanded(:pos - 1)//'"'//date%to_string('MMM-dd-yyyy')//'"'//trim(expanded(start:)))
-                    if (verbose) print *, "Substituted __DATE__ with '", date%to_string('MMM-dd-yyyy'), "', expanded: '", trim(expanded), "'"
+                    expanded = trim(expanded(:pos - 1) // '"' // date%to_string('MMM-dd-yyyy') // '"' // trim(expanded(start:)))
+                    if (verbose) print *, "Substituted __DATE__ with '", date%to_string('MMM-dd-yyyy'), "', expanded: '", trim(&
+                            expanded), "'"
                 end if
             end if
         end do
-        
+
         ! Substitute __TIME__
         pos = 1
         do while (pos > 0)
@@ -260,12 +259,13 @@ module fpx_macro
             if (pos > 0) then
                 if (pos > 0) then
                     start = pos + len('__TIME__')
-                    expanded = trim(expanded(:pos - 1)//'"'//date%to_string('HH:mm:ss')//'"'//trim(expanded(start:)))
-                    if (verbose) print *, "Substituted __TIME__ with '", date%to_string('HH:mm:ss'), "', expanded: '", trim(expanded), "'"
+                    expanded = trim(expanded(:pos - 1) // '"' // date%to_string('HH:mm:ss') // '"' // trim(expanded(start:)))
+                    if (verbose) print *, "Substituted __TIME__ with '", date%to_string('HH:mm:ss'), "', expanded: '", trim(&
+                            expanded), "'"
                 end if
             end if
         end do
-        
+
         ! Substitute __TIMESTAMP__
         pos = 1
         do while (pos > 0)
@@ -273,13 +273,15 @@ module fpx_macro
             if (pos > 0) then
                 if (pos > 0) then
                     start = pos + len('__TIMESTAMP__')
-                    expanded = trim(expanded(:pos - 1)//'"'//date%to_string('ddd MM yyyy')//' '//date%to_string('HH:mm:ss')//'"'//trim(expanded(start:)))
-                    if (verbose) print *, "Substituted __TIMESTAMP__ with '", date%to_string('ddd MM yyyy')//' '//date%to_string('HH:mm:ss'), "', expanded: '", trim(expanded), "'"
+                    expanded = trim(expanded(:pos - 1) // '"' // date%to_string('ddd MM yyyy') // ' ' // date%to_string('HH:mm:ss'&
+                            &) // '"' // trim(expanded(start:)))
+                    if (verbose) print *, "Substituted __TIMESTAMP__ with '", date%to_string('ddd MM yyyy') // ' ' // date%&
+                            to_string('HH:mm:ss'), "', expanded: '", trim(expanded), "'"
                 end if
             end if
         end do
     end function
-    
+
     !> Core recursive macro expander (handles function-like, variadic, #, ##)
     !!
     !! Performs actual macro replacement with full support for:
@@ -305,13 +307,13 @@ module fpx_macro
         !private
         integer :: imacro, paren_level
         type(digraph) :: graph
-        
+
         imacro = 0; paren_level = 0
         graph = digraph(size(macros))
         stitch = .false.
-        
+
         expanded = expand_macros_internal(line, imacro, macros)
-        
+
         stitch = stitch .or. paren_level > 0
     contains
         !> @private
@@ -335,7 +337,7 @@ module fpx_macro
             if (size(macros) == 0) return
             isopened = .false.
             if (verbose) print *, "Initial expanded: '", trim(expanded), "'"
-        
+
             do i = 1, size(macros)
                 n = len_trim(macros(i))
                 if (n == 0) cycle
@@ -346,21 +348,21 @@ module fpx_macro
                         if (.not. isopened) then
                             isopened = .true.
                             quote = expanded(c:c)
-                        else    
+                        else
                             if (expanded(c:c) == quote) isopened = .false.
                         end if
                     end if
                     if (isopened) cycle
                     if (c + n - 1 > len_trim(expanded)) exit
-                
+
                     found = .false.
                     if (expanded(c:c + n - 1) == macros(i)) then
                         found = .true.
                         if (len_trim(expanded(c:)) > n) then
-                            found = verify(expanded(c + n:c + n), ' ()[]<>&;.,^~!/*-+\="'//"'") == 0
+                            found = verify(expanded(c + n:c + n), ' ()[]<>&;.,^~!/*-+\="' // "'") == 0
                         end if
                         if (found .and. c > 1) then
-                            found = verify(expanded(c-1:c-1), ' ()[]<>&;.,^~!/*-+\="'//"'") == 0
+                            found = verify(expanded(c - 1:c - 1), ' ()[]<>&;.,^~!/*-+\="' // "'") == 0
                         end if
                     end if
 
@@ -392,7 +394,7 @@ module fpx_macro
                                     args_str = expanded(start:m_end)
                                     if (verbose) print *, "Expanding macro: ", macros(i), ", args: ", trim(args_str)
                                     temp = trim(macros(i)%value)
-                                    
+
                                     if (macros(i)%is_variadic) then
                                         if (nargs < size(macros(i)%params)) then
                                             if (verbose) print *, "Error: Too few arguments for macro ", macros(i)
@@ -400,15 +402,15 @@ module fpx_macro
                                         end if
                                         va_args = ''
                                         do j = size(macros(i)%params) + 1, nargs
-                                            if (j > size(macros(i)%params) + 1) va_args = va_args//', '
-                                            va_args = va_args//arg_values(j)
+                                            if (j > size(macros(i)%params) + 1) va_args = va_args // ', '
+                                            va_args = va_args // arg_values(j)
                                         end do
                                         if (verbose) print *, "__VA_ARGS__: '", trim(va_args), "'"
                                     else if (nargs /= size(macros(i)%params)) then
                                         if (verbose) print *, "Error: Incorrect number of arguments for macro ", macros(i)
                                         cycle
                                     end if
-                                    
+
                                     ! Substitute regular parameters
                                     argbck :block
                                         integer :: c1, h1
@@ -422,22 +424,26 @@ module fpx_macro
                                                 if (temp(c1:c1) == '"') opened = .not. opened
                                                 if (opened) cycle wloop
                                                 if (c1 + len_trim(macros(i)%params(j)) - 1 > len(temp)) cycle wloop
-                                                
-                                                if (temp(c1:c1 + len_trim(macros(i)%params(j)) - 1) == trim(macros(i)%params(j))) then
+
+                                                if (temp(c1:c1 + len_trim(macros(i)%params(j)) - 1) == trim(macros(i)%params(j))) &
+                                                        then
                                                     checkbck:block
                                                         integer :: cend, l
-                                                        
+
                                                         cend = c1 + len_trim(macros(i)%params(j))
                                                         l = len(temp)
                                                         if (c1 == 1 .and. cend == l + 1) then
                                                             exit checkbck
                                                         else if (c1 > 1 .and. l == cend - 1) then
-                                                            if (verify(temp(c1 - 1:c1 - 1), ' #()[]<>&;.,!/*-+\="'//"'") /= 0) cycle wloop
+                                                            if (verify(temp(c1 - 1:c1 - 1), ' #()[]<>&;.,!/*-+\="' // "'") /= 0) &
+                                                                    cycle wloop
                                                         else if (c1 <= 1 .and. cend <= l) then
-                                                            if (verify(temp(cend:cend), ' #()[]<>&;.,!/*-+\="'//"'") /= 0) cycle wloop
-                                                        else  
-                                                            if (verify(temp(c1 - 1:c1 - 1), ' #()[]<>&;.,!/*-+\="'//"'") /= 0 &
-                                                                .or. verify(temp(cend:cend), ' #()[]<>$&;.,!/*-+\="'//"'") /= 0) cycle wloop
+                                                            if (verify(temp(cend:cend), ' #()[]<>&;.,!/*-+\="' // "'") /= 0) cycle &
+                                                                    wloop
+                                                        else
+                                                            if (verify(temp(c1 - 1:c1 - 1), ' #()[]<>&;.,!/*-+\="' // "'") /= 0 &
+                                                                    .or. verify(temp(cend:cend), ' #()[]<>$&;.,!/*-+\="' // "'") /=&
+                                                                    & 0) cycle wloop
                                                         end if
                                                     end block checkbck
                                                     pos = c1
@@ -445,30 +451,35 @@ module fpx_macro
                                                     start = pos + len_trim(macros(i)%params(j))
                                                     if (pos == 2) then
                                                         if (temp(pos - 1:pos - 1) == '#') then
-                                                            temp = trim(temp(:pos - 2)//'"'//arg_values(j)//'"'//trim(temp(start:)))
+                                                            temp = trim(temp(:pos - 2) // '"' // arg_values(j) // '"' // trim(temp(&
+                                                                    start:)))
                                                         else
-                                                            temp = trim(temp(:pos - 1)//arg_values(j)//trim(temp(start:)))
+                                                            temp = trim(temp(:pos - 1) // arg_values(j) // trim(temp(start:)))
                                                         end if
                                                     elseif (pos > 2) then
                                                         h1 = pos - 1
                                                         if (previous(temp, h1) == '#') then
                                                             if (h1 == 1) then
-                                                                temp = trim(temp(:h1 - 1)//'"'//arg_values(j)//'"'//trim(temp(start:)))
+                                                                temp = trim(temp(:h1 - 1) // '"' // arg_values(j) // '"' // trim(&
+                                                                        temp(start:)))
                                                             else
-                                                                if (temp(h1-1:h1-1) /= '#') then
-                                                                    temp = trim(temp(:h1 - 1)//'"'//arg_values(j)//'"'//trim(temp(start:)))
+                                                                if (temp(h1 - 1:h1 - 1) /= '#') then
+                                                                    temp = trim(temp(:h1 - 1) // '"' // arg_values(j) // '"' // &
+                                                                            trim(temp(start:)))
                                                                 else
-                                                                    temp = trim(temp(:pos - 1)//arg_values(j)//trim(temp(start:)))
+                                                                    temp = trim(temp(:pos - 1) // arg_values(j) // trim(temp(start:&
+                                                                            )))
                                                                 end if
                                                             end if
                                                         else
-                                                            temp = trim(temp(:pos - 1)//arg_values(j)//trim(temp(start:)))
+                                                            temp = trim(temp(:pos - 1) // arg_values(j) // trim(temp(start:)))
                                                         end if
                                                     else
-                                                        temp = trim(temp(:pos - 1)//arg_values(j)//trim(temp(start:)))
+                                                        temp = trim(temp(:pos - 1) // arg_values(j) // trim(temp(start:)))
                                                     end if
-                                                    if (verbose) print *, "Substituted param ", j, ": '", macros(i)%params(j), "' with '", &
-                                                        arg_values(j), "', temp: '", trim(temp), "'"
+                                                    if (verbose) print *, "Substituted param ", j, ": '", macros(i)%params(j), &
+                                                            "' with '", &
+                                                            arg_values(j), "', temp: '", trim(temp), "'"
                                                 end if
                                             end do wloop
                                         end do jloop
@@ -511,9 +522,9 @@ module fpx_macro
                                                 end if
 
                                                 ! Concatenate, replacing the full 'token1 ## token2' pattern
-                                                temp = trim(prefix//trim(token1)//trim(token2)//suffix)
+                                                temp = trim(prefix // trim(token1) // trim(token2) // suffix)
                                                 if (verbose) print *, "Concatenated '", trim(token1), "' and '", trim(token2), &
-                                                    "' to '", trim(token1)//trim(token2), "', temp: '", trim(temp), "'"
+                                                        "' to '", trim(token1) // trim(token2), "', temp: '", trim(temp), "'"
                                             end if
                                         end do
                                     end block
@@ -527,21 +538,22 @@ module fpx_macro
                                                 if (pos > 0) then
                                                     start = pos + len('__VA_ARGS__') - 1
                                                     if (start < len(temp) .and. temp(start:start) == '_' &
-                                                        .and. temp(start + 1:start + 1) == ')') then
-                                                        temp = trim(temp(:pos - 1)//trim(va_args)//')')
+                                                            .and. temp(start + 1:start + 1) == ')') then
+                                                        temp = trim(temp(:pos - 1) // trim(va_args) // ')')
                                                     else
-                                                        temp = trim(temp(:pos - 1)//trim(va_args)//trim(temp(start+1:)))
+                                                        temp = trim(temp(:pos - 1) // trim(va_args) // trim(temp(start + 1:)))
                                                     end if
                                                     if (verbose) print *, "Substituted __VA_ARGS__ with '", trim(va_args), &
-                                                        "', temp: '", trim(temp), "'"
+                                                            "', temp: '", trim(temp), "'"
                                                     ! Substitute __VA_OPT__
                                                     pos = index(temp, '__VA_OPT__')
                                                     if (pos > 0) then
                                                         start = pos + index(temp(pos:), ')') - 1
                                                         if (len_trim(va_args) > 0) then
-                                                            temp = trim(temp(:pos - 1))//temp(pos + index(temp(pos:), '('):start-1)//trim(temp(start+1:))
+                                                            temp = trim(temp(:pos - 1)) // temp(pos + index(temp(pos:), '('):start &
+                                                                    - 1) // trim(temp(start + 1:))
                                                         else
-                                                            temp = trim(temp(:pos - 1))//trim(temp(start+1:))
+                                                            temp = trim(temp(:pos - 1)) // trim(temp(start + 1:))
                                                         end if
                                                     end if
                                                 end if
@@ -552,8 +564,8 @@ module fpx_macro
                                     if (verbose) print *, "Before recursive call, temp: '", trim(temp), "'"
                                     call graph%add_edge(imacro, i)
                                     if (.not. graph%is_circular(i)) then
-                                        temp = expand_macros_internal(temp, i, macros) ! Only for nested macros
-                                    else 
+                                        temp = expand_macros_internal(temp, i, macros)  ! Only for nested macros
+                                    else
                                         if (verbose) print *, "Circular macro detected: '", macros(i), "'"
                                         cycle
                                     end if
@@ -561,7 +573,7 @@ module fpx_macro
                                     if (verbose) print *, "Prefix: '", trim(expanded(:m_start - 1)), "'"
                                     if (verbose) print *, "Temp: '", trim(temp), "'"
                                     if (verbose) print *, "Suffix: '", trim(expanded(m_end + 1:)), "'"
-                                    expanded = trim(expanded(:m_start - 1)//trim(temp)//expanded(m_end + 1:))
+                                    expanded = trim(expanded(:m_start - 1) // trim(temp) // expanded(m_end + 1:))
                                     if (verbose) print *, "After substitution, expanded: '", trim(expanded), "'"
                                 end if
                             end if
@@ -570,9 +582,9 @@ module fpx_macro
                             m_end = start - 1
                             call graph%add_edge(imacro, i)
                             if ((.not. graph%is_circular(i)) .and. (.not. macros(i)%is_cyclic)) then
-                                expanded = trim(expanded(:m_start - 1)//trim(temp)//expanded(m_end + 1:))
+                                expanded = trim(expanded(:m_start - 1) // trim(temp) // expanded(m_end + 1:))
                                 expanded = expand_macros_internal(expanded, imacro, macros)
-                            else 
+                            else
                                 if (verbose) print *, "Circular macro detected: '", macros(i), "'"
                                 cycle
                             end if
@@ -582,11 +594,11 @@ module fpx_macro
                 end do
             end do
             pos = index(expanded, '&')
-            if (index(expanded, '!') > pos .and. pos > 0) expanded = expanded(:pos+1)
+            if (index(expanded, '!') > pos .and. pos > 0) expanded = expanded(:pos + 1)
             stitch = tail(expanded) == '&'
         end function
     end function
-    
+
     !> Detect whether expanding macro at index `idx` would cause a cycle
     !! Builds a dependency graph from macro replacement texts and checks for circular paths.
     !! Used during expansion to avoid infinite recursion.
@@ -608,7 +620,7 @@ module fpx_macro
         isopened = .false.
 
         graph = digraph(size(macros))
-        
+
         do j = 1, size(macros)
             expanded = macros(j)%value
             do i = 1, size(macros)
@@ -621,21 +633,21 @@ module fpx_macro
                         if (.not. isopened) then
                             isopened = .true.
                             quote = expanded(c:c)
-                        else    
+                        else
                             if (expanded(c:c) == quote) isopened = .false.
                         end if
                     end if
                     if (isopened) cycle
                     if (c + n - 1 > len_trim(expanded)) exit
-                    
+
                     found = .false.
                     if (expanded(c:c + n - 1) == macros(i)) then
                         found = .true.
                         if (len_trim(expanded(c:)) > n) then
-                            found = verify(expanded(c + n:c + n), ' ()[]<>&;.,^~!/*-+\="'//"'") == 0
+                            found = verify(expanded(c + n:c + n), ' ()[]<>&;.,^~!/*-+\="' // "'") == 0
                         end if
                     end if
-                
+
                     if (found) then
                         expanded(c:c + len_trim(macros(i)) - 1) = ' '
                         call graph%add_edge(j, i)
@@ -643,7 +655,7 @@ module fpx_macro
                 end do
             end do
         end do
-        
+
         res = graph%is_circular(idx)
     end function
 
@@ -661,7 +673,7 @@ module fpx_macro
         integer, intent(inout), optional :: idx
         !private
         integer :: i
-        
+
         res = .false.
         do i = 1, size(macros)
             if (macros(i) == trim(name)) then
@@ -692,20 +704,22 @@ module fpx_macro
             class(*), intent(in)     :: any
 
             select type (any)
-            type is (integer(kind=int8)); write (line, '(i0)') any
-            type is (integer(kind=int16)); write (line, '(i0)') any
-            type is (integer(kind=int32)); write (line, '(i0)') any
-            type is (integer(kind=int64)); write (line, '(i0)') any
-            type is (real(kind=real32)); write (line, '(1pg0)') any
-            type is (real(kind=real64)); write (line, '(1pg0)') any
-            type is (real(kind=real128)); write (line, '(1pg0)') any
-            type is (logical); write (line, '(1l)') any
-            type is (character(*)); write (line, '(a)') any
-            type is (complex); write (line, '("(",1pg0,",",1pg0,")")') any
+            type is (integer(kind=int8)); write(line, '(i0)') any
+            type is (integer(kind=int16)); write(line, '(i0)') any
+            type is (integer(kind=int32)); write(line, '(i0)') any
+            type is (integer(kind=int64)); write(line, '(i0)') any
+            type is (real(kind=real32)); write(line, '(1pg0)') any
+            type is (real(kind=real64)); write(line, '(1pg0)') any
+            type is (real(kind=real128)); write(line, '(1pg0)') any
+            type is (logical); write(line, '(1l)') any
+            type is (character(*)); write(line, '(a)') any
+            type is (complex(kind=real32)); write(line, '("(",1pg0,",",1pg0,")")') any
+            type is (complex(kind=real64)); write(line, '("(",1pg0,",",1pg0,")")') any
+            type is (complex(kind=real128)); write(line, '("(",1pg0,",",1pg0,")")') any
             end select
         end subroutine
     end function
-    
+
     !> Internal helper: grow dynamic macro array in chunks for efficiency
     !! Adds a new macro to the allocatable array, growing in BUFFER_SIZE increments.
     !! Also detects direct self-references (A → A) and marks both sides as cyclic.
@@ -720,33 +734,33 @@ module fpx_macro
         !private
         type(macro), allocatable :: tmp(:)
         integer :: csize, i
-       
+
         csize = chunk_size
-        
-        if (finished) csize = 1 
+
+        if (finished) csize = 1
         if (allocated(vec)) then
             if (n == size(vec)) then
                 ! have to add another chunk:
-                allocate (tmp(size(vec) + csize))
+                allocate(tmp(size(vec) + csize))
                 tmp(1:size(vec)) = vec
                 call move_alloc(tmp, vec)
             end if
             n = n + 1
         else
             ! the first element:
-            allocate (vec(csize))
+            allocate(vec(csize))
             n = 1
         end if
 
         vec(n) = val
         if (finished) then
-            if (allocated(tmp)) deallocate (tmp)
+            if (allocated(tmp)) deallocate(tmp)
             if (n /= size(vec)) then
-                allocate (tmp(n), source = vec(1:n))
+                allocate(tmp(n), source=vec(1:n))
                 call move_alloc(tmp, vec)
             end if
         end if
-        
+
         do i = 1, size(vec) - 1
             if (vec(i) == vec(n)%value .and. vec(i)%value == vec(n)) then
                 vec(i)%is_cyclic = .true.
@@ -754,33 +768,33 @@ module fpx_macro
             end if
         end do
     end subroutine
-    
+
     !> Add a complete macro object to the table
     !!
     !! @b Remarks
     subroutine add_item(this, arg)
         type(macro), intent(inout), allocatable :: this(:)
         type(macro), intent(in)                 :: arg
-        !private 
+        !private
         integer :: count
-       
+
         count = size(this)
-        call add_to(this, arg, count, BUFFER_SIZE, finished = .true.)
+        call add_to(this, arg, count, BUFFER_SIZE, finished=.true.)
     end subroutine
-    
+
     !> Add macro by name only (value = empty)
     !!
     !! @b Remarks
     subroutine add_item_from_name(this, name)
         type(macro), intent(inout), allocatable :: this(:)
         character(*), intent(in)                :: name
-        !private 
+        !private
         integer :: count
         if (.not. allocated(this)) allocate(this(0))
         count = size(this)
-        call add_to(this, macro(name), count, BUFFER_SIZE, finished = .true.)
+        call add_to(this, macro(name), count, BUFFER_SIZE, finished=.true.)
     end subroutine
-    
+
     !> Add macro with name and replacement text
     !!
     !! @b Remarks
@@ -788,36 +802,36 @@ module fpx_macro
         type(macro), intent(inout), allocatable :: this(:)
         character(*), intent(in)                :: name
         character(*), intent(in)                :: value
-        !private 
+        !private
         integer :: count
-        
+
         if (.not. allocated(this)) allocate(this(0))
         count = size(this)
-        call add_to(this, macro(name, value), count, BUFFER_SIZE, finished = .true.)
+        call add_to(this, macro(name, value), count, BUFFER_SIZE, finished=.true.)
     end subroutine
-    
+
     !> Add multiple macros at once
     !!
     !! @b Remarks
     subroutine add_range(this, args)
         type(macro), intent(inout), allocatable :: this(:)
         type(macro), intent(in)                 :: args(:)
-        !private 
+        !private
         integer :: i, n, count
-       
+
         if (.not. allocated(this)) allocate(this(0))
         n = size(args); count = size(this)
         do i = 1, n
-            call add_to(this, args(i), count, BUFFER_SIZE, finished = i == n)
+            call add_to(this, args(i), count, BUFFER_SIZE, finished=i == n)
         end do
     end subroutine
-    
+
     !> Remove all macros from table
     !!
     !! @b Remarks
     subroutine clear_item(this)
         type(macro), intent(inout), allocatable :: this(:)
-       
+
         if (allocated(this)) deallocate(this)
         allocate(this(0))
     end subroutine
@@ -831,13 +845,13 @@ module fpx_macro
         type(macro), allocatable    :: res
         !private
         integer :: n
-        
+
         n = sizeof(this)
         if (key > 0 .and. key <= n) then
             res = this(key)
         end if
     end function
-    
+
     !> Insert macro at specific position
     !!
     !! @b Remarks
@@ -845,15 +859,15 @@ module fpx_macro
         type(macro), intent(inout), allocatable :: this(:)
         integer, intent(in)                     :: i
         type(macro), intent(in)                 :: arg
-        !private 
+        !private
         integer :: j, count
-       
+
         if (.not. allocated(this)) allocate(this(0))
-	    count = size(this)
-        call add_to(this, arg, count, BUFFER_SIZE, finished = .true.)
-       
+        count = size(this)
+        call add_to(this, arg, count, BUFFER_SIZE, finished=.true.)
+
         do j = count, i + 1, -1
-            this(j) = this(j-1)
+            this(j) = this(j - 1)
         end do
         this(i) = arg
     end subroutine
@@ -863,7 +877,7 @@ module fpx_macro
     !! @b Remarks
     integer function size_item(this) result(res)
         type(macro), intent(inout), allocatable  :: this(:)
-        
+
         res = merge(size(this), 0, allocated(this))
     end function
 
@@ -879,14 +893,14 @@ module fpx_macro
 
         if (.not. allocated(this)) allocate(this(0))
         n = size(this)
-        if (allocated(this(i)%params)) deallocate (this(i)%params)
+        if (allocated(this(i)%params)) deallocate(this(i)%params)
         if (n > 1) then
             this(i:n - 1) = this(i + 1:n)
-            allocate (tmp(n - 1))
+            allocate(tmp(n - 1))
             tmp = this(:n - 1)
-            deallocate (this)
+            deallocate(this)
             call move_alloc(tmp, this)
-            
+
             this(:)%is_cyclic = .false.
             do k = 1, size(this)
                 do j = 1, size(this)
@@ -897,7 +911,7 @@ module fpx_macro
                 end do
             end do
         else
-            deallocate (this); allocate (this(0))
+            deallocate(this); allocate(this(0))
         end if
     end subroutine
 end module

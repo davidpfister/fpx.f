@@ -6,7 +6,8 @@
 !! separators through conditional compilation and offers deferred-length character results
 !! for maximum flexibility.
 !!
-!! The module builds upon the @link fpx_string fpx_string @endlink module for @link fpx_string::string string @endlink type support and provides
+!! The module builds upon the @link fpx_string fpx_string @endlink module for @link fpx_string::string string @endlink type support
+!! and provides
 !! overloads of key procedures to accept either intrinsic `character(*)` or `type(string)`
 !! arguments.
 !!
@@ -47,36 +48,47 @@
 module fpx_path
     use, intrinsic :: iso_c_binding
     use fpx_string
-    
+    ! allow(default-public-accessibility)
     implicit none; public
 
     !! @cond
-#ifdef _WIN32   
+#ifdef _WIN32
     character, parameter    :: separator = '\'
     character(*), parameter :: alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
 #else
     character, parameter :: separator = '/'
 #endif
 
-    interface
-        function getcwd_c(buf, size) &
 #ifdef _WIN32
-            bind(C,name='_getcwd') result(r)
-#else
-            bind(C,name='getcwd') result(r)
-#endif
-
-        import
+    interface
+        function getcwd_c(buf, size) bind(C, name='_getcwd') result(r)
+            import
+            implicit none
             type(c_ptr) :: r
+            ! allow(assumed-size, assumed-size-character-intent)
             character(kind=c_char), intent(out) :: buf(*)
-            integer(kind=c_size_t), value :: size
+            integer(kind=c_size_t), value       :: size
         end function
     end interface
-    
+#else
+    interface
+        function getcwd_c(buf, size) bind(C, name='getcwd') result(r)
+            import
+            implicit none
+            type(c_ptr) :: r
+            ! allow(assumed-size, assumed-size-character-intent)
+            character(kind=c_char), intent(out) :: buf(*)
+            integer(kind=c_size_t), value       :: size
+        end function
+    end interface
+#endif
+
     interface
         integer(c_int) function chdir_c(path) bind(C, name='chdir')
-        import
-            character(kind=c_char) :: path(*)
+            import
+            implicit none
+            ! allow(assumed-size)
+            character(kind=c_char), intent(in) :: path(*)
         end function
     end interface
     !! @endcond
@@ -86,15 +98,15 @@ module fpx_path
     !!
     !! @b Remarks
     !! @ingroup group_path
-    interface join 
+    interface join
         module procedure :: join_character_character
         module procedure :: join_string_character
         module procedure :: join_character_string
         module procedure :: join_string_string
     end interface
-    
-    contains
-    
+
+contains
+
     !> Returns .true. if the path is absolute.
     !! On Unix a path is absolute when it starts with '/'.
     !! On Windows a path is absolute when it starts with a drive letter followed by ':\'
@@ -114,7 +126,7 @@ module fpx_path
     !! @ingroup group_path
     pure logical function is_absolute(filepath) result(res)
         character(*), intent(in)        :: filepath
-#ifdef _WIN32   
+#ifdef _WIN32
         if (len(filepath) < 2) then
             res = .false.
             return
@@ -125,7 +137,7 @@ module fpx_path
 #endif
 
     end function
-    
+
     !> Returns .true. if the path is rooted (starts with a separator) or is absolute.
     !! A rooted path begins with the platform separator ('\' on Windows, '/' elsewhere)
     !! even if it is not a full absolute path (e.g. '\temp' on Windows).
@@ -137,17 +149,17 @@ module fpx_path
     !! @ingroup group_path
     pure logical function is_rooted(filepath) result(res)
         character(*), intent(in)        :: filepath
-        !private 
+        !private
         integer :: length
-        
+
         length = len(filepath)
-#ifdef _WIN32  
+#ifdef _WIN32
         res = (length >= 1 .and. filepath(1:1) == separator) .or. is_absolute(filepath)
 #else
         res = (length > 0 .and. filepath(1:1) == separator)
 #endif
     end function
-    
+
     !> Extracts the filename part of a path.
     !! By default the extension is stripped. If keepext=.true. the full filename
     !! including extension is returned.
@@ -176,15 +188,15 @@ module fpx_path
         if (ipoint < islash) ipoint = len_trim(filepath) + 1
         if (present(keepext)) then
             if (keepext) then
-                res = filepath(islash+1:len_trim(filepath))
+                res = filepath(islash + 1:len_trim(filepath))
             else
-                res = filepath(islash+1: ipoint-1)
+                res = filepath(islash + 1: ipoint - 1)
             end if
         else
-            res = filepath(islash+1: ipoint-1)
+            res = filepath(islash + 1: ipoint - 1)
         end if
     end function
-    
+
     !> Joins two path components with the correct platform separator.
     !! Removes duplicate separators and trailing/leading whitespace.
     !!
@@ -199,13 +211,13 @@ module fpx_path
         character(:), allocatable :: res
         !private
         character(:), allocatable :: temp
-        
+
         temp = trim(adjustl(path1))
-        if (temp(len(temp):len(temp))==separator) temp = trim(temp(:len(temp)-1))
-        
+        if (temp(len(temp):len(temp)) == separator) temp = trim(temp(:len(temp) - 1))
+
         res = temp // separator // trim(adjustl(path2))
     end function
-    
+
     !> Joins character path with string path component.
     !! Removes duplicate separators and trailing/leading whitespace.
     !!
@@ -220,13 +232,13 @@ module fpx_path
         character(:), allocatable :: res
         !private
         character(:), allocatable :: temp
-        
+
         temp = trim(adjustl(path1))
-        if (temp(len(temp):len(temp))==separator) temp = trim(temp(:len(temp)-1))
-        
+        if (temp(len(temp):len(temp)) == separator) temp = trim(temp(:len(temp) - 1))
+
         res = temp // separator // trim(adjustl(path2%chars))
     end function
-    
+
     !> Joins string path with character path component.
     !! Removes duplicate separators and trailing/leading whitespace.
     !!
@@ -241,13 +253,13 @@ module fpx_path
         character(:), allocatable :: res
         !private
         character(:), allocatable :: temp
-        
+
         temp = trim(adjustl(path1%chars))
-        if (temp(len(temp):len(temp))==separator) temp = trim(temp(:len(temp)-1))
-        
+        if (temp(len(temp):len(temp)) == separator) temp = trim(temp(:len(temp) - 1))
+
         res = temp // separator // trim(adjustl(path2))
     end function
-    
+
     !> Joins two string path components.
     !! Removes duplicate separators and trailing/leading whitespace.
     !!
@@ -262,13 +274,13 @@ module fpx_path
         character(:), allocatable :: res
         !private
         character(:), allocatable :: temp
-        
+
         temp = trim(adjustl(path1%chars))
-        if (temp(len(temp):len(temp))==separator) temp = trim(temp(:len(temp)-1))
-        
+        if (temp(len(temp):len(temp)) == separator) temp = trim(temp(:len(temp) - 1))
+
         res = temp // separator // trim(adjustl(path2%chars))
     end function
-    
+
     !> Returns the directory part of a path (everything before the last separator).
     !! @param[in] filepath  Path to analyse
     !! @return res          Directory component
@@ -287,7 +299,7 @@ module fpx_path
 
         call split_path(filepath, res, temp)
     end function
-    
+
     !> Returns the base name (filename) part of a path.
     !! @param[in] filepath  Path to analyse
     !! @return res          Base name component
@@ -331,12 +343,12 @@ module fpx_path
         ! Remove trailing path separators
         temp = trim(adjustl(filepath))
         if (temp(len(temp):len(temp)) == separator) then
-            temp = trim(temp(:len(temp)-1))
+            temp = trim(temp(:len(temp) - 1))
         else
             ipoint = index(filepath, '.', back=.true.)
             isep = index(filepath, separator, back=.true.)
             if (ipoint > isep .and. isep > 0) then
-                temp = trim(temp(:isep-1))
+                temp = trim(temp(:isep - 1))
             end if
         end if
 
@@ -355,16 +367,16 @@ module fpx_path
             return
         end if
 
-        head = temp(:len(temp)-i)
+        head = temp(:len(temp) - i)
 
         ! child of a root directory
         if (index(temp, separator, back=.true.) == 0) then
             head = head // separator
         end if
 
-        tail = temp(len(temp)-i+2:)
+        tail = temp(len(temp) - i + 2:)
     end subroutine
-    
+
     !> Returns the current working directory as a deferred-length character string.
     !! Returns empty string on failure.
     !!
@@ -383,15 +395,15 @@ module fpx_path
         character(len=1, kind=c_char) :: buf(256)
         integer :: i, n
         integer(c_size_t) :: s
-        
+
         s = size(buf, kind=c_size_t)
         if (c_associated(getcwd_c(buf, s))) then
             n = findloc(buf, achar(0), 1)
-            allocate(character(n-1) :: res)
+            allocate(character(n - 1) :: res)
             do i = 1, n - 1
                 res(i:i) = buf(i)
             end do
-        else 
+        else
             res = ''
         end if
     end function
@@ -408,11 +420,11 @@ module fpx_path
     !! @b Remarks
     !! @ingroup group_path
     subroutine chdir(path, err)
-        character(*) :: path
-        integer, optional, intent(out) :: err
+        character(*), intent(in)        :: path
+        integer, optional, intent(out)  :: err
         integer :: loc_err
 
-        loc_err =  chdir_c(path//c_null_char)
+        loc_err = chdir_c(path // c_null_char)
 
         if (present(err)) err = loc_err
     end subroutine

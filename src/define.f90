@@ -42,7 +42,7 @@
 !! @code{.f90}
 !!    use fpx_global
 !!    use fpx_logging, only: verbose
-!!    
+!!
 !!    verbose = .true.
 !!    call preprocess('input.F90')   ! Will show all macro definitions/undefs
 !!    ...
@@ -57,7 +57,7 @@ module fpx_define
     implicit none; private
 
     public :: handle_define, &
-              handle_undef
+            handle_undef
 
 contains
 
@@ -70,7 +70,7 @@ contains
     !! @param[in]    line    Full source line containing the #define
     !! @param[inout] macros  Current macro table (updated in-place)
     !! @param[in]    token   Usually 'DEFINE' – keyword matched in uppercase
-    !! 
+    !!
     !! @b Remarks
     !! @ingroup group_define
     subroutine handle_define(line, macros, token)
@@ -83,14 +83,14 @@ contains
 
         pos = index(uppercase(line), token) + len(token)
         temp = trim(adjustl(line(pos + 1:)))
-        
+
         paren_start = index(temp, '(')
         pos = index(temp, ' ')
         if (pos > 0 .and. pos < paren_start) paren_start = 0
-        
+
         if (paren_start > 0) then
             name = trim(temp(:paren_start - 1))
-            
+
             if (global%undef .contains. name) return
             paren_end = index(temp, ')')
             if (paren_end == 0) then
@@ -112,12 +112,12 @@ contains
             if (len_trim(temp) > 0) npar = npar + 1
 
             if (.not. allocated(macros)) allocate(macros(0))
-            
+
             if (name == 'defined') then
                 if (verbose) print *, '"defined" cannot be used a a macro name'
                 return
             end if
-            
+
             if (.not. is_defined(name, macros, imacro)) then
                 call add(macros, name, val)
                 imacro = sizeof(macros)
@@ -143,12 +143,12 @@ contains
                     end do
                     macros(imacro)%params(i) = temp(paren_start:pos - 1)
                     if (verbose) print *, "Param ", i, ": '", macros(imacro)%params(i), &
-                        "', length = ", len_trim(macros(imacro)%params(i))
+                            "', length = ", len_trim(macros(imacro)%params(i))
                     i = i + 1
                     pos = pos + 1
                 end do
                 if (verbose) print *, "Defined variadic macro: ", trim(name), &
-                    "(", (macros(imacro)%params(i)//", ", i=1, npar), "...) = ", trim(val)
+                        "(", (macros(imacro)%params(i) // ", ", i = 1, npar), "...) = ", trim(val)
             else
                 macros(imacro)%is_variadic = .false.
                 if (allocated(macros(imacro)%params)) deallocate(macros(imacro)%params)
@@ -167,14 +167,14 @@ contains
                     end do
                     macros(imacro)%params(i) = temp(paren_start:pos - 1)
                     if (verbose) print *, "Param ", i, ": '", trim(macros(imacro)%params(i)), &
-                        "', length = ", len_trim(macros(imacro)%params(i))
+                            "', length = ", len_trim(macros(imacro)%params(i))
                     i = i + 1
                     if (pos <= len_trim(temp)) then
                         if (temp(pos:pos) == ',') pos = pos + 1
                     end if
                 end do
-                if (verbose) print *, "Defined macro: ", trim(name), "(", (macros(imacro)%params(i)//", ", i=1, npar - 1), &
-                    macros(imacro)%params(npar), ") = ", trim(val)
+                if (verbose) print *, "Defined macro: ", trim(name), "(", (macros(imacro)%params(i) // ", ", i = 1, npar - 1), &
+                        macros(imacro)%params(npar), ") = ", trim(val)
             end if
         else
             pos = index(temp, ' ')
@@ -185,7 +185,7 @@ contains
                 name = trim(temp)
                 val = ''
             end if
-            
+
             if (global%undef .contains. name) return
             if (.not. allocated(macros)) allocate(macros(0))
             if (.not. is_defined(name, macros, imacro)) then
@@ -194,7 +194,7 @@ contains
             else
                 macros(imacro) = macro(name, val)
             end if
-            
+
             if (verbose) print *, "Defined macro: ", trim(name), " = ", trim(val)
         end if
     end subroutine
@@ -205,7 +205,7 @@ contains
     !! @param[in]    line    Full source line containing the #undef
     !! @param[inout] macros  Current macro table (updated in-place)
     !! @param[in]    token   Usually 'UNDEF' – keyword matched in uppercase
-    !! 
+    !!
     !! @b Remarks
     !! @ingroup group_define
     subroutine handle_undef(line, macros, token)
@@ -227,7 +227,7 @@ contains
                 exit
             end if
         end do
-        
+
         if (i > n) then
             if (verbose) print *, "Warning: Macro ", name, " not found for #undef"
         end if

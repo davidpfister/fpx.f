@@ -67,28 +67,28 @@ module fpx_conditional
     implicit none; private
 
     public :: handle_if, &
-              handle_ifdef, &
-              handle_ifndef, &
-              handle_elif, &
-              handle_else, &
-              handle_endif, &
-              is_active
+            handle_ifdef, &
+            handle_ifndef, &
+            handle_elif, &
+            handle_else, &
+            handle_endif, &
+            is_active
 
     !> State of a single conditional block
     !! <h2  class="groupheader">Constructors</h2>
     !! Initializes a new instance of the @ref cond_state type
     !! <h3>cond_state(logical, logical)</h3>
     !! @verbatim type(cond_state) function cond_state(logical active, logical has_met) @endverbatim
-    !! 
+    !!
     !! @param[in] active whether code in this block should be emitted
     !! @param[in] has_met whether a true branch has already been taken at this nesting level
-    !! 
+    !!
     !! @return The constructed @ref cond_state object.
     !!
     !! <h2  class="groupheader">Remarks</h2>
     !! @ingroup group_conditional
     type, public :: cond_state
-        logical :: active !< Indicate whether the condition is active
+        logical :: active  !< Indicate whether the condition is active
         logical :: has_met  !< Indicates whether the condition has been met
     end type
 
@@ -152,7 +152,8 @@ contains
         cond_depth = cond_depth + 1
         cond_stack(cond_depth + 1)%active = result .and. parent_active
         cond_stack(cond_depth + 1)%has_met = result
-        if (verbose) print *, "#if result: ", result, ", cond_depth = ", cond_depth, ", active = ", cond_stack(cond_depth + 1)%active
+        if (verbose) print *, "#if result: ", result, ", cond_depth = ", cond_depth, ", active = ", cond_stack(cond_depth + 1)%&
+                active
     end subroutine
 
     !> Process #ifdef – test if a macro is defined

@@ -43,7 +43,7 @@
 !! @endcode
 module fpx_graph
     implicit none; private
-    
+
     !> Directed graph with fixed vertex count and efficient cycle detection
     !! Stores edges in a dense adjacency matrix slice per vertex.
     !! Only the actually used portion of each row is tracked via `list_sizes`.
@@ -65,9 +65,9 @@ module fpx_graph
     !! Initializes a new instance of the @ref digraph class
     !! <h3>digraph(integer)</h3>
     !! @verbatim type(digraph) function digraph(integer vertices) @endverbatim
-    !! 
+    !!
     !! @param[in] vertices Number of vertices (usually number of currently defined macros)
-    !! 
+    !!
     !! @b Examples
     !! @code{.f90}
     !! type(digraph) :: g
@@ -79,16 +79,16 @@ module fpx_graph
     !! <h2  class="groupheader">Remarks</h2>
     !! @ingroup group_graph
     type, public :: digraph
-        integer, private :: vertices !< Number of vertices
-        integer, allocatable, private :: adjacency_list(:,:) !< Adjacency list containing the connection information between the vertices.
-        integer, allocatable, private :: list_sizes(:) !< Actually used portion of each row of @ref adjacency_list.
+        integer, private :: vertices  !< Number of vertices
+        integer, allocatable, private :: adjacency_list(:, :)  !< Adjacency list containing the connection information between the vertices.
+        integer, allocatable, private :: list_sizes(:)  !< Actually used portion of each row of @ref adjacency_list.
     contains
         private
         procedure, pass(this), public :: add_edge => graph_add_edge
         procedure, pass(this), public :: is_circular => graph_has_cycle_dfs
         final :: graph_final
     end type
-    
+
     !> Constructor interface for @ref digraph type
     !!
     !! @b Remarks
@@ -123,12 +123,12 @@ contains
         integer, intent(in)             :: source
         integer, intent(in)             :: destination
         logical, intent(out), optional  :: exists
-        
+
         if (source < 1 .or. source > this%vertices .or. &
-            destination < 1 .or. destination > this%vertices) then
-            return ! Skip invalid edges
+                destination < 1 .or. destination > this%vertices) then
+            return  ! Skip invalid edges
         end if
-        
+
         this%list_sizes(source) = this%list_sizes(source) + 1
         if (this%list_sizes(source) <= this%vertices) then
             if (present(exists)) exists = this%adjacency_list(source, this%list_sizes(source)) /= 0
@@ -156,7 +156,7 @@ contains
         allocate(recursion_stack(this%vertices), source=.false.)
 
         has_cycle = dfs_recursive(this, start_vertex, visited, recursion_stack)
-        
+
         deallocate(visited, recursion_stack)
     end function
 
@@ -173,7 +173,7 @@ contains
 
         do i = 1, this%list_sizes(vertex)
             neighbor = this%adjacency_list(vertex, i)
-            if (neighbor < 1 .or. neighbor > this%vertices) cycle ! Skip invalid neighbors
+            if (neighbor < 1 .or. neighbor > this%vertices) cycle  ! Skip invalid neighbors
             if (.not. visited(neighbor)) then
                 if (dfs_recursive(this, neighbor, visited, recursion_stack)) then
                     has_cycle = .true.

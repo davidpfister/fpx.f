@@ -58,6 +58,7 @@ module fpx_include
     interface
         subroutine read_unit(iunit, ounit, macros, from_include)
             import macro
+            implicit none
             integer, intent(in)                     :: iunit
             integer, intent(in)                     :: ounit
             type(macro), allocatable, intent(inout) :: macros(:)
@@ -103,14 +104,15 @@ contains
         else if (include_file(1:1) == '<') then
             include_file = include_file(2:index(include_file(2:), '>'))
         end if
-        
+
         ifile = include_file
         if (is_rooted(ifile)) then
             inquire(file=ifile, exist=exists)
             if (exists) then
                 include_file = ifile
             else
-                if (verbose) print *, "Error: Cannot find include file '", trim(include_file), "' at ", trim(parent_file), ":", iline
+                if (verbose) print *, "Error: Cannot find include file '", trim(include_file), "' at ", trim(parent_file), ":", &
+                        iline
                 return
             end if
         else
@@ -127,27 +129,28 @@ contains
                         exit
                     end if
                 end do
-            
+
                 if (.not. exists) then
                     ifile = join(cwd(), include_file)
                     inquire(file=ifile, exist=exists)
                     if (exists) then
                         include_file = ifile
                     else
-                        if (verbose) print *, "Error: Cannot find include file '", trim(include_file), "' at ", trim(parent_file), ":", iline
+                        if (verbose) print *, "Error: Cannot find include file '", trim(include_file), "' at ", trim(parent_file), &
+                                ":", iline
                         return
                     end if
                 end if
             end if
         end if
-        
-        open (newunit=iunit, file=include_file, status='old', action='read', iostat=ierr)
+
+        open(newunit=iunit, file=include_file, status='old', action='read', iostat=ierr)
         if (ierr /= 0) then
             if (verbose) print *, "Error: Cannot open include file '", trim(include_file), "' at ", trim(parent_file), ":", iline
             return
         end if
-        
+
         call preprocess(iunit, ounit, macros, .true.)
-        close (iunit)
+        close(iunit)
     end subroutine
 end module

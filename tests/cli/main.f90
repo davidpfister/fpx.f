@@ -19,7 +19,7 @@ TESTPROGRAM(main)
     TEST('string_tests')
         character(*), parameter :: s1 = 'TEST'
         character(:), allocatable :: s2
-        
+
         s2 = 'test'
 
         EXPECT_STREQ(s1, 'TEST')
@@ -43,7 +43,7 @@ TESTPROGRAM(main)
         ASSERT_FALSE(false)
         ASSERT_TRUE(.not. false)
         ASSERT_FALSE(.not. true)
-        
+
     END_TEST
 
     TEST('equality_tests_for_types')
