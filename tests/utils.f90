@@ -4,11 +4,11 @@ module  test_utils
     implicit none; private
 
     public :: getfiles,     &
-              readruns,     &
-              readline,     &
-              getlines
+            readruns,     &
+            readline,     &
+            getlines
 
-    contains
+contains
 
     subroutine getfiles(dirpath, res)
         character(*), intent(in)                    :: dirpath
@@ -18,13 +18,13 @@ module  test_utils
         character(:), allocatable :: line
         character(256) :: tmp
 #ifdef _WIN32
-        call execute_command_line('dir '//dirpath//'  /b /s > filecontent.txt')
+        call execute_command_line('dir ' // dirpath // '  /b /s > filecontent.txt')
 #else
-        call execute_command_line('ls *.?* '//dirpath//' > filecontent.txt')
+        call execute_command_line('ls *.?* ' // dirpath // ' > filecontent.txt')
 #endif
         allocate(res(0))
 
-        open(newunit=unit, file = 'filecontent.txt', action = 'read')
+        open(newunit=unit, file='filecontent.txt', action='read')
         do while (.true.)
             call readline(unit, line, ierr)
             if (ierr /= 0) exit
@@ -38,7 +38,7 @@ module  test_utils
     subroutine getlines(filepath, res, keepall)
         character(*), intent(in)                    :: filepath
         character(256), allocatable, intent(out)    :: res(:)
-        logical, optional                           :: keepall
+        logical, intent(in), optional                           :: keepall
         !private
         logical :: exists, keep
         integer :: idx, ierr, count, k, unit, last, pos
@@ -46,8 +46,7 @@ module  test_utils
         character(256) :: tmp
         character(1), parameter :: LF = char(10)            !< line feed.
         character(1), parameter :: CR = char(13)            !< carriage return.
-        character(2), parameter :: CRLF = CR//LF            !< carriage return and line feed new line.
-
+        character(2), parameter :: CRLF = CR // LF            !< carriage return and line feed new line.
 
         if (present(keepall)) keep = keepall
         allocate(res(0))
@@ -55,7 +54,7 @@ module  test_utils
         inquire(file=filepath, exist=exists)
         if (.not. exists) return
 
-        open (newunit=unit, file=filepath, status='old', action='read', iostat=ierr)
+        open(newunit=unit, file=filepath, status='old', action='read', iostat=ierr)
         if (ierr /= 0) return
         count = 0
 
@@ -87,7 +86,7 @@ module  test_utils
         inquire(file=filepath, exist=exists)
         if (.not. exists) return
 
-        open (newunit=unit, file=filepath, status='old', action='read', iostat=ierr)
+        open(newunit=unit, file=filepath, status='old', action='read', iostat=ierr)
         if (ierr /= 0) return
         do while (.true.)
             call readline(unit, line, ierr)
@@ -108,22 +107,22 @@ module  test_utils
         character(1024) :: buffer
         integer :: last, isize
 
-        line=''; ierr=0
+        line = ''; ierr = 0
         do
-            read(unit=iunit, iostat = ierr, fmt = '(A)', advance = 'no', size = isize) buffer
+            read(unit=iunit, iostat=ierr, fmt='(A)', advance='no', size=isize) buffer
             if (isize > 0) line = line // buffer(:isize)
             if (is_iostat_eor(ierr)) then
                 last = len(line)
-                if(last /= 0) then
+                if (last /= 0) then
                     if (line(last:last) == '\') then
-                        line = line(:last-1); cycle
-                    endif
-                endif
+                        line = line(:last - 1); cycle
+                    end if
+                end if
                 ierr = 0; exit
             elseif (ierr /= 0) then
                 exit
-            endif
-        enddo
+            end if
+        end do
 
         line = trim(line)
     end subroutine
