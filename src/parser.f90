@@ -56,6 +56,7 @@ module fpx_parser
     use fpx_macro
     use fpx_conditional
     use fpx_define
+    use fpx_diagnostics
     use fpx_include
     use fpx_path
     use fpx_global
@@ -385,6 +386,10 @@ contains
                 call handle_define(trimmed_line, macros, 'DEFINE')
             else if (starts_with(uppercase(adjustl(trimmed_line(2:))), 'UNDEF') .and. active) then
                 call handle_undef(trimmed_line, macros, 'UNDEF')
+            else if (starts_with(uppercase(adjustl(trimmed_line(2:))), 'WARNING') .and. active) then
+                call handle_warning(trimmed_line, macros, 'WARNING')
+            else if (starts_with(uppercase(adjustl(trimmed_line(2:))), 'ERROR') .and. active) then
+                call handle_error(trimmed_line, macros, 'ERROR')
             else if (starts_with(uppercase(adjustl(trimmed_line(2:))), 'INCLUDE') .and. active) then
                 call handle_include(trimmed_line, ounit, filepath, linenum, preprocess_unit, macros, 'INCLUDE')
             else if (starts_with(uppercase(adjustl(trimmed_line(2:))), 'IFDEF')) then
