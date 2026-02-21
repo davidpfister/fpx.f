@@ -4,6 +4,7 @@ var topics =
     [ "Constants", "group__group__constants.html", "group__group__constants" ],
     [ "Date", "group__group__date.html", "group__group__date" ],
     [ "Define", "group__group__define.html", "group__group__define" ],
+    [ "Diagnostics", "group__group__diagnostics.html", "group__group__diagnostics" ],
     [ "Global", "group__group__global.html", "group__group__global" ],
     [ "Graph", "group__group__graph.html", "group__group__graph" ],
     [ "Include", "group__group__include.html", "group__group__include" ],

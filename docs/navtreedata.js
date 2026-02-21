@@ -52,7 +52,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "cheatsheet.html",
-"specifications.html#autotoc_md36"
+"specifications.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

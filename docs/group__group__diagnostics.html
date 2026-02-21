@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <meta name="author" content="SXS Collaboration">
     <meta name="generator" content="Doxygen 1.12.0"/>
-  <title>fpx.f: preprocess Interface Reference</title>
+  <title>fpx.f: Diagnostics</title>
   <link href="tabs.css" rel="stylesheet" type="text/css"/>
   <script type="text/javascript" src="jquery.js"></script>
   <script type="text/javascript" src="dynsections.js"></script>
@@ -102,7 +102,7 @@ $(function() {
 </div>
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
-$(function(){initNavTree('interfacefpx__parser_1_1preprocess.html',''); initResizable(true); });
+$(function(){initNavTree('group__group__diagnostics.html',''); initResizable(true); });
 /* @license-end */
 </script>
 <div id="doc-content">
@@ -128,155 +128,100 @@ $(function(){initNavTree('interfacefpx__parser_1_1preprocess.html',''); initResi
 </div>
 
 <div class="header">
-  <div class="summary">
-<a href="interfacefpx__parser_1_1preprocess-members.html">List of all members</a>  </div>
-  <div class="headertitle"><div class="title">preprocess Interface Reference<div class="ingroups"><a class="el" href="group__group__parser.html">Parser</a></div></div></div>
+  <div class="headertitle"><div class="title">Diagnostics</div></div>
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">Definition</h2>
-<div class="textblock"><p>Generic interface to start preprocessing from various sources/sinks. </p>
-<p>Allows preprocessing:</p><ul>
-<li>file to stdout</li>
-<li>file to file</li>
-<li>unit to file</li>
-<li>unit to unit (most flexible, used internally for include)</li>
-</ul>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="parser_8f90_source.html#l00079">79</a> of file <a class="el" href="parser_8f90_source.html">parser.f90</a>.</p>
-</div><hr/>The documentation for this interface was generated from the following file:<ul>
-<li><a class="el" href="parser_8f90_source.html">parser.f90</a></li>
-</ul>
+<p>Processing of warning and error preprocessor directives This module implements the core logic for handling messages (either as warning or errors). </p>
+<h2 class="groupheader">Examples</h2>
+<ol type="1">
+<li>Break preprocessing on error: <div class="fragment"><div class="line"><span class="preprocessor">#ifdef __vax__</span></div>
+<div class="line"><span class="preprocessor"></span><span class="preprocessor">#error </span></div>
+<div class="line"><span class="preprocessor"></span><span class="preprocessor">#endif</span></div>
+<div class="line"><span class="preprocessor"></span>...</div>
+</div><!-- fragment --></li>
+<li>Warn version mismatch: <div class="fragment"><div class="line"><span class="preprocessor">#if __STDF__ &gt; 1</span></div>
+<div class="line"><span class="preprocessor"></span><span class="preprocessor">#warning </span></div>
+<div class="line"><span class="preprocessor"></span><span class="preprocessor">#endif</span></div>
+<div class="line"><span class="preprocessor"></span>...</div>
+</div><!-- fragment --> </li>
+</ol>
 <h2 class="groupheader">Methods</h2>
-<a id="ab89d17f91b95e7cc0531ae8d2971dab2" name="ab89d17f91b95e7cc0531ae8d2971dab2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab89d17f91b95e7cc0531ae8d2971dab2">&#9670;&#160;</a></span>preprocess_file()</h2>
+<a id="ga61bcae620ae31961a738d0e9391069c8" name="ga61bcae620ae31961a738d0e9391069c8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga61bcae620ae31961a738d0e9391069c8">&#9670;&#160;</a></span>handle_error()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">subroutine preprocess_file </td>
+          <td class="memname">subroutine, public handle_error </td>
           <td>(</td>
-          <td class="paramtype">character(*), intent(in)</td>          <td class="paramname"><span class="paramname"><em>filepath</em></span>, </td>
+          <td class="paramtype">character(*), intent(in)</td>          <td class="paramname"><span class="paramname"><em>line</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">character(*), intent(in), optional</td>          <td class="paramname"><span class="paramname"><em>outputfile</em></span>&#160;)</td>
+          <td class="paramtype">type(<a class="el" href="structfpx__macro_1_1macro.html">macro</a>), dimension(:), intent(inout), allocatable</td>          <td class="paramname"><span class="paramname"><em>macros</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">character(*), intent(in)</td>          <td class="paramname"><span class="paramname"><em>token</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Preprocess a file and write result to an optional output file (default: stdout) Opens the input file, determines the base filename for error messages, opens the output file if requested, and delegates to the unit-to-unit routine. </p>
+<p>Process a error directive. It causes the preprocessor to report a fatal error that stops the preprocessor. The string forming the rest of the line following ‘::error’ is printed in the standard error. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">filepath</td><td>Path to the input source file </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">outputfile</td><td>Optional path to the output file; if absent output goes to stdout</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">line</td><td>Full source line containing the define </td></tr>
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">macros</td><td>Current macro table (updated in-place) </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">token</td><td>Usually 'DEFINE' – keyword matched in uppercase</td></tr>
   </table>
   </dd>
 </dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="parser_8f90_source.html#l00103">103</a> of file <a class="el" href="parser_8f90_source.html">parser.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="diagnostics_8f90_source.html#l00048">48</a> of file <a class="el" href="diagnostics_8f90_source.html">diagnostics.f90</a>.</p>
 
 </div>
 </div>
-<a id="a4320a015ed673ba1501c2db89944866d" name="a4320a015ed673ba1501c2db89944866d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4320a015ed673ba1501c2db89944866d">&#9670;&#160;</a></span>preprocess_file_to_unit()</h2>
+<a id="gad056abf172094490247a1f5eecda6e8c" name="gad056abf172094490247a1f5eecda6e8c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gad056abf172094490247a1f5eecda6e8c">&#9670;&#160;</a></span>handle_warning()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">subroutine preprocess_file_to_unit </td>
+          <td class="memname">subroutine, public handle_warning </td>
           <td>(</td>
-          <td class="paramtype">character(*), intent(in)</td>          <td class="paramname"><span class="paramname"><em>ifile</em></span>, </td>
+          <td class="paramtype">character(*), intent(in)</td>          <td class="paramname"><span class="paramname"><em>line</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">integer, intent(in)</td>          <td class="paramname"><span class="paramname"><em>ounit</em></span>&#160;)</td>
+          <td class="paramtype">type(<a class="el" href="structfpx__macro_1_1macro.html">macro</a>), dimension(:), intent(inout), allocatable</td>          <td class="paramname"><span class="paramname"><em>macros</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">character(*), intent(in)</td>          <td class="paramname"><span class="paramname"><em>token</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Preprocess a file and write to an already-open output unit. </p>
+<p>Process a warning directive. It causes the preprocessor to report a warning that does not stop the preprocessor. The string forming the rest of the line following ‘::warning’ is printed in the standard output. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">ifile</td><td>Input filename </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">ounit</td><td>Output unit (already open for writing)</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">line</td><td>Full source line containing the undef </td></tr>
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">macros</td><td>Current macro table (updated in-place) </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">token</td><td>Usually 'UNDEF' – keyword matched in uppercase</td></tr>
   </table>
   </dd>
 </dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="parser_8f90_source.html#l00171">171</a> of file <a class="el" href="parser_8f90_source.html">parser.f90</a>.</p>
-
-</div>
-</div>
-<a id="aba9728c940a6c1d17e784608e3a53ea4" name="aba9728c940a6c1d17e784608e3a53ea4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aba9728c940a6c1d17e784608e3a53ea4">&#9670;&#160;</a></span>preprocess_unit_to_file()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">subroutine preprocess_unit_to_file </td>
-          <td>(</td>
-          <td class="paramtype">integer, intent(in)</td>          <td class="paramname"><span class="paramname"><em>iunit</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">character(*), intent(in)</td>          <td class="paramname"><span class="paramname"><em>ofile</em></span>&#160;)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Preprocess from an already-open input unit and write to a file. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">iunit</td><td>Input unit (must already be open for reading) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">ofile</td><td>Output filename</td></tr>
-  </table>
-  </dd>
-</dl>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="parser_8f90_source.html#l00143">143</a> of file <a class="el" href="parser_8f90_source.html">parser.f90</a>.</p>
-
-</div>
-</div>
-<a id="a708ab65963252431cb7c45849cbc81c5" name="a708ab65963252431cb7c45849cbc81c5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a708ab65963252431cb7c45849cbc81c5">&#9670;&#160;</a></span>preprocess_unit_to_unit()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">subroutine preprocess_unit_to_unit </td>
-          <td>(</td>
-          <td class="paramtype">integer, intent(in)</td>          <td class="paramname"><span class="paramname"><em>iunit</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">integer, intent(in)</td>          <td class="paramname"><span class="paramname"><em>ounit</em></span>&#160;)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Core preprocessing routine: read from iunit, write to ounit Sets up a clean macro environment for the top-level file, resets conditional compilation state, and calls the worker routine. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">iunit</td><td>Input unit </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">ounit</td><td>Output unit</td></tr>
-  </table>
-  </dd>
-</dl>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="parser_8f90_source.html#l00202">202</a> of file <a class="el" href="parser_8f90_source.html">parser.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="diagnostics_8f90_source.html#l00068">68</a> of file <a class="el" href="diagnostics_8f90_source.html">diagnostics.f90</a>.</p>
 
 </div>
 </div>
@@ -286,7 +231,6 @@ $(function(){initNavTree('interfacefpx__parser_1_1preprocess.html',''); initResi
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>fpx_parser</b></li><li class="navelem"><a class="el" href="interfacefpx__parser_1_1preprocess.html">preprocess</a></li>
     <li class="footer">
     &copy; Copyright 2017 - 2024
     <a href="LICENSE.txt" target="_blank">
