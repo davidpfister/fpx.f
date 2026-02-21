@@ -406,6 +406,8 @@ contains
                 call handle_else(filepath, linenum)
             else if (starts_with(uppercase(adjustl(trimmed_line(2:))), 'ENDIF')) then
                 call handle_endif(filepath, linenum)
+            else if (starts_with(uppercase(adjustl(trimmed_line(2:))), 'PRAGMA')) then
+                rst = trimmed_line
             end if
         else if (active) then
             if (.not. global%expand_macros) then
@@ -414,7 +416,6 @@ contains
                 rst = adjustl(expand_all(trimmed_line, macros, filepath, linenum, stch))
                 if (verbose) print *, "Writing to output: '", trim(rst), "'"
             end if
-
         end if
     end function
 end module
