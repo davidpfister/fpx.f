@@ -1,0 +1,3 @@
+fpm: Entering directory 'C:\Users\DavidPfister\GitHub\sandbox\fpx.f'
+<ERROR> *cmd_run* Model error: 'tests\main.f90' could not be found, check if the file exists
+STOP 1

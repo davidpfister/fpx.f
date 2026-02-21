@@ -1,6 +1,7 @@
 C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\c\basic.c
 C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\c\basic.c.out
 C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\c\basic.ref
+C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\c\bin
 C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\c\buildin.c
 C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\c\buildin.c.out
 C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\c\buildin.ref
@@ -25,6 +26,7 @@ C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\c\macro.ref
 C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\c\newline.c
 C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\c\newline.c.out
 C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\c\newline.ref
+C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\c\obj
 C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\c\recursion.c
 C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\c\recursion.c.out
 C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\c\recursion.ref
@@ -34,6 +36,20 @@ C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\c\scan.ref
 C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\c\stringisize.c
 C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\c\stringisize.c.out
 C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\c\stringisize.ref
+C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\c\Test.Fpx.C.vfproj
 C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\c\variadic.c
 C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\c\variadic.c.out
 C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\c\variadic.ref
+C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\c\bin\Debug
+C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\c\bin\Debug\x64
+C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\c\bin\Debug\x64\Test.Fpx.C.exe
+C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\c\bin\Debug\x64\Test.Fpx.C.pdb
+C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\c\obj\Debug
+C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\c\obj\Debug\x64
+C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\c\obj\Debug\x64\BuildLog.htm
+C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\c\obj\Debug\x64\main.obj
+C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\c\obj\Debug\x64\Test.Fpx.C.exe.intermediate.manifest
+C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\c\obj\Debug\x64\test_c.obj
+C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\c\obj\Debug\x64\test_utils.mod
+C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\c\obj\Debug\x64\utils.obj
+C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\c\obj\Debug\x64\vc160.pdb

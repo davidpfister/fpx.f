@@ -27,8 +27,34 @@ library = false
 implicit-external = false
 
 [[test]]
-name = "test"
+name = "test_arithmetic"
 source-dir = "tests"
+main = "test_arithmetic.f90"
+
+[[test]]
+name = "test_c"
+source-dir = "tests"
+main = "test_c.f90"
+
+[[test]]
+name = "test_cli"
+source-dir = "tests"
+main = "test_cli.f90"
+
+[[test]]
+name = "test_default"
+source-dir = "tests"
+main = "test_default.f90"
+
+[[test]]
+name = "test_flang"
+source-dir = "tests"
+main = "test_flang.f90"
+
+[[test]]
+name = "test_lfortran"
+source-dir = "tests"
+main = "test_lfortran.f90"
 
 [extra.fortitude.check]
 select = ["C", "E", "S"]

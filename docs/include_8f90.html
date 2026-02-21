@@ -130,7 +130,8 @@ $(function(){initNavTree('include_8f90.html',''); initResizable(true); });
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Data Types</a> &#124;
-<a href="#func-members">Functions/Subroutines</a>  </div>
+<a href="#func-members">Functions/Subroutines</a> &#124;
+<a href="#var-members">Variables</a>  </div>
   <div class="headertitle"><div class="title">include.f90 File Reference</div></div>
 </div><!--header-->
 <div class="contents">
@@ -146,8 +147,20 @@ Data Types</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions/Subroutines</h2></td></tr>
 <tr class="memitem:ga1919a8ed1d71c0e7b0881c6512cbadef" id="r_ga1919a8ed1d71c0e7b0881c6512cbadef"><td class="memItemLeft" align="right" valign="top">recursive subroutine, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__include.html#ga1919a8ed1d71c0e7b0881c6512cbadef">handle_include</a> (input, ounit, parent_file, iline, preprocess, macros, token)</td></tr>
-<tr class="memdesc:ga1919a8ed1d71c0e7b0881c6512cbadef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Process a include directive encountered during preprocessing Resolves the include file name (quoted or angle-bracketed), searches for the file using standard rules (parent directory first, then global include paths, then cwd), opens it, and recursively preprocesses its contents into the output unit.  <br /></td></tr>
+<tr class="memdesc:ga1919a8ed1d71c0e7b0881c6512cbadef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Process a include directive encountered during preprocessing Resolves the include file name (quoted or angle-bracketed), searches for the file using standard C preprocessor rules:  <br /></td></tr>
 <tr class="separator:ga1919a8ed1d71c0e7b0881c6512cbadef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab85fc44adeb3b7f5e98cbd402427585f" id="r_gab85fc44adeb3b7f5e98cbd402427585f"><td class="memItemLeft" align="right" valign="top">character(:) function, dimension(:), allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__include.html#gab85fc44adeb3b7f5e98cbd402427585f">get_system_paths</a> ()</td></tr>
+<tr class="memdesc:gab85fc44adeb3b7f5e98cbd402427585f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get system include paths from PATH environment variable Returns an array of directory paths found in PATH.  <br /></td></tr>
+<tr class="separator:gab85fc44adeb3b7f5e98cbd402427585f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:ad111b646a74caebeddf19cbc440b9183" id="r_ad111b646a74caebeddf19cbc440b9183"><td class="memItemLeft" align="right" valign="top">integer, parameter, private&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad111b646a74caebeddf19cbc440b9183">include_type_system</a> = 1</td></tr>
+<tr class="separator:ad111b646a74caebeddf19cbc440b9183"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa05e3f4e26bc7dd56915ab9451e1a992" id="r_aa05e3f4e26bc7dd56915ab9451e1a992"><td class="memItemLeft" align="right" valign="top">integer, parameter, private&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa05e3f4e26bc7dd56915ab9451e1a992">include_type_local</a> = 2</td></tr>
+<tr class="separator:aa05e3f4e26bc7dd56915ab9451e1a992"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a443503dbfc867fb020707feca32c26b2" id="r_a443503dbfc867fb020707feca32c26b2"><td class="memItemLeft" align="right" valign="top">integer, parameter, private&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a443503dbfc867fb020707feca32c26b2">max_path_len</a> = 256</td></tr>
+<tr class="separator:a443503dbfc867fb020707feca32c26b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->
 </div><!-- doc-content -->

@@ -17,15 +17,15 @@ var pages =
       ] ]
     ] ],
     [ "Basic Usage", "usage.html", [
-      [ "Using fpx from the Command Line (CLI)", "usage.html#autotoc_md22", [
-        [ "Basic usage", "usage.html#autotoc_md23", null ],
-        [ "Most useful options", "usage.html#autotoc_md24", null ],
-        [ "Real-world examples", "usage.html#autotoc_md25", null ]
+      [ "Using fpx from the Command Line (CLI)", "usage.html#autotoc_md110", [
+        [ "Basic usage", "usage.html#autotoc_md111", null ],
+        [ "Most useful options", "usage.html#autotoc_md112", null ],
+        [ "Real-world examples", "usage.html#autotoc_md113", null ]
       ] ],
-      [ "Using fpx as an Embedded Library in Your Own Fortran Program", "usage.html#autotoc_md26", [
-        [ "Minimal example – preprocess a file to another file", "usage.html#autotoc_md27", null ],
-        [ "Full control – predefined macros, include paths, etc.", "usage.html#autotoc_md28", null ],
-        [ "Preprocess from memory (string → string)", "usage.html#autotoc_md29", null ]
+      [ "Using fpx as an Embedded Library in Your Own Fortran Program", "usage.html#autotoc_md114", [
+        [ "Minimal example – preprocess a file to another file", "usage.html#autotoc_md115", null ],
+        [ "Full control – predefined macros, include paths, etc.", "usage.html#autotoc_md116", null ],
+        [ "Preprocess from memory (string → string)", "usage.html#autotoc_md117", null ]
       ] ]
     ] ],
     [ "Cheatsheet", "cheatsheet.html", [
@@ -42,5 +42,6 @@ var pages =
         [ "Known issues", "integration.html#autotoc_md8", null ]
       ] ],
       [ "cpp", "integration.html#autotoc_md9", null ]
-    ] ]
+    ] ],
+    [ "J3 specifications", "j3.html", "j3" ]
 ];

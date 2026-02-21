@@ -281,31 +281,25 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Formatted output procedure for user-defined type <a class="el" href="structfpx__string_1_1string.html">string</a> (UDTIO) This procedure is called automatically when a formatted WRITE statement is used <br  />
- with a variable of type <code>string</code> (when using the DT edit descriptor or default <br  />
- formatted output for the type). </p>
-<p>It writes the content of the string component <code>dtvchars</code> using a simple <code>A</code> format. <br  />
- If the string is not allocated, an empty string is written.</p>
+<p>Formatted output procedure for user-defined type <a class="el" href="structfpx__string_1_1string.html">string</a> (UDTIO) This procedure is called automatically when a formatted WRITE statement is used with a variable of type <code>string</code> (when using the DT edit descriptor or default formatted output for the type). </p>
+<p>It writes the content of the string component <code>dtvchars</code> using a simple <code>A</code> format. If the string is not allocated, an empty string is written.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">dtv</td><td>The <a class="el" href="structfpx__string_1_1string.html">string</a> object to be written (polymorphic dummy argument) </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">unit</td><td>Fortran logical unit number </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">iotype</td><td>String describing the edit descriptor ('DT' + optional string) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">v_list</td><td>Integer array containing the values from the DT edit descriptor <br  />
- (v_list is empty if no parentheses were used after DT) </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">v_list</td><td>Integer array containing the values from the DT edit descriptor (v_list is empty if no parentheses were used after DT) </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">iostat</td><td>I/O status code (0 = success, positive = error, negative = end-of-file/end-of-record) </td></tr>
     <tr><td class="paramdir">[in,out]</td><td class="paramname">iomsg</td><td>Message describing the I/O error (if any)</td></tr>
   </table>
   </dd>
 </dl>
 <p><b>Note</b> </p><ul>
-<li>This implementation <b>ignores</b> <code>iotype</code> and <code>v_list</code> parameters <br  />
- → the same simple character output is always performed</li>
+<li>This implementation <b>ignores</b> <code>iotype</code> and <code>v_list</code> parameters → the same simple character output is always performed</li>
 <li>The procedure always uses format <code>(A)</code></li>
 <li>Empty (not allocated) string is written as empty line (zero characters)</li>
 </ul>
-<p><b>Warning</b> This is a minimal implementation of UDTIO formatted output. <br  />
- More sophisticated versions could:</p><ul>
+<p><b>Warning</b> This is a minimal implementation of UDTIO formatted output. More sophisticated versions could:</p><ul>
 <li>respect <code>iotype</code> (DT"..." or LISTDIRECTED)</li>
 <li>use <code>v_list</code> for width/precision control</li>
 <li>add quotation marks, escaping, etc.</li>

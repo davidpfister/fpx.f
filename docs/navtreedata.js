@@ -25,25 +25,22 @@
 var NAVTREE =
 [
   [ "fpx.f", "index.html", [
-    [ "Introduction", "index.html#autotoc_md30", [
-      [ "About the Project", "index.html#autotoc_md31", null ],
-      [ "Getting Started", "index.html#autotoc_md32", [
-        [ "Requirements", "index.html#autotoc_md33", null ],
-        [ "Installation", "index.html#autotoc_md34", [
-          [ "Get the code", "index.html#autotoc_md35", null ],
-          [ "Build with fpm", "index.html#autotoc_md36", null ],
-          [ "Build with Visual Studio 2019", "index.html#autotoc_md37", null ]
+    [ "Introduction", "index.html#autotoc_md118", [
+      [ "About the Project", "index.html#autotoc_md119", null ],
+      [ "Getting Started", "index.html#autotoc_md120", [
+        [ "Requirements", "index.html#autotoc_md121", null ],
+        [ "Installation", "index.html#autotoc_md122", [
+          [ "Get the code", "index.html#autotoc_md123", null ],
+          [ "Build with fpm", "index.html#autotoc_md124", null ],
+          [ "Build with Visual Studio 2019", "index.html#autotoc_md125", null ]
         ] ]
       ] ],
-      [ "Usage", "index.html#autotoc_md38", [
-        [ "Command line", "index.html#autotoc_md39", null ],
-        [ "Embedded", "index.html#autotoc_md40", null ],
-        [ "Contributing", "index.html#autotoc_md41", null ],
-        [ "Style", "index.html#autotoc_md42", null ],
-        [ "Reporting a bug", "index.html#autotoc_md43", null ],
-        [ "Pull request", "index.html#autotoc_md44", null ]
+      [ "Usage", "index.html#autotoc_md126", [
+        [ "Command line", "index.html#autotoc_md127", null ],
+        [ "Embedded", "index.html#autotoc_md128", null ],
+        [ "Contributing", "index.html#autotoc_md129", null ]
       ] ],
-      [ "License", "index.html#autotoc_md45", null ]
+      [ "License", "index.html#autotoc_md130", null ]
     ] ],
     [ "Documentation", "pages.html", "pages" ],
     [ "API", "topics.html", "topics" ],
@@ -54,7 +51,8 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-"cheatsheet.html"
+"cheatsheet.html",
+"specifications.html#autotoc_md37"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

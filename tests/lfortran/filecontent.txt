@@ -1,6 +1,8 @@
 C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\lfortran\assert.fpp
+C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\lfortran\bin
 C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\lfortran\filecontent.txt
 C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\lfortran\genref.cmd
+C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\lfortran\obj
 C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\lfortran\preprocessor1.f90
 C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\lfortran\preprocessor1.f90.out
 C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\lfortran\preprocessor1.ref
@@ -72,3 +74,17 @@ C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\lfortran\preprocessor8.ref
 C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\lfortran\preprocessor9.f90
 C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\lfortran\preprocessor9.f90.out
 C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\lfortran\preprocessor9.ref
+C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\lfortran\Test.Fpx.LFortran.vfproj
+C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\lfortran\bin\Debug
+C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\lfortran\bin\Debug\x64
+C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\lfortran\bin\Debug\x64\Test.Fpx.LFortran.exe
+C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\lfortran\bin\Debug\x64\Test.Fpx.LFortran.pdb
+C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\lfortran\obj\Debug
+C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\lfortran\obj\Debug\x64
+C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\lfortran\obj\Debug\x64\BuildLog.htm
+C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\lfortran\obj\Debug\x64\main.obj
+C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\lfortran\obj\Debug\x64\Test.Fpx.LFortran.exe.intermediate.manifest
+C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\lfortran\obj\Debug\x64\test_lfortran.obj
+C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\lfortran\obj\Debug\x64\test_utils.mod
+C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\lfortran\obj\Debug\x64\utils.obj
+C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\lfortran\obj\Debug\x64\vc160.pdb

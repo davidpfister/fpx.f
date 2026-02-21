@@ -5,6 +5,7 @@ C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\flang\assert.ref
 C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\flang\backslash-contin1.F90
 C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\flang\backslash-contin1.F90.out
 C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\flang\backslash-contin1.ref
+C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\flang\bin
 C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\flang\bug64837.F90
 C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\flang\bug64837.F90.out
 C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\flang\bug64837.ref
@@ -75,6 +76,7 @@ C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\flang\math.h
 C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\flang\multi-cont.F90
 C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\flang\multi-cont.F90.out
 C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\flang\multi-cont.ref
+C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\flang\obj
 C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\flang\parse-preprocessed.F
 C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\flang\parse-preprocessed.F.out
 C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\flang\parse-preprocessed.ref
@@ -336,6 +338,20 @@ C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\flang\show-macros2.ref
 C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\flang\show-macros3.F90
 C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\flang\show-macros3.F90.out
 C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\flang\show-macros3.ref
+C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\flang\Test.Fpx.Flang.vfproj
 C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\flang\unclosed-FLM.F90
 C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\flang\unclosed-FLM.F90.out
 C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\flang\unclosed-FLM.ref
+C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\flang\bin\Debug
+C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\flang\bin\Debug\x64
+C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\flang\bin\Debug\x64\Test.Fpx.Flang.exe
+C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\flang\bin\Debug\x64\Test.Fpx.Flang.pdb
+C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\flang\obj\Debug
+C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\flang\obj\Debug\x64
+C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\flang\obj\Debug\x64\BuildLog.htm
+C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\flang\obj\Debug\x64\main.obj
+C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\flang\obj\Debug\x64\Test.Fpx.Flang.exe.intermediate.manifest
+C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\flang\obj\Debug\x64\test_flang.obj
+C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\flang\obj\Debug\x64\test_utils.mod
+C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\flang\obj\Debug\x64\utils.obj
+C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\flang\obj\Debug\x64\vc160.pdb

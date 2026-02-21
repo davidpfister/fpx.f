@@ -137,18 +137,35 @@ $(function(){initNavTree('group__group__include.html',''); initResizable(true); 
 <p>Include file handling and resolution for the fpx Fortran preprocessor </p>
 <p>This module implements robust and standard-compliant processing of <code>#include</code> directives with full support for:</p><ul>
 <li>Both forms: <code>#include "file.h"</code> (local/user) and <code>#include &lt;file.h&gt;</code> (system)</li>
+<li>Proper search order: quotes search source dir first, angle brackets skip source dir</li>
 <li>Relative paths resolved against the directory of the parent source file</li>
 <li>Search in user-defined include directories (<code>globalincludedir</code>)</li>
+<li>Search in system PATH environment variable directories</li>
 <li>Fallback to current working directory</li>
 <li>Proper error reporting with file name and line number context</li>
 <li>Recursion safety through integration with the main preprocessor loop</li>
 <li>Seamless integration via the abstract <code>preprocess</code> procedure pointer</li>
 </ul>
 <p>The routine correctly strips quotes or angle brackets, performs path resolution, checks file existence, opens the file, and recursively invokes the main preprocessing engine on the included content using the same macro environment.</p>
+<h2 class="groupheader">Search Order</h2>
+<p>For <code>#include "file"</code>:</p><ol type="1">
+<li>Directory of the parent source file</li>
+<li>Directories specified by -I or -Y options (globalincludedir)</li>
+<li>Directories in INCLUDE environment variable</li>
+<li>Current working directory</li>
+</ol>
+<p>For <code>#include &lt;file&gt;</code>:</p><ol type="1">
+<li>Directories specified by -I or -Y options (globalincludedir)</li>
+<li>Directories in INCLUDE environment variable</li>
+<li>Current working directory</li>
+</ol>
 <h2 class="groupheader">Examples</h2>
 <ol type="1">
-<li>Include a local header from the same directory using quote or angle brackets: <div class="fragment"><div class="line"><span class="preprocessor">#include &lt;config.h&gt;</span></div>
-<div class="line"><span class="preprocessor"></span><span class="comment">!&gt; fpx will look for ./config.h relative to the current source file</span></div>
+<li>Include a local header from the same directory using quotes: <div class="fragment"><div class="line"><span class="preprocessor">#include </span></div>
+<div class="line"><span class="preprocessor"></span><span class="comment">!&gt; fpx will look for ./config.h relative to the current source file first</span></div>
+</div><!-- fragment --></li>
+<li>Include a system header using angle brackets: <div class="fragment"><div class="line"><span class="preprocessor">#include &lt;stdlib.h&gt;</span></div>
+<div class="line"><span class="preprocessor"></span><span class="comment">!&gt; fpx will skip the source directory and search -I paths, then PATH</span></div>
 </div><!-- fragment --></li>
 <li>Using from the driver program (adding include paths): <div class="fragment"><div class="line">global%includedir = [<span class="stringliteral">&#39;/usr/include&#39;</span>, <span class="stringliteral">&#39;./include&#39;</span>, <span class="stringliteral">&#39;./headers&#39;</span>]</div>
 <div class="line"><span class="keyword">call </span>preprocess(<span class="stringliteral">&#39;main.F90&#39;</span>, <span class="stringliteral">&#39;main.f90&#39;</span>)<span class="comment"></span></div>
@@ -166,6 +183,34 @@ Data Types</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Methods</h2>
+<a id="gab85fc44adeb3b7f5e98cbd402427585f" name="gab85fc44adeb3b7f5e98cbd402427585f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gab85fc44adeb3b7f5e98cbd402427585f">&#9670;&#160;</a></span>get_system_paths()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">character(:) function, dimension(:), allocatable get_system_paths</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get system include paths from PATH environment variable Returns an array of directory paths found in PATH. </p>
+<dl class="section return"><dt>Returns</dt><dd>Array of path strings, empty if PATH not set</dd></dl>
+<p><b>Remarks</b> </p>
+
+<p class="definition">Definition at line <a class="el" href="include_8f90_source.html#l00238">238</a> of file <a class="el" href="include_8f90_source.html">include.f90</a>.</p>
+
+</div>
+</div>
 <a id="ga1919a8ed1d71c0e7b0881c6512cbadef" name="ga1919a8ed1d71c0e7b0881c6512cbadef"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga1919a8ed1d71c0e7b0881c6512cbadef">&#9670;&#160;</a></span>handle_include()</h2>
 
@@ -210,7 +255,11 @@ Data Types</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Process a include directive encountered during preprocessing Resolves the include file name (quoted or angle-bracketed), searches for the file using standard rules (parent directory first, then global include paths, then cwd), opens it, and recursively preprocesses its contents into the output unit. </p>
+<p>Process a include directive encountered during preprocessing Resolves the include file name (quoted or angle-bracketed), searches for the file using standard C preprocessor rules: </p>
+<ul>
+<li>Quoted includes search: parent directory, -I paths, PATH, cwd</li>
+<li>Angle bracket includes search: -I paths, PATH, cwd (skips parent directory) Opens the file and recursively preprocesses its contents into the output unit.</li>
+</ul>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">input</td><td>Full line containing the include directive </td></tr>
@@ -225,7 +274,7 @@ Data Types</h2></td></tr>
 </dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="include_8f90_source.html#l00084">84</a> of file <a class="el" href="include_8f90_source.html">include.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="include_8f90_source.html#l00117">117</a> of file <a class="el" href="include_8f90_source.html">include.f90</a>.</p>
 
 </div>
 </div>

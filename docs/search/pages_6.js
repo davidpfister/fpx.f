@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['of_20history_0',['A bit of History',['../introduction.html',1,'pages']]]
+  ['expansion_2024_20176r3_0',['Macro Expansion (24-176r3)',['../macro.html',1,'j3']]]
 ];

@@ -1,10 +1,8 @@
 var searchData=
 [
-  ['weekday_0',['weekday',['../group__group__date.html#ga54f4b5882439c5288837a178e1d580cb',1,'fpx_date']]],
-  ['with_20build_20systems_20and_20external_20tools_1',['Interfacing with Build Systems and External Tools',['../introduction.html#autotoc_md21',1,'']]],
-  ['with_20fpm_2',['Build with fpm',['../index.html#autotoc_md36',1,'']]],
-  ['with_20visual_20studio_202019_3',['Build with Visual Studio 2019',['../index.html#autotoc_md37',1,'']]],
-  ['world_20examples_4',['Real-world examples',['../usage.html#autotoc_md25',1,'']]],
-  ['write_5fformatted_5',['write_formatted',['../string_8f90.html#a068b58e8e77c2b5e93337b4823ab68fd',1,'fpx_string']]],
-  ['writechk_6',['writechk',['../group__group__string.html#gaaaad8624e7dc4b2c05338a5be8d3f906',1,'fpx_string']]]
+  ['value_0',['value',['../structfpx__macro_1_1macro.html#ac6ce9ddf35e848aac2064196b6f12756',1,'fpx_macro::macro::value'],['../structfpx__token_1_1token.html#ac6ce9ddf35e848aac2064196b6f12756',1,'fpx_token::token::value']]],
+  ['variadic_20macros_1',['Variadic Macros',['../macro.html#autotoc_md105',1,'']]],
+  ['verbose_2',['verbose',['../group__group__logging.html#gae355b6081c8a7c696837dd711719c998',1,'fpx_logging']]],
+  ['vertices_3',['vertices',['../structfpx__graph_1_1digraph.html#aaf9097e8f9f6353035e21fbac5cfcb29',1,'fpx_graph::digraph']]],
+  ['visual_20studio_202019_4',['Build with Visual Studio 2019',['../index.html#autotoc_md125',1,'']]]
 ];

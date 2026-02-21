@@ -176,7 +176,7 @@ $(function(){initNavTree('graph_8f90_source.html',''); initResizable(true); });
 <div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span><span class="comment">!! @endcode</span></div>
 <div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span><span class="keyword">module</span> fpx_graph</div>
 <div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>    <span class="keywordtype">implicit none</span>; <span class="keywordtype">private</span></div>
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>    <span class="comment"></span></div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span><span class="comment"></span> </div>
 <div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span><span class="comment">    !&gt; Directed graph with fixed vertex count and efficient cycle detection</span></div>
 <div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span><span class="comment">    !! Stores edges in a dense adjacency matrix slice per vertex.</span></div>
 <div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span><span class="comment">    !! Only the actually used portion of each row is tracked via `list_sizes`.</span></div>
@@ -198,9 +198,9 @@ $(function(){initNavTree('graph_8f90_source.html',''); initResizable(true); });
 <div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span><span class="comment">    !! Initializes a new instance of the @ref digraph class</span></div>
 <div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span><span class="comment">    !! &lt;h3&gt;digraph(integer)&lt;/h3&gt;</span></div>
 <div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span><span class="comment">    !! @verbatim type(digraph) function digraph(integer vertices) @endverbatim</span></div>
-<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span><span class="comment">    !! </span></div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span><span class="comment">    !!</span></div>
 <div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span><span class="comment">    !! @param[in] vertices Number of vertices (usually number of currently defined macros)</span></div>
-<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span><span class="comment">    !! </span></div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span><span class="comment">    !!</span></div>
 <div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span><span class="comment">    !! @b Examples</span></div>
 <div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span><span class="comment">    !! @code{.f90}</span></div>
 <div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span><span class="comment">    !! type(digraph) :: g</span></div>
@@ -212,16 +212,16 @@ $(function(){initNavTree('graph_8f90_source.html',''); initResizable(true); });
 <div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span><span class="comment">    !! &lt;h2  class=&quot;groupheader&quot;&gt;Remarks&lt;/h2&gt;</span></div>
 <div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span><span class="comment">    !! @ingroup group_graph</span></div>
 <div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>    <span class="keyword">type</span>, <span class="keyword">public</span> :: <a class="code hl_struct" href="structfpx__graph_1_1digraph.html">digraph</a></div>
-<div class="line"><a id="l00082" name="l00082"></a><span class="lineno"><a class="line" href="structfpx__graph_1_1digraph.html#aaf9097e8f9f6353035e21fbac5cfcb29">   82</a></span>        <span class="keywordtype">integer</span>, <span class="keywordtype">private</span> :: vertices<span class="comment"> !&lt; Number of vertices</span></div>
-<div class="line"><a id="l00083" name="l00083"></a><span class="lineno"><a class="line" href="structfpx__graph_1_1digraph.html#a5b8f3ca8dde306913abb6d45fffe164e">   83</a></span>        <span class="keywordtype">integer</span>, <span class="keywordtype">allocatable</span>, <span class="keywordtype">private</span> :: adjacency_list(:,:)<span class="comment"> !&lt; Adjacency list containing the connection information between the vertices.</span></div>
-<div class="line"><a id="l00084" name="l00084"></a><span class="lineno"><a class="line" href="structfpx__graph_1_1digraph.html#a70d3f7a9d885d4f1d5fd5a07a08ab156">   84</a></span>        <span class="keywordtype">integer</span>, <span class="keywordtype">allocatable</span>, <span class="keywordtype">private</span> :: list_sizes(:)<span class="comment"> !&lt; Actually used portion of each row of @ref adjacency_list.</span></div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno"><a class="line" href="structfpx__graph_1_1digraph.html#aaf9097e8f9f6353035e21fbac5cfcb29">   82</a></span>        <span class="keywordtype">integer</span>, <span class="keywordtype">private</span> :: vertices<span class="comment">  !&lt; Number of vertices</span></div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno"><a class="line" href="structfpx__graph_1_1digraph.html#af876931f6801e26bf38ef5ef6220a7f4">   83</a></span>        <span class="keywordtype">integer</span>, <span class="keywordtype">allocatable</span>, <span class="keywordtype">private</span> :: adjacency_list(:, :)<span class="comment">  !&lt; Adjacency list containing the connection information between the vertices.</span></div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno"><a class="line" href="structfpx__graph_1_1digraph.html#a70d3f7a9d885d4f1d5fd5a07a08ab156">   84</a></span>        <span class="keywordtype">integer</span>, <span class="keywordtype">allocatable</span>, <span class="keywordtype">private</span> :: list_sizes(:)<span class="comment">  !&lt; Actually used portion of each row of @ref adjacency_list.</span></div>
 <div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>    <span class="keyword">contains</span></div>
 <div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>        <span class="keywordtype">private</span></div>
 <div class="line"><a id="l00087" name="l00087"></a><span class="lineno"><a class="line" href="structfpx__graph_1_1digraph.html#a05d6c024ecc6f31c0f92efeb094c8ff1">   87</a></span>        <span class="keywordtype">procedure</span>, pass(this), <span class="keywordtype">public</span> :: add_edge =&gt; graph_add_edge</div>
 <div class="line"><a id="l00088" name="l00088"></a><span class="lineno"><a class="line" href="structfpx__graph_1_1digraph.html#a7a5d26bc74b8ed21492654c3dc826638">   88</a></span>        <span class="keywordtype">procedure</span>, pass(this), <span class="keywordtype">public</span> :: is_circular =&gt; graph_has_cycle_dfs</div>
 <div class="line"><a id="l00089" name="l00089"></a><span class="lineno"><a class="line" href="structfpx__graph_1_1digraph.html#a21cfa48f4b027b2883a80773b871a5df">   89</a></span>        final :: graph_final</div>
 <div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>    <span class="keyword">end type</span></div>
-<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>    <span class="comment"></span></div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span><span class="comment"></span> </div>
 <div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span><span class="comment">    !&gt; Constructor interface for @ref digraph type</span></div>
 <div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span><span class="comment">    !!</span></div>
 <div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span><span class="comment">    !! @b Remarks</span></div>
@@ -259,12 +259,12 @@ $(function(){initNavTree('graph_8f90_source.html',''); initResizable(true); });
 <div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span>        <span class="keywordtype">integer</span>, <span class="keywordtype">intent(in)</span>             :: source</div>
 <div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span>        <span class="keywordtype">integer</span>, <span class="keywordtype">intent(in)</span>             :: destination</div>
 <div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span>        <span class="keywordtype">logical</span>, <span class="keywordtype">intent(out)</span>, <span class="keywordtype">optional</span>  :: exists</div>
-<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span>        </div>
+<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span> </div>
 <div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span>        <span class="keywordflow">if</span> (source &lt; 1 .or. source &gt; this%vertices .or. &amp;</div>
-<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>            destination &lt; 1 .or. destination &gt; this%vertices) <span class="keywordflow">then</span></div>
-<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span>            <span class="keywordflow">return</span> <span class="comment">! Skip invalid edges</span></div>
+<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>                destination &lt; 1 .or. destination &gt; this%vertices) <span class="keywordflow">then</span></div>
+<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span>            <span class="keywordflow">return</span>  <span class="comment">! Skip invalid edges</span></div>
 <div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span><span class="keywordflow">        end if</span></div>
-<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span>        </div>
+<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span> </div>
 <div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>        this%list_sizes(source) = this%list_sizes(source) + 1</div>
 <div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>        <span class="keywordflow">if</span> (this%list_sizes(source) &lt;= this%vertices) <span class="keywordflow">then</span></div>
 <div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span>            <span class="keywordflow">if</span> (<span class="keyword">present</span>(exists)) exists = this%adjacency_list(source, this%list_sizes(source)) /= 0</div>
@@ -294,7 +294,7 @@ $(function(){initNavTree('graph_8f90_source.html',''); initResizable(true); });
 <div class="line"><a id="l00156" name="l00156"></a><span class="lineno">  156</span>        <span class="keyword">allocate</span>(recursion_stack(this%vertices), source=.false.)</div>
 <div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span> </div>
 <div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span>        has_cycle = <a class="code hl_function" href="group__group__graph.html#ga41b8c3cc9c5098e140a23a11bc213e83">dfs_recursive</a>(this, start_vertex, visited, recursion_stack)</div>
-<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span>        </div>
+<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span> </div>
 <div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span>        <span class="keyword">deallocate</span>(visited, recursion_stack)</div>
 </div>
 <div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span>    <span class="keyword">end function</span></div>
@@ -313,7 +313,7 @@ $(function(){initNavTree('graph_8f90_source.html',''); initResizable(true); });
 <div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span> </div>
 <div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span>        <span class="keywordflow">do</span> i = 1, this%list_sizes(vertex)</div>
 <div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span>            neighbor = this%adjacency_list(vertex, i)</div>
-<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span>            <span class="keywordflow">if</span> (neighbor &lt; 1 .or. neighbor &gt; this%vertices) cycle <span class="comment">! Skip invalid neighbors</span></div>
+<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span>            <span class="keywordflow">if</span> (neighbor &lt; 1 .or. neighbor &gt; this%vertices) cycle  <span class="comment">! Skip invalid neighbors</span></div>
 <div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span>            <span class="keywordflow">if</span> (.not. visited(neighbor)) <span class="keywordflow">then</span></div>
 <div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span>                <span class="keywordflow">if</span> (<a class="code hl_function" href="group__group__graph.html#ga41b8c3cc9c5098e140a23a11bc213e83">dfs_recursive</a>(this, neighbor, visited, recursion_stack)) <span class="keywordflow">then</span></div>
 <div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span>                    has_cycle = .true.</div>

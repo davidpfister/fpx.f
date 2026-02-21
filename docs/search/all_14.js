@@ -1,13 +1,4 @@
 var searchData=
 [
-  ['read_5funit_0',['read_unit',['../interfacefpx__include_1_1read__unit.html',1,'fpx_include']]],
-  ['real_20world_20examples_1',['Real-world examples',['../usage.html#autotoc_md25',1,'']]],
-  ['reduced_20need_20persistent_20use_201990s_2',['Fortran 90/95: Reduced Need, Persistent Use (1990s)',['../introduction.html#autotoc_md13',1,'']]],
-  ['remove_3',['remove',['../interfacefpx__macro_1_1remove.html',1,'fpx_macro']]],
-  ['remove_5fitem_4',['remove_item',['../interfacefpx__macro_1_1remove.html#a068e7d980a27b70532c743e01ff01b0c',1,'fpx_macro::remove::remove_item()'],['../macro_8f90.html#a068e7d980a27b70532c743e01ff01b0c',1,'fpx_macro::remove_item()']]],
-  ['reporting_20a_20bug_5',['Reporting a bug',['../index.html#autotoc_md43',1,'']]],
-  ['request_6',['Pull request',['../index.html#autotoc_md44',1,'']]],
-  ['requirements_7',['Requirements',['../index.html#autotoc_md33',1,'']]],
-  ['reuse_8',['Macro Definitions for Code Reuse',['../introduction.html#autotoc_md20',1,'']]],
-  ['rise_20of_20external_20preprocessors_201980s_9',['Rise of External Preprocessors (1980s)',['../introduction.html#autotoc_md12',1,'']]]
+  ['quick_20commands_0',['CLI Quick Commands',['../cheatsheet.html#autotoc_md0',1,'']]]
 ];
