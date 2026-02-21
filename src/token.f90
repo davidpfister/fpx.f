@@ -22,7 +22,8 @@
 !!    in the grammar is implemented as a separate parsing function with the exact precedence level.
 !!    The grammar is directly derived from the C standard operator precedence table:
 !!
-!!    parse_expression        → parse_or
+!!    parse_expression        → parse_conditional
+!!    parse_conditional       → parse_or (parse_or '?' parse_expression ':' parse_conditional)
 !!    parse_or                → parse_and ( '||' parse_and )*
 !!    parse_and               → parse_bitwise_or ( '&&' parse_bitwise_or )*
 !!    parse_bitwise_or        → parse_bitwise_xor ( '|' parse_bitwise_xor )*
@@ -340,7 +341,60 @@ contains
         integer, intent(inout)      :: pos
         type(macro), intent(in)   :: macros(:)
 
-        val = parse_or(tokens, ntokens, pos, macros)
+        val = parse_conditional(tokens, ntokens, pos, macros)
+    end function
+
+    !> Parses conditional expressions (?:). Right-associative.
+    !! @param[in] tokens    Array of tokens to parse
+    !! @param[in] ntokens   Number of valid tokens in the array
+    !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
+    !! @param[in] macros    Defined macros for expansion and `defined()` checks
+    !! @return Integer value of the parsed expression
+    !!
+    !! @b Remarks
+    !! @ingroup group_token
+    recursive integer function parse_conditional(tokens, ntokens, pos, macros) result(val)
+        type(token), intent(in) :: tokens(:)
+        integer, intent(in) :: ntokens
+        integer, intent(inout) :: pos
+        type(macro), intent(in) :: macros(:)
+
+        integer :: condition, true_val, false_val
+
+        ! First parse condition at higher precedence
+        condition = parse_or(tokens, ntokens, pos, macros)
+
+        ! Check for '?'
+        if (pos <= ntokens .and. tokens(pos)%value == '?') then
+
+            if (verbose) print *, "Parsing ? at pos ", pos
+
+            pos = pos + 1
+
+            ! Parse true expression (full expression allowed)
+            true_val = parse_expression(tokens, ntokens, pos, macros)
+
+            ! Expect ':'
+            if (pos > ntokens .or. tokens(pos)%value /= ':') then
+                if (verbose) print *, "Error: expected ':' in conditional expression"
+                val = 0
+                return
+            end if
+
+            pos = pos + 1
+
+            ! Parse false expression (right-associative)
+            false_val = parse_conditional(tokens, ntokens, pos, macros)
+
+            ! Evaluate condition
+            val = merge(true_val, false_val, condition /= 0)
+
+        else
+
+            val = condition
+
+        end if
+
     end function
 
     !> Parses logical OR expressions (`||`).
@@ -856,7 +910,8 @@ contains
                 in_word = .false.
             else if (temp(i:i) == '<' .or. temp(i:i) == '>' .or. temp(i:i) == '=' .or. &
                         temp(i:i) == '+' .or. temp(i:i) == '-' .or. temp(i:i) == '*' .or. &
-                        temp(i:i) == '/' .or. temp(i:i) == '%') then
+                        temp(i:i) == '/' .or. temp(i:i) == '%' .or. &
+                        temp(i:i) == '?' .or. temp(i:i) == ':') then
                 tokens(ntokens)%value = temp(i:i)
                 tokens(ntokens)%type = operator
                 i = i + 1
