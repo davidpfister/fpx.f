@@ -382,7 +382,9 @@ contains
         if (verbose) print *, "Processing line ", linenum, ": '", trim(trimmed_line), "'"
         if (verbose) print *, "is_active() = ", active, ", cond_depth = ", cond_depth
         if (head(trimmed_line) == '#') then
-            if (starts_with(uppercase(adjustl(trimmed_line(2:))), 'DEFINE') .and. active) then
+            if (len(trimmed_line) == 1) then
+                return !null directive
+            else if (starts_with(uppercase(adjustl(trimmed_line(2:))), 'DEFINE') .and. active) then
                 call handle_define(trimmed_line, macros, 'DEFINE')
             else if (starts_with(uppercase(adjustl(trimmed_line(2:))), 'UNDEF') .and. active) then
                 call handle_undef(trimmed_line, macros, 'UNDEF')
