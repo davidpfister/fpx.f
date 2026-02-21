@@ -147,7 +147,7 @@ $(function(){initNavTree('group__group__token.html',''); initResizable(true); })
 <ol type="1">
 <li>Tokenization The input string is scanned and converted into a sequence of <a class="el" href="structfpx__token_1_1token.html">token </a> objects. The tokenizer recognizes multi-character operators ('&amp;&amp;', '||', '==', '!=', '&lt;=', '&gt;=', '&lt;&lt;', '&gt;&gt;', '**'), the <code>defined</code> operator (with or without parentheses), numbers in all supported bases, identifiers, and parentheses. Whitespace is ignored except as a token separator.</li>
 <li><p class="startli">Parsing and evaluation via top-down recursive descent A classic predictive (LL(1)) recursive descent parser is used, where each non-terminal in the grammar is implemented as a separate parsing function with the exact precedence level. The grammar is directly derived from the C standard operator precedence table:</p>
-<p class="startli">parse_expression → parse_or parse_or → parse_and ( '||' parse_and )* parse_and → parse_bitwise_or ( '&amp;&amp;' parse_bitwise_or )* parse_bitwise_or → parse_bitwise_xor ( '|' parse_bitwise_xor )* parse_bitwise_xor → parse_bitwise_and ( '^' parse_bitwise_and )* parse_bitwise_and → parse_equality ( '&amp;' parse_equality )* parse_equality → parse_relational ( ('==' | '!=') parse_relational )* parse_relational → parse_shifting ( ('&lt;' | '&gt;' | '&lt;=' | '&gt;=') parse_shifting )* parse_shifting → parse_additive ( ('&lt;&lt;' | '&gt;&gt;') parse_additive )* parse_additive → parse_multiplicative ( ('+' | '-') parse_multiplicative )* parse_multiplicative → parse_power ( ('<em>' | '/' | '') parse_power )</em> parse_power → parse_unary ( '**' parse_unary )* (right-associative) parse_unary → ('!' | '-' | '+' | '~') parse_unary | parse_atom parse_atom → number | identifier (macro expansion) | 'defined' ( identifier ) | 'defined' identifier | '(' parse_expression ')'</p>
+<p class="startli">parse_expression → parse_conditional parse_conditional → parse_or (parse_or '?' parse_expression ':' parse_conditional) parse_or → parse_and ( '||' parse_and )* parse_and → parse_bitwise_or ( '&amp;&amp;' parse_bitwise_or )* parse_bitwise_or → parse_bitwise_xor ( '|' parse_bitwise_xor )* parse_bitwise_xor → parse_bitwise_and ( '^' parse_bitwise_and )* parse_bitwise_and → parse_equality ( '&amp;' parse_equality )* parse_equality → parse_relational ( ('==' | '!=') parse_relational )* parse_relational → parse_shifting ( ('&lt;' | '&gt;' | '&lt;=' | '&gt;=') parse_shifting )* parse_shifting → parse_additive ( ('&lt;&lt;' | '&gt;&gt;') parse_additive )* parse_additive → parse_multiplicative ( ('+' | '-') parse_multiplicative )* parse_multiplicative → parse_power ( ('<em>' | '/' | '') parse_power )</em> parse_power → parse_unary ( '**' parse_unary )* (right-associative) parse_unary → ('!' | '-' | '+' | '~') parse_unary | parse_atom parse_atom → number | identifier (macro expansion) | 'defined' ( identifier ) | 'defined' identifier | '(' parse_expression ')'</p>
 <p class="startli">Each parsing function consumes tokens from the global position <code>pos</code> and returns the integer value of the sub-expression it recognizes. Because the grammar is factored by precedence, left-associativity is achieved naturally via left-recursive loops, while right-associativity for the power operator (<code>**</code>) is handled by calling <code>parse_unary</code> on the right-hand side first.</p>
 <p class="startli">Macro expansion occurs lazily inside <code>parse_atom</code> when an identifier token is encountered:</p><ul>
 <li>If the identifier is defined, its replacement text is recursively evaluated.</li>
@@ -209,7 +209,7 @@ Enumerations</h2></td></tr>
 
 <p>Kind parameter for token type enumeration. Values are (<code>unknown</code>, <code>number</code>, <code>operator</code>, <code>identifier</code>, <code>parenthesis</code>, <code>defined</code>) </p>
 
-<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00091">91</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00092">92</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
 
 </div>
 </div>
@@ -250,7 +250,7 @@ Enumerations</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>.true. if the expression evaluated successfully to non-zero, .false. otherwise</dd></dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00166">166</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00167">167</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
 
 </div>
 </div>
@@ -287,7 +287,7 @@ Enumerations</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>.true. if ch is a digit</dd></dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00199">199</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00200">200</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
 
 </div>
 </div>
@@ -329,7 +329,7 @@ Enumerations</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>.true. if the prefix is a valid typeless constant in non-base-10</dd></dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00213">213</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00214">214</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
 
 </div>
 </div>
@@ -383,7 +383,7 @@ Enumerations</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>Integer value of the parsed expression</dd></dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00600">600</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00654">654</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
 
 </div>
 </div>
@@ -437,7 +437,7 @@ Enumerations</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>Integer value of the parsed expression</dd></dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00381">381</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00435">435</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
 
 </div>
 </div>
@@ -491,7 +491,7 @@ Enumerations</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>Integer value of the parsed expression</dd></dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00736">736</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00790">790</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
 
 </div>
 </div>
@@ -545,7 +545,7 @@ Enumerations</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>Integer value of the parsed expression</dd></dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00462">462</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00516">516</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
 
 </div>
 </div>
@@ -599,7 +599,7 @@ Enumerations</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>Integer value of the parsed expression</dd></dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00408">408</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00462">462</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
 
 </div>
 </div>
@@ -653,7 +653,61 @@ Enumerations</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>Integer value of the parsed expression</dd></dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00435">435</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00489">489</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
+
+</div>
+</div>
+<a id="ga7089df9b8588ffb63d03d90649c43380" name="ga7089df9b8588ffb63d03d90649c43380"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga7089df9b8588ffb63d03d90649c43380">&#9670;&#160;</a></span>parse_conditional()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">recursive integer function parse_conditional </td>
+          <td>(</td>
+          <td class="paramtype">type(<a class="el" href="structfpx__token_1_1token.html">token</a>), dimension(:), intent(in)</td>          <td class="paramname"><span class="paramname"><em>tokens</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">integer, intent(in)</td>          <td class="paramname"><span class="paramname"><em>ntokens</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">integer, intent(inout)</td>          <td class="paramname"><span class="paramname"><em>pos</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">type(<a class="el" href="structfpx__macro_1_1macro.html">macro</a>), dimension(:), intent(in)</td>          <td class="paramname"><span class="paramname"><em>macros</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Parses conditional expressions (?:). Right-associative. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">tokens</td><td>Array of tokens to parse </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">ntokens</td><td>Number of valid tokens in the array </td></tr>
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">pos</td><td>Current parsing position (updated as tokens are consumed) </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">macros</td><td>Defined macros for expansion and <code>defined()</code> checks </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Integer value of the parsed expression</dd></dl>
+<p><b>Remarks</b> </p>
+
+<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00356">356</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
 
 </div>
 </div>
@@ -698,7 +752,7 @@ Enumerations</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>Integer value of the parsed expression</dd></dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00489">489</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00543">543</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
 
 </div>
 </div>
@@ -744,7 +798,7 @@ Enumerations</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>Integer value of the parsed expression</dd></dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00337">337</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00338">338</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
 
 </div>
 </div>
@@ -798,7 +852,7 @@ Enumerations</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>Integer value of the parsed expression</dd></dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00634">634</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00688">688</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
 
 </div>
 </div>
@@ -852,7 +906,7 @@ Enumerations</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>Integer value of the parsed expression</dd></dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00355">355</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00409">409</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
 
 </div>
 </div>
@@ -906,7 +960,7 @@ Enumerations</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>Integer value of the parsed expression</dd></dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00672">672</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00726">726</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
 
 </div>
 </div>
@@ -960,7 +1014,7 @@ Enumerations</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>Integer value of the parsed expression</dd></dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00523">523</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00577">577</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
 
 </div>
 </div>
@@ -1014,7 +1068,7 @@ Enumerations</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>Integer value of the parsed expression</dd></dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00566">566</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00620">620</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
 
 </div>
 </div>
@@ -1059,7 +1113,7 @@ Enumerations</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>Integer value of the parsed expression</dd></dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00700">700</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00754">754</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
 
 </div>
 </div>
@@ -1106,7 +1160,7 @@ Enumerations</h2></td></tr>
 </dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00797">797</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00851">851</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
 
 </div>
 </div>

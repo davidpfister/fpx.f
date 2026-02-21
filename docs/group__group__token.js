@@ -12,6 +12,7 @@ var group__group__token =
     [ "parse_bitwise_and", "group__group__token.html#gad57b0e6f7b4ee8b22fdce91671469c13", null ],
     [ "parse_bitwise_or", "group__group__token.html#gaef752d7978caead95f1aeeccac22e11a", null ],
     [ "parse_bitwise_xor", "group__group__token.html#ga4175ae0c166b12dca0c64f436b073d42", null ],
+    [ "parse_conditional", "group__group__token.html#ga7089df9b8588ffb63d03d90649c43380", null ],
     [ "parse_equality", "group__group__token.html#ga06731708f1dd75737206d605878cb4a7", null ],
     [ "parse_expression", "group__group__token.html#ga2766a8f84b056736127387cee9c2a3d2", null ],
     [ "parse_multiplicative", "group__group__token.html#ga480885ddf11c075c5b02fb4f9115a91f", null ],
