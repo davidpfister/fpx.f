@@ -84,20 +84,20 @@ contains
     !!
     !! @b Remarks
     !! @ingroup group_os
-    pure function OS_NAME(os)
+    pure function OS_NAME(os) result(res)
         integer, intent(in) :: os
-        character(:), allocatable :: OS_NAME
+        character(:), allocatable :: res
 
         select case (os)
-        case (OS_LINUX);   OS_NAME = 'Linux'
-        case (OS_MACOS);   OS_NAME = 'macOS'
-        case (OS_WINDOWS); OS_NAME = 'Windows'
-        case (OS_CYGWIN);  OS_NAME = 'Cygwin'
-        case (OS_SOLARIS); OS_NAME = 'Solaris'
-        case (OS_FREEBSD); OS_NAME = 'FreeBSD'
-        case (OS_OPENBSD); OS_NAME = 'OpenBSD'
-        case (OS_UNKNOWN); OS_NAME = 'Unknown'
-        case default     ; OS_NAME = 'UNKNOWN'
+        case (OS_LINUX);   res = 'Linux'
+        case (OS_MACOS);   res = 'macOS'
+        case (OS_WINDOWS); res = 'Windows'
+        case (OS_CYGWIN);  res = 'Cygwin'
+        case (OS_SOLARIS); res = 'Solaris'
+        case (OS_FREEBSD); res = 'FreeBSD'
+        case (OS_OPENBSD); res = 'OpenBSD'
+        case (OS_UNKNOWN); res = 'Unknown'
+        case default     ; res = 'UNKNOWN'
         end select
     end function
 

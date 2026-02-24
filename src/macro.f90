@@ -186,15 +186,17 @@ contains
     !! @param[in]  filepath Current source file path
     !! @param[in]  iline   Current line number
     !! @param[out] stitch   Set to .true.true. if result ends with '&' (Fortran continuation)
+    !! @param[in]  has_extra   Has extra macros (non-standard) like __FILENAME__ and __TIMESTAMP__ 
     !! @return Expanded line with all macros and predefined tokens replaced
     !!
     !! @b Remarks
     !! @ingroup group_macro
-    function expand_all(line, macros, filepath, iline, stitch) result(expanded)
+    function expand_all(line, macros, filepath, iline, stitch, has_extra) result(expanded)
         character(*), intent(in)            :: line
         type(macro), intent(in)             :: macros(:)
         character(*), intent(in)            :: filepath
         integer, intent(in)                 :: iline
+        logical, intent(in)                 :: has_extra
         logical, intent(out)                :: stitch
         character(:), allocatable :: expanded
         !private
@@ -204,15 +206,17 @@ contains
         expanded = expand_macros(line, macros, stitch)
         date = now()
         ! Substitute __FILENAME__
-        pos = 1
-        do while (pos > 0)
-            pos = index(expanded, '__FILENAME__')
-            if (pos > 0) then
-                start = pos + len('__FILENAME__')
-                expanded = trim(expanded(:pos - 1) // '"' // filename(filepath, .true.) // '"' // trim(expanded(start:)))
-                if (verbose) print *, "Substituted __FILENAME__ with '", trim(filepath), "', expanded: '", trim(expanded), "'"
-            end if
-        end do
+        if (has_extra) then
+            pos = 1
+            do while (pos > 0)
+                pos = index(expanded, '__FILENAME__')
+                if (pos > 0) then
+                    start = pos + len('__FILENAME__')
+                    expanded = trim(expanded(:pos - 1) // '"' // filename(filepath, .true.) // '"' // trim(expanded(start:)))
+                    if (verbose) print *, "Substituted __FILENAME__ with '", trim(filepath), "', expanded: '", trim(expanded), "'"
+                end if
+            end do
+        end if
 
         ! Substitute __FILE__ (relative path to working directory)
         pos = 1
@@ -266,20 +270,22 @@ contains
             end if
         end do
 
-        ! Substitute __TIMESTAMP__
-        pos = 1
-        do while (pos > 0)
-            pos = index(expanded, '__TIMESTAMP__')
-            if (pos > 0) then
+        if (has_extra) then
+            ! Substitute __TIMESTAMP__
+            pos = 1
+            do while (pos > 0)
+                pos = index(expanded, '__TIMESTAMP__')
                 if (pos > 0) then
-                    start = pos + len('__TIMESTAMP__')
-                    expanded = trim(expanded(:pos - 1) // '"' // date%to_string('ddd MM yyyy') // ' ' // date%to_string('HH:mm:ss'&
-                            &) // '"' // trim(expanded(start:)))
-                    if (verbose) print *, "Substituted __TIMESTAMP__ with '", date%to_string('ddd MM yyyy') // ' ' // date%&
-                            to_string('HH:mm:ss'), "', expanded: '", trim(expanded), "'"
+                    if (pos > 0) then
+                        start = pos + len('__TIMESTAMP__')
+                        expanded = trim(expanded(:pos - 1) // '"' // date%to_string('ddd MM yyyy') // ' ' // date%to_string('HH:mm:ss'&
+                                &) // '"' // trim(expanded(start:)))
+                        if (verbose) print *, "Substituted __TIMESTAMP__ with '", date%to_string('ddd MM yyyy') // ' ' // date%&
+                                to_string('HH:mm:ss'), "', expanded: '", trim(expanded), "'"
+                    end if
                 end if
-            end if
-        end do
+            end do
+        end if
     end function
 
     !> Core recursive macro expander (handles function-like, variadic, #, ##)

@@ -60,6 +60,7 @@ module fpx_parser
     use fpx_include
     use fpx_path
     use fpx_global
+    use fpx_os
 
     implicit none; private
 
@@ -209,6 +210,15 @@ contains
         allocate(macros(sizeof(global%macros)), source=global%macros)
         if (.not. allocated(global%undef)) allocate(global%undef(0))
         if (.not. allocated(global%includedir)) allocate(global%includedir(0))
+        
+        call add(global%macros, macro('__STDF__','1'))
+        call add(global%macros, macro('__FPX__','1'))
+        associate(os => get_os_type())
+            if (os == OS_WINDOWS .or. os == OS_WINDOWSx86) then
+                call add(global%macros, macro('_WIN32'))
+                if (os /= OS_WINDOWSx86) call add(global%macros, macro('_WIN64'))
+            end if
+        end associate
 
         cond_depth = 0
         cond_stack(1)%active = .true.
@@ -280,7 +290,7 @@ contains
             ! Check for line continuation with '\'
             if (verify(continued_line(n:n), '\') == 0) then
                 ! Check for line break with '\\'
-                if (continued_line(len_trim(continued_line) - 1:len_trim(continued_line)) == '\\') then
+                if (continued_line(len_trim(continued_line) - 1:len_trim(continued_line)) == '\\' .and. global%line_break) then
                     c_continue = .true.
                     continued_line = continued_line(:len_trim(continued_line) - 2) // new_line('A')  ! Strip '\\'
                     icontinuation = len_trim(continued_line)
@@ -406,14 +416,14 @@ contains
                 call handle_else(filepath, linenum)
             else if (starts_with(uppercase(adjustl(trimmed_line(2:))), 'ENDIF')) then
                 call handle_endif(filepath, linenum)
-            else if (starts_with(uppercase(adjustl(trimmed_line(2:))), 'PRAGMA')) then
+            else if (starts_with(uppercase(adjustl(trimmed_line(2:))), 'PRAGMA') .and. active) then
                 rst = trimmed_line
             end if
         else if (active) then
             if (.not. global%expand_macros) then
                 rst = trimmed_line
             else
-                rst = adjustl(expand_all(trimmed_line, macros, filepath, linenum, stch))
+                rst = adjustl(expand_all(trimmed_line, macros, filepath, linenum, stch, global%extra_macros))
                 if (verbose) print *, "Writing to output: '", trim(rst), "'"
             end if
         end if

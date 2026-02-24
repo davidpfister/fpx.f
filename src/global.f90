@@ -81,10 +81,14 @@ module fpx_global
         type(string), allocatable, public   :: includedir(:)    !< List of include directories
         logical, public                     :: expand_macros = .true.   !< Boolean controlling the macro expansion. The macros are expanded by default.
         logical, public                     :: exlude_comments = .false.    !< Boolean controlling the inclusion/exclusion of comments. The comments are kept by default.
+        logical, public                     :: implicit_continuation = .false. !< Boolean controlling implicit continuation line.
+        logical, public                     :: line_break = .false. !< Boolean controlling line break with double backslash.
+        logical, public                     :: extra_macros = .false. !< Boolean controlling extra (non-standard macro definitions: __FILENAME__, __TIMESTAMP__).
     end type
 
     !> @brief The single global instance used throughout fpx
     !! Initialized automatically with sensible defaults values.
     !! @ingroup group_global
     type(global_settings), public :: global
+    
 end module
