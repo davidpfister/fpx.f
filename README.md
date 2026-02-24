@@ -27,6 +27,11 @@
 # Introduction
 <!-- ABOUT THE PROJECT -->
 ## About the Project
+<center>
+<p align="center">
+  <img src="https://github.com/davidpfister/fpx.f/blob/master/.dox/images/logo.png?raw=true" width="300" height="300">
+</p>
+ </center>
 
 Fortran, the venerable language of scientific computing, has powered simulations of galaxies, weather systems, and quantum phenomena for over seven decades. Its enduring strength lies in its clarity, performance, and mathematical soul, qualities that resonate deeply with its community of developers. Yet, nestled within this ecosystem is a contentious tool: the preprocessor. From its ad hoc beginnings in the 1970s to its modern incarnations in tools like `cpp`, `fpp`, and `fypp`, preprocessing has been both a lifeline and a lightning rod for Fortran developers. 
 

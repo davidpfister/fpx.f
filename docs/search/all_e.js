@@ -1,4 +1,32 @@
 var searchData=
 [
-  ['known_20issues_0',['Known issues',['../integration.html#autotoc_md8',1,'']]]
+  ['early_20days_3a_20ad_20hoc_20preprocessing_201950s–1970s_0',['Early Days: Ad Hoc Preprocessing (1950s–1970s)',['../introduction.html#autotoc_md11',1,'']]],
+  ['elif_20directives_1',['5 Expressions allowed in #if and #elif directives',['../specifications.html#autotoc_md74',1,'']]],
+  ['elif_20elifdef_20elifndef_20else_20endif_20conditional_20directives_2',['3.5 The #if, #ifdef, #ifndef, #elif, #elifdef, #elifndef, #else, #endif conditional directives',['../specifications.html#autotoc_md52',1,'']]],
+  ['elif_20expressions_3',['4.3 Operators accepted in #if and #elif expressions',['../requirements.html#autotoc_md28',1,'']]],
+  ['elifdef_20elifndef_20else_20endif_20conditional_20directives_4',['3.5 The #if, #ifdef, #ifndef, #elif, #elifdef, #elifndef, #else, #endif conditional directives',['../specifications.html#autotoc_md52',1,'']]],
+  ['elifndef_20else_20endif_20conditional_20directives_5',['3.5 The #if, #ifdef, #ifndef, #elif, #elifdef, #elifndef, #else, #endif conditional directives',['../specifications.html#autotoc_md52',1,'']]],
+  ['else_20endif_20conditional_20directives_6',['3.5 The #if, #ifdef, #ifndef, #elif, #elifdef, #elifndef, #else, #endif conditional directives',['../specifications.html#autotoc_md52',1,'']]],
+  ['embedded_7',['Embedded',['../index.html#autotoc_md128',1,'']]],
+  ['embedded_20library_20in_20your_20own_20fortran_20program_8',['Using fpx as an Embedded Library in Your Own Fortran Program',['../usage.html#autotoc_md114',1,'']]],
+  ['endif_20conditional_20directives_9',['3.5 The #if, #ifdef, #ifndef, #elif, #elifdef, #elifndef, #else, #endif conditional directives',['../specifications.html#autotoc_md52',1,'']]],
+  ['era_3a_20preprocessing_20today_202000s–2025_10',['Modern Era: Preprocessing Today (2000s–2025)',['../introduction.html#autotoc_md15',1,'']]],
+  ['error_20and_20warning_20directives_11',['3.6 The #error and #warning directives',['../specifications.html#autotoc_md55',1,'']]],
+  ['etc_12',['Full control – predefined macros, include paths, etc.',['../usage.html#autotoc_md116',1,'']]],
+  ['evaluate_5fexpression_13',['evaluate_expression',['../group__group__token.html#gabfc798c2ad4d8773828d3cef8e880fe6',1,'fpx_token']]],
+  ['evaluation_20semantics_20specifications_14',['Evaluation semantics specifications',['../specifications.html#autotoc_md42',1,'3.1.2 Evaluation semantics specifications'],['../specifications.html#autotoc_md69',1,'3.10.2 Evaluation semantics specifications'],['../specifications.html#autotoc_md45',1,'3.2.2 Evaluation semantics specifications'],['../specifications.html#autotoc_md48',1,'3.3.2 Evaluation semantics specifications'],['../specifications.html#autotoc_md51',1,'3.4.2 Evaluation semantics specifications'],['../specifications.html#autotoc_md54',1,'3.5.2 Evaluation semantics specifications'],['../specifications.html#autotoc_md57',1,'3.6.2 Evaluation semantics specifications'],['../specifications.html#autotoc_md60',1,'3.7.2 Evaluation semantics specifications'],['../specifications.html#autotoc_md63',1,'3.8.2 Evaluation semantics specifications'],['../specifications.html#autotoc_md66',1,'3.9.2 Evaluation semantics specifications']]],
+  ['example_20–_20preprocess_20a_20file_20to_20another_20file_15',['Minimal example – preprocess a file to another file',['../usage.html#autotoc_md115',1,'']]],
+  ['examples_16',['Real-world examples',['../usage.html#autotoc_md113',1,'']]],
+  ['exlude_5fcomments_17',['exlude_comments',['../structfpx__global_1_1global__settings.html#a91744cf27b959fe760898e2a087caf5f',1,'fpx_global::global_settings']]],
+  ['expand_5fall_18',['expand_all',['../group__group__macro.html#ga155f801869d0ad4f788ad82bd9aacd77',1,'fpx_macro']]],
+  ['expand_5fmacros_19',['expand_macros',['../structfpx__global_1_1global__settings.html#a988365f52ad50a945548611771ef7549',1,'fpx_global::global_settings::expand_macros'],['../group__group__macro.html#gaac1a7cbfbeef237f04ad2fd8e3fced3c',1,'fpx_macro::expand_macros()']]],
+  ['expansion_20',['expansion',['../macro.html#autotoc_md102',1,'2.2 Argument substitution and expansion'],['../specifications.html#autotoc_md70',1,'4 Macro identification and expansion'],['../requirements.html#autotoc_md30',1,'4.5 Fortran awareness during macro expansion']]],
+  ['expansion_2024_20176r3_21',['Macro Expansion (24-176r3)',['../macro.html',1,'j3']]],
+  ['expansion_20during_20argument_20substitution_22',['2.2.1 Macro expansion during argument substitution',['../macro.html#autotoc_md103',1,'']]],
+  ['expansion_20in_20cpp_23',['4.1 Comparison to macro identification and expansion in CPP',['../specifications.html#autotoc_md71',1,'']]],
+  ['expressions_24',['expressions',['../requirements.html#autotoc_md28',1,'4.3 Operators accepted in #if and #elif expressions'],['../specifications.html#autotoc_md75',1,'5.1 Operators allowed in controlling expressions']]],
+  ['expressions_20allowed_20in_20if_20and_20elif_20directives_25',['5 Expressions allowed in #if and #elif directives',['../specifications.html#autotoc_md74',1,'']]],
+  ['external_20preprocessors_201980s_26',['Rise of External Preprocessors (1980s)',['../introduction.html#autotoc_md12',1,'']]],
+  ['external_20tools_27',['Interfacing with Build Systems and External Tools',['../introduction.html#autotoc_md21',1,'']]],
+  ['extra_5fmacros_28',['extra_macros',['../structfpx__global_1_1global__settings.html#a59066840467a819eb4e4aa60bb6fbe9c',1,'fpx_global::global_settings']]]
 ];

@@ -2,7 +2,7 @@
 
 This section is providing hints (some may call it hacks) to substitute classical preprocessors like Intel fpp or GNU cpp with fpx. 
 These pieces of information are extracted from different sources and collected here for convenience. May this be useful to anyone willing to try.
-
+[TOC]
 ## fpp
 
 <!-- - [fpp-name](https://www.intel.com/content/www/us/en/docs/fortran-compiler/developer-guide-reference/2023-0/fpp-name.html)

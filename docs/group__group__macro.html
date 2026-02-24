@@ -215,8 +215,8 @@ Data Types</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Methods</h2>
-<a id="gabfa92166cee2f8dbd5947f0e61cc0101" name="gabfa92166cee2f8dbd5947f0e61cc0101"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gabfa92166cee2f8dbd5947f0e61cc0101">&#9670;&#160;</a></span>expand_all()</h2>
+<a id="ga155f801869d0ad4f788ad82bd9aacd77" name="ga155f801869d0ad4f788ad82bd9aacd77"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga155f801869d0ad4f788ad82bd9aacd77">&#9670;&#160;</a></span>expand_all()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -244,7 +244,12 @@ Data Types</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">logical, intent(out)</td>          <td class="paramname"><span class="paramname"><em>stitch</em></span>&#160;)</td>
+          <td class="paramtype">logical, intent(out)</td>          <td class="paramname"><span class="paramname"><em>stitch</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">logical, intent(in)</td>          <td class="paramname"><span class="paramname"><em>has_extra</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -257,13 +262,14 @@ Data Types</h2></td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">filepath</td><td>Current source file path </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">iline</td><td>Current line number </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">stitch</td><td>Set to .true.true. if result ends with '&amp;' (Fortran continuation) </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">has_extra</td><td>Has extra macros (non-standard) like <b>FILENAME</b> and <b>TIMESTAMP</b> </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Expanded line with all macros and predefined tokens replaced</dd></dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00193">193</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00194">194</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
 
 </div>
 </div>
@@ -311,7 +317,7 @@ Data Types</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>Line with user-defined macros expanded (predefined tokens untouched)</dd></dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00302">302</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00308">308</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
 
 </div>
 </div>
@@ -345,7 +351,7 @@ Data Types</h2></td></tr>
 <p>Detect whether expanding macro at index <code>idx</code> would cause a cycle Builds a dependency graph from macro replacement texts and checks for circular paths. Used during expansion to avoid infinite recursion. </p>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00608">608</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00614">614</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
 
 </div>
 </div>
@@ -385,7 +391,7 @@ Data Types</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>.true. if macro is defined</dd></dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00670">670</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00676">676</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
 
 </div>
 </div>
@@ -415,7 +421,7 @@ Data Types</h2></td></tr>
 <p>Generic conversion of polymorphic value to string Used internally during macro argument stringification and debugging. Supports integers, reals, logicals, characters, and complex. </p>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00693">693</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00699">699</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
 
 </div>
 </div>

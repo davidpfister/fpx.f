@@ -131,16 +131,209 @@ $(function(){initNavTree('specifications.html',''); initResizable(true); });
   <div class="headertitle"><div class="title">Preprocessor Specifications (24-142r2)</div></div>
 </div><!--header-->
 <div class="contents">
+<div class="toc"><h3>Table of Contents</h3>
+<ul>
+  <li class="level1">
+    <a href="#autotoc_md32">1 Introduction</a>
+  </li>
+  <li class="level1">
+    <a href="#autotoc_md33">2 Lexical specifications</a>
+    <ul>
+      <li class="level2">
+        <a href="#autotoc_md34">2.1 Lines</a>
+      </li>
+      <li class="level2">
+        <a href="#autotoc_md35">2.2 Case sensitivity of identifiers</a>
+      </li>
+      <li class="level2">
+        <a href="#autotoc_md36">2.3 Significance of whitespace</a>
+      </li>
+      <li class="level2">
+        <a href="#autotoc_md37">2.4 Comments</a>
+      </li>
+      <li class="level2">
+        <a href="#autotoc_md38">2.5 Token lexicon</a>
+      </li>
+    </ul>
+  </li>
+  <li class="level1">
+    <a href="#autotoc_md39">3 #-Directives</a>
+    <ul>
+      <li class="level2">
+        <a href="#autotoc_md40">3.1 The #define object-like macro directive</a>
+        <ul>
+          <li class="level3">
+            <a href="#autotoc_md41">3.1.1 Static semantics specifications</a>
+          </li>
+          <li class="level3">
+            <a href="#autotoc_md42">3.1.2 Evaluation semantics specifications</a>
+          </li>
+        </ul>
+      </li>
+      <li class="level2">
+        <a href="#autotoc_md43">3.2 The #define function-like macro directive</a>
+        <ul>
+          <li class="level3">
+            <a href="#autotoc_md44">3.2.1 Static semantics specifications</a>
+          </li>
+          <li class="level3">
+            <a href="#autotoc_md45">3.2.2 Evaluation semantics specifications</a>
+          </li>
+        </ul>
+      </li>
+      <li class="level2">
+        <a href="#autotoc_md46">3.3 The #undef directive</a>
+        <ul>
+          <li class="level3">
+            <a href="#autotoc_md47">3.3.1 Static semantics specifications</a>
+          </li>
+          <li class="level3">
+            <a href="#autotoc_md48">3.3.2 Evaluation semantics specifications</a>
+          </li>
+        </ul>
+      </li>
+      <li class="level2">
+        <a href="#autotoc_md49">3.4 The #include directive</a>
+        <ul>
+          <li class="level3">
+            <a href="#autotoc_md50">3.4.1 Static semantics specifications</a>
+          </li>
+          <li class="level3">
+            <a href="#autotoc_md51">3.4.2 Evaluation semantics specifications</a>
+          </li>
+        </ul>
+      </li>
+      <li class="level2">
+        <a href="#autotoc_md52">3.5 The #if, #ifdef, #ifndef, #elif, #elifdef, #elifndef, #else, #endif conditional directives</a>
+        <ul>
+          <li class="level3">
+            <a href="#autotoc_md53">3.5.1 Static semantics specifications</a>
+          </li>
+          <li class="level3">
+            <a href="#autotoc_md54">3.5.2 Evaluation semantics specifications</a>
+          </li>
+        </ul>
+      </li>
+      <li class="level2">
+        <a href="#autotoc_md55">3.6 The #error and #warning directives</a>
+        <ul>
+          <li class="level3">
+            <a href="#autotoc_md56">3.6.1 Static semantics specifications</a>
+          </li>
+          <li class="level3">
+            <a href="#autotoc_md57">3.6.2 Evaluation semantics specifications</a>
+          </li>
+        </ul>
+      </li>
+      <li class="level2">
+        <a href="#autotoc_md58">3.7 The #line directive</a>
+        <ul>
+          <li class="level3">
+            <a href="#autotoc_md59">3.7.1 Static semantics specifications</a>
+          </li>
+          <li class="level3">
+            <a href="#autotoc_md60">3.7.2 Evaluation semantics specifications</a>
+          </li>
+        </ul>
+      </li>
+      <li class="level2">
+        <a href="#autotoc_md61">3.8 The #pragma directive</a>
+        <ul>
+          <li class="level3">
+            <a href="#autotoc_md62">3.8.1 Static semantics specifications</a>
+          </li>
+          <li class="level3">
+            <a href="#autotoc_md63">3.8.2 Evaluation semantics specifications</a>
+          </li>
+        </ul>
+      </li>
+      <li class="level2">
+        <a href="#autotoc_md64">3.9 The null directive</a>
+        <ul>
+          <li class="level3">
+            <a href="#autotoc_md65">3.9.1 Static semantics specifications</a>
+          </li>
+          <li class="level3">
+            <a href="#autotoc_md66">3.9.2 Evaluation semantics specifications</a>
+          </li>
+        </ul>
+      </li>
+      <li class="level2">
+        <a href="#autotoc_md67">3.10 The processor-dependent directive</a>
+        <ul>
+          <li class="level3">
+            <a href="#autotoc_md68">3.10.1 Static semantics specifications</a>
+          </li>
+          <li class="level3">
+            <a href="#autotoc_md69">3.10.2 Evaluation semantics specifications</a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li class="level1">
+    <a href="#autotoc_md70">4 Macro identification and expansion</a>
+    <ul>
+      <li class="level2">
+        <a href="#autotoc_md71">4.1 Comparison to macro identification and expansion in CPP</a>
+      </li>
+      <li class="level2">
+        <a href="#autotoc_md72">4.2 The identifiers __VA_ARGS__ and __VA_OPT__</a>
+      </li>
+      <li class="level2">
+        <a href="#autotoc_md73">4.3 The # and ## operators</a>
+      </li>
+    </ul>
+  </li>
+  <li class="level1">
+    <a href="#autotoc_md74">5 Expressions allowed in #if and #elif directives</a>
+    <ul>
+      <li class="level2">
+        <a href="#autotoc_md75">5.1 Operators allowed in controlling expressions</a>
+      </li>
+    </ul>
+  </li>
+  <li class="level1">
+    <a href="#autotoc_md76">7 Predefined macros</a>
+    <ul>
+      <li class="level2">
+        <a href="#autotoc_md77">7.1 __LINE__</a>
+      </li>
+      <li class="level2">
+        <a href="#autotoc_md78">7.2 __FILE__</a>
+      </li>
+      <li class="level2">
+        <a href="#autotoc_md79">7.3 __DATE__</a>
+      </li>
+      <li class="level2">
+        <a href="#autotoc_md80">7.4 __TIME__</a>
+      </li>
+      <li class="level2">
+        <a href="#autotoc_md81">7.5 __STDF__</a>
+      </li>
+    </ul>
+  </li>
+  <li class="level1">
+    <a href="#autotoc_md82">8 INCLUDE line processing</a>
+  </li>
+  <li class="level1">
+    <a href="#autotoc_md83">9 Translation limits</a>
+  </li>
+  <li class="level1">
+    <a href="#autotoc_md84">Appendix A: Divergences from C</a>
+  </li>
+</ul>
+</div>
 <div class="textblock"><p><a class="anchor" id="md__c_1_2_users_2_david_pfister_2_git_hub_2sandbox_2fpx_8f_2_8dox_2articles_2j3_225-142r2"></a></p>
 <h1><a class="anchor" id="autotoc_md32"></a>
-Introduction</h1>
+1 Introduction</h1>
 <p>At its meeting Feb 19, 2025, J3 decided to approve requirements for a cpp-like preprocessor for Fortran 202Y (paper 25-114r2).</p>
 <p>This is the formal specifications document, revised according to the discussion arising from 25-114r2.</p>
 <p>Terminology: For the purpose of this specification, the "preprocessor" encompasses all stages of preprocessing of the input text. For didactic purposes, that might include additional phases of "preprocessing" that help define the expected priorities of preprocessing behaviors. (In past discussions, these have included line continuation processing, comment handling, and tokenization for the preprocessor.)</p>
 <h1><a class="anchor" id="autotoc_md33"></a>
-Lexical specifications</h1>
+2 Lexical specifications</h1>
 <h2><a class="anchor" id="autotoc_md34"></a>
-Lines</h2>
+2.1 Lines</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadLeft">Code   </th><th class="markdownTableHeadLeft">Description    </th></tr>
@@ -184,7 +377,7 @@ Lines</h2>
 <div class="line"><span class="preprocessor">#endif</span></div>
 <div class="line"><span class="preprocessor"></span>    2                       .true.)</div>
 </div><!-- fragment --><h2><a class="anchor" id="autotoc_md35"></a>
-Case sensitivity of identifiers</h2>
+2.2 Case sensitivity of identifiers</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadLeft">Code   </th><th class="markdownTableHeadLeft">Description    </th></tr>
@@ -196,7 +389,7 @@ Case sensitivity of identifiers</h2>
 <td class="markdownTableBodyLeft">cs05   </td><td class="markdownTableBodyLeft">Predefined macro names are case-sensitive.   </td></tr>
 </table>
 <h2><a class="anchor" id="autotoc_md36"></a>
-Significance of whitespace</h2>
+2.3 Significance of whitespace</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadLeft">Code   </th><th class="markdownTableHeadLeft">Description    </th></tr>
@@ -216,7 +409,7 @@ Significance of whitespace</h2>
 <td class="markdownTableBodyLeft">ws11   </td><td class="markdownTableBodyLeft">In fixed-form input, macro names are not recognized as such when spaces are inserted into their invocations.   </td></tr>
 </table>
 <h2><a class="anchor" id="autotoc_md37"></a>
-Comments</h2>
+2.4 Comments</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadLeft">Code   </th><th class="markdownTableHeadLeft">Description    </th></tr>
@@ -234,7 +427,7 @@ Comments</h2>
 <td class="markdownTableBodyLeft">co11   </td><td class="markdownTableBodyLeft">Directive lines (by definition) cannot contain Fortran fixed-form <code>C</code> or <code>*</code> style comments.   </td></tr>
 </table>
 <h2><a class="anchor" id="autotoc_md38"></a>
-Token lexicon</h2>
+2.5 Token lexicon</h2>
 <p>The preprocessor decomposes the source file into preprocessing tokens (see C 2023 section 5.1.1.2 Translation phases).</p>
 <p>As such, there is a specific lexicon of tokens recognized by the preprocessor (including unrecognizable tokens).</p>
 <p>As in C 2023, these tokens are recognized after any line and comment handling specified in section 2.1 "Lines" and section 2.4 "Comments" above.</p>
@@ -267,7 +460,7 @@ Token lexicon</h2>
 <td class="markdownTableBodyLeft">EOL   </td><td class="markdownTableBodyLeft">The new-line ending a directive line, after continuation processing (see li15).   </td></tr>
 </table>
 <h1><a class="anchor" id="autotoc_md39"></a>
-<code>#-Directives</code></h1>
+3 #-Directives</h1>
 <p>The following directives are recognized during Fortran preprocessing. Detailed specifications for each directive appear in the subsections below.</p>
 <p>We use illustrative syntax in the detailed descriptions. Detailed syntax will appear in a paper to be named later.</p>
 <p>Most directives take a sequence of tokens (as defined in section 2.5 "Token lexicon" above). In the detailed descriptions and illustrative syntax below, we denote these as just "token-list" or "replacement-list".</p>
@@ -298,12 +491,12 @@ Token lexicon</h2>
 <td class="markdownTableBodyLeft">di10   </td><td class="markdownTableBodyLeft">The processor-dependent directive   </td></tr>
 </table>
 <h2><a class="anchor" id="autotoc_md40"></a>
-The <code>#define</code> object-like macro directive</h2>
+3.1 The define object-like macro directive</h2>
 <p>See also the rules for expanding object-like macros in section 4 "Macro identification and expansion" below.</p>
 <p>Example syntax: </p><div class="fragment"><div class="line"><span class="preprocessor">#define ID replacement-list EOL</span></div>
 <div class="line"><span class="preprocessor"></span>...</div>
 </div><!-- fragment --><h3><a class="anchor" id="autotoc_md41"></a>
-Static semantics specifications</h3>
+3.1.1 Static semantics specifications</h3>
 <table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadLeft">Code   </th><th class="markdownTableHeadLeft">Description    </th></tr>
@@ -315,7 +508,7 @@ Static semantics specifications</h3>
 <td class="markdownTableBodyLeft">do06   </td><td class="markdownTableBodyLeft">Whitespace before or after the replacement-list is not considered to be part of the replacement-list.   </td></tr>
 </table>
 <h3><a class="anchor" id="autotoc_md42"></a>
-Evaluation semantics specifications</h3>
+3.1.2 Evaluation semantics specifications</h3>
 <table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadLeft">Code   </th><th class="markdownTableHeadLeft">Description    </th></tr>
@@ -331,7 +524,7 @@ Evaluation semantics specifications</h3>
 <td class="markdownTableBodyLeft">do28   </td><td class="markdownTableBodyLeft">Two replacement lists are identical if and only if the preprocessing tokens in both have the same number, ordering, spelling, and white-space separation, where all white-space separations are considered identical (as in C 2023).   </td></tr>
 </table>
 <h2><a class="anchor" id="autotoc_md43"></a>
-The <code>#define</code> function-like macro directive</h2>
+3.2 The define function-like macro directive</h2>
 <p>See also the rules for expanding function-like macros in the section 4 "Macro identification and expansion" below.</p>
 <p>Example syntax: </p><div class="fragment"><div class="line"><span class="preprocessor">#define ID() replacement-list EOL</span></div>
 <div class="line"><span class="preprocessor"></span><span class="preprocessor">#define ID(identifier-list) replacement-list EOL</span></div>
@@ -339,7 +532,7 @@ The <code>#define</code> function-like macro directive</h2>
 <div class="line"><span class="preprocessor"></span><span class="preprocessor">#define ID(identifier-list, ...) replacement-list EOL</span></div>
 <div class="line"><span class="preprocessor"></span>...</div>
 </div><!-- fragment --><h3><a class="anchor" id="autotoc_md44"></a>
-Static semantics specifications</h3>
+3.2.1 Static semantics specifications</h3>
 <table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadLeft">Code   </th><th class="markdownTableHeadLeft">Description    </th></tr>
@@ -359,7 +552,7 @@ Static semantics specifications</h3>
 <td class="markdownTableBodyLeft">df16   </td><td class="markdownTableBodyLeft">The '...' between the parentheses specifies that the function-like macro may be invoked with a variable number of arguments. (See section 4 "Macro identification and expansion" for the semantics of function-like macros with a variable number of arguments.)   </td></tr>
 </table>
 <h3><a class="anchor" id="autotoc_md45"></a>
-Evaluation semantics specifications</h3>
+3.2.2 Evaluation semantics specifications</h3>
 <table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadLeft">Code   </th><th class="markdownTableHeadLeft">Description    </th></tr>
@@ -371,11 +564,11 @@ Evaluation semantics specifications</h3>
 <td class="markdownTableBodyLeft">df34   </td><td class="markdownTableBodyLeft">An identifier currently defined as a function-like macro shall not be redefined by another <code>#define</code> preprocessing directive unless the second definition is a function-like macro definition, with the same number and spelling of the parameters, and the two replacement lists are identical (as in C 2023).   </td></tr>
 </table>
 <h2><a class="anchor" id="autotoc_md46"></a>
-The undef directive</h2>
+3.3 The undef directive</h2>
 <p>Example syntax: </p><div class="fragment"><div class="line"><span class="preprocessor">#undef ID EOL</span></div>
 <div class="line"><span class="preprocessor"></span>...</div>
 </div><!-- fragment --><h3><a class="anchor" id="autotoc_md47"></a>
-Static semantics specifications</h3>
+3.3.1 Static semantics specifications</h3>
 <table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadLeft">Code   </th><th class="markdownTableHeadLeft">Description    </th></tr>
@@ -385,7 +578,7 @@ Static semantics specifications</h3>
 <td class="markdownTableBodyLeft">ud04   </td><td class="markdownTableBodyLeft">The specified identifier may or may not have been defined.   </td></tr>
 </table>
 <h3><a class="anchor" id="autotoc_md48"></a>
-Evaluation semantics specifications</h3>
+3.3.2 Evaluation semantics specifications</h3>
 <table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadLeft">Code   </th><th class="markdownTableHeadLeft">Description    </th></tr>
@@ -395,13 +588,13 @@ Evaluation semantics specifications</h3>
 <td class="markdownTableBodyLeft">ud22   </td><td class="markdownTableBodyLeft">The definition for the object-like macro or function-like macro named by ID is removed.   </td></tr>
 </table>
 <h2><a class="anchor" id="autotoc_md49"></a>
-The include directive</h2>
+3.4 The include directive</h2>
 <p>Example syntax: </p><div class="fragment"><div class="line"><span class="preprocessor">#include CHARACTER_STRING EOL</span></div>
 <div class="line"><span class="preprocessor"></span><span class="preprocessor">#include &lt;character-list&gt; EOL</span></div>
 <div class="line"><span class="preprocessor"></span><span class="preprocessor">#include token-list EOL</span></div>
 <div class="line"><span class="preprocessor"></span>...</div>
 </div><!-- fragment --><h3><a class="anchor" id="autotoc_md50"></a>
-Static semantics specifications</h3>
+3.4.1 Static semantics specifications</h3>
 <table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadLeft">Code   </th><th class="markdownTableHeadLeft">Description    </th></tr>
@@ -411,7 +604,7 @@ Static semantics specifications</h3>
 <td class="markdownTableBodyLeft">in08   </td><td class="markdownTableBodyLeft">In the third form, the token-list does not match the previous two forms.   </td></tr>
 </table>
 <h3><a class="anchor" id="autotoc_md51"></a>
-Evaluation semantics specifications</h3>
+3.4.2 Evaluation semantics specifications</h3>
 <table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadLeft">Code   </th><th class="markdownTableHeadLeft">Description    </th></tr>
@@ -429,7 +622,7 @@ Evaluation semantics specifications</h3>
 <td class="markdownTableBodyLeft">in28   </td><td class="markdownTableBodyLeft">Unlike INCLUDE lines in Fortran 2023 (see 25-007 section 6.4, "Including source text"), the <code>#include</code> directive is not prohibited from including the same source file at a deeper level of nesting. See also section 8 "INCLUDE line processing".   </td></tr>
 </table>
 <h2><a class="anchor" id="autotoc_md52"></a>
-The <code>#if</code>, <code>#ifdef</code>, <code>#ifndef</code>, <code>#elif</code>, <code>#elifdef</code>, <code>#elifndef</code>, <code>#else</code>, <code>#endif</code> conditional directives</h2>
+3.5 The if, ifdef, ifndef, elif, elifdef, elifndef, else, endif conditional directives</h2>
 <p>Example syntax (extra spacing for illustration purposes only):</p>
 <div class="fragment"><div class="line">General form:</div>
 <div class="line">      &lt;if-head&gt;  &lt;if-elif-list&gt;             #endif EOL</div>
@@ -457,7 +650,7 @@ The <code>#if</code>, <code>#ifdef</code>, <code>#ifndef</code>, <code>#elif</co
 <div class="line">      Fortran comment lines</div>
 <div class="line">      Fortran source fragment lines</div>
 </div><!-- fragment --><h3><a class="anchor" id="autotoc_md53"></a>
-Static semantics specifications</h3>
+3.5.1 Static semantics specifications</h3>
 <table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadLeft">Code   </th><th class="markdownTableHeadLeft">Description    </th></tr>
@@ -473,7 +666,7 @@ Static semantics specifications</h3>
 <td class="markdownTableBodyLeft">if30   </td><td class="markdownTableBodyLeft">The conditional directive chains must properly nest, with each nested chain appearing entirely within a single <code>&lt;group&gt;</code> of the enclosing chain.   </td></tr>
 </table>
 <h3><a class="anchor" id="autotoc_md54"></a>
-Evaluation semantics specifications</h3>
+3.5.2 Evaluation semantics specifications</h3>
 <table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadLeft">Code   </th><th class="markdownTableHeadLeft">Description    </th></tr>
@@ -523,15 +716,15 @@ The resulting Fortran comment lines and Fortran source fragment lines are made a
 <td class="markdownTableBodyLeft">ix65   </td><td class="markdownTableBodyLeft">When all controlling expressions in the &lt;if-head&gt; construct and all &lt;if-elif&gt; constructs evaluate to a zero value and no &lt;if-else&gt; construct is present in the same chain, then all &lt;group&gt;s in these constructs are skipped.   </td></tr>
 </table>
 <h2><a class="anchor" id="autotoc_md55"></a>
-The <code>#error</code> and <code>#warning</code> directives</h2>
+3.6 The error and warning directives</h2>
 <p>Example syntax: </p><div class="fragment"><div class="line"><span class="preprocessor">#error token-list EOL</span></div>
 <div class="line"><span class="preprocessor"></span><span class="preprocessor">#warning token-list EOL</span></div>
 <div class="line"><span class="preprocessor"></span>...</div>
 </div><!-- fragment --><p>The <code>#error</code> and <code>#warning</code> directives are used to announce user-defined error conditions in the input.</p>
 <h3><a class="anchor" id="autotoc_md56"></a>
-Static semantics specifications</h3>
+3.6.1 Static semantics specifications</h3>
 <h3><a class="anchor" id="autotoc_md57"></a>
-Evaluation semantics specifications</h3>
+3.6.2 Evaluation semantics specifications</h3>
 <table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadLeft">Code   </th><th class="markdownTableHeadLeft">Description    </th></tr>
@@ -545,12 +738,12 @@ Evaluation semantics specifications</h3>
 <td class="markdownTableBodyLeft">ew10   </td><td class="markdownTableBodyLeft">Additional behavior is processor-dependent.   </td></tr>
 </table>
 <h2><a class="anchor" id="autotoc_md58"></a>
-The <code>#line</code> directive</h2>
+3.7 The line directive</h2>
 <p>Example syntax: </p><div class="fragment"><div class="line"><span class="preprocessor">#line WHOLE_NUMBER EOL</span></div>
 <div class="line"><span class="preprocessor"></span><span class="preprocessor">#line WHOLE_NUMBER CHARACTER_STRING EOL</span></div>
 <div class="line"><span class="preprocessor"></span>...</div>
 </div><!-- fragment --><h3><a class="anchor" id="autotoc_md59"></a>
-Static semantics specifications</h3>
+3.7.1 Static semantics specifications</h3>
 <table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadLeft">Code   </th><th class="markdownTableHeadLeft">Description    </th></tr>
@@ -560,7 +753,7 @@ Static semantics specifications</h3>
 <td class="markdownTableBodyLeft">li04   </td><td class="markdownTableBodyLeft">The WHOLE_NUMBER shall not exceed 2147483647.   </td></tr>
 </table>
 <h3><a class="anchor" id="autotoc_md60"></a>
-Evaluation semantics specifications</h3>
+3.7.2 Evaluation semantics specifications</h3>
 <table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadLeft">Code   </th><th class="markdownTableHeadLeft">Description    </th></tr>
@@ -570,11 +763,11 @@ Evaluation semantics specifications</h3>
 <td class="markdownTableBodyLeft">li24   </td><td class="markdownTableBodyLeft">In the second form, the line directive causes the processor to change the presumed file name of the source file to be the contents of the CHARACTER_STRING.   </td></tr>
 </table>
 <h2><a class="anchor" id="autotoc_md61"></a>
-The <code>#pragma</code> directive</h2>
+3.8 The pragma directive</h2>
 <p>Example syntax: </p><div class="fragment"><div class="line"><span class="preprocessor">#pragma token-list EOL</span></div>
 <div class="line"><span class="preprocessor"></span>...</div>
 </div><!-- fragment --><h3><a class="anchor" id="autotoc_md62"></a>
-Static semantics specifications</h3>
+3.8.1 Static semantics specifications</h3>
 <table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadLeft">Code   </th><th class="markdownTableHeadLeft">Description    </th></tr>
@@ -584,23 +777,23 @@ Static semantics specifications</h3>
 <td class="markdownTableBodyLeft">pr10   </td><td class="markdownTableBodyLeft">The token-list shall not begin with the identifier 'STDF', either before or after macro expansion.   </td></tr>
 </table>
 <h3><a class="anchor" id="autotoc_md63"></a>
-Evaluation semantics specifications</h3>
+3.8.2 Evaluation semantics specifications</h3>
 <table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadLeft">Code   </th><th class="markdownTableHeadLeft">Description    </th></tr>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyLeft">pr20   </td><td class="markdownTableBodyLeft">The semantics of the token-list are processor-dependent. In particular, it is processor-dependent whether macro expansion is performed on the token-list.    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyLeft">pr22   </td><td class="markdownTableBodyLeft">The <code>#pragm</code>a directive causes the processor to behave in a processor-defined manner.    </td></tr>
+<td class="markdownTableBodyLeft">pr22   </td><td class="markdownTableBodyLeft">The <code>#pragma</code> directive causes the processor to behave in a processor-defined manner.    </td></tr>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyLeft">pr24   </td><td class="markdownTableBodyLeft">Any <code>#pragma</code> that is not recognized by the processor is ignored.   </td></tr>
 </table>
 <h2><a class="anchor" id="autotoc_md64"></a>
-The null directive</h2>
+3.9 The null directive</h2>
 <p>Example syntax: </p><div class="fragment"><div class="line"><span class="preprocessor"># EOL</span></div>
 <div class="line"><span class="preprocessor"></span>...</div>
 </div><!-- fragment --><h3><a class="anchor" id="autotoc_md65"></a>
-Static semantics specifications</h3>
+3.9.1 Static semantics specifications</h3>
 <table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadLeft">Code   </th><th class="markdownTableHeadLeft">Description    </th></tr>
@@ -608,7 +801,7 @@ Static semantics specifications</h3>
 <td class="markdownTableBodyLeft">nu02   </td><td class="markdownTableBodyLeft">The only tokens allowed on a null directive are the <code>#</code> and the end-of-line indicator EOL.   </td></tr>
 </table>
 <h3><a class="anchor" id="autotoc_md66"></a>
-Evaluation semantics specifications</h3>
+3.9.2 Evaluation semantics specifications</h3>
 <table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadLeft">Code   </th><th class="markdownTableHeadLeft">Description    </th></tr>
@@ -616,11 +809,11 @@ Evaluation semantics specifications</h3>
 <td class="markdownTableBodyLeft">nu10   </td><td class="markdownTableBodyLeft">The null directive has no effect.   </td></tr>
 </table>
 <h2><a class="anchor" id="autotoc_md67"></a>
-The processor-dependent directive</h2>
+3.10 The processor-dependent directive</h2>
 <p>Example syntax: </p><div class="fragment"><div class="line"><span class="preprocessor"># token-list EOL</span></div>
 <div class="line"><span class="preprocessor"></span>...</div>
 </div><!-- fragment --><h3><a class="anchor" id="autotoc_md68"></a>
-Static semantics specifications</h3>
+3.10.1 Static semantics specifications</h3>
 <table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadLeft">Code   </th><th class="markdownTableHeadLeft">Description    </th></tr>
@@ -628,7 +821,7 @@ Static semantics specifications</h3>
 <td class="markdownTableBodyLeft">nd02   </td><td class="markdownTableBodyLeft">The token-list in a processor-dependent directive may not begin with any of the directive names appearing in the syntax above (<code>define</code>, <code>undef</code>, <code>include</code>, etc.).   </td></tr>
 </table>
 <h3><a class="anchor" id="autotoc_md69"></a>
-Evaluation semantics specifications</h3>
+3.10.2 Evaluation semantics specifications</h3>
 <table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadLeft">Code   </th><th class="markdownTableHeadLeft">Description    </th></tr>
@@ -636,12 +829,10 @@ Evaluation semantics specifications</h3>
 <td class="markdownTableBodyLeft">nd20   </td><td class="markdownTableBodyLeft">The result of evaluating a processor-dependent directive is processor-dependent.   </td></tr>
 </table>
 <h1><a class="anchor" id="autotoc_md70"></a>
-Macro identification and expansion</h1>
-<blockquote class="doxtable">
-<p>&zwj;[!NOTE] This section is currently incomplete. A self-contained specification for macro identification and expansion will appear in a forthcoming paper. </p>
-</blockquote>
+4 Macro identification and expansion</h1>
+<dl class="section note"><dt>Note</dt><dd>This section is currently incomplete. A self-contained specification for macro identification and expansion will appear in a forthcoming paper.</dd></dl>
 <h2><a class="anchor" id="autotoc_md71"></a>
-Comparison to macro identification and expansion in CPP</h2>
+4.1 Comparison to macro identification and expansion in CPP</h2>
 <p>We intend for macro identification and expansion to operate almost exactly as specified in C 2023 section 6.10.5, however it will differ in minor ways to accommodate Fortran syntax. The following exceptions have consensus amongst the authors:</p>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -651,13 +842,13 @@ Comparison to macro identification and expansion in CPP</h2>
 </table>
 <p>Additional details are still under discussion and will be outlined in a future paper.</p>
 <h2><a class="anchor" id="autotoc_md72"></a>
-The identifiers <code>__VA_ARGS__</code> and <code>__VA_OPT__</code></h2>
+4.2 The identifiers __VA_ARGS__ and __VA_OPT__</h2>
 <p>As specified in C 2023 section 6.10.5.1, see also section 4.1 above.</p>
 <h2><a class="anchor" id="autotoc_md73"></a>
-The <code>#</code> and <code>##</code> operators</h2>
+4.3 The # and ## operators</h2>
 <p>As specified in C 2023 section 6.10.5.{2,3}, see also section 4.1 above.</p>
 <h1><a class="anchor" id="autotoc_md74"></a>
-Expressions allowed in if and elif directives</h1>
+5 Expressions allowed in if and elif directives</h1>
 <table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadLeft">Code   </th><th class="markdownTableHeadLeft">Description    </th></tr>
@@ -677,7 +868,7 @@ Expressions allowed in if and elif directives</h1>
 <td class="markdownTableBodyLeft">ex25   </td><td class="markdownTableBodyLeft">When the expression evaluates to zero, the controlling expression will be considered "false". If the expression evaluates to any non-zero value, the controlling expression will be considered "true".   </td></tr>
 </table>
 <h2><a class="anchor" id="autotoc_md75"></a>
-Operators allowed in controlling expressions</h2>
+5.1 Operators allowed in controlling expressions</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadLeft">Code   </th><th class="markdownTableHeadLeft">Description    </th></tr>
@@ -753,13 +944,11 @@ Operators allowed in controlling expressions</h2>
 <td class="markdownTableBodyLeft">op14   </td><td class="markdownTableBodyLeft">The conditional expression 'e1 ? e2 : e3' guarantees left-to-right evaluation; if the first operand e1 evaluates to non-zero, then the third operand e3 is not evaluated and the resulting value is the value of evaluating the second operand e2. Otherwise, the second operand e2 is not evaluated and the resulting value is the value of evaluating the third operand e3.   </td></tr>
 </table>
 <h1><a class="anchor" id="autotoc_md76"></a>
-Predefined macros</h1>
+7 Predefined macros</h1>
 <table class="doxtable">
 <tr>
 <td>pm00 </td><td><p class="starttd">Macro names beginning with a leading underscore followed by an uppercase letter or a second underscore are reserved to the processor. If a macro with a reserved name is the subject of a define or undef directive within the program unit, then behavior is processor-dependent.</p>
-<blockquote class="doxtable">
-<p>&zwj;[!NOTE] Any macro name matching the regular expression <code>/^_[A-Z_][A-Za-z0-9_]*$/</code> is considered reserved. </p>
-</blockquote>
+<dl class="section note"><dt>Note</dt><dd>Any macro name matching the regular expression <code>/^_[A-Z_][A-Za-z0-9_]*$/</code> is considered reserved. </dd></dl>
 </td></tr>
 <tr>
 <td>pm01 </td><td>Any macro name predefined by the processor shall begin with a leading underscore followed by an uppercase letter or a second underscore. </td></tr>
@@ -778,7 +967,7 @@ Predefined macros</h1>
 </table>
 <p>The following macro names shall be defined by the processor:</p>
 <h2><a class="anchor" id="autotoc_md77"></a>
-<code>__LINE__</code></h2>
+7.1 __LINE__</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadLeft">Code   </th><th class="markdownTableHeadLeft">Description    </th></tr>
@@ -786,7 +975,7 @@ Predefined macros</h1>
 <td class="markdownTableBodyLeft">pm20   </td><td class="markdownTableBodyLeft"><code>__LINE__</code> shall be predefined to a WHOLE_NUMBER representing the presumed line number (within the current source file) of the current line.   </td></tr>
 </table>
 <h2><a class="anchor" id="autotoc_md78"></a>
-<code>__FILE__</code></h2>
+7.2 __FILE__</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadLeft">Code   </th><th class="markdownTableHeadLeft">Description    </th></tr>
@@ -794,7 +983,7 @@ Predefined macros</h1>
 <td class="markdownTableBodyLeft">pm30   </td><td class="markdownTableBodyLeft"><code>__FILE__</code> shall be predefined to a CHARACTER_STRING representing the presumed name of the current source file   </td></tr>
 </table>
 <h2><a class="anchor" id="autotoc_md79"></a>
-<code>__DATE__</code></h2>
+7.3 __DATE__</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadLeft">Code   </th><th class="markdownTableHeadLeft">Description    </th></tr>
@@ -806,7 +995,7 @@ Predefined macros</h1>
 <td class="markdownTableBodyLeft">pm42   </td><td class="markdownTableBodyLeft">If the date of translation is not available, a processor-dependent valid date shall be supplied.   </td></tr>
 </table>
 <h2><a class="anchor" id="autotoc_md80"></a>
-<code>__TIME__</code></h2>
+7.4 __TIME__</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadLeft">Code   </th><th class="markdownTableHeadLeft">Description    </th></tr>
@@ -818,7 +1007,7 @@ Predefined macros</h1>
 <td class="markdownTableBodyLeft">pm52   </td><td class="markdownTableBodyLeft">If the time of translation is not available, a processor-dependent valid time shall be supplied.   </td></tr>
 </table>
 <h2><a class="anchor" id="autotoc_md81"></a>
-<code>__STDF__</code></h2>
+7.5 __STDF__</h2>
 <p><code>__STDF__</code> is an analog to <code>__STDC__</code> in C and <code>__cplusplus</code> in C++. Its primary role is to provide preprocessor-visible and vendor-independent identification of the underlying target language (i.e., "the processor is Fortran"), which enables one to write multi-language header files with conditional compilation based on language.</p>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -827,7 +1016,7 @@ Predefined macros</h1>
 <td class="markdownTableBodyLeft">pm61   </td><td class="markdownTableBodyLeft"><code>__STDF__</code> shall be predefined to the WHOLE_NUMBER 1   </td></tr>
 </table>
 <h1><a class="anchor" id="autotoc_md82"></a>
-INCLUDE line processing</h1>
+8 INCLUDE line processing</h1>
 <table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadLeft">Code   </th><th class="markdownTableHeadLeft">Description    </th></tr>
@@ -845,7 +1034,7 @@ INCLUDE line processing</h1>
 <td class="markdownTableBodyLeft">ic12   </td><td class="markdownTableBodyLeft">The maximum depth of nesting of any nested INCLUDE lines is processor-dependent (analogously to in26).   </td></tr>
 </table>
 <h1><a class="anchor" id="autotoc_md83"></a>
-Translation limits</h1>
+9 Translation limits</h1>
 <p>To enhance portability of source translated by the Fortran preprocessor, the standard shall specify minimum translation limits for conforming processors, governing various aspects of preprocessing source text. Program units exceeding the specified limits might not be acceptable to all processors.</p>
 <p>Specific minimum values for the limits will be the subject of a future paper, but are expected to include at least the number of:</p>
 <ul>
@@ -855,7 +1044,7 @@ Translation limits</h1>
 <li>Characters in a string literal</li>
 <li>Parameters in one function-like macro definition</li>
 <li>Arguments in one function-like macro invocation</li>
-<li>Nesting levels for include files</li>
+<li>Nesting levels for <code>#include</code> files</li>
 </ul>
 <h1><a class="anchor" id="autotoc_md84"></a>
 Appendix A: Divergences from C</h1>

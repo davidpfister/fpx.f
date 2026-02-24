@@ -144,7 +144,7 @@ $(function(){initNavTree('structfpx__global_1_1global__settings.html',''); initR
 <div class="line"><span class="keyword">call </span>add(<a class="code hl_variable" href="group__group__global.html#ga8b8524880886f61f8c961589cffa7640">global</a>%macros, macro(<span class="stringliteral">&#39;__LFORTRAN_MAJOR__&#39;</span>))</div>
 <div class="line"><span class="keyword">call </span>add(<a class="code hl_variable" href="group__group__global.html#ga8b8524880886f61f8c961589cffa7640">global</a>%macros, macro(<span class="stringliteral">&#39;__LFORTRAN_MINOR__&#39;</span>))</div>
 <div class="line"><span class="keyword">call </span>add(<a class="code hl_variable" href="group__group__global.html#ga8b8524880886f61f8c961589cffa7640">global</a>%macros, macro(<span class="stringliteral">&#39;__LFORTRAN_PATCHLEVEL__&#39;</span>))</div>
-<div class="ttc" id="agroup__group__global_html_ga8b8524880886f61f8c961589cffa7640"><div class="ttname"><a href="group__group__global.html#ga8b8524880886f61f8c961589cffa7640">fpx_global::global</a></div><div class="ttdeci">type(global_settings), public global</div><div class="ttdoc">The single global instance used throughout fpx Initialized automatically with sensible defaults value...</div><div class="ttdef"><b>Definition</b> <a href="global_8f90_source.html#l00089">global.f90:89</a></div></div>
+<div class="ttc" id="agroup__group__global_html_ga8b8524880886f61f8c961589cffa7640"><div class="ttname"><a href="group__group__global.html#ga8b8524880886f61f8c961589cffa7640">fpx_global::global</a></div><div class="ttdeci">type(global_settings), public global</div><div class="ttdoc">The single global instance used throughout fpx Initialized automatically with sensible defaults value...</div><div class="ttdef"><b>Definition</b> <a href="global_8f90_source.html#l00092">global.f90:92</a></div></div>
 </div><!-- fragment --> <h2 class="groupheader">Remarks</h2>
 <dl class="section user"><dt></dt><dd>The global settings are accessed through the global variable <a class="el" href="group__group__global.html#ga8b8524880886f61f8c961589cffa7640">global</a> </dd></dl>
 
@@ -170,6 +170,15 @@ Variables</h2></td></tr>
 <tr class="memitem:a91744cf27b959fe760898e2a087caf5f" id="r_a91744cf27b959fe760898e2a087caf5f"><td class="memItemLeft" align="right" valign="top">logical, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a91744cf27b959fe760898e2a087caf5f">exlude_comments</a> = .false.</td></tr>
 <tr class="memdesc:a91744cf27b959fe760898e2a087caf5f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Boolean controlling the inclusion/exclusion of comments. The comments are kept by default.  <br /></td></tr>
 <tr class="separator:a91744cf27b959fe760898e2a087caf5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2911c35e273e4efa20a83a199982ed2f" id="r_a2911c35e273e4efa20a83a199982ed2f"><td class="memItemLeft" align="right" valign="top">logical, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2911c35e273e4efa20a83a199982ed2f">implicit_continuation</a> = .false.</td></tr>
+<tr class="memdesc:a2911c35e273e4efa20a83a199982ed2f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Boolean controlling implicit continuation line.  <br /></td></tr>
+<tr class="separator:a2911c35e273e4efa20a83a199982ed2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0077fa550303be52a94634c64dd15715" id="r_a0077fa550303be52a94634c64dd15715"><td class="memItemLeft" align="right" valign="top">logical, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0077fa550303be52a94634c64dd15715">line_break</a> = .false.</td></tr>
+<tr class="memdesc:a0077fa550303be52a94634c64dd15715"><td class="mdescLeft">&#160;</td><td class="mdescRight">Boolean controlling line break with double backslash.  <br /></td></tr>
+<tr class="separator:a0077fa550303be52a94634c64dd15715"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a59066840467a819eb4e4aa60bb6fbe9c" id="r_a59066840467a819eb4e4aa60bb6fbe9c"><td class="memItemLeft" align="right" valign="top">logical, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a59066840467a819eb4e4aa60bb6fbe9c">extra_macros</a> = .false.</td></tr>
+<tr class="memdesc:a59066840467a819eb4e4aa60bb6fbe9c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Boolean controlling extra (non-standard macro definitions: <b>FILENAME</b>, <b>TIMESTAMP</b>).  <br /></td></tr>
+<tr class="separator:a59066840467a819eb4e4aa60bb6fbe9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->
 </div><!-- doc-content -->

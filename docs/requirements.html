@@ -131,9 +131,45 @@ $(function(){initNavTree('requirements.html',''); initResizable(true); });
   <div class="headertitle"><div class="title">Fortran preprocessor requirements (24-114r2)</div></div>
 </div><!--header-->
 <div class="contents">
+<div class="toc"><h3>Table of Contents</h3>
+<ul>
+  <li class="level1">
+    <a href="#autotoc_md22">1. Introduction</a>
+  </li>
+  <li class="level1">
+    <a href="#autotoc_md23">2. The basic idea: phases before the &quot;processor&quot;</a>
+  </li>
+  <li class="level1">
+    <a href="#autotoc_md24">3. FPP Phase 1: Line conjoining</a>
+  </li>
+  <li class="level1">
+    <a href="#autotoc_md25">4. FPP Phase 2: Directive processing</a>
+    <ul>
+      <li class="level2">
+        <a href="#autotoc_md26">4.1 Directives accepted by the preprocessor</a>
+      </li>
+      <li class="level2">
+        <a href="#autotoc_md27">4.2 Tokens recognized in #define directives</a>
+      </li>
+      <li class="level2">
+        <a href="#autotoc_md28">4.3 Operators accepted in #if and #elif expressions</a>
+      </li>
+      <li class="level2">
+        <a href="#autotoc_md29">4.4 Macros defined by the preprocessor</a>
+      </li>
+      <li class="level2">
+        <a href="#autotoc_md30">4.5 Fortran awareness during macro expansion</a>
+      </li>
+      <li class="level2">
+        <a href="#autotoc_md31">4.6 Output of Phase 2</a>
+      </li>
+    </ul>
+  </li>
+</ul>
+</div>
 <div class="textblock"><p><a class="anchor" id="md__c_1_2_users_2_david_pfister_2_git_hub_2sandbox_2fpx_8f_2_8dox_2articles_2j3_225-114r2"></a></p>
 <h1><a class="anchor" id="autotoc_md22"></a>
-Introduction</h1>
+1. Introduction</h1>
 <blockquote class="doxtable">
 <p>&zwj;From paper 96-063, April 3, 1996 (lightly edited):</p>
 <p>Frequently Fortran programmers need to maintain more than one version of a code, or to run the code in various environments. The easiest solution for the programmer is to keep a single source file that has all the code variations interleaved within it so that any version can be easily extracted. This way, modifications that apply to all versions need only be made once.</p>
@@ -148,15 +184,15 @@ Introduction</h1>
 <p>This document attempts to define the requirements for a mandatory Fortran preprocessor based on the preprocessor syntax already in common use today. The guiding principle is to promote Fortran program portability by defining consistent syntax and semantics of a useful subset of CPP. Some FPP behavior will be slightly different from CPP, in order to accommodate some Fortran idiosyncrasies.</p>
 <p>A major overarching goal of this effort is to standardize de facto current practice for preprocessing in Fortran compilers and code. It is the standard's responsibility to standardize syntax in order to settle minor divergences that have arisen amongst pre-standard FPP implementations, to the detriment of portability for end users.</p>
 <h1><a class="anchor" id="autotoc_md23"></a>
-The basic idea: phases before the "processor"</h1>
+2. The basic idea: phases before the "processor"</h1>
 <p>The preprocessor will be a mandatory part of the language. Any file passed to a processor may contain preprocessor directive lines.</p>
 <p>The C standards define eight phases of the compilation process. These phases don't prescribe the details of an implementation, but are useful for defining in focused terms the expected behavior of implementations.</p>
 <p>We plan to take a similar approach for defining FPP. This should simplify the explanation of the expected behavior of any given implementation.</p>
 <h1><a class="anchor" id="autotoc_md24"></a>
-FPP Phase 1: Line conjoining</h1>
+3. FPP Phase 1: Line conjoining</h1>
 <p>The C language defines phase 2 as a pass where continuation lines are removed. To simplify the explanation of FPP's preprocessing phase 2, we will define phase 1 to simply remove continuation lines seen in the source file. This will apply to both fixed-form and free-form source Fortran lines and preprocessor directive lines. The output of this phase is a sequence of "logical lines", each of which may be up to 1 million characters long. Logical lines are a sequence of strings and comment-strings in the same order as they are encountered in the input stream.</p>
 <h1><a class="anchor" id="autotoc_md25"></a>
-FPP Phase 2: Directive processing</h1>
+4. FPP Phase 2: Directive processing</h1>
 <p>The directive processing phase is analogous to CPP phase 4. Preprocessor directives are executed. Macros are expanded in non-directive lines (Fortran source lines).</p>
 <p>The directive language accepted by FPP is based on the syntax of CPP. It has syntax that differs from Fortran, but macros can expand to include arbitrary Fortran tokens. It differs from C and Fortran syntax in the following ways.</p>
 <p>Token recognition:</p><ol type="1">
@@ -169,20 +205,20 @@ FPP Phase 2: Directive processing</h1>
 </ol>
 <p>Comment handling:</p><ol type="1">
 <li>FPP does not recognize '!' as initiating a comment on directive lines. In <code>#if</code> and <code>#elif</code> directive expressions, '!' is interpreted as the C 'not' operator.</li>
-<li>FPP does not recognize '//' as initiating a comment on directive lines. '//' can be used to construct macro definitions that contain Fortran string concatenation.</li>
+<li>FPP does not recognize <code>//</code> as initiating a comment on directive lines. <code>//</code> can be used to construct macro definitions that contain Fortran string concatenation.</li>
 <li>FPP recognizes <code>/* ... */</code> C-style comments on directive lines. <code>/* ... */</code> comments are not recognized in (non-directive) Fortran source lines.</li>
 <li>On (non-directive) Fortran source lines, macros are expanded within all Fortran-style comment lines (i.e., as defined by clauses 6.3.2.3 and 6.3.3.2 in the Fortran 2023 interpretation document). This notably implies macro expansion within processor- specific "directive-style" comment lines (such as '!$omp', or '!$acc', or others).</li>
 </ol>
 <p>Constant expressions in <code>#if</code> and <code>#elif</code>:</p><ol type="1">
-<li>Expressions in if and <code>#elif</code> directives allow most operators from CPP (see section 4.3 below).</li>
-<li>Expressions in if and <code>#elif</code> directives must be integer constant expressions as specified for CPP and evaluate to INTEGER values. As in CPP, zero values are treated as <code>false</code>. Non-zero values are treated as <code>true</code>.</li>
+<li>Expressions in <code>#if</code> and <code>#elif</code> directives allow most operators from CPP (see section 4.3 below).</li>
+<li>Expressions in <code>#if</code> and <code>#elif</code> directives must be integer constant expressions as specified for CPP and evaluate to INTEGER values. As in CPP, zero values are treated as <code>false</code>. Non-zero values are treated as <code>true</code>.</li>
 <li>Any undefined identifiers that remain after macro expansion (including those lexically identical to keywords or intrinsics) are treated as zero, as in CPP.</li>
 <li>C character constants (such as <code>A</code> , <code>\n</code>) are treated as integer values, as they are in CPP.</li>
 <li>There are no KIND specifiers on integer constants in the preprocessor.</li>
 <li>Integer expressions in preprocessor directives are evaluated using the integer kind that has the largest decimal exponent range supported by the processor.</li>
 </ol>
 <h2><a class="anchor" id="autotoc_md26"></a>
-Directives accepted by the preprocessor</h2>
+4.1 Directives accepted by the preprocessor</h2>
 <p>The following preprocessor directives will have the same semantics as defined in the C23 edition of the C programming language standard.</p><ul>
 <li><code>#line</code></li>
 <li><code>#define</code> including function-like macros and those that use the ellipsis notation in the parameters</li>
@@ -196,39 +232,39 @@ Directives accepted by the preprocessor</h2>
 </ul>
 <p>Just as <code>#include</code> lines interpolate the source from other files, the preprocessor will include the text from Fortran INCLUDE lines. Text interpolated by INCLUDE lines will be treated as if it had been included via <code>#include</code>.</p>
 <h2><a class="anchor" id="autotoc_md27"></a>
-Tokens recognized in define directives</h2>
-<p>The following tokens are recognized in the replacement-list of a define directive and handled by the preprocessor during expansion:</p>
+4.2 Tokens recognized in define directives</h2>
+<p>The following tokens are recognized in the replacement-list of a <code>#define</code> directive and handled by the preprocessor during expansion:</p>
 <ul>
 <li><code>#</code> (stringify operator)</li>
 <li><code>##</code> (token concatenation operator)</li>
-<li>Any previously defined macro name</li>
+<li>Any previously <code>#defined</code> macro name</li>
 <li>Any argument name in a function-like macro</li>
 <li><code>__VA_ARGS__</code> in the replacement-list of a function-like macro that uses the ellipsis notation in the parameters.</li>
 <li><code>__VA_OPT__</code> in the replacement-list of a function-like macro that use the ellipsis notation in the parameters.</li>
 </ul>
 <p>Any other text in the replacement-list is preserved unchanged during macro expansion, and may for example include any tokens valid in Fortran or C.</p>
 <h2><a class="anchor" id="autotoc_md28"></a>
-Operators accepted in if and elif expressions</h2>
+4.3 Operators accepted in if and elif expressions</h2>
 <ul>
 <li>The "defined" operator</li>
 <li>From C: <br  />
- <code>&amp;&amp;</code> <code>||</code> <code>!</code> (logical operators) <br  />
- <code>==</code> <code>!=</code> <code>&lt;</code> <code>&gt;</code> <code>&lt;=</code> <code>&gt;=</code> (equality- and relational-expression) <br  />
- <code>+</code> <code>-</code> (additive-expression, also unary forms) <br  />
- <code>*</code> <code>/</code> <code>%</code> (multiplicative-expression) <br  />
- <code>&amp;</code> <code>|</code> <code>^</code> <code>~</code> <code>&lt;&lt;</code> <code>&gt;&gt;</code> (bitwise operators) <br  />
+ <code>&amp;&amp;</code>, <code>||</code>, <code>!</code> (logical operators) <br  />
+ <code>==</code>, <code>!=</code>, <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code> (equality- and relational-expression) <br  />
+ <code>+</code>, <code>-</code> (additive-expression, also unary forms) <br  />
+ <code>*</code>, <code>/</code>, <code>%</code> (multiplicative-expression) <br  />
+ <code>&amp;</code>, <code>|</code>, <code>^</code>, <code>~</code>, <code>&lt;&lt;</code>, <code>&gt;&gt;</code> (bitwise operators) <br  />
  <code>? :</code> (conditional-expression) <br  />
- <code>(</code> <code>)</code> (parenthetical grouping) <br  />
+ <code>(</code>, <code>)</code> (parenthetical grouping) <br  />
 </li>
 </ul>
-<p>Earlier revisions of this document considered allowing Fortran syntax in if and <code>#elif</code> expressions, such as: <code>=</code> <code>/=</code> <code>.AND.</code> <code>.OR.</code> <code>.NOT.</code> <code>.TRUE.</code> <code>.FALSE.</code> but we eventually decided to omit these due to a lack of compelling use cases.</p>
+<p>Earlier revisions of this document considered allowing Fortran syntax in <code>#if</code> and <code>#elif</code> expressions, such as: <code>=</code> <code>/=</code> <code>.AND.</code> <code>.OR.</code> <code>.NOT.</code> <code>.TRUE.</code> <code>.FALSE.</code> but we eventually decided to omit these due to a lack of compelling use cases.</p>
 <h2><a class="anchor" id="autotoc_md29"></a>
-Macros defined by the preprocessor</h2>
+4.4 Macros defined by the preprocessor</h2>
 <p><code>__LINE__</code> <code>__FILE__</code> <code>__DATE__</code> <code>__TIME__</code> <code>__STDF__</code></p>
 <p><code>__STDF__</code> is an analog to <code>__STDC__</code> in C and <code>__cplusplus</code> in C++. Its primary role is to provide preprocessor-visible and vendor-independent identification of the underlying target language (i.e., "the processor
 is Fortran"), which enables one to write multi-language header files with conditional compilation based on language.</p>
 <h2><a class="anchor" id="autotoc_md30"></a>
-Fortran awareness during macro expansion</h2>
+4.5 Fortran awareness during macro expansion</h2>
 <p>Just as CPP does not expand tokens in strings, there are places in Fortran lines that FPP should not recognize or expand tokens.</p>
 <p>FPP will not expand in fixed-form:</p><ul>
 <li>A token "C" or "c" in column 1.</li>
@@ -243,7 +279,7 @@ Fortran awareness during macro expansion</h2>
 <li>In the alternative syntax for character string edit descriptors.</li>
 </ul>
 <h2><a class="anchor" id="autotoc_md31"></a>
-Output of Phase 2</h2>
+4.6 Output of Phase 2</h2>
 <p>Similar to phase 1, the output is a sequence of logical lines where the logical lines contain the strings representing the now-preprocessed characters of the input file and comment-strings.</p>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->

@@ -1,18 +1,7 @@
 var searchData=
 [
-  ['background_0',['Background',['../macro.html#autotoc_md85',1,'']]],
-  ['basic_20idea_3a_20phases_20before_20the_20processor_1',['The basic idea: phases before the &quot;processor&quot;',['../requirements.html#autotoc_md23',1,'']]],
-  ['basic_20usage_2',['Basic Usage',['../usage.html',1,'pages']]],
-  ['basic_20usage_3',['Basic usage',['../usage.html#autotoc_md111',1,'']]],
-  ['before_20the_20processor_4',['The basic idea: phases before the &quot;processor&quot;',['../requirements.html#autotoc_md23',1,'']]],
-  ['bit_20of_20history_5',['A bit of History',['../introduction.html',1,'pages']]],
-  ['breaks_20and_20continuations_20in_20macro_20invocations_20fixed_20form_6',['Line breaks and continuations in macro invocations (fixed-form)',['../macro.html#autotoc_md100',1,'']]],
-  ['breaks_20and_20continuations_20in_20macro_20invocations_20free_20form_7',['Line breaks and continuations in macro invocations (free-form)',['../macro.html#autotoc_md99',1,'']]],
-  ['brief_20history_20of_20preprocessing_8',['A Brief History of Preprocessing',['../introduction.html#autotoc_md10',1,'']]],
-  ['buffer_5fsize_9',['buffer_size',['../group__group__macro.html#ga23244cd1e6b3d8a76c5fd6f971bcddf8',1,'fpx_macro']]],
-  ['build_20systems_20and_20external_20tools_10',['Interfacing with Build Systems and External Tools',['../introduction.html#autotoc_md21',1,'']]],
-  ['build_20with_20fpm_11',['Build with fpm',['../index.html#autotoc_md124',1,'']]],
-  ['build_20with_20visual_20studio_202019_12',['Build with Visual Studio 2019',['../index.html#autotoc_md125',1,'']]],
-  ['built_20in_20predefined_20macros_13',['Built-in Predefined Macros',['../cheatsheet.html#autotoc_md2',1,'']]],
-  ['by_20the_20preprocessor_14',['by the preprocessor',['../requirements.html#autotoc_md26',1,'Directives accepted by the preprocessor'],['../requirements.html#autotoc_md29',1,'Macros defined by the preprocessor']]]
+  ['6_201_20static_20semantics_20specifications_0',['3.6.1 Static semantics specifications',['../specifications.html#autotoc_md56',1,'']]],
+  ['6_202_20evaluation_20semantics_20specifications_1',['3.6.2 Evaluation semantics specifications',['../specifications.html#autotoc_md57',1,'']]],
+  ['6_20output_20of_20phase_202_2',['4.6 Output of Phase 2',['../requirements.html#autotoc_md31',1,'']]],
+  ['6_20the_20error_20and_20warning_20directives_3',['3.6 The #error and #warning directives',['../specifications.html#autotoc_md55',1,'']]]
 ];
