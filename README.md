@@ -45,10 +45,11 @@ This project aims at providing a *simple*, *embeddable*, *open-source* preproces
 * [![gfortran][gfortran]][gfortran-url]
 
 `fpx` supports: 
-- conditional compilation with `#if`, `#ifdef`, `#ifndef`, `#elif`, `#else`,`#endif`
+- conditional compilation with `#if`, `#ifdef`, `#ifndef`, `#elif`, `#elifdef`, `#elifndef`, `#else`,`#endif`
 - simple macros and function like macros with `#define`, `#undef`, `defined` and `!defined`
-- simple arithmetic and bitwise operations with `+`, `-`, `*`, `**`, `/`, `>`, `<`, `>=`, `=<`, `||`, `&&`, `|`, `^`, `&`, `!` and `~`.
+- simple arithmetic and bitwise operations with `+`, `-`, `*`, `**`, `/`, `>`, `<`, `>=`, `=<`, `||`, `&&`, `|`, `^`, `&`, `!`, `?:` and `~`.
 - include files with `#include`
+- diagnostic messages with `#warning` and `#error`
 - variadic macros with `__VA_ARGS__`, and `__VA_OPT__`, 
 - build-in macros as `__LINE__`, `__FILE__`, `__FILENAME__`, `__TIME__`, `__DATE__`, `__TIMESTAMP__`
 - stringification `#` and concatenation `##`

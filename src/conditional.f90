@@ -3,7 +3,7 @@
 !! Full-featured conditional compilation (#if / #ifdef / #else / #endif) for the fpx preprocessor
 !! This module implements standard-conforming conditional compilation with support for:
 !! - `#if` with arbitrary constant expressions (using `evaluate_expression`)
-!! - `#ifdef` / `#ifndef` for testing macro existence
+!! - `#ifdef` / `#ifndef` and #elifdef` / `#elifndef` for testing macro existence
 !! - `#elif` chains (multiple alternative branches)
 !! - `#else` as final fallback
 !! - Proper nesting up to `MAX_COND_DEPTH` levels
@@ -62,7 +62,7 @@ module fpx_conditional
     use fpx_logging
     use fpx_string
     use fpx_macro, only: macro, is_defined
-    use fpx_token, only: evaluate_expression
+    use fpx_operators, only: evaluate_expression
 
     implicit none; private
 
@@ -72,6 +72,8 @@ module fpx_conditional
             handle_elif, &
             handle_else, &
             handle_endif, &
+            handle_elifdef, &
+            handle_elifndef, &
             is_active
 
     !> State of a single conditional block
@@ -88,8 +90,8 @@ module fpx_conditional
     !! <h2  class="groupheader">Remarks</h2>
     !! @ingroup group_conditional
     type, public :: cond_state
-        logical :: active  !< Indicate whether the condition is active
-        logical :: has_met  !< Indicates whether the condition has been met
+        logical, public :: active  !< Indicate whether the condition is active
+        logical, public :: has_met  !< Indicates whether the condition has been met
     end type
 
     !> @brief Global stack of conditional states (depth-limited)
@@ -256,6 +258,80 @@ contains
         if (.not. cond_stack(cond_depth + 1)%has_met) then
             cond_stack(cond_depth + 1)%active = result .and. parent_active
             if (result) cond_stack(cond_depth + 1)%has_met = .true.
+        else
+            cond_stack(cond_depth + 1)%active = .false.
+        end if
+    end subroutine
+    
+    !> Process #elifdef – test if a macro is defined
+    !! @param[in] line      Full source line containing the directive
+    !! @param[in] filename  Current file (for error messages)
+    !! @param[in] line_num  Line number (for error messages)
+    !! @param[in] macros    Current macro table
+    !! @param[in] token     Usually 'ELIFDEF'
+    !!
+    !! @b Remarks
+    !! @ingroup group_conditional
+    subroutine handle_elifdef(line, filename, line_num, macros, token)
+        character(*), intent(in)        :: line
+        character(*), intent(in)        :: filename
+        integer, intent(in)             :: line_num
+        type(macro), intent(in)         :: macros(:)
+        character(*), intent(in)        :: token
+        !private
+        character(:), allocatable :: name
+        logical :: defined, parent_active
+        integer :: pos
+
+        if (cond_depth == 0) then
+            if (verbose) print *, "Error: #elifdef without matching #if at ", trim(filename), ":", line_num
+            return
+        end if
+
+        pos = index(uppercase(line), token) + len(token)
+        name = trim(adjustl(line(pos:)))
+        defined = is_defined(name, macros)
+        parent_active = cond_depth == 0 .or. cond_stack(cond_depth)%active
+        if (.not. cond_stack(cond_depth + 1)%has_met) then
+            cond_stack(cond_depth + 1)%active = defined .and. parent_active
+            if (defined) cond_stack(cond_depth + 1)%has_met = .true.
+        else
+            cond_stack(cond_depth + 1)%active = .false.
+        end if
+    end subroutine
+    
+    !> Process #elifndef – test if a macro is not defined
+    !! @param[in] line      Full source line containing the directive
+    !! @param[in] filename  Current file (for error messages)
+    !! @param[in] line_num  Line number (for error messages)
+    !! @param[in] macros    Current macro table
+    !! @param[in] token     Usually 'ELIFNDEF'
+    !!
+    !! @b Remarks
+    !! @ingroup group_conditional
+    subroutine handle_elifndef(line, filename, line_num, macros, token)
+        character(*), intent(in)        :: line
+        character(*), intent(in)        :: filename
+        integer, intent(in)             :: line_num
+        type(macro), intent(in)         :: macros(:)
+        character(*), intent(in)        :: token
+        !private
+        character(:), allocatable :: name
+        logical :: defined, parent_active
+        integer :: pos
+
+        if (cond_depth == 0) then
+            if (verbose) print *, "Error: #elifndef without matching #if at ", trim(filename), ":", line_num
+            return
+        end if
+
+        pos = index(uppercase(line), token) + len(token)
+        name = trim(adjustl(line(pos:)))
+        defined = is_defined(name, macros)
+        parent_active = cond_depth == 0 .or. cond_stack(cond_depth)%active
+        if (.not. cond_stack(cond_depth + 1)%has_met) then
+            cond_stack(cond_depth + 1)%active = (.not. defined) .and. parent_active
+            if (.not. defined) cond_stack(cond_depth + 1)%has_met = .true.
         else
             cond_stack(cond_depth + 1)%active = .false.
         end if

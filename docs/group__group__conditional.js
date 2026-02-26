@@ -4,6 +4,8 @@ var group__group__conditional =
     [ "cond_depth", "group__group__conditional.html#ga7f648ff45bb2b891f3fe9a4d602a8f0a", null ],
     [ "cond_stack", "group__group__conditional.html#gad60907aee6f590d292a06630c10a090c", null ],
     [ "handle_elif", "group__group__conditional.html#gaa7f297db8a77fdcdf7542f4a6ae63ffc", null ],
+    [ "handle_elifdef", "group__group__conditional.html#gac16460f76cb4f41b81dc235d777903e2", null ],
+    [ "handle_elifndef", "group__group__conditional.html#ga21191fba93010108e7fd8d1ad85d92f0", null ],
     [ "handle_else", "group__group__conditional.html#ga7870072da163234e634430d2c57dbd3b", null ],
     [ "handle_endif", "group__group__conditional.html#ga7285df831678585e8e1f193d8a7f71d8", null ],
     [ "handle_if", "group__group__conditional.html#gaa64807787b8d6b61a04105271622a24a", null ],

@@ -1,0 +1,7 @@
+module negative_test
+implicit none
+contains
+subroutine test_negative()
+print *, "FEATURE_A is NOT defined"
+end subroutine test_negative
+end module negative_test

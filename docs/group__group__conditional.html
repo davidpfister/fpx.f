@@ -137,13 +137,11 @@ $(function(){initNavTree('group__group__conditional.html',''); initResizable(tru
 <p>Full-featured conditional compilation (if / ifdef / else / endif) for the fpx preprocessor This module implements standard-conforming conditional compilation with support for: </p>
 <ul>
 <li><code>#if</code> with arbitrary constant expressions (using <code>evaluate_expression</code>)</li>
-<li><code>#ifdef</code> / <code>#ifndef</code> for testing macro existence</li>
-<li><code>#elif</code> chains (multiple alternative branches)</li>
-<li><code>#else</code> as final fallback</li>
-<li>Proper nesting up to <code>MAX_COND_DEPTH</code> levels</li>
-<li>Correct "first-match" semantics — once a branch is taken, later <code>#elif</code>/<code>#else</code> are skipped</li>
-<li>Integration with macro expansion via <code>is_defined()</code> and expression evaluator</li>
-<li>Comprehensive diagnostics when <code>verbose = .true.</code></li>
+<li><code>#ifdef</code> / <code>#ifndef</code> and elifdef<code>/</code>elifndef<code>for testing macro existence -</code>elif<code>chains (multiple alternative branches) -</code>else<code>as final fallback</code></li>
+<li><code>Proper nesting up to</code>MAX_COND_DEPTH<code>levels</code></li>
+<li><code>Correct "first-match" semantics — once a branch is taken, later</code>elif<code>/</code>else<code>are skipped</code></li>
+<li><code>Integration with macro expansion via</code>is_defined()<code>and expression evaluator</code></li>
+<li><code>Comprehensive diagnostics when</code>verbose = .true.`</li>
 </ul>
 <p>The state is maintained in a global stack (<code>cond_stack</code>) with <code>cond_depth</code> tracking nesting. The function <code>is_active()</code> is used throughout the preprocessor to decide whether a line should be emitted or skipped.</p>
 <h2 class="groupheader">Examples</h2>
@@ -200,7 +198,7 @@ Data Types</h2></td></tr>
 
 <p>Current nesting depth of conditional directives (0 = outside any if) </p>
 
-<p class="definition">Definition at line <a class="el" href="conditional_8f90_source.html#l00101">101</a> of file <a class="el" href="conditional_8f90_source.html">conditional.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="conditional_8f90_source.html#l00103">103</a> of file <a class="el" href="conditional_8f90_source.html">conditional.f90</a>.</p>
 
 </div>
 </div>
@@ -218,7 +216,7 @@ Data Types</h2></td></tr>
 
 <p>Global stack of conditional states (depth-limited) </p>
 
-<p class="definition">Definition at line <a class="el" href="conditional_8f90_source.html#l00097">97</a> of file <a class="el" href="conditional_8f90_source.html">conditional.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="conditional_8f90_source.html#l00099">99</a> of file <a class="el" href="conditional_8f90_source.html">conditional.f90</a>.</p>
 
 </div>
 </div>
@@ -270,7 +268,109 @@ Data Types</h2></td></tr>
 </dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="conditional_8f90_source.html#l00237">237</a> of file <a class="el" href="conditional_8f90_source.html">conditional.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="conditional_8f90_source.html#l00239">239</a> of file <a class="el" href="conditional_8f90_source.html">conditional.f90</a>.</p>
+
+</div>
+</div>
+<a id="gac16460f76cb4f41b81dc235d777903e2" name="gac16460f76cb4f41b81dc235d777903e2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gac16460f76cb4f41b81dc235d777903e2">&#9670;&#160;</a></span>handle_elifdef()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">subroutine, public handle_elifdef </td>
+          <td>(</td>
+          <td class="paramtype">character(*), intent(in)</td>          <td class="paramname"><span class="paramname"><em>line</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">character(*), intent(in)</td>          <td class="paramname"><span class="paramname"><em>filename</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">integer, intent(in)</td>          <td class="paramname"><span class="paramname"><em>line_num</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">type(<a class="el" href="structfpx__macro_1_1macro.html">macro</a>), dimension(:), intent(in)</td>          <td class="paramname"><span class="paramname"><em>macros</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">character(*), intent(in)</td>          <td class="paramname"><span class="paramname"><em>token</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Process elifdef – test if a macro is defined. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">line</td><td>Full source line containing the directive </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">filename</td><td>Current file (for error messages) </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">line_num</td><td>Line number (for error messages) </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">macros</td><td>Current macro table </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">token</td><td>Usually 'ELIFDEF'</td></tr>
+  </table>
+  </dd>
+</dl>
+<p><b>Remarks</b> </p>
+
+<p class="definition">Definition at line <a class="el" href="conditional_8f90_source.html#l00275">275</a> of file <a class="el" href="conditional_8f90_source.html">conditional.f90</a>.</p>
+
+</div>
+</div>
+<a id="ga21191fba93010108e7fd8d1ad85d92f0" name="ga21191fba93010108e7fd8d1ad85d92f0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga21191fba93010108e7fd8d1ad85d92f0">&#9670;&#160;</a></span>handle_elifndef()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">subroutine, public handle_elifndef </td>
+          <td>(</td>
+          <td class="paramtype">character(*), intent(in)</td>          <td class="paramname"><span class="paramname"><em>line</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">character(*), intent(in)</td>          <td class="paramname"><span class="paramname"><em>filename</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">integer, intent(in)</td>          <td class="paramname"><span class="paramname"><em>line_num</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">type(<a class="el" href="structfpx__macro_1_1macro.html">macro</a>), dimension(:), intent(in)</td>          <td class="paramname"><span class="paramname"><em>macros</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">character(*), intent(in)</td>          <td class="paramname"><span class="paramname"><em>token</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Process elifndef – test if a macro is not defined. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">line</td><td>Full source line containing the directive </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">filename</td><td>Current file (for error messages) </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">line_num</td><td>Line number (for error messages) </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">macros</td><td>Current macro table </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">token</td><td>Usually 'ELIFNDEF'</td></tr>
+  </table>
+  </dd>
+</dl>
+<p><b>Remarks</b> </p>
+
+<p class="definition">Definition at line <a class="el" href="conditional_8f90_source.html#l00312">312</a> of file <a class="el" href="conditional_8f90_source.html">conditional.f90</a>.</p>
 
 </div>
 </div>
@@ -303,7 +403,7 @@ Data Types</h2></td></tr>
 </dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="conditional_8f90_source.html#l00271">271</a> of file <a class="el" href="conditional_8f90_source.html">conditional.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="conditional_8f90_source.html#l00347">347</a> of file <a class="el" href="conditional_8f90_source.html">conditional.f90</a>.</p>
 
 </div>
 </div>
@@ -336,7 +436,7 @@ Data Types</h2></td></tr>
 </dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="conditional_8f90_source.html#l00298">298</a> of file <a class="el" href="conditional_8f90_source.html">conditional.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="conditional_8f90_source.html#l00374">374</a> of file <a class="el" href="conditional_8f90_source.html">conditional.f90</a>.</p>
 
 </div>
 </div>
@@ -387,7 +487,7 @@ Data Types</h2></td></tr>
 </dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="conditional_8f90_source.html#l00132">132</a> of file <a class="el" href="conditional_8f90_source.html">conditional.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="conditional_8f90_source.html#l00134">134</a> of file <a class="el" href="conditional_8f90_source.html">conditional.f90</a>.</p>
 
 </div>
 </div>
@@ -438,7 +538,7 @@ Data Types</h2></td></tr>
 </dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="conditional_8f90_source.html#l00168">168</a> of file <a class="el" href="conditional_8f90_source.html">conditional.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="conditional_8f90_source.html#l00170">170</a> of file <a class="el" href="conditional_8f90_source.html">conditional.f90</a>.</p>
 
 </div>
 </div>
@@ -489,7 +589,7 @@ Data Types</h2></td></tr>
 </dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="conditional_8f90_source.html#l00202">202</a> of file <a class="el" href="conditional_8f90_source.html">conditional.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="conditional_8f90_source.html#l00204">204</a> of file <a class="el" href="conditional_8f90_source.html">conditional.f90</a>.</p>
 
 </div>
 </div>
@@ -509,7 +609,7 @@ Data Types</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>.true. if all enclosing if/elif/else branches are active</dd></dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="conditional_8f90_source.html#l00110">110</a> of file <a class="el" href="conditional_8f90_source.html">conditional.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="conditional_8f90_source.html#l00112">112</a> of file <a class="el" href="conditional_8f90_source.html">conditional.f90</a>.</p>
 
 </div>
 </div>

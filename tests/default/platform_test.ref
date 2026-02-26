@@ -1,0 +1,7 @@
+module platform_test
+implicit none
+contains
+subroutine test_platform()
+print *, "Compiled for Windows"
+end subroutine test_platform
+end module platform_test

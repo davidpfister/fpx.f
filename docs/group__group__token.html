@@ -135,40 +135,55 @@ $(function(){initNavTree('group__group__token.html',''); initResizable(true); })
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">Definition</h2>
-<p>Module implementing a full C-preprocessor-style constant expression evaluator using a top-down recursive descent parser. The module provides the ability to evaluate integer constant expressions of the kind used in classical preprocessor. This includes support for: </p>
-<ul>
-<li>All C-style arithmetic, bitwise, logical, relational, and conditional operators</li>
-<li>Operator precedence and associativity</li>
-<li>Macro identifier substitution and the special <code>defined(identifier)</code> operator</li>
-<li>Integer literals in decimal, octal (<code>0...</code>), hexadecimal (<code>0x...</code>), and binary (<code>0b...</code>) bases</li>
-<li>Parenthesized sub-expressions and proper handling of unary operators</li>
+<p>Token classification and representation for expression parsing in fpx </p>
+<p>This module provides the lightweight but robust token infrastructure used by the fpx preprocessor when evaluating constant expressions in <code>#if</code> / <code>#elif</code> directives.</p>
+<p>It defines:</p><ul>
+<li>A clean enumeration of token kinds (<code>tokens_enum</code>)</li>
+<li>A simple <code>token</code> derived type that carries both the lexical value and its semantic category</li>
 </ul>
-<p>The implementation consists of two major phases:</p>
+<p>These types are used internally by <code>evaluate_expression()</code> (from <code>fpx_token</code>) to parse and compute <code>#if DEBUG &gt; 1 &amp;&amp; defined(USE_MPI)</code>-style conditions.</p>
+<dl class="section user"><dt>Key design goals</dt><dd><ul>
+<li>Minimal memory footprint</li>
+<li>Clear separation between lexical scanning and semantic interpretation</li>
+<li>Easy extensibility for future operators or functions</li>
+</ul>
+</dd></dl>
+<dl class="section user"><dt>Examples</dt><dd></dd></dl>
 <ol type="1">
-<li>Tokenization The input string is scanned and converted into a sequence of <a class="el" href="structfpx__token_1_1token.html">token </a> objects. The tokenizer recognizes multi-character operators ('&amp;&amp;', '||', '==', '!=', '&lt;=', '&gt;=', '&lt;&lt;', '&gt;&gt;', '**'), the <code>defined</code> operator (with or without parentheses), numbers in all supported bases, identifiers, and parentheses. Whitespace is ignored except as a token separator.</li>
-<li><p class="startli">Parsing and evaluation via top-down recursive descent A classic predictive (LL(1)) recursive descent parser is used, where each non-terminal in the grammar is implemented as a separate parsing function with the exact precedence level. The grammar is directly derived from the C standard operator precedence table:</p>
-<p class="startli">parse_expression → parse_conditional parse_conditional → parse_or (parse_or '?' parse_expression ':' parse_conditional) parse_or → parse_and ( '||' parse_and )* parse_and → parse_bitwise_or ( '&amp;&amp;' parse_bitwise_or )* parse_bitwise_or → parse_bitwise_xor ( '|' parse_bitwise_xor )* parse_bitwise_xor → parse_bitwise_and ( '^' parse_bitwise_and )* parse_bitwise_and → parse_equality ( '&amp;' parse_equality )* parse_equality → parse_relational ( ('==' | '!=') parse_relational )* parse_relational → parse_shifting ( ('&lt;' | '&gt;' | '&lt;=' | '&gt;=') parse_shifting )* parse_shifting → parse_additive ( ('&lt;&lt;' | '&gt;&gt;') parse_additive )* parse_additive → parse_multiplicative ( ('+' | '-') parse_multiplicative )* parse_multiplicative → parse_power ( ('<em>' | '/' | '') parse_power )</em> parse_power → parse_unary ( '**' parse_unary )* (right-associative) parse_unary → ('!' | '-' | '+' | '~') parse_unary | parse_atom parse_atom → number | identifier (macro expansion) | 'defined' ( identifier ) | 'defined' identifier | '(' parse_expression ')'</p>
-<p class="startli">Each parsing function consumes tokens from the global position <code>pos</code> and returns the integer value of the sub-expression it recognizes. Because the grammar is factored by precedence, left-associativity is achieved naturally via left-recursive loops, while right-associativity for the power operator (<code>**</code>) is handled by calling <code>parse_unary</code> on the right-hand side first.</p>
-<p class="startli">Macro expansion occurs lazily inside <code>parse_atom</code> when an identifier token is encountered:</p><ul>
-<li>If the identifier is defined, its replacement text is recursively evaluated.</li>
-<li>The special <code>defined</code> operator yields 1 or 0 depending on whether the identifier exists.</li>
-</ul>
-<p class="startli">The parser is fully re-entrant and has no global state except the <code>verbose</code> flag from the logging module (used only for debugging).</p>
-<p class="startli">Public interface:</p><ul>
-<li><a class="el" href="#gabfc798c2ad4d8773828d3cef8e880fe6">evaluate_expression </a>: high-level function that tokenizes and evaluates in one call</li>
-<li><a class="el" href="#ga2766a8f84b056736127387cee9c2a3d2">parse_expression </a>: low-level entry point for already-tokenized input</li>
-</ul>
-<p class="startli">This design guarantees correct operator precedence without the need for an explicit abstract syntax tree or stack-based shunting-yard algorithm, while remaining easy to read, maintain, and extend. </p>
-</li>
+<li>Manual token creation (mostly for testing/debugging): <div class="fragment"><div class="line"><span class="keywordtype">use </span>fpx_token</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">type</span>(token) :: t1, t2, t3</div>
+<div class="line"> </div>
+<div class="line">t1 = <a class="code hl_struct" href="structfpx__token_1_1token.html">token</a>(<span class="stringliteral">&#39;42&#39;</span>,   number)         <span class="comment">! numeric literal</span></div>
+<div class="line">t2 = <a class="code hl_struct" href="structfpx__token_1_1token.html">token</a>(<span class="stringliteral">&#39;DEBUG&#39;</span>, identifier)    <span class="comment">! macro name</span></div>
+<div class="line">t3 = <a class="code hl_struct" href="structfpx__token_1_1token.html">token</a>(<span class="stringliteral">&#39;&gt;&#39;</span>,    operator)       <span class="comment">! comparison operator</span></div>
+<div class="line"> </div>
+<div class="line">print *, <span class="stringliteral">&#39;Token: &#39;</span>, t1%value, <span class="stringliteral">&#39; type=&#39;</span>, t1%type   ! → 42 type=0</div>
+<div class="ttc" id="astructfpx__token_1_1token_html"><div class="ttname"><a href="structfpx__token_1_1token.html">fpx_token::token</a></div><div class="ttdoc">Represents a single token in a parsed expression. Holds the string value of the token and its classif...</div><div class="ttdef"><b>Definition</b> <a href="token_8f90_source.html#l00106">token.f90:106</a></div></div>
+</div><!-- fragment --></li>
+<li>Typical internal usage during <code>#if</code> evaluation: <div class="fragment"><div class="line"><span class="comment">! (inside evaluate_expression)</span></div>
+<div class="line">tokens = <a class="code hl_function" href="#ga5f1606ef019abe57f86da59fcfc6a79b">tokenize</a>(<span class="stringliteral">&#39;defined(USE_MPI) &amp;&amp; MPI_VERSION &gt;= 3&#39;</span>)</div>
+<div class="line"><span class="comment">! tokens(1) → value=vdefined&#39;  type=identifier</span></div>
+<div class="line"><span class="comment">! tokens(2) → value=&#39;(&#39;        type=parenthesis</span></div>
+<div class="line"><span class="comment">! tokens(3) → value=&#39;USE_MPI&#39;  type=identifier</span></div>
+<div class="line">! ...</div>
+<div class="ttc" id="agroup__group__token_html_ga5f1606ef019abe57f86da59fcfc6a79b"><div class="ttname"><a href="#ga5f1606ef019abe57f86da59fcfc6a79b">fpx_token::tokenize</a></div><div class="ttdeci">subroutine, public tokenize(expr, tokens, ntokens)</div><div class="ttdoc">Tokenizes a preprocessor expression into an array of token structures. Handles whitespace,...</div><div class="ttdef"><b>Definition</b> <a href="token_8f90_source.html#l00160">token.f90:161</a></div></div>
+</div><!-- fragment --></li>
 </ol>
+<dl class="section user"><dt>Token kinds overview</dt><dd><table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Enumerator   </th><th class="markdownTableHeadNone">Value   </th><th class="markdownTableHeadNone">Meaning    </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>unknown</code>   </td><td class="markdownTableBodyNone">-1   </td><td class="markdownTableBodyNone">Invalid / unrecognized token    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>number</code>   </td><td class="markdownTableBodyNone">0   </td><td class="markdownTableBodyNone">Integer or floating-point literal   </td></tr>
+</table>
+| <code>operator</code> | 1 | ?:, +, -, *, /, ==, !=, &amp;&amp;, ||, !, &gt;, &lt;, etc.| | <code>identifier</code> | 2 | Macro name or function name (e.g. <code>defined</code>) | | <code>parenthesis</code>| 3 | <code>(</code> or <code>)</code> | | <code>defined</code> | 4 | Special keyword <code>defined</code> (treated specially)| </dd></dl>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Data Types</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">type &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpx__token_1_1token.html">token</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Represents a single token in a parsed expression. Holds the string value of the token and its classified type.  <a href="structfpx__token_1_1token.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">interface &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interfacefpx__token_1_1strtol.html">strtol</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts a string to integer.  <a href="interfacefpx__token_1_1strtol.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
@@ -187,73 +202,25 @@ Enumerations</h2></td></tr>
 <tr class="separator:ga06fc87d81c62e9abb8790b6e5713c55b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Variables</h2>
-<a id="ga7299855d7f3d4c51e0fa047813178a7f" name="ga7299855d7f3d4c51e0fa047813178a7f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga7299855d7f3d4c51e0fa047813178a7f">&#9670;&#160;</a></span>tokens_enum</h2>
+<a id="ga4b585815a66c5b370c752e1f82e3ec11" name="ga4b585815a66c5b370c752e1f82e3ec11"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga4b585815a66c5b370c752e1f82e3ec11">&#9670;&#160;</a></span>tokens_enum</h2>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">integer, parameter tokens_enum = kind(unknown)</td>
+          <td class="memname">integer, parameter, public tokens_enum = kind(unknown)</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Kind parameter for token type enumeration. Values are (<code>unknown</code>, <code>number</code>, <code>operator</code>, <code>identifier</code>, <code>parenthesis</code>, <code>defined</code>) </p>
 
-<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00092">92</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00087">87</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Methods</h2>
-<a id="gabfc798c2ad4d8773828d3cef8e880fe6" name="gabfc798c2ad4d8773828d3cef8e880fe6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gabfc798c2ad4d8773828d3cef8e880fe6">&#9670;&#160;</a></span>evaluate_expression()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">logical function, public evaluate_expression </td>
-          <td>(</td>
-          <td class="paramtype">character(*), intent(in)</td>          <td class="paramname"><span class="paramname"><em>expr</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">type(<a class="el" href="structfpx__macro_1_1macro.html">macro</a>), dimension(:), intent(in)</td>          <td class="paramname"><span class="paramname"><em>macros</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">integer, intent(out), optional</td>          <td class="paramname"><span class="paramname"><em>val</em></span>&#160;)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Evaluates a preprocessor-style expression with macro substitution. Tokenizes the input expression, expands macros where appropriate, parses it according to operator precedence, and computes the integer result. Returns .true. if evaluation succeeded and the result is non-zero. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">expr</td><td>Expression string to evaluate </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">macros</td><td>Array of defined macros for substitution and <code>defined()</code> checks </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">val</td><td>Optional integer result of the evaluation </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>.true. if the expression evaluated successfully to non-zero, .false. otherwise</dd></dl>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00167">167</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
-
-</div>
-</div>
 <a id="gac084a1079e51d0099b772eaba8eaa0e5" name="gac084a1079e51d0099b772eaba8eaa0e5"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#gac084a1079e51d0099b772eaba8eaa0e5">&#9670;&#160;</a></span>is_digit()</h2>
 
@@ -287,7 +254,7 @@ Enumerations</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>.true. if ch is a digit</dd></dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00200">200</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00298">298</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
 
 </div>
 </div>
@@ -329,805 +296,18 @@ Enumerations</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>.true. if the prefix is a valid typeless constant in non-base-10</dd></dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00214">214</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00312">312</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
 
 </div>
 </div>
-<a id="gabf1393e57104c4c9c6a60fdc2b19c891" name="gabf1393e57104c4c9c6a60fdc2b19c891"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gabf1393e57104c4c9c6a60fdc2b19c891">&#9670;&#160;</a></span>parse_additive()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">recursive integer function parse_additive </td>
-          <td>(</td>
-          <td class="paramtype">type(<a class="el" href="structfpx__token_1_1token.html">token</a>), dimension(:), intent(in)</td>          <td class="paramname"><span class="paramname"><em>tokens</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">integer, intent(in)</td>          <td class="paramname"><span class="paramname"><em>ntokens</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">integer, intent(inout)</td>          <td class="paramname"><span class="paramname"><em>pos</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">type(<a class="el" href="structfpx__macro_1_1macro.html">macro</a>), dimension(:), intent(in)</td>          <td class="paramname"><span class="paramname"><em>macros</em></span>&#160;)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Parses additive expressions (<code>+</code>, <code>-</code>). </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">tokens</td><td>Array of tokens to parse </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">ntokens</td><td>Number of valid tokens in the array </td></tr>
-    <tr><td class="paramdir">[in,out]</td><td class="paramname">pos</td><td>Current parsing position (updated as tokens are consumed) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">macros</td><td>Defined macros for expansion and <code>defined()</code> checks </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Integer value of the parsed expression</dd></dl>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00654">654</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
-
-</div>
-</div>
-<a id="gacb685c085e575a73ef050442ca2a668c" name="gacb685c085e575a73ef050442ca2a668c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gacb685c085e575a73ef050442ca2a668c">&#9670;&#160;</a></span>parse_and()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">recursive integer function parse_and </td>
-          <td>(</td>
-          <td class="paramtype">type(<a class="el" href="structfpx__token_1_1token.html">token</a>), dimension(:), intent(in)</td>          <td class="paramname"><span class="paramname"><em>tokens</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">integer, intent(in)</td>          <td class="paramname"><span class="paramname"><em>ntokens</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">integer, intent(inout)</td>          <td class="paramname"><span class="paramname"><em>pos</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">type(<a class="el" href="structfpx__macro_1_1macro.html">macro</a>), dimension(:), intent(in)</td>          <td class="paramname"><span class="paramname"><em>macros</em></span>&#160;)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Parses logical AND expressions (<code>&amp;&amp;</code>). </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">tokens</td><td>Array of tokens to parse </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">ntokens</td><td>Number of valid tokens in the array </td></tr>
-    <tr><td class="paramdir">[in,out]</td><td class="paramname">pos</td><td>Current parsing position (updated as tokens are consumed) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">macros</td><td>Defined macros for expansion and <code>defined()</code> checks </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Integer value of the parsed expression</dd></dl>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00435">435</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
-
-</div>
-</div>
-<a id="ga443940fe0f1ddebd108227656de5ed50" name="ga443940fe0f1ddebd108227656de5ed50"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga443940fe0f1ddebd108227656de5ed50">&#9670;&#160;</a></span>parse_atom()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">recursive integer function parse_atom </td>
-          <td>(</td>
-          <td class="paramtype">type(<a class="el" href="structfpx__token_1_1token.html">token</a>), dimension(:), intent(in)</td>          <td class="paramname"><span class="paramname"><em>tokens</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">integer, intent(in)</td>          <td class="paramname"><span class="paramname"><em>ntokens</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">integer, intent(inout)</td>          <td class="paramname"><span class="paramname"><em>pos</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">type(<a class="el" href="structfpx__macro_1_1macro.html">macro</a>), dimension(:), intent(in)</td>          <td class="paramname"><span class="paramname"><em>macros</em></span>&#160;)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Parses primary expressions: numbers, identifiers, <code>defined(...)</code>, parentheses. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">tokens</td><td>Array of tokens to parse </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">ntokens</td><td>Number of valid tokens in the array </td></tr>
-    <tr><td class="paramdir">[in,out]</td><td class="paramname">pos</td><td>Current parsing position (updated as tokens are consumed) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">macros</td><td>Defined macros for expansion and <code>defined()</code> checks </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Integer value of the parsed expression</dd></dl>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00790">790</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
-
-</div>
-</div>
-<a id="gad57b0e6f7b4ee8b22fdce91671469c13" name="gad57b0e6f7b4ee8b22fdce91671469c13"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gad57b0e6f7b4ee8b22fdce91671469c13">&#9670;&#160;</a></span>parse_bitwise_and()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">recursive integer function parse_bitwise_and </td>
-          <td>(</td>
-          <td class="paramtype">type(<a class="el" href="structfpx__token_1_1token.html">token</a>), dimension(:), intent(in)</td>          <td class="paramname"><span class="paramname"><em>tokens</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">integer, intent(in)</td>          <td class="paramname"><span class="paramname"><em>ntokens</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">integer, intent(inout)</td>          <td class="paramname"><span class="paramname"><em>pos</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">type(<a class="el" href="structfpx__macro_1_1macro.html">macro</a>), dimension(:), intent(in)</td>          <td class="paramname"><span class="paramname"><em>macros</em></span>&#160;)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Parses bitwise AND expressions (<code>&amp;</code>). </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">tokens</td><td>Array of tokens to parse </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">ntokens</td><td>Number of valid tokens in the array </td></tr>
-    <tr><td class="paramdir">[in,out]</td><td class="paramname">pos</td><td>Current parsing position (updated as tokens are consumed) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">macros</td><td>Defined macros for expansion and <code>defined()</code> checks </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Integer value of the parsed expression</dd></dl>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00516">516</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
-
-</div>
-</div>
-<a id="gaef752d7978caead95f1aeeccac22e11a" name="gaef752d7978caead95f1aeeccac22e11a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gaef752d7978caead95f1aeeccac22e11a">&#9670;&#160;</a></span>parse_bitwise_or()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">recursive integer function parse_bitwise_or </td>
-          <td>(</td>
-          <td class="paramtype">type(<a class="el" href="structfpx__token_1_1token.html">token</a>), dimension(:), intent(in)</td>          <td class="paramname"><span class="paramname"><em>tokens</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">integer, intent(in)</td>          <td class="paramname"><span class="paramname"><em>ntokens</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">integer, intent(inout)</td>          <td class="paramname"><span class="paramname"><em>pos</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">type(<a class="el" href="structfpx__macro_1_1macro.html">macro</a>), dimension(:), intent(in)</td>          <td class="paramname"><span class="paramname"><em>macros</em></span>&#160;)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Parses bitwise OR expressions (<code>|</code>). </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">tokens</td><td>Array of tokens to parse </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">ntokens</td><td>Number of valid tokens in the array </td></tr>
-    <tr><td class="paramdir">[in,out]</td><td class="paramname">pos</td><td>Current parsing position (updated as tokens are consumed) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">macros</td><td>Defined macros for expansion and <code>defined()</code> checks </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Integer value of the parsed expression</dd></dl>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00462">462</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
-
-</div>
-</div>
-<a id="ga4175ae0c166b12dca0c64f436b073d42" name="ga4175ae0c166b12dca0c64f436b073d42"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga4175ae0c166b12dca0c64f436b073d42">&#9670;&#160;</a></span>parse_bitwise_xor()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">recursive integer function parse_bitwise_xor </td>
-          <td>(</td>
-          <td class="paramtype">type(<a class="el" href="structfpx__token_1_1token.html">token</a>), dimension(:), intent(in)</td>          <td class="paramname"><span class="paramname"><em>tokens</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">integer, intent(in)</td>          <td class="paramname"><span class="paramname"><em>ntokens</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">integer, intent(inout)</td>          <td class="paramname"><span class="paramname"><em>pos</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">type(<a class="el" href="structfpx__macro_1_1macro.html">macro</a>), dimension(:), intent(in)</td>          <td class="paramname"><span class="paramname"><em>macros</em></span>&#160;)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Parses bitwise XOR expressions (<code>^</code>). </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">tokens</td><td>Array of tokens to parse </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">ntokens</td><td>Number of valid tokens in the array </td></tr>
-    <tr><td class="paramdir">[in,out]</td><td class="paramname">pos</td><td>Current parsing position (updated as tokens are consumed) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">macros</td><td>Defined macros for expansion and <code>defined()</code> checks </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Integer value of the parsed expression</dd></dl>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00489">489</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
-
-</div>
-</div>
-<a id="ga7089df9b8588ffb63d03d90649c43380" name="ga7089df9b8588ffb63d03d90649c43380"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga7089df9b8588ffb63d03d90649c43380">&#9670;&#160;</a></span>parse_conditional()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">recursive integer function parse_conditional </td>
-          <td>(</td>
-          <td class="paramtype">type(<a class="el" href="structfpx__token_1_1token.html">token</a>), dimension(:), intent(in)</td>          <td class="paramname"><span class="paramname"><em>tokens</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">integer, intent(in)</td>          <td class="paramname"><span class="paramname"><em>ntokens</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">integer, intent(inout)</td>          <td class="paramname"><span class="paramname"><em>pos</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">type(<a class="el" href="structfpx__macro_1_1macro.html">macro</a>), dimension(:), intent(in)</td>          <td class="paramname"><span class="paramname"><em>macros</em></span>&#160;)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Parses conditional expressions (?:). Right-associative. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">tokens</td><td>Array of tokens to parse </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">ntokens</td><td>Number of valid tokens in the array </td></tr>
-    <tr><td class="paramdir">[in,out]</td><td class="paramname">pos</td><td>Current parsing position (updated as tokens are consumed) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">macros</td><td>Defined macros for expansion and <code>defined()</code> checks </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Integer value of the parsed expression</dd></dl>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00356">356</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
-
-</div>
-</div>
-<a id="ga06731708f1dd75737206d605878cb4a7" name="ga06731708f1dd75737206d605878cb4a7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga06731708f1dd75737206d605878cb4a7">&#9670;&#160;</a></span>parse_equality()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">recursive integer function parse_equality </td>
-          <td>(</td>
-          <td class="paramtype">type(<a class="el" href="structfpx__token_1_1token.html">token</a>), dimension(:), intent(in)</td>          <td class="paramname"><span class="paramname"><em>tokens</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">integer, intent(in)</td>          <td class="paramname"><span class="paramname"><em>ntokens</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">integer, intent(inout)</td>          <td class="paramname"><span class="paramname"><em>pos</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">type(<a class="el" href="structfpx__macro_1_1macro.html">macro</a>), dimension(:), intent(in)</td>          <td class="paramname"><span class="paramname"><em>macros</em></span>&#160;)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Parses equality/inequality expressions (<code>==</code>, <code> @param[in] tokens Array of tokens to parse @param[in] ntokens Number of valid tokens in the array @param[inout] pos Current parsing position (updated as tokens are consumed) @param[in] macros Defined macros for expansion and</code>defined()` checks. </p>
-<dl class="section return"><dt>Returns</dt><dd>Integer value of the parsed expression</dd></dl>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00543">543</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
-
-</div>
-</div>
-<a id="ga2766a8f84b056736127387cee9c2a3d2" name="ga2766a8f84b056736127387cee9c2a3d2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga2766a8f84b056736127387cee9c2a3d2">&#9670;&#160;</a></span>parse_expression()</h2>
+<a id="ga5f1606ef019abe57f86da59fcfc6a79b" name="ga5f1606ef019abe57f86da59fcfc6a79b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga5f1606ef019abe57f86da59fcfc6a79b">&#9670;&#160;</a></span>tokenize()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">recursive integer function, public parse_expression </td>
-          <td>(</td>
-          <td class="paramtype">type(<a class="el" href="structfpx__token_1_1token.html">token</a>), dimension(:), intent(in)</td>          <td class="paramname"><span class="paramname"><em>tokens</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">integer, intent(in)</td>          <td class="paramname"><span class="paramname"><em>ntokens</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">integer, intent(inout)</td>          <td class="paramname"><span class="paramname"><em>pos</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">type(<a class="el" href="structfpx__macro_1_1macro.html">macro</a>), dimension(:), intent(in)</td>          <td class="paramname"><span class="paramname"><em>macros</em></span>&#160;)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Parses a sequence of tokens starting at position <code>pos</code> as a full expression. Entry point for the recursive descent parser. Delegates to parse_or(). </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">tokens</td><td>Array of tokens to parse </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">ntokens</td><td>Number of valid tokens in the array </td></tr>
-    <tr><td class="paramdir">[in,out]</td><td class="paramname">pos</td><td>Current parsing position (updated as tokens are consumed) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">macros</td><td>Defined macros for expansion and <code>defined()</code> checks </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Integer value of the parsed expression</dd></dl>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00338">338</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
-
-</div>
-</div>
-<a id="ga480885ddf11c075c5b02fb4f9115a91f" name="ga480885ddf11c075c5b02fb4f9115a91f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga480885ddf11c075c5b02fb4f9115a91f">&#9670;&#160;</a></span>parse_multiplicative()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">recursive integer function parse_multiplicative </td>
-          <td>(</td>
-          <td class="paramtype">type(<a class="el" href="structfpx__token_1_1token.html">token</a>), dimension(:), intent(in)</td>          <td class="paramname"><span class="paramname"><em>tokens</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">integer, intent(in)</td>          <td class="paramname"><span class="paramname"><em>ntokens</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">integer, intent(inout)</td>          <td class="paramname"><span class="paramname"><em>pos</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">type(<a class="el" href="structfpx__macro_1_1macro.html">macro</a>), dimension(:), intent(in)</td>          <td class="paramname"><span class="paramname"><em>macros</em></span>&#160;)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Parses multiplicative expressions (<code>*</code>, <code>/</code>, <code>%</code>). </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">tokens</td><td>Array of tokens to parse </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">ntokens</td><td>Number of valid tokens in the array </td></tr>
-    <tr><td class="paramdir">[in,out]</td><td class="paramname">pos</td><td>Current parsing position (updated as tokens are consumed) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">macros</td><td>Defined macros for expansion and <code>defined()</code> checks </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Integer value of the parsed expression</dd></dl>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00688">688</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
-
-</div>
-</div>
-<a id="ga55dd54f226722bd7d74b10888bea139e" name="ga55dd54f226722bd7d74b10888bea139e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga55dd54f226722bd7d74b10888bea139e">&#9670;&#160;</a></span>parse_or()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">recursive integer function parse_or </td>
-          <td>(</td>
-          <td class="paramtype">type(<a class="el" href="structfpx__token_1_1token.html">token</a>), dimension(:), intent(in)</td>          <td class="paramname"><span class="paramname"><em>tokens</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">integer, intent(in)</td>          <td class="paramname"><span class="paramname"><em>ntokens</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">integer, intent(inout)</td>          <td class="paramname"><span class="paramname"><em>pos</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">type(<a class="el" href="structfpx__macro_1_1macro.html">macro</a>), dimension(:), intent(in)</td>          <td class="paramname"><span class="paramname"><em>macros</em></span>&#160;)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Parses logical OR expressions (<code>||</code>). </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">tokens</td><td>Array of tokens to parse </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">ntokens</td><td>Number of valid tokens in the array </td></tr>
-    <tr><td class="paramdir">[in,out]</td><td class="paramname">pos</td><td>Current parsing position (updated as tokens are consumed) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">macros</td><td>Defined macros for expansion and <code>defined()</code> checks </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Integer value of the parsed expression</dd></dl>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00409">409</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
-
-</div>
-</div>
-<a id="gaf2f66aebccbfec51cb5aec8c77d1e7f4" name="gaf2f66aebccbfec51cb5aec8c77d1e7f4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gaf2f66aebccbfec51cb5aec8c77d1e7f4">&#9670;&#160;</a></span>parse_power()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">recursive integer function parse_power </td>
-          <td>(</td>
-          <td class="paramtype">type(<a class="el" href="structfpx__token_1_1token.html">token</a>), dimension(:), intent(in)</td>          <td class="paramname"><span class="paramname"><em>tokens</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">integer, intent(in)</td>          <td class="paramname"><span class="paramname"><em>ntokens</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">integer, intent(inout)</td>          <td class="paramname"><span class="paramname"><em>pos</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">type(<a class="el" href="structfpx__macro_1_1macro.html">macro</a>), dimension(:), intent(in)</td>          <td class="paramname"><span class="paramname"><em>macros</em></span>&#160;)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Parses exponentiation (<code>**</code>). Right-associative. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">tokens</td><td>Array of tokens to parse </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">ntokens</td><td>Number of valid tokens in the array </td></tr>
-    <tr><td class="paramdir">[in,out]</td><td class="paramname">pos</td><td>Current parsing position (updated as tokens are consumed) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">macros</td><td>Defined macros for expansion and <code>defined()</code> checks </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Integer value of the parsed expression</dd></dl>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00726">726</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
-
-</div>
-</div>
-<a id="ga156721a636ea915e1a59ba966d459515" name="ga156721a636ea915e1a59ba966d459515"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga156721a636ea915e1a59ba966d459515">&#9670;&#160;</a></span>parse_relational()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">recursive integer function parse_relational </td>
-          <td>(</td>
-          <td class="paramtype">type(<a class="el" href="structfpx__token_1_1token.html">token</a>), dimension(:), intent(in)</td>          <td class="paramname"><span class="paramname"><em>tokens</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">integer, intent(in)</td>          <td class="paramname"><span class="paramname"><em>ntokens</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">integer, intent(inout)</td>          <td class="paramname"><span class="paramname"><em>pos</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">type(<a class="el" href="structfpx__macro_1_1macro.html">macro</a>), dimension(:), intent(in)</td>          <td class="paramname"><span class="paramname"><em>macros</em></span>&#160;)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Parses relational expressions (<code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code>). </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">tokens</td><td>Array of tokens to parse </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">ntokens</td><td>Number of valid tokens in the array </td></tr>
-    <tr><td class="paramdir">[in,out]</td><td class="paramname">pos</td><td>Current parsing position (updated as tokens are consumed) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">macros</td><td>Defined macros for expansion and <code>defined()</code> checks </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Integer value of the parsed expression</dd></dl>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00577">577</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
-
-</div>
-</div>
-<a id="ga1a5309f655e8bb089083824c76a68525" name="ga1a5309f655e8bb089083824c76a68525"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga1a5309f655e8bb089083824c76a68525">&#9670;&#160;</a></span>parse_shifting()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">recursive integer function parse_shifting </td>
-          <td>(</td>
-          <td class="paramtype">type(<a class="el" href="structfpx__token_1_1token.html">token</a>), dimension(:), intent(in)</td>          <td class="paramname"><span class="paramname"><em>tokens</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">integer, intent(in)</td>          <td class="paramname"><span class="paramname"><em>ntokens</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">integer, intent(inout)</td>          <td class="paramname"><span class="paramname"><em>pos</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">type(<a class="el" href="structfpx__macro_1_1macro.html">macro</a>), dimension(:), intent(in)</td>          <td class="paramname"><span class="paramname"><em>macros</em></span>&#160;)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Parses shift expressions (<code>&lt;&lt;</code>, <code>&gt;&gt;</code>). </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">tokens</td><td>Array of tokens to parse </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">ntokens</td><td>Number of valid tokens in the array </td></tr>
-    <tr><td class="paramdir">[in,out]</td><td class="paramname">pos</td><td>Current parsing position (updated as tokens are consumed) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">macros</td><td>Defined macros for expansion and <code>defined()</code> checks </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Integer value of the parsed expression</dd></dl>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00620">620</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
-
-</div>
-</div>
-<a id="ga195a739fa14b9f593b7107860f0ab23e" name="ga195a739fa14b9f593b7107860f0ab23e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga195a739fa14b9f593b7107860f0ab23e">&#9670;&#160;</a></span>parse_unary()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">recursive integer function parse_unary </td>
-          <td>(</td>
-          <td class="paramtype">type(<a class="el" href="structfpx__token_1_1token.html">token</a>), dimension(:), intent(in)</td>          <td class="paramname"><span class="paramname"><em>tokens</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">integer, intent(in)</td>          <td class="paramname"><span class="paramname"><em>ntokens</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">integer, intent(inout)</td>          <td class="paramname"><span class="paramname"><em>pos</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">type(<a class="el" href="structfpx__macro_1_1macro.html">macro</a>), dimension(:), intent(in)</td>          <td class="paramname"><span class="paramname"><em>macros</em></span>&#160;)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Parses unary operators (<code> @param[in] tokens Array of tokens to parse @param[in] ntokens Number of valid tokens in the array @param[inout] pos Current parsing position (updated as tokens are consumed) @param[in] macros Defined macros for expansion and</code>defined()` checks. </p>
-<dl class="section return"><dt>Returns</dt><dd>Integer value of the parsed expression</dd></dl>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00754">754</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
-
-</div>
-</div>
-<a id="gac2708e2f185bd1e89d747a0a9e4c9c3d" name="gac2708e2f185bd1e89d747a0a9e4c9c3d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gac2708e2f185bd1e89d747a0a9e4c9c3d">&#9670;&#160;</a></span>tokenize()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">subroutine tokenize </td>
+          <td class="memname">subroutine, public tokenize </td>
           <td>(</td>
           <td class="paramtype">character(*), intent(in)</td>          <td class="paramname"><span class="paramname"><em>expr</em></span>, </td>
         </tr>
@@ -1142,11 +322,6 @@ Enumerations</h2></td></tr>
           <td class="paramtype">integer, intent(out)</td>          <td class="paramname"><span class="paramname"><em>ntokens</em></span>&#160;)</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Tokenizes a preprocessor expression into an array of token structures. Handles whitespace, multi-character operators (<code>&amp;&amp;</code>, <code>||</code>, <code>==</code>, etc.), the <code>defined</code> operator (with or without parentheses), numbers in various bases, identifiers, and parentheses. </p>
@@ -1160,7 +335,7 @@ Enumerations</h2></td></tr>
 </dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00851">851</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00160">160</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
 
 </div>
 </div>

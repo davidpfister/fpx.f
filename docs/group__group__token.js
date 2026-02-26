@@ -1,25 +1,8 @@
 var group__group__token =
 [
     [ "token", "structfpx__token_1_1token.html", null ],
-    [ "strtol", "interfacefpx__token_1_1strtol.html", null ],
-    [ "tokens_enum", "group__group__token.html#ga7299855d7f3d4c51e0fa047813178a7f", null ],
-    [ "evaluate_expression", "group__group__token.html#gabfc798c2ad4d8773828d3cef8e880fe6", null ],
+    [ "tokens_enum", "group__group__token.html#ga4b585815a66c5b370c752e1f82e3ec11", null ],
     [ "is_digit", "group__group__token.html#gac084a1079e51d0099b772eaba8eaa0e5", null ],
     [ "is_typeless", "group__group__token.html#ga71d1e45d8c41bfce77c30e62890b45b1", null ],
-    [ "parse_additive", "group__group__token.html#gabf1393e57104c4c9c6a60fdc2b19c891", null ],
-    [ "parse_and", "group__group__token.html#gacb685c085e575a73ef050442ca2a668c", null ],
-    [ "parse_atom", "group__group__token.html#ga443940fe0f1ddebd108227656de5ed50", null ],
-    [ "parse_bitwise_and", "group__group__token.html#gad57b0e6f7b4ee8b22fdce91671469c13", null ],
-    [ "parse_bitwise_or", "group__group__token.html#gaef752d7978caead95f1aeeccac22e11a", null ],
-    [ "parse_bitwise_xor", "group__group__token.html#ga4175ae0c166b12dca0c64f436b073d42", null ],
-    [ "parse_conditional", "group__group__token.html#ga7089df9b8588ffb63d03d90649c43380", null ],
-    [ "parse_equality", "group__group__token.html#ga06731708f1dd75737206d605878cb4a7", null ],
-    [ "parse_expression", "group__group__token.html#ga2766a8f84b056736127387cee9c2a3d2", null ],
-    [ "parse_multiplicative", "group__group__token.html#ga480885ddf11c075c5b02fb4f9115a91f", null ],
-    [ "parse_or", "group__group__token.html#ga55dd54f226722bd7d74b10888bea139e", null ],
-    [ "parse_power", "group__group__token.html#gaf2f66aebccbfec51cb5aec8c77d1e7f4", null ],
-    [ "parse_relational", "group__group__token.html#ga156721a636ea915e1a59ba966d459515", null ],
-    [ "parse_shifting", "group__group__token.html#ga1a5309f655e8bb089083824c76a68525", null ],
-    [ "parse_unary", "group__group__token.html#ga195a739fa14b9f593b7107860f0ab23e", null ],
-    [ "tokenize", "group__group__token.html#gac2708e2f185bd1e89d747a0a9e4c9c3d", null ]
+    [ "tokenize", "group__group__token.html#ga5f1606ef019abe57f86da59fcfc6a79b", null ]
 ];

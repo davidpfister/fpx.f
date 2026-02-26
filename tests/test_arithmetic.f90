@@ -2,7 +2,7 @@
 TESTPROGRAM(main)
 
     TEST('test_expression')
-        use fpx_token
+        use fpx_operators
         use fpx_macro
 
         type(macro), allocatable :: macros(:)

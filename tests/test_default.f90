@@ -4,6 +4,7 @@ TESTPROGRAM(main)
         use fpx_parser
         use test_utils
         use fpx_path
+        use fpx_macro
 
         character(256), allocatable  :: files(:)
         character(:), allocatable :: ref
@@ -15,6 +16,11 @@ TESTPROGRAM(main)
         call chdir(join('tests','default'))
 #endif
         call getfiles('', files)
+        
+        call add(global%macros, macro('__WINDOWS__'))
+        call add(global%macros, macro('VALUE', '10'))
+        call add(global%macros, macro('FEATURE_C'))
+
         do i = 1, size(files)
             if (filename(files(i), .true.) == 'main.f90') &
                 cycle

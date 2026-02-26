@@ -408,6 +408,10 @@ contains
                 call handle_ifdef(trimmed_line, filepath, linenum, macros, 'IFDEF')
             else if (starts_with(uppercase(adjustl(trimmed_line(2:))), 'IFNDEF')) then
                 call handle_ifndef(trimmed_line, filepath, linenum, macros, 'IFNDEF')
+            else if (starts_with(uppercase(adjustl(trimmed_line(2:))), 'ELIFDEF')) then
+                call handle_elifdef(trimmed_line, filepath, linenum, macros, 'ELIFDEF')
+            else if (starts_with(uppercase(adjustl(trimmed_line(2:))), 'ELIFNDEF')) then
+                call handle_elifndef(trimmed_line, filepath, linenum, macros, 'ELIFNDEF')
             else if (starts_with(uppercase(adjustl(trimmed_line(2:))), 'IF')) then
                 call handle_if(trimmed_line, filepath, linenum, macros, 'IF')
             else if (starts_with(uppercase(adjustl(trimmed_line(2:))), 'ELIF')) then

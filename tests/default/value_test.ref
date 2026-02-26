@@ -1,0 +1,7 @@
+module value_test
+implicit none
+contains
+subroutine test_value()
+print *, "VALUE is 10"
+end subroutine test_value
+end module value_test

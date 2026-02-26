@@ -11,6 +11,7 @@ var topics =
     [ "Logging", "group__group__logging.html", "group__group__logging" ],
     [ "Macro", "group__group__macro.html", "group__group__macro" ],
     [ "OS", "group__group__os.html", "group__group__os" ],
+    [ "Operators", "group__group__operators.html", "group__group__operators" ],
     [ "Parser", "group__group__parser.html", "group__group__parser" ],
     [ "Path", "group__group__path.html", "group__group__path" ],
     [ "String", "group__group__string.html", "group__group__string" ],

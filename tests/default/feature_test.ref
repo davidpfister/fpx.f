@@ -1,0 +1,7 @@
+module feature_test
+implicit none
+contains
+subroutine test_features()
+print *, "FEATURE_C is enabled"
+end subroutine test_features
+end module feature_test

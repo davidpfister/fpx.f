@@ -202,10 +202,11 @@ About the Project</h2>
 <li><a href="https://gcc.gnu.org/wiki/GFortran"><img src="https://img.shields.io/badge/gfortran-000000?style=for-the-badge&amp;logo=gnu&amp;logoColor=white" alt="gfortran" class="inline"/></a></li>
 </ul>
 <p><code>fpx</code> supports:</p><ul>
-<li>conditional compilation with <code>#if</code>, <code>#ifdef</code>, <code>#ifndef</code>, <code>#elif</code>, <code>#else</code>,<code>#endif</code></li>
+<li>conditional compilation with <code>#if</code>, <code>#ifdef</code>, <code>#ifndef</code>, <code>#elif</code>, <code>#elifdef</code>, <code>#elifndef</code>, <code>#else</code>,<code>#endif</code></li>
 <li>simple macros and function like macros with <code>#define</code>, <code>#undef</code>, <code>defined</code> and <code>!defined</code></li>
-<li>simple arithmetic and bitwise operations with <code>+</code>, <code>-</code>, <code>*</code>, <code>**</code>, <code>/</code>, <code>&gt;</code>, <code>&lt;</code>, <code>&gt;=</code>, <code>=&lt;</code>, <code>||</code>, <code>&amp;&amp;</code>, <code>|</code>, <code>^</code>, <code>&amp;</code>, <code>!</code> and <code>~</code>.</li>
+<li>simple arithmetic and bitwise operations with <code>+</code>, <code>-</code>, <code>*</code>, <code>**</code>, <code>/</code>, <code>&gt;</code>, <code>&lt;</code>, <code>&gt;=</code>, <code>=&lt;</code>, <code>||</code>, <code>&amp;&amp;</code>, <code>|</code>, <code>^</code>, <code>&amp;</code>, <code>!</code>, <code>?:</code> and <code>~</code>.</li>
 <li>include files with <code>#include</code></li>
+<li>diagnostic messages with <code>#warning</code> and <code>#error</code></li>
 <li>variadic macros with <code>__VA_ARGS__</code>, and <code>__VA_OPT__</code>,</li>
 <li>build-in macros as <code>__LINE__</code>, <code>__FILE__</code>, <code>__FILENAME__</code>, <code>__TIME__</code>, <code>__DATE__</code>, <code>__TIMESTAMP__</code></li>
 <li>stringification <code>#</code> and concatenation <code>##</code></li>
