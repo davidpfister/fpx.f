@@ -85,11 +85,18 @@ module fpx_parser
     end interface
 
     character(256) :: name                              !< Current source file name (without path)
-    logical        :: c_continue, f_continue            !< Flags for C-style and Fortran-style continuation
-    logical        :: in_comment, reprocess, stitch     !< Internal state flags
-    character(:), allocatable :: res, tmp               !< Accumulated result and temporary line buffers
-    character(MAX_LINE_LEN)   :: line, continued_line   !< Raw and continued input line
-    integer :: iline, icontinuation                     !< Current line number and continuation position
+    logical        :: c_continue                        !< Flags for C-style continuation
+    logical        :: f_continue                        !< Flags for Fortran-style continuation
+    logical        :: in_comment                        !< Internal state flags
+    logical        :: reprocess                         !< Internal state flags
+    logical        :: stitch                            !< Internal state flags
+    character(:), allocatable :: res                    !< Accumulated result line buffers
+    character(:), allocatable :: tmp                    !< Accumulated temporary line buffers
+    character(MAX_LINE_LEN)   :: line                   !< Raw input line
+    character(MAX_LINE_LEN)   :: continued_line         !< Raw and continued input line
+    integer :: iline                                    !< Current line number position
+    integer :: icontinuation                            !< Continuation position
+
 
 contains
 

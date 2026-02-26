@@ -326,6 +326,7 @@ contains
         if (base == 10) res = .false.
     end function
     
+    !> Implementation of strtol function
     integer function strtol_default(str, success) result(val)
         character(*), intent(in)        :: str
         logical, intent(out), optional  :: success
@@ -336,6 +337,7 @@ contains
         val = strtol_with_base(str, base, success)
     end function
 
+    !> Implementation of strtol function with a base argument.
     integer function strtol_with_base(str, base, success) result(val)
         character(*), intent(in)        :: str
         integer, intent(inout)          :: base

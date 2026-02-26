@@ -113,6 +113,7 @@ contains
 
     !> Add a directed edge from source → destination
     !! Silently ignores invalid indices. Optional `exists` flag indicates if edge was already present.
+    !! @param[inout] this digraph object
     !! @param[in]    source      Source vertex (1-based)
     !! @param[in]    destination Target vertex (1-based)
     !! @param[out]   exists      (optional) .true. if edge already existed
@@ -138,6 +139,7 @@ contains
 
     !> Check whether a cycle exists in the graph reachable from start_vertex
     !! Uses standard DFS with recursion stack (back-edge detection).
+    !! @param[in] this digraph object
     !! @param[in] start_vertex Vertex from which to begin cycle search
     !! @return .true. if a cycle is found in the component reachable from start_vertex
     !!
@@ -145,6 +147,7 @@ contains
     logical function graph_has_cycle_dfs(this, start_vertex) result(has_cycle)
         class(digraph), intent(in) :: this
         integer, intent(in) :: start_vertex
+        !private
         logical, allocatable :: visited(:), recursion_stack(:)
 
         if (start_vertex < 1 .or. start_vertex > this%vertices) then

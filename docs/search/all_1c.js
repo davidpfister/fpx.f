@@ -36,9 +36,11 @@ var searchData=
   ['strings_5fcontain_5fcharacter_33',['strings_contain_character',['../interfacefpx__string_1_1operator_07_8contains_8_08.html#a2160ddf26e3dddfd05e620a46157b294',1,'fpx_string::operator(.contains.)::strings_contain_character()'],['../string_8f90.html#a2160ddf26e3dddfd05e620a46157b294',1,'fpx_string::strings_contain_character()']]],
   ['strings_5fcontain_5fstring_34',['strings_contain_string',['../interfacefpx__string_1_1operator_07_8contains_8_08.html#a2c57ffe961e9ae1df1da3ac591248ae1',1,'fpx_string::operator(.contains.)::strings_contain_string()'],['../string_8f90.html#a2c57ffe961e9ae1df1da3ac591248ae1',1,'fpx_string::strings_contain_string()']]],
   ['strtol_35',['strtol',['../interfacefpx__token_1_1strtol.html',1,'fpx_token']]],
-  ['studio_202019_36',['Build with Visual Studio 2019',['../index.html#autotoc_md125',1,'']]],
-  ['substitution_37',['2.2.1 Macro expansion during argument substitution',['../macro.html#autotoc_md103',1,'']]],
-  ['substitution_20and_20expansion_38',['2.2 Argument substitution and expansion',['../macro.html#autotoc_md102',1,'']]],
-  ['systems_39',['Portability Across Systems',['../introduction.html#autotoc_md18',1,'']]],
-  ['systems_20and_20external_20tools_40',['Interfacing with Build Systems and External Tools',['../introduction.html#autotoc_md21',1,'']]]
+  ['strtol_5fdefault_36',['strtol_default',['../token_8f90.html#a68a2cfae8524d9c984a187fc53ed0bc7',1,'fpx_token']]],
+  ['strtol_5fwith_5fbase_37',['strtol_with_base',['../token_8f90.html#ad0dd1094737cc50176db3497f06a431c',1,'fpx_token']]],
+  ['studio_202019_38',['Build with Visual Studio 2019',['../index.html#autotoc_md125',1,'']]],
+  ['substitution_39',['2.2.1 Macro expansion during argument substitution',['../macro.html#autotoc_md103',1,'']]],
+  ['substitution_20and_20expansion_40',['2.2 Argument substitution and expansion',['../macro.html#autotoc_md102',1,'']]],
+  ['systems_41',['Portability Across Systems',['../introduction.html#autotoc_md18',1,'']]],
+  ['systems_20and_20external_20tools_42',['Interfacing with Build Systems and External Tools',['../introduction.html#autotoc_md21',1,'']]]
 ];

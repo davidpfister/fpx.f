@@ -12,7 +12,7 @@
 !! The implementation consists of two major phases:
 !!
 !! 1. Tokenization
-!!    The input string is scanned and converted into a sequence of @link fpx_operators::token token @endlink objects.
+!!    The input string is scanned and converted into a sequence of @link fpx_token::token token @endlink objects.
 !!    The tokenizer recognizes multi-character operators ('&&', '||', '==', '!=', '<=', '>=', '<<', '>>', '**'),
 !!    the `defined` operator (with or without parentheses), numbers in all supported bases,
 !!    identifiers, and parentheses. Whitespace is ignored except as a token separator.

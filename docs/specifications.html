@@ -655,13 +655,13 @@ $(function(){initNavTree('specifications.html',''); initResizable(true); });
 <tr class="markdownTableHead">
 <th class="markdownTableHeadLeft">Code   </th><th class="markdownTableHeadLeft">Description    </th></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyLeft">if05   </td><td class="markdownTableBodyLeft">An &lt;if-head&gt; is comprised of a <code>#if</code>, <code>#ifdef</code>, or <code>#ifndef</code> directive and signals the start of a "chain" of conditional directives.    </td></tr>
+<td class="markdownTableBodyLeft">if05   </td><td class="markdownTableBodyLeft">An <code>&lt;if-head&gt;</code> is comprised of a <code>#if</code>, <code>#ifdef</code>, or <code>#ifndef</code> directive and signals the start of a "chain" of conditional directives.    </td></tr>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyLeft">if15   </td><td class="markdownTableBodyLeft">A series of <code>#elif</code>, <code>#elifdef</code>, and <code>#elifndef</code> directives, and the else directive (if present) are part of the same chain of directives introduced by the nearest preceding <code>&lt;if-head&gt;</code>.    </td></tr>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyLeft">if20   </td><td class="markdownTableBodyLeft">A chain of conditional directives ends with the <code>#endif</code> directive.    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyLeft">if25   </td><td class="markdownTableBodyLeft">Within a conditional directive chain, a if, <code>#ifdef</code>, or <code>#ifndef</code> directive introduces a new chain of conditional directives, at a new nesting level, within the enclosing conditional directive chain.    </td></tr>
+<td class="markdownTableBodyLeft">if25   </td><td class="markdownTableBodyLeft">Within a conditional directive chain, a <code>#if</code>, <code>#ifdef</code>, or <code>#ifndef</code> directive introduces a new chain of conditional directives, at a new nesting level, within the enclosing conditional directive chain.    </td></tr>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyLeft">if30   </td><td class="markdownTableBodyLeft">The conditional directive chains must properly nest, with each nested chain appearing entirely within a single <code>&lt;group&gt;</code> of the enclosing chain.   </td></tr>
 </table>
@@ -687,7 +687,7 @@ No skipped lines of any kind in the construct are made available to subsequent p
 </ul>
 </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyLeft">ix14   </td><td class="markdownTableBodyLeft">In the descriptions below, &lt;group&gt; constructs that are not skipped participate in further preprocessing and processing. When participating:<ul>
+<td class="markdownTableBodyLeft">ix14   </td><td class="markdownTableBodyLeft">In the descriptions below, <code>&lt;group&gt;</code> constructs that are not skipped participate in further preprocessing and processing. When participating:<ul>
 <li>
 Macros are expanded in Fortran comment lines and Fortran source fragment lines.</li>
 <li>
@@ -697,23 +697,23 @@ The resulting Fortran comment lines and Fortran source fragment lines are made a
 </ul>
 </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyLeft">ix15   </td><td class="markdownTableBodyLeft">Before evaluating the token-lists in any &lt;if-head&gt; and &lt;if-elif&gt; constructs that are not skipped, macros in the token-lists are processed as described in section 4 "Macro identification and expansion".    </td></tr>
+<td class="markdownTableBodyLeft">ix15   </td><td class="markdownTableBodyLeft">Before evaluating the token-lists in any <code>&lt;if-head&gt;</code> and <code>&lt;if-elif&gt;</code> constructs that are not skipped, macros in the token-lists are processed as described in section 4 "Macro identification and expansion".    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyLeft">ix20   </td><td class="markdownTableBodyLeft">After expansion, the resulting token list in &lt;if-head&gt; and &lt;if-elif&gt; constructs that are not skipped must comprise a valid integer expression as described in section 5 "Expressions allowed in #if and #elif directives" static semantics. This expression is called the "controlling expression" for the directive.    </td></tr>
+<td class="markdownTableBodyLeft">ix20   </td><td class="markdownTableBodyLeft">After expansion, the resulting token list in <code>&lt;if-head&gt;</code> and <code>&lt;if-elif&gt;</code> constructs that are not skipped must comprise a valid integer expression as described in section 5 "Expressions allowed in `#if` and `#elif` directives" static semantics. This expression is called the "controlling expression" for the directive.    </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyLeft">ix25   </td><td class="markdownTableBodyLeft">The values of controlling expressions in &lt;if-head&gt; and &lt;if-elif&gt; constructs are evaluated according to the evaluation semantics described in section 5 "Expressions allowed in #if and #elif directives".    </td></tr>
+<td class="markdownTableBodyLeft">ix25   </td><td class="markdownTableBodyLeft">The values of controlling expressions in <code>&lt;if-head&gt;</code> and <code>&lt;if-elif&gt;</code> constructs are evaluated according to the evaluation semantics described in section 5 "Expressions allowed in `#if` and `#elif` directives".    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyLeft">ix30   </td><td class="markdownTableBodyLeft">If the controlling expression in an &lt;if-head&gt; evaluates to a nonzero value, then the &lt;group&gt; contained within that &lt;if-head&gt; construct participates in further preprocessing, as described above. Subsequent &lt;if-elif&gt; and &lt;if-else&gt; constructs in the same chain are skipped.    </td></tr>
+<td class="markdownTableBodyLeft">ix30   </td><td class="markdownTableBodyLeft">If the controlling expression in an <code>&lt;if-head&gt;</code> evaluates to a nonzero value, then the <code>&lt;group&gt;</code> contained within that <code>&lt;if-head&gt;</code> construct participates in further preprocessing, as described above. Subsequent <code>&lt;if-elif&gt;</code> and <code>&lt;if-else&gt;</code> constructs in the same chain are skipped.    </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyLeft">ix45   </td><td class="markdownTableBodyLeft">If the controlling expression in an &lt;if-head&gt; construct evaluates to a zero value, then the &lt;group&gt; contained within that &lt;if-head&gt; construct is skipped. Preprocessing continues with any &lt;if-elif&gt; constructs in the same chain, as described below.    </td></tr>
+<td class="markdownTableBodyLeft">ix45   </td><td class="markdownTableBodyLeft">If the controlling expression in an &lt;if-head&gt; construct evaluates to a zero value, then the <code>&lt;group&gt;</code> contained within that <code>&lt;if-head&gt;</code> construct is skipped. Preprocessing continues with any <code>&lt;if-elif&gt;</code> constructs in the same chain, as described below.    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyLeft">ix50   </td><td class="markdownTableBodyLeft">When the controlling expression in an &lt;if-head&gt; construct evaluates to zero, the controlling expressions in each &lt;if-elif&gt; construct in the same chain are evaluated in turn, until one evaluates to a non-zero value. Those &lt;group&gt;s whose controlling expression evaluates to zero are skipped.    </td></tr>
+<td class="markdownTableBodyLeft">ix50   </td><td class="markdownTableBodyLeft">When the controlling expression in an <code>&lt;if-head&gt;</code> construct evaluates to zero, the controlling expressions in each <code>&lt;if-elif&gt;</code> construct in the same chain are evaluated in turn, until one evaluates to a non-zero value. Those &lt;group&gt;s whose controlling expression evaluates to zero are skipped.    </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyLeft">ix55   </td><td class="markdownTableBodyLeft">When the controlling expression in an &lt;if-elif&gt; construct evaluates to a nonzero value, the &lt;group&gt; contained within that &lt;if-elif&gt; construct continues to participate in preprocessing. Subsequent &lt;if-elif&gt; constructs and any remaining &lt;if-else&gt; constructs in the same chain are skipped.    </td></tr>
+<td class="markdownTableBodyLeft">ix55   </td><td class="markdownTableBodyLeft">When the controlling expression in an <code>&lt;if-elif&gt;</code> construct evaluates to a nonzero value, the <code>&lt;group&gt;</code> contained within that <code>&lt;if-elif&gt;</code> construct continues to participate in preprocessing. Subsequent <code>&lt;if-elif&gt;</code> constructs and any remaining <code>&lt;if-else&gt;</code> constructs in the same chain are skipped.    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyLeft">ix60   </td><td class="markdownTableBodyLeft">When all controlling expressions in the &lt;if-head&gt; construct and &lt;if-elif&gt; constructs evaluate to a zero value and an &lt;if-else&gt; construct is present in the same chain, the &lt;group&gt; contained in the &lt;if-else&gt; construct continues to participate in preprocessing.    </td></tr>
+<td class="markdownTableBodyLeft">ix60   </td><td class="markdownTableBodyLeft">When all controlling expressions in the <code>&lt;if-head&gt;</code> construct and <code>&lt;if-elif&gt;</code> constructs evaluate to a zero value and an <code>&lt;if-else&gt;</code> construct is present in the same chain, the <code>&lt;group&gt;</code> contained in the <code>&lt;if-else&gt;</code> construct continues to participate in preprocessing.    </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyLeft">ix65   </td><td class="markdownTableBodyLeft">When all controlling expressions in the &lt;if-head&gt; construct and all &lt;if-elif&gt; constructs evaluate to a zero value and no &lt;if-else&gt; construct is present in the same chain, then all &lt;group&gt;s in these constructs are skipped.   </td></tr>
+<td class="markdownTableBodyLeft">ix65   </td><td class="markdownTableBodyLeft">When all controlling expressions in the <code>&lt;if-head&gt;</code> construct and all <code>&lt;if-elif&gt;</code> constructs evaluate to a zero value and no <code>&lt;if-else&gt;</code> construct is present in the same chain, then all &lt;group&gt;s in these constructs are skipped.   </td></tr>
 </table>
 <h2><a class="anchor" id="autotoc_md55"></a>
 3.6 The error and warning directives</h2>

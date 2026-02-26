@@ -12,5 +12,7 @@ var searchData=
   ['string_5flen_5ftrim_9',['string_len_trim',['../interfacefpx__string_1_1len__trim.html#aef295e9d95b8c97db0bff1e007aa518e',1,'fpx_string::len_trim::string_len_trim()'],['../string_8f90.html#aef295e9d95b8c97db0bff1e007aa518e',1,'fpx_string::string_len_trim()']]],
   ['string_5ftrim_10',['string_trim',['../interfacefpx__string_1_1trim.html#a43dc2858966a82313eb97b95a4c8fdf1',1,'fpx_string::trim::string_trim()'],['../string_8f90.html#a43dc2858966a82313eb97b95a4c8fdf1',1,'fpx_string::string_trim()']]],
   ['strings_5fcontain_5fcharacter_11',['strings_contain_character',['../interfacefpx__string_1_1operator_07_8contains_8_08.html#a2160ddf26e3dddfd05e620a46157b294',1,'fpx_string::operator(.contains.)::strings_contain_character()'],['../string_8f90.html#a2160ddf26e3dddfd05e620a46157b294',1,'fpx_string::strings_contain_character()']]],
-  ['strings_5fcontain_5fstring_12',['strings_contain_string',['../interfacefpx__string_1_1operator_07_8contains_8_08.html#a2c57ffe961e9ae1df1da3ac591248ae1',1,'fpx_string::operator(.contains.)::strings_contain_string()'],['../string_8f90.html#a2c57ffe961e9ae1df1da3ac591248ae1',1,'fpx_string::strings_contain_string()']]]
+  ['strings_5fcontain_5fstring_12',['strings_contain_string',['../interfacefpx__string_1_1operator_07_8contains_8_08.html#a2c57ffe961e9ae1df1da3ac591248ae1',1,'fpx_string::operator(.contains.)::strings_contain_string()'],['../string_8f90.html#a2c57ffe961e9ae1df1da3ac591248ae1',1,'fpx_string::strings_contain_string()']]],
+  ['strtol_5fdefault_13',['strtol_default',['../token_8f90.html#a68a2cfae8524d9c984a187fc53ed0bc7',1,'fpx_token']]],
+  ['strtol_5fwith_5fbase_14',['strtol_with_base',['../token_8f90.html#ad0dd1094737cc50176db3497f06a431c',1,'fpx_token']]]
 ];

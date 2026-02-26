@@ -466,104 +466,110 @@ $(function(){initNavTree('token_8f90_source.html',''); initResizable(true); });
 <div class="line"><a id="l00326" name="l00326"></a><span class="lineno">  326</span>        <span class="keywordflow">if</span> (base == 10) res = .false.</div>
 </div>
 <div class="line"><a id="l00327" name="l00327"></a><span class="lineno">  327</span>    <span class="keyword">end function</span></div>
-<div class="line"><a id="l00328" name="l00328"></a><span class="lineno">  328</span>    </div>
-<div class="line"><a id="l00329" name="l00329"></a><span class="lineno">  329</span>    <span class="keyword">integer </span><span class="keyword">function </span>strtol_default(str, success) <span class="keyword">result</span>(val)</div>
-<div class="line"><a id="l00330" name="l00330"></a><span class="lineno">  330</span>        <span class="keywordtype">character(*)</span>, <span class="keywordtype">intent(in)</span>        :: str</div>
-<div class="line"><a id="l00331" name="l00331"></a><span class="lineno">  331</span>        <span class="keywordtype">logical</span>, <span class="keywordtype">intent(out)</span>, <span class="keywordtype">optional</span>  :: success</div>
-<div class="line"><a id="l00332" name="l00332"></a><span class="lineno">  332</span>        <span class="comment">!private</span></div>
-<div class="line"><a id="l00333" name="l00333"></a><span class="lineno">  333</span>        <span class="keywordtype">integer</span> :: base</div>
-<div class="line"><a id="l00334" name="l00334"></a><span class="lineno">  334</span> </div>
-<div class="line"><a id="l00335" name="l00335"></a><span class="lineno">  335</span>        base = 0</div>
-<div class="line"><a id="l00336" name="l00336"></a><span class="lineno">  336</span>        val = strtol_with_base(str, base, success)</div>
-<div class="line"><a id="l00337" name="l00337"></a><span class="lineno">  337</span>    <span class="keyword">end function</span></div>
-<div class="line"><a id="l00338" name="l00338"></a><span class="lineno">  338</span> </div>
-<div class="line"><a id="l00339" name="l00339"></a><span class="lineno">  339</span>    <span class="keyword">integer </span><span class="keyword">function </span>strtol_with_base(str, base, success) <span class="keyword">result</span>(val)</div>
-<div class="line"><a id="l00340" name="l00340"></a><span class="lineno">  340</span>        <span class="keywordtype">character(*)</span>, <span class="keywordtype">intent(in)</span>        :: str</div>
-<div class="line"><a id="l00341" name="l00341"></a><span class="lineno">  341</span>        <span class="keywordtype">integer</span>, <span class="keywordtype">intent(inout)</span>          :: base</div>
-<div class="line"><a id="l00342" name="l00342"></a><span class="lineno">  342</span>        <span class="keywordtype">logical</span>, <span class="keywordtype">intent(out)</span>, <span class="keywordtype">optional</span>  :: success</div>
-<div class="line"><a id="l00343" name="l00343"></a><span class="lineno">  343</span>        <span class="comment">!private</span></div>
-<div class="line"><a id="l00344" name="l00344"></a><span class="lineno">  344</span>        <span class="keywordtype">integer</span> :: i, len, digit</div>
-<div class="line"><a id="l00345" name="l00345"></a><span class="lineno">  345</span>        <span class="keywordtype">character</span> :: c</div>
-<div class="line"><a id="l00346" name="l00346"></a><span class="lineno">  346</span>        <span class="keywordtype">logical</span> :: is_valid, isdigit, is_lower_hex, is_upper_hex</div>
-<div class="line"><a id="l00347" name="l00347"></a><span class="lineno">  347</span>        <span class="keywordtype">character(len=len_trim(str))</span> :: work_str</div>
-<div class="line"><a id="l00348" name="l00348"></a><span class="lineno">  348</span> </div>
-<div class="line"><a id="l00349" name="l00349"></a><span class="lineno">  349</span>        val = 0; is_valid = .true.</div>
-<div class="line"><a id="l00350" name="l00350"></a><span class="lineno">  350</span>        work_str = adjustl(str)  <span class="comment">! Remove leading spaces</span></div>
-<div class="line"><a id="l00351" name="l00351"></a><span class="lineno">  351</span>        len = len_trim(work_str)</div>
-<div class="line"><a id="l00352" name="l00352"></a><span class="lineno">  352</span> </div>
-<div class="line"><a id="l00353" name="l00353"></a><span class="lineno">  353</span>        <span class="comment">! Handle base 0 (auto-detect)</span></div>
-<div class="line"><a id="l00354" name="l00354"></a><span class="lineno">  354</span>        <span class="keywordflow">if</span> (base == 0) <span class="keywordflow">then</span></div>
-<div class="line"><a id="l00355" name="l00355"></a><span class="lineno">  355</span>            <span class="keywordflow">if</span> (len &gt;= 2) <span class="keywordflow">then</span></div>
-<div class="line"><a id="l00356" name="l00356"></a><span class="lineno">  356</span>                <span class="keywordflow">if</span> (work_str(1:2) == <span class="stringliteral">&#39;0x&#39;</span> .or. work_str(1:2) == <span class="stringliteral">&#39;0X&#39;</span>) <span class="keywordflow">then</span></div>
-<div class="line"><a id="l00357" name="l00357"></a><span class="lineno">  357</span>                    base = 16</div>
-<div class="line"><a id="l00358" name="l00358"></a><span class="lineno">  358</span>                    work_str = work_str(3:len)</div>
-<div class="line"><a id="l00359" name="l00359"></a><span class="lineno">  359</span>                    len = len - 2</div>
-<div class="line"><a id="l00360" name="l00360"></a><span class="lineno">  360</span>                <span class="keywordflow">else</span> <span class="keywordflow">if</span> (work_str(1:2) == <span class="stringliteral">&#39;0b&#39;</span> .or. work_str(1:2) == <span class="stringliteral">&#39;0B&#39;</span>) <span class="keywordflow">then</span></div>
-<div class="line"><a id="l00361" name="l00361"></a><span class="lineno">  361</span>                    base = 2</div>
-<div class="line"><a id="l00362" name="l00362"></a><span class="lineno">  362</span>                    work_str = work_str(3:len)</div>
-<div class="line"><a id="l00363" name="l00363"></a><span class="lineno">  363</span>                    len = len - 2</div>
-<div class="line"><a id="l00364" name="l00364"></a><span class="lineno">  364</span>                <span class="keywordflow">else</span></div>
-<div class="line"><a id="l00365" name="l00365"></a><span class="lineno">  365</span>                    <span class="keywordflow">if</span> (len &gt; 1) <span class="keywordflow">then</span></div>
-<div class="line"><a id="l00366" name="l00366"></a><span class="lineno">  366</span>                        <span class="keywordflow">if</span> (work_str(1:1) == <span class="stringliteral">&#39;0&#39;</span>) <span class="keywordflow">then</span></div>
-<div class="line"><a id="l00367" name="l00367"></a><span class="lineno">  367</span>                            base = 8</div>
-<div class="line"><a id="l00368" name="l00368"></a><span class="lineno">  368</span>                        <span class="keywordflow">else</span></div>
-<div class="line"><a id="l00369" name="l00369"></a><span class="lineno">  369</span>                            base = 10</div>
-<div class="line"><a id="l00370" name="l00370"></a><span class="lineno">  370</span><span class="keywordflow">                        end if</span></div>
-<div class="line"><a id="l00371" name="l00371"></a><span class="lineno">  371</span>                    <span class="keywordflow">else</span></div>
-<div class="line"><a id="l00372" name="l00372"></a><span class="lineno">  372</span>                        base = 10</div>
-<div class="line"><a id="l00373" name="l00373"></a><span class="lineno">  373</span><span class="keywordflow">                    end if</span></div>
-<div class="line"><a id="l00374" name="l00374"></a><span class="lineno">  374</span><span class="keywordflow">                end if</span></div>
-<div class="line"><a id="l00375" name="l00375"></a><span class="lineno">  375</span>            <span class="keywordflow">else</span></div>
-<div class="line"><a id="l00376" name="l00376"></a><span class="lineno">  376</span>                base = 10</div>
-<div class="line"><a id="l00377" name="l00377"></a><span class="lineno">  377</span><span class="keywordflow">            end if</span></div>
-<div class="line"><a id="l00378" name="l00378"></a><span class="lineno">  378</span><span class="keywordflow">        end if</span></div>
-<div class="line"><a id="l00379" name="l00379"></a><span class="lineno">  379</span> </div>
-<div class="line"><a id="l00380" name="l00380"></a><span class="lineno">  380</span>        <span class="comment">! Validate base</span></div>
-<div class="line"><a id="l00381" name="l00381"></a><span class="lineno">  381</span>        <span class="keywordflow">if</span> (base /= 2 .and. base /= 8 .and. base /= 10 .and. base /= 16) <span class="keywordflow">then</span></div>
-<div class="line"><a id="l00382" name="l00382"></a><span class="lineno">  382</span>            is_valid = .false.</div>
-<div class="line"><a id="l00383" name="l00383"></a><span class="lineno">  383</span>            <span class="keywordflow">if</span> (<span class="keyword">present</span>(success)) success = .false.</div>
-<div class="line"><a id="l00384" name="l00384"></a><span class="lineno">  384</span>            <span class="keywordflow">return</span></div>
-<div class="line"><a id="l00385" name="l00385"></a><span class="lineno">  385</span><span class="keywordflow">        end if</span></div>
-<div class="line"><a id="l00386" name="l00386"></a><span class="lineno">  386</span> </div>
-<div class="line"><a id="l00387" name="l00387"></a><span class="lineno">  387</span>        <span class="comment">! Process each character</span></div>
-<div class="line"><a id="l00388" name="l00388"></a><span class="lineno">  388</span>        <span class="keywordflow">do</span> i = 1, len</div>
-<div class="line"><a id="l00389" name="l00389"></a><span class="lineno">  389</span>            c = work_str(i:i)</div>
-<div class="line"><a id="l00390" name="l00390"></a><span class="lineno">  390</span>            digit = -1  <span class="comment">! Invalid digit marker</span></div>
-<div class="line"><a id="l00391" name="l00391"></a><span class="lineno">  391</span> </div>
-<div class="line"><a id="l00392" name="l00392"></a><span class="lineno">  392</span>            <span class="comment">! Convert character to digit</span></div>
-<div class="line"><a id="l00393" name="l00393"></a><span class="lineno">  393</span>            isdigit = c &gt;= <span class="stringliteral">&#39;0&#39;</span> .and. c &lt;= <span class="stringliteral">&#39;9&#39;</span></div>
-<div class="line"><a id="l00394" name="l00394"></a><span class="lineno">  394</span>            <span class="keywordflow">if</span> (isdigit) digit = ichar(c) - ichar(<span class="stringliteral">&#39;0&#39;</span>)</div>
-<div class="line"><a id="l00395" name="l00395"></a><span class="lineno">  395</span> </div>
-<div class="line"><a id="l00396" name="l00396"></a><span class="lineno">  396</span>            is_lower_hex = base == 16 .and. c &gt;= <span class="stringliteral">&#39;a&#39;</span> .and. c &lt;= <span class="stringliteral">&#39;f&#39;</span></div>
-<div class="line"><a id="l00397" name="l00397"></a><span class="lineno">  397</span>            <span class="keywordflow">if</span> (is_lower_hex) digit = ichar(c) - ichar(<span class="stringliteral">&#39;a&#39;</span>) + 10</div>
-<div class="line"><a id="l00398" name="l00398"></a><span class="lineno">  398</span> </div>
-<div class="line"><a id="l00399" name="l00399"></a><span class="lineno">  399</span>            is_upper_hex = base == 16 .and. c &gt;= <span class="stringliteral">&#39;A&#39;</span> .and. c &lt;= <span class="stringliteral">&#39;F&#39;</span></div>
-<div class="line"><a id="l00400" name="l00400"></a><span class="lineno">  400</span>            <span class="keywordflow">if</span> (is_upper_hex) digit = ichar(c) - ichar(<span class="stringliteral">&#39;A&#39;</span>) + 10</div>
-<div class="line"><a id="l00401" name="l00401"></a><span class="lineno">  401</span> </div>
-<div class="line"><a id="l00402" name="l00402"></a><span class="lineno">  402</span>            <span class="comment">! Check if digit is valid</span></div>
-<div class="line"><a id="l00403" name="l00403"></a><span class="lineno">  403</span>            <span class="keywordflow">if</span> (digit == -1) <span class="keywordflow">then</span></div>
-<div class="line"><a id="l00404" name="l00404"></a><span class="lineno">  404</span>                is_valid = .false.</div>
-<div class="line"><a id="l00405" name="l00405"></a><span class="lineno">  405</span>                <span class="keywordflow">exit</span></div>
-<div class="line"><a id="l00406" name="l00406"></a><span class="lineno">  406</span><span class="keywordflow">            end if</span></div>
-<div class="line"><a id="l00407" name="l00407"></a><span class="lineno">  407</span>            <span class="keywordflow">if</span> (digit &gt;= base) <span class="keywordflow">then</span></div>
-<div class="line"><a id="l00408" name="l00408"></a><span class="lineno">  408</span>                is_valid = .false.</div>
-<div class="line"><a id="l00409" name="l00409"></a><span class="lineno">  409</span>                <span class="keywordflow">exit</span></div>
-<div class="line"><a id="l00410" name="l00410"></a><span class="lineno">  410</span><span class="keywordflow">            end if</span></div>
-<div class="line"><a id="l00411" name="l00411"></a><span class="lineno">  411</span> </div>
-<div class="line"><a id="l00412" name="l00412"></a><span class="lineno">  412</span>            <span class="comment">! Check for potential overflow (approximate for 32-bit integer)</span></div>
-<div class="line"><a id="l00413" name="l00413"></a><span class="lineno">  413</span>            <span class="keywordflow">if</span> (val &gt; (huge(val) - digit) / base) <span class="keywordflow">then</span></div>
-<div class="line"><a id="l00414" name="l00414"></a><span class="lineno">  414</span>                is_valid = .false.</div>
-<div class="line"><a id="l00415" name="l00415"></a><span class="lineno">  415</span>                <span class="keywordflow">exit</span></div>
-<div class="line"><a id="l00416" name="l00416"></a><span class="lineno">  416</span><span class="keywordflow">            end if</span></div>
-<div class="line"><a id="l00417" name="l00417"></a><span class="lineno">  417</span> </div>
-<div class="line"><a id="l00418" name="l00418"></a><span class="lineno">  418</span>            <span class="comment">! Accumulate value</span></div>
-<div class="line"><a id="l00419" name="l00419"></a><span class="lineno">  419</span>            val = val * base + digit</div>
-<div class="line"><a id="l00420" name="l00420"></a><span class="lineno">  420</span><span class="keywordflow">        end do</span></div>
-<div class="line"><a id="l00421" name="l00421"></a><span class="lineno">  421</span> </div>
-<div class="line"><a id="l00422" name="l00422"></a><span class="lineno">  422</span>        <span class="comment">! Set success flag if provided</span></div>
-<div class="line"><a id="l00423" name="l00423"></a><span class="lineno">  423</span>        <span class="keywordflow">if</span> (<span class="keyword">present</span>(success)) success = is_valid</div>
-<div class="line"><a id="l00424" name="l00424"></a><span class="lineno">  424</span>    <span class="keyword">end function</span></div>
-<div class="line"><a id="l00425" name="l00425"></a><span class="lineno">  425</span><span class="keyword">end module</span></div>
+<div class="line"><a id="l00328" name="l00328"></a><span class="lineno">  328</span>    <span class="comment"></span></div>
+<div class="line"><a id="l00329" name="l00329"></a><span class="lineno">  329</span><span class="comment">    !&gt; Implementation of strtol function</span></div>
+<div class="foldopen" id="foldopen00330" data-start="" data-end="">
+<div class="line"><a id="l00330" name="l00330"></a><span class="lineno"><a class="line" href="token_8f90.html#a68a2cfae8524d9c984a187fc53ed0bc7">  330</a></span>    <span class="keyword">integer </span><span class="keyword">function </span>strtol_default(str, success) <span class="keyword">result</span>(val)</div>
+<div class="line"><a id="l00331" name="l00331"></a><span class="lineno">  331</span>        <span class="keywordtype">character(*)</span>, <span class="keywordtype">intent(in)</span>        :: str</div>
+<div class="line"><a id="l00332" name="l00332"></a><span class="lineno">  332</span>        <span class="keywordtype">logical</span>, <span class="keywordtype">intent(out)</span>, <span class="keywordtype">optional</span>  :: success</div>
+<div class="line"><a id="l00333" name="l00333"></a><span class="lineno">  333</span>        <span class="comment">!private</span></div>
+<div class="line"><a id="l00334" name="l00334"></a><span class="lineno">  334</span>        <span class="keywordtype">integer</span> :: base</div>
+<div class="line"><a id="l00335" name="l00335"></a><span class="lineno">  335</span> </div>
+<div class="line"><a id="l00336" name="l00336"></a><span class="lineno">  336</span>        base = 0</div>
+<div class="line"><a id="l00337" name="l00337"></a><span class="lineno">  337</span>        val = strtol_with_base(str, base, success)</div>
+</div>
+<div class="line"><a id="l00338" name="l00338"></a><span class="lineno">  338</span>    <span class="keyword">end function</span></div>
+<div class="line"><a id="l00339" name="l00339"></a><span class="lineno">  339</span><span class="comment"></span> </div>
+<div class="line"><a id="l00340" name="l00340"></a><span class="lineno">  340</span><span class="comment">    !&gt; Implementation of strtol function with a base argument.</span></div>
+<div class="foldopen" id="foldopen00341" data-start="" data-end="">
+<div class="line"><a id="l00341" name="l00341"></a><span class="lineno"><a class="line" href="token_8f90.html#ad0dd1094737cc50176db3497f06a431c">  341</a></span>    <span class="keyword">integer </span><span class="keyword">function </span>strtol_with_base(str, base, success) <span class="keyword">result</span>(val)</div>
+<div class="line"><a id="l00342" name="l00342"></a><span class="lineno">  342</span>        <span class="keywordtype">character(*)</span>, <span class="keywordtype">intent(in)</span>        :: str</div>
+<div class="line"><a id="l00343" name="l00343"></a><span class="lineno">  343</span>        <span class="keywordtype">integer</span>, <span class="keywordtype">intent(inout)</span>          :: base</div>
+<div class="line"><a id="l00344" name="l00344"></a><span class="lineno">  344</span>        <span class="keywordtype">logical</span>, <span class="keywordtype">intent(out)</span>, <span class="keywordtype">optional</span>  :: success</div>
+<div class="line"><a id="l00345" name="l00345"></a><span class="lineno">  345</span>        <span class="comment">!private</span></div>
+<div class="line"><a id="l00346" name="l00346"></a><span class="lineno">  346</span>        <span class="keywordtype">integer</span> :: i, len, digit</div>
+<div class="line"><a id="l00347" name="l00347"></a><span class="lineno">  347</span>        <span class="keywordtype">character</span> :: c</div>
+<div class="line"><a id="l00348" name="l00348"></a><span class="lineno">  348</span>        <span class="keywordtype">logical</span> :: is_valid, isdigit, is_lower_hex, is_upper_hex</div>
+<div class="line"><a id="l00349" name="l00349"></a><span class="lineno">  349</span>        <span class="keywordtype">character(len=len_trim(str))</span> :: work_str</div>
+<div class="line"><a id="l00350" name="l00350"></a><span class="lineno">  350</span> </div>
+<div class="line"><a id="l00351" name="l00351"></a><span class="lineno">  351</span>        val = 0; is_valid = .true.</div>
+<div class="line"><a id="l00352" name="l00352"></a><span class="lineno">  352</span>        work_str = adjustl(str)  <span class="comment">! Remove leading spaces</span></div>
+<div class="line"><a id="l00353" name="l00353"></a><span class="lineno">  353</span>        len = len_trim(work_str)</div>
+<div class="line"><a id="l00354" name="l00354"></a><span class="lineno">  354</span> </div>
+<div class="line"><a id="l00355" name="l00355"></a><span class="lineno">  355</span>        <span class="comment">! Handle base 0 (auto-detect)</span></div>
+<div class="line"><a id="l00356" name="l00356"></a><span class="lineno">  356</span>        <span class="keywordflow">if</span> (base == 0) <span class="keywordflow">then</span></div>
+<div class="line"><a id="l00357" name="l00357"></a><span class="lineno">  357</span>            <span class="keywordflow">if</span> (len &gt;= 2) <span class="keywordflow">then</span></div>
+<div class="line"><a id="l00358" name="l00358"></a><span class="lineno">  358</span>                <span class="keywordflow">if</span> (work_str(1:2) == <span class="stringliteral">&#39;0x&#39;</span> .or. work_str(1:2) == <span class="stringliteral">&#39;0X&#39;</span>) <span class="keywordflow">then</span></div>
+<div class="line"><a id="l00359" name="l00359"></a><span class="lineno">  359</span>                    base = 16</div>
+<div class="line"><a id="l00360" name="l00360"></a><span class="lineno">  360</span>                    work_str = work_str(3:len)</div>
+<div class="line"><a id="l00361" name="l00361"></a><span class="lineno">  361</span>                    len = len - 2</div>
+<div class="line"><a id="l00362" name="l00362"></a><span class="lineno">  362</span>                <span class="keywordflow">else</span> <span class="keywordflow">if</span> (work_str(1:2) == <span class="stringliteral">&#39;0b&#39;</span> .or. work_str(1:2) == <span class="stringliteral">&#39;0B&#39;</span>) <span class="keywordflow">then</span></div>
+<div class="line"><a id="l00363" name="l00363"></a><span class="lineno">  363</span>                    base = 2</div>
+<div class="line"><a id="l00364" name="l00364"></a><span class="lineno">  364</span>                    work_str = work_str(3:len)</div>
+<div class="line"><a id="l00365" name="l00365"></a><span class="lineno">  365</span>                    len = len - 2</div>
+<div class="line"><a id="l00366" name="l00366"></a><span class="lineno">  366</span>                <span class="keywordflow">else</span></div>
+<div class="line"><a id="l00367" name="l00367"></a><span class="lineno">  367</span>                    <span class="keywordflow">if</span> (len &gt; 1) <span class="keywordflow">then</span></div>
+<div class="line"><a id="l00368" name="l00368"></a><span class="lineno">  368</span>                        <span class="keywordflow">if</span> (work_str(1:1) == <span class="stringliteral">&#39;0&#39;</span>) <span class="keywordflow">then</span></div>
+<div class="line"><a id="l00369" name="l00369"></a><span class="lineno">  369</span>                            base = 8</div>
+<div class="line"><a id="l00370" name="l00370"></a><span class="lineno">  370</span>                        <span class="keywordflow">else</span></div>
+<div class="line"><a id="l00371" name="l00371"></a><span class="lineno">  371</span>                            base = 10</div>
+<div class="line"><a id="l00372" name="l00372"></a><span class="lineno">  372</span><span class="keywordflow">                        end if</span></div>
+<div class="line"><a id="l00373" name="l00373"></a><span class="lineno">  373</span>                    <span class="keywordflow">else</span></div>
+<div class="line"><a id="l00374" name="l00374"></a><span class="lineno">  374</span>                        base = 10</div>
+<div class="line"><a id="l00375" name="l00375"></a><span class="lineno">  375</span><span class="keywordflow">                    end if</span></div>
+<div class="line"><a id="l00376" name="l00376"></a><span class="lineno">  376</span><span class="keywordflow">                end if</span></div>
+<div class="line"><a id="l00377" name="l00377"></a><span class="lineno">  377</span>            <span class="keywordflow">else</span></div>
+<div class="line"><a id="l00378" name="l00378"></a><span class="lineno">  378</span>                base = 10</div>
+<div class="line"><a id="l00379" name="l00379"></a><span class="lineno">  379</span><span class="keywordflow">            end if</span></div>
+<div class="line"><a id="l00380" name="l00380"></a><span class="lineno">  380</span><span class="keywordflow">        end if</span></div>
+<div class="line"><a id="l00381" name="l00381"></a><span class="lineno">  381</span> </div>
+<div class="line"><a id="l00382" name="l00382"></a><span class="lineno">  382</span>        <span class="comment">! Validate base</span></div>
+<div class="line"><a id="l00383" name="l00383"></a><span class="lineno">  383</span>        <span class="keywordflow">if</span> (base /= 2 .and. base /= 8 .and. base /= 10 .and. base /= 16) <span class="keywordflow">then</span></div>
+<div class="line"><a id="l00384" name="l00384"></a><span class="lineno">  384</span>            is_valid = .false.</div>
+<div class="line"><a id="l00385" name="l00385"></a><span class="lineno">  385</span>            <span class="keywordflow">if</span> (<span class="keyword">present</span>(success)) success = .false.</div>
+<div class="line"><a id="l00386" name="l00386"></a><span class="lineno">  386</span>            <span class="keywordflow">return</span></div>
+<div class="line"><a id="l00387" name="l00387"></a><span class="lineno">  387</span><span class="keywordflow">        end if</span></div>
+<div class="line"><a id="l00388" name="l00388"></a><span class="lineno">  388</span> </div>
+<div class="line"><a id="l00389" name="l00389"></a><span class="lineno">  389</span>        <span class="comment">! Process each character</span></div>
+<div class="line"><a id="l00390" name="l00390"></a><span class="lineno">  390</span>        <span class="keywordflow">do</span> i = 1, len</div>
+<div class="line"><a id="l00391" name="l00391"></a><span class="lineno">  391</span>            c = work_str(i:i)</div>
+<div class="line"><a id="l00392" name="l00392"></a><span class="lineno">  392</span>            digit = -1  <span class="comment">! Invalid digit marker</span></div>
+<div class="line"><a id="l00393" name="l00393"></a><span class="lineno">  393</span> </div>
+<div class="line"><a id="l00394" name="l00394"></a><span class="lineno">  394</span>            <span class="comment">! Convert character to digit</span></div>
+<div class="line"><a id="l00395" name="l00395"></a><span class="lineno">  395</span>            isdigit = c &gt;= <span class="stringliteral">&#39;0&#39;</span> .and. c &lt;= <span class="stringliteral">&#39;9&#39;</span></div>
+<div class="line"><a id="l00396" name="l00396"></a><span class="lineno">  396</span>            <span class="keywordflow">if</span> (isdigit) digit = ichar(c) - ichar(<span class="stringliteral">&#39;0&#39;</span>)</div>
+<div class="line"><a id="l00397" name="l00397"></a><span class="lineno">  397</span> </div>
+<div class="line"><a id="l00398" name="l00398"></a><span class="lineno">  398</span>            is_lower_hex = base == 16 .and. c &gt;= <span class="stringliteral">&#39;a&#39;</span> .and. c &lt;= <span class="stringliteral">&#39;f&#39;</span></div>
+<div class="line"><a id="l00399" name="l00399"></a><span class="lineno">  399</span>            <span class="keywordflow">if</span> (is_lower_hex) digit = ichar(c) - ichar(<span class="stringliteral">&#39;a&#39;</span>) + 10</div>
+<div class="line"><a id="l00400" name="l00400"></a><span class="lineno">  400</span> </div>
+<div class="line"><a id="l00401" name="l00401"></a><span class="lineno">  401</span>            is_upper_hex = base == 16 .and. c &gt;= <span class="stringliteral">&#39;A&#39;</span> .and. c &lt;= <span class="stringliteral">&#39;F&#39;</span></div>
+<div class="line"><a id="l00402" name="l00402"></a><span class="lineno">  402</span>            <span class="keywordflow">if</span> (is_upper_hex) digit = ichar(c) - ichar(<span class="stringliteral">&#39;A&#39;</span>) + 10</div>
+<div class="line"><a id="l00403" name="l00403"></a><span class="lineno">  403</span> </div>
+<div class="line"><a id="l00404" name="l00404"></a><span class="lineno">  404</span>            <span class="comment">! Check if digit is valid</span></div>
+<div class="line"><a id="l00405" name="l00405"></a><span class="lineno">  405</span>            <span class="keywordflow">if</span> (digit == -1) <span class="keywordflow">then</span></div>
+<div class="line"><a id="l00406" name="l00406"></a><span class="lineno">  406</span>                is_valid = .false.</div>
+<div class="line"><a id="l00407" name="l00407"></a><span class="lineno">  407</span>                <span class="keywordflow">exit</span></div>
+<div class="line"><a id="l00408" name="l00408"></a><span class="lineno">  408</span><span class="keywordflow">            end if</span></div>
+<div class="line"><a id="l00409" name="l00409"></a><span class="lineno">  409</span>            <span class="keywordflow">if</span> (digit &gt;= base) <span class="keywordflow">then</span></div>
+<div class="line"><a id="l00410" name="l00410"></a><span class="lineno">  410</span>                is_valid = .false.</div>
+<div class="line"><a id="l00411" name="l00411"></a><span class="lineno">  411</span>                <span class="keywordflow">exit</span></div>
+<div class="line"><a id="l00412" name="l00412"></a><span class="lineno">  412</span><span class="keywordflow">            end if</span></div>
+<div class="line"><a id="l00413" name="l00413"></a><span class="lineno">  413</span> </div>
+<div class="line"><a id="l00414" name="l00414"></a><span class="lineno">  414</span>            <span class="comment">! Check for potential overflow (approximate for 32-bit integer)</span></div>
+<div class="line"><a id="l00415" name="l00415"></a><span class="lineno">  415</span>            <span class="keywordflow">if</span> (val &gt; (huge(val) - digit) / base) <span class="keywordflow">then</span></div>
+<div class="line"><a id="l00416" name="l00416"></a><span class="lineno">  416</span>                is_valid = .false.</div>
+<div class="line"><a id="l00417" name="l00417"></a><span class="lineno">  417</span>                <span class="keywordflow">exit</span></div>
+<div class="line"><a id="l00418" name="l00418"></a><span class="lineno">  418</span><span class="keywordflow">            end if</span></div>
+<div class="line"><a id="l00419" name="l00419"></a><span class="lineno">  419</span> </div>
+<div class="line"><a id="l00420" name="l00420"></a><span class="lineno">  420</span>            <span class="comment">! Accumulate value</span></div>
+<div class="line"><a id="l00421" name="l00421"></a><span class="lineno">  421</span>            val = val * base + digit</div>
+<div class="line"><a id="l00422" name="l00422"></a><span class="lineno">  422</span><span class="keywordflow">        end do</span></div>
+<div class="line"><a id="l00423" name="l00423"></a><span class="lineno">  423</span> </div>
+<div class="line"><a id="l00424" name="l00424"></a><span class="lineno">  424</span>        <span class="comment">! Set success flag if provided</span></div>
+<div class="line"><a id="l00425" name="l00425"></a><span class="lineno">  425</span>        <span class="keywordflow">if</span> (<span class="keyword">present</span>(success)) success = is_valid</div>
+</div>
+<div class="line"><a id="l00426" name="l00426"></a><span class="lineno">  426</span>    <span class="keyword">end function</span></div>
+<div class="line"><a id="l00427" name="l00427"></a><span class="lineno">  427</span><span class="keyword">end module</span></div>
 <div class="ttc" id="agroup__group__constants_html_ga7b898dec94b3f045e17d927b192d313d"><div class="ttname"><a href="group__group__constants.html#ga7b898dec94b3f045e17d927b192d313d">fpx_constants::max_tokens</a></div><div class="ttdeci">integer, parameter, public max_tokens</div><div class="ttdoc">Maximum number of tokens per line, set to 100 for efficient tokenization.</div><div class="ttdef"><b>Definition</b> <a href="constants_8f90_source.html#l00023">constants.f90:23</a></div></div>
 <div class="ttc" id="agroup__group__logging_html_gae355b6081c8a7c696837dd711719c998"><div class="ttname"><a href="group__group__logging.html#gae355b6081c8a7c696837dd711719c998">fpx_logging::verbose</a></div><div class="ttdeci">logical, public verbose</div><div class="ttdoc">Master switch for verbose diagnostic output Default value is .false. (quiet mode)....</div><div class="ttdef"><b>Definition</b> <a href="logging_8f90_source.html#l00056">logging.f90:56</a></div></div>
 <div class="ttc" id="agroup__group__string_html_gae5571ae03556ef6798087ca88b1ffd26"><div class="ttname"><a href="group__group__string.html#gae5571ae03556ef6798087ca88b1ffd26">fpx_string::starts_with</a></div><div class="ttdeci">logical function, public starts_with(str, arg1, idx)</div><div class="ttdoc">Checks if a string starts with a given prefix Returns .true. if the string str (after trimming leadin...</div><div class="ttdef"><b>Definition</b> <a href="string_8f90_source.html#l00484">string.f90:485</a></div></div>

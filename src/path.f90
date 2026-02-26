@@ -140,7 +140,7 @@ contains
 
     !> Returns .true. if the path is rooted (starts with a separator) or is absolute.
     !! A rooted path begins with the platform separator ('\' on Windows, '/' elsewhere)
-    !! even if it is not a full absolute path (e.g. '\temp' on Windows).
+    !! even if it is not a full absolute path (e.g. '/temp' on Linux).
     !!
     !! @param[in] filepath  Path to test
     !! @return res          .true. if filepath is rooted

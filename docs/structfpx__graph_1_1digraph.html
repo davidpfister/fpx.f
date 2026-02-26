@@ -213,6 +213,7 @@ Private Attributes</h2></td></tr>
 <p>Add a directed edge from source → destination Silently ignores invalid indices. Optional <code>exists</code> flag indicates if edge was already present. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">this</td><td>digraph object </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">source</td><td>Source vertex (1-based) </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">destination</td><td>Target vertex (1-based) </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">exists</td><td>(optional) .true. if edge already existed</td></tr>
@@ -247,6 +248,7 @@ Private Attributes</h2></td></tr>
 <p>Check whether a cycle exists in the graph reachable from start_vertex Uses standard DFS with recursion stack (back-edge detection). </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">this</td><td>digraph object </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">start_vertex</td><td>Vertex from which to begin cycle search </td></tr>
   </table>
   </dd>
