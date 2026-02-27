@@ -6,9 +6,9 @@
 module fpx_constants
     implicit none; private
 
-    !> @brief Maximum allowed line length in characters, set to 1024 to handle large input strings or files
+    !> @brief Maximum allowed line length in characters, set to 1000000 to handle large input strings or files
     !! @ingroup group_constants
-    integer, parameter, public :: MAX_LINE_LEN = 1024
+    integer, parameter, public :: MAX_LINE_LEN = 4096
 
     !> @brief Maximum nesting depth for structures, set to 50 to balance flexibility and stack safety
     !! @ingroup group_constants

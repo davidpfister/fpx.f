@@ -278,7 +278,7 @@ contains
 
             if (interactive) then
                 if (line == '') exit
-                uline = uppercase(trim(adjustl(line)))
+                uline = lowercase(trim(adjustl(line)))
                 if (uline == 'QUIT') exit
             end if
             if (ierr /= 0) then
@@ -346,6 +346,8 @@ contains
 
         if (cond_depth > 0) then
             if (verbose) print *, "Error: Unclosed conditional block at end of file ", trim(name)
+        else if (c_continue) then
+            if (verbose) print *, "Error: Unexpected trailing new line '\'."
         end if
     end subroutine
 
@@ -401,40 +403,40 @@ contains
         if (head(trimmed_line) == '#') then
             if (len(trimmed_line) == 1) then
                 return !null directive
-            else if (starts_with(uppercase(adjustl(trimmed_line(2:))), 'DEFINE') .and. active) then
-                call handle_define(trimmed_line, macros, 'DEFINE')
-            else if (starts_with(uppercase(adjustl(trimmed_line(2:))), 'UNDEF') .and. active) then
-                call handle_undef(trimmed_line, macros, 'UNDEF')
-            else if (starts_with(uppercase(adjustl(trimmed_line(2:))), 'WARNING') .and. active) then
-                call handle_warning(trimmed_line, macros, 'WARNING')
-            else if (starts_with(uppercase(adjustl(trimmed_line(2:))), 'ERROR') .and. active) then
-                call handle_error(trimmed_line, macros, 'ERROR')
-            else if (starts_with(uppercase(adjustl(trimmed_line(2:))), 'INCLUDE') .and. active) then
-                call handle_include(trimmed_line, ounit, filepath, linenum, preprocess_unit, macros, 'INCLUDE')
-            else if (starts_with(uppercase(adjustl(trimmed_line(2:))), 'IFDEF')) then
-                call handle_ifdef(trimmed_line, filepath, linenum, macros, 'IFDEF')
-            else if (starts_with(uppercase(adjustl(trimmed_line(2:))), 'IFNDEF')) then
-                call handle_ifndef(trimmed_line, filepath, linenum, macros, 'IFNDEF')
-            else if (starts_with(uppercase(adjustl(trimmed_line(2:))), 'ELIFDEF')) then
-                call handle_elifdef(trimmed_line, filepath, linenum, macros, 'ELIFDEF')
-            else if (starts_with(uppercase(adjustl(trimmed_line(2:))), 'ELIFNDEF')) then
-                call handle_elifndef(trimmed_line, filepath, linenum, macros, 'ELIFNDEF')
-            else if (starts_with(uppercase(adjustl(trimmed_line(2:))), 'IF')) then
-                call handle_if(trimmed_line, filepath, linenum, macros, 'IF')
-            else if (starts_with(uppercase(adjustl(trimmed_line(2:))), 'ELIF')) then
-                call handle_elif(trimmed_line, filepath, linenum, macros, 'ELIF')
-            else if (starts_with(uppercase(adjustl(trimmed_line(2:))), 'ELSE')) then
+            else if (starts_with(lowercase(adjustl(trimmed_line(2:))), 'define') .and. active) then
+                call handle_define(trimmed_line, macros, 'define')
+            else if (starts_with(lowercase(adjustl(trimmed_line(2:))), 'undef') .and. active) then
+                call handle_undef(trimmed_line, macros, 'undef')
+            else if (starts_with(lowercase(adjustl(trimmed_line(2:))), 'warning') .and. active) then
+                call handle_warning(trimmed_line, macros, 'warning')
+            else if (starts_with(lowercase(adjustl(trimmed_line(2:))), 'error') .and. active) then
+                call handle_error(trimmed_line, macros, 'error')
+            else if (starts_with(lowercase(adjustl(trimmed_line(2:))), 'include') .and. active) then
+                call handle_include(trimmed_line, ounit, filepath, linenum, preprocess_unit, macros, 'include')
+            else if (starts_with(lowercase(adjustl(trimmed_line(2:))), 'ifdef')) then
+                call handle_ifdef(trimmed_line, filepath, linenum, macros, 'ifdef')
+            else if (starts_with(lowercase(adjustl(trimmed_line(2:))), 'ifndef')) then
+                call handle_ifndef(trimmed_line, filepath, linenum, macros, 'ifndef')
+            else if (starts_with(lowercase(adjustl(trimmed_line(2:))), 'elifdef')) then
+                call handle_elifdef(trimmed_line, filepath, linenum, macros, 'elifdef')
+            else if (starts_with(lowercase(adjustl(trimmed_line(2:))), 'elifndef')) then
+                call handle_elifndef(trimmed_line, filepath, linenum, macros, 'elifndef')
+            else if (starts_with(lowercase(adjustl(trimmed_line(2:))), 'if')) then
+                call handle_if(trimmed_line, filepath, linenum, macros, 'if')
+            else if (starts_with(lowercase(adjustl(trimmed_line(2:))), 'elif')) then
+                call handle_elif(trimmed_line, filepath, linenum, macros, 'elif')
+            else if (starts_with(lowercase(adjustl(trimmed_line(2:))), 'else')) then
                 call handle_else(filepath, linenum)
-            else if (starts_with(uppercase(adjustl(trimmed_line(2:))), 'ENDIF')) then
+            else if (starts_with(lowercase(adjustl(trimmed_line(2:))), 'endif')) then
                 call handle_endif(filepath, linenum)
-            else if (starts_with(uppercase(adjustl(trimmed_line(2:))), 'PRAGMA') .and. active) then
+            else if (starts_with(lowercase(adjustl(trimmed_line(2:))), 'pragma') .and. active) then
                 rst = trimmed_line
             end if
         else if (active) then
             if (.not. global%expand_macros) then
                 rst = trimmed_line
             else
-                rst = adjustl(expand_all(trimmed_line, macros, filepath, linenum, stch, global%extra_macros))
+                rst = adjustl(expand_all(trimmed_line, macros, filepath, linenum, stch, global%extra_macros, global%implicit_continuation))
                 if (verbose) print *, "Writing to output: '", trim(rst), "'"
             end if
         end if

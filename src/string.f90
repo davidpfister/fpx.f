@@ -11,7 +11,7 @@
 !! - Overloaded operators: `//` (concatenation), `==` (equality), `.contains.` (membership)
 !! - Generic interfaces for `len`, `len_trim`, `trim`
 !! - Full support for formatted I/O (`write`, `print`)
-!! - Helper routines for parsing Fortran source (line continuation, uppercase conversion, etc.)
+!! - Helper routines for parsing Fortran source (line continuation, upper/lower case conversion, etc.)
 !!
 !! The design is intentionally minimal — it provides only what's necessary for
 !! robust string handling in scientific and preprocessing applications,
@@ -73,7 +73,8 @@ module fpx_string
             previous,     &
             concat,       &
             writechk,     &
-            uppercase
+            uppercase,    &
+            lowercase
 
     !> Represents text as a sequence of ASCII code units.
     !!        The derived type wraps an allocatable character array.
@@ -344,7 +345,7 @@ contains
     !! @b Remarks
     elemental function string_eq_string(lhs, rhs) result(res)
         class(string), intent(in) :: lhs  !! Left hand side.
-        type(string), intent(in) :: rhs  !! Right hand side.
+        class(string), intent(in) :: rhs  !! Right hand side.
         logical                   :: res  !! Opreator test result.
 
         if (.not. allocated(lhs%chars)) then
@@ -603,6 +604,50 @@ contains
             if (iquote == 1) cycle
             if (iav >= iachar('a') .and. iav <= iachar('z')) then
                 res(i:i) = achar(iav + ioffset)
+            else
+                res(i:i) = str(i:i)
+            end if
+        end do
+    end function
+    
+    !> Convert string to lower case (respects contents of quotes).
+    !! @param[in] str input string
+    !! @return Lower-case version of the string
+    !!
+    !! @b Examples
+    !! @code
+    !! character(*), parameter :: input = 'TEST'
+    !! character(:), allocatable :: output
+    !! output = lowercase(input)
+    !! if (output == 'test') print*, 'OK'
+    !! @endcode
+    !!
+    !! @b Remarks
+    !! @ingroup group_string
+    pure function lowercase(str) result(res)
+        character(*), intent(in) :: str
+        character(len_trim(str)) :: res
+        !private
+        integer :: ilen, ioffset, iquote, iqc, iav, i
+
+        ilen = len_trim(str)
+        ioffset = iachar('A') - iachar('a')
+        iquote = 0
+        res = str
+        do i = 1, ilen
+            iav = iachar(str(i:i))
+            if (iquote == 0 .and. (iav == 34 .or. iav == 39)) then
+                iquote = 1
+                iqc = iav
+                cycle
+            end if
+            if (iquote == 1 .and. iav == iqc) then
+                iquote = 0
+                cycle
+            end if
+            if (iquote == 1) cycle
+            if (iav >= iachar('A') .and. iav <= iachar('Z')) then
+                res(i:i) = achar(iav - ioffset)
             else
                 res(i:i) = str(i:i)
             end if

@@ -69,7 +69,7 @@ contains
     !!
     !! @param[in]    line    Full source line containing the #define
     !! @param[inout] macros  Current macro table (updated in-place)
-    !! @param[in]    token   Usually 'DEFINE' – keyword matched in uppercase
+    !! @param[in]    token   Usually 'DEFINE' – keyword matched in lowercase
     !!
     !! @b Remarks
     !! @ingroup group_define
@@ -81,7 +81,7 @@ contains
         character(:), allocatable :: val, name, temp
         integer :: pos, paren_start, paren_end, i, npar, imacro
 
-        pos = index(uppercase(line), token) + len(token)
+        pos = index(lowercase(line), token) + len(token)
         temp = trim(adjustl(line(pos + 1:)))
 
         paren_start = index(temp, '(')
@@ -204,7 +204,7 @@ contains
     !! Issues a warning if the macro was not previously defined.
     !! @param[in]    line    Full source line containing the #undef
     !! @param[inout] macros  Current macro table (updated in-place)
-    !! @param[in]    token   Usually 'UNDEF' – keyword matched in uppercase
+    !! @param[in]    token   Usually 'UNDEF' – keyword matched in lowercase
     !!
     !! @b Remarks
     !! @ingroup group_define
@@ -218,7 +218,7 @@ contains
         integer :: i, n, pos
 
         n = sizeof(macros)
-        pos = index(uppercase(line), token) + len(token)
+        pos = index(lowercase(line), token) + len(token)
         name = trim(adjustl(line(pos:)))
         do i = 1, n
             if (macros(i) == name) then

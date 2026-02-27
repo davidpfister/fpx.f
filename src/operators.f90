@@ -64,6 +64,7 @@
 !!    abstract syntax tree or stack-based shunting-yard algorithm, while remaining easy to
 !!    read, maintain, and extend.
 module fpx_operators
+    use fpx_global
     use fpx_string
     use fpx_constants
     use fpx_macro
@@ -600,7 +601,7 @@ contains
             pos = pos + 1
         else if (tokens(pos)%type == 2) then
             if (is_defined(tokens(pos)%value, macros)) then
-                expanded = expand_macros(tokens(pos)%value, macros, stitch)
+                expanded = expand_macros(tokens(pos)%value, macros, stitch, global%implicit_continuation)
                 if (.not. evaluate_expression(expanded, macros, val)) val = 0
                 if (verbose) print *, "Expanded ", trim(tokens(pos)%value), " to ", trim(expanded), ", val = ", val
             else

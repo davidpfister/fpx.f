@@ -41,7 +41,7 @@ contains
     !!
     !! @param[in]    line    Full source line containing the #define
     !! @param[inout] macros  Current macro table (updated in-place)
-    !! @param[in]    token   Usually 'DEFINE' – keyword matched in uppercase
+    !! @param[in]    token   Usually 'DEFINE' – keyword matched in lowercase
     !!
     !! @b Remarks
     !! @ingroup group_diagnostics
@@ -52,7 +52,7 @@ contains
         !private
         integer :: pos
 
-        pos = index(uppercase(line), token) + len(token)
+        pos = index(lowercase(line), token) + len(token)
         error stop trim(adjustl(line(pos + 1:)))
     end subroutine
 
@@ -61,7 +61,7 @@ contains
     !! of the line following ‘#warning’ is printed in the standard output.
     !! @param[in]    line    Full source line containing the #undef
     !! @param[inout] macros  Current macro table (updated in-place)
-    !! @param[in]    token   Usually 'UNDEF' – keyword matched in uppercase
+    !! @param[in]    token   Usually 'UNDEF' – keyword matched in lowercase
     !!
     !! @b Remarks
     !! @ingroup group_diagnostics
@@ -72,7 +72,7 @@ contains
         !private
         integer :: pos
 
-        pos = index(uppercase(line), token) + len(token)
+        pos = index(lowercase(line), token) + len(token)
         write(stdout, '(A)') trim(adjustl(line(pos + 1:)))
     end subroutine
 end module

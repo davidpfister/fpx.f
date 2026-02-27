@@ -21,21 +21,21 @@
 !!    type(macro), allocatable :: macros(:)
 !!    call add(macros, macro('PI', '3.1415926535'))
 !!    call add(macros, macro('MSG(x)', 'print *, ″Hello ″, x'))
-!!    print *, expand_all('area = PI * r**2', macros, 'circle.F90', 10, .false.)
+!!    print *, expand_all('area = PI * r**2', macros, 'circle.F90', 10, stitch, .false.)
 !!    !> prints: area = 3.1415926535 * r**2
 !! @endcode
 !!
 !! 2. Variadic macro with stringification and pasting:
 !! @code{.f90}
 !!    call add(macros, macro('DEBUG_PRINT(...)', 'print *, ″DEBUG[″, __FILE__, ″:″, __LINE__, ″]: ″, __VA_ARGS__'))
-!!    print *, expand_all('DEBUG_PRINT(″value =″, x)', macros, ″test.F90″, 42, .false.)
+!!    print *, expand_all('DEBUG_PRINT(″value =″, x)', macros, ″test.F90″, 42, stitch, .false.)
 !!    !> prints: print *, 'DEBUG[', 'test.F90', ':', 42, ']: ', 'value =', x
 !! @endcode
 !!
 !! 3. Token pasting with ##:
 !! @code{.f90}
 !!    call add(macros, macro('MAKE_VAR(name,num)', 'var_name_##num'))
-!!    print *, expand_all('real :: MAKE_VAR(temp,42)', macros, 'file.F90', 5, .false.)
+!!    print *, expand_all('real :: MAKE_VAR(temp,42)', macros, 'file.F90', 5, stitch, .false.)
 !!    !> prints: real :: var_name_42
 !! @endcode
 module fpx_macro
@@ -187,36 +187,26 @@ contains
     !! @param[in]  iline   Current line number
     !! @param[out] stitch   Set to .true.true. if result ends with '&' (Fortran continuation)
     !! @param[in]  has_extra   Has extra macros (non-standard) like __FILENAME__ and __TIMESTAMP__ 
+    !! @param[in]  implicit_conti If .true., implicit continuation is permitted 
     !! @return Expanded line with all macros and predefined tokens replaced
     !!
     !! @b Remarks
     !! @ingroup group_macro
-    function expand_all(line, macros, filepath, iline, stitch, has_extra) result(expanded)
+    function expand_all(line, macros, filepath, iline, stitch, has_extra, implicit_conti) result(expanded)
         character(*), intent(in)            :: line
         type(macro), intent(in)             :: macros(:)
         character(*), intent(in)            :: filepath
         integer, intent(in)                 :: iline
-        logical, intent(in)                 :: has_extra
         logical, intent(out)                :: stitch
+        logical, intent(in)                 :: has_extra
+        logical, intent(in)                 :: implicit_conti
         character(:), allocatable :: expanded
         !private
         integer :: pos, start, sep, dot
         type(datetime) :: date
 
-        expanded = expand_macros(line, macros, stitch)
+        expanded = expand_macros(line, macros, stitch, implicit_conti)
         date = now()
-        ! Substitute __FILENAME__
-        if (has_extra) then
-            pos = 1
-            do while (pos > 0)
-                pos = index(expanded, '__FILENAME__')
-                if (pos > 0) then
-                    start = pos + len('__FILENAME__')
-                    expanded = trim(expanded(:pos - 1) // '"' // filename(filepath, .true.) // '"' // trim(expanded(start:)))
-                    if (verbose) print *, "Substituted __FILENAME__ with '", trim(filepath), "', expanded: '", trim(expanded), "'"
-                end if
-            end do
-        end if
 
         ! Substitute __FILE__ (relative path to working directory)
         pos = 1
@@ -271,9 +261,18 @@ contains
         end do
 
         if (has_extra) then
+            ! Substitute __FILENAME__
+            pos = 1; do while (pos > 0)
+                pos = index(expanded, '__FILENAME__')
+                if (pos > 0) then
+                    start = pos + len('__FILENAME__')
+                    expanded = trim(expanded(:pos - 1) // '"' // filename(filepath, .true.) // '"' // trim(expanded(start:)))
+                    if (verbose) print *, "Substituted __FILENAME__ with '", trim(filepath), "', expanded: '", trim(expanded), "'"
+                end if
+            end do
+            
             ! Substitute __TIMESTAMP__
-            pos = 1
-            do while (pos > 0)
+            pos = 1; do while (pos > 0)
                 pos = index(expanded, '__TIMESTAMP__')
                 if (pos > 0) then
                     if (pos > 0) then
@@ -301,14 +300,16 @@ contains
     !! @param[in]  line   Input line
     !! @param[in]  macros Current macro table
     !! @param[out] stitch .true. if final line ends with '&'
+    !! @param[in]  implicit_conti If .true., implicit continuation is permitted 
     !! @return Line with user-defined macros expanded (predefined tokens untouched)
     !!
     !! @b Remarks
     !! @ingroup group_macro
-    function expand_macros(line, macros, stitch) result(expanded)
+    function expand_macros(line, macros, stitch, implicit_conti) result(expanded)
         character(*), intent(in)    :: line
         type(macro), intent(in)     :: macros(:)
         logical, intent(out)        :: stitch
+        logical, intent(in)         :: implicit_conti
         character(:), allocatable   :: expanded
         !private
         integer :: imacro, paren_level
@@ -320,7 +321,11 @@ contains
 
         expanded = expand_macros_internal(line, imacro, macros)
 
-        stitch = stitch .or. paren_level > 0
+        if (implicit_conti) then
+            stitch = (tail(expanded) == '&') .or. paren_level > 0
+        else
+            stitch = (tail(expanded) == '&') .and. paren_level > 0
+        end if
     contains
         !> @private
         recursive function expand_macros_internal(line, imacro, macros) result(expanded)
@@ -345,8 +350,7 @@ contains
             if (verbose) print *, "Initial expanded: '", trim(expanded), "'"
 
             do i = 1, size(macros)
-                n = len_trim(macros(i))
-                if (n == 0) cycle
+                n = len_trim(macros(i)); if (n == 0) cycle
                 c = 0
                 do while (c < len_trim(expanded))
                     c = c + 1
@@ -484,8 +488,7 @@ contains
                                                         temp = trim(temp(:pos - 1) // arg_values(j) // trim(temp(start:)))
                                                     end if
                                                     if (verbose) print *, "Substituted param ", j, ": '", macros(i)%params(j), &
-                                                            "' with '", &
-                                                            arg_values(j), "', temp: '", trim(temp), "'"
+                                                            "' with '", arg_values(j), "', temp: '", trim(temp), "'"
                                                 end if
                                             end do wloop
                                         end do jloop
@@ -528,6 +531,11 @@ contains
                                                 end if
 
                                                 ! Concatenate, replacing the full 'token1 ## token2' pattern
+                                                if (is_defined(token1, macros, idx = k)) &
+                                                    token1 = expand_macros_internal(token1, imacro, macros)
+                                                if (is_defined(token2, macros, idx = k)) &
+                                                    token2 = expand_macros_internal(token2, imacro, macros)
+                                                
                                                 temp = trim(prefix // trim(token1) // trim(token2) // suffix)
                                                 if (verbose) print *, "Concatenated '", trim(token1), "' and '", trim(token2), &
                                                         "' to '", trim(token1) // trim(token2), "', temp: '", trim(temp), "'"
@@ -601,68 +609,7 @@ contains
             end do
             pos = index(expanded, '&')
             if (index(expanded, '!') > pos .and. pos > 0) expanded = expanded(:pos + 1)
-            stitch = tail(expanded) == '&'
         end function
-    end function
-
-    !> Detect whether expanding macro at index `idx` would cause a cycle
-    !! Builds a dependency graph from macro replacement texts and checks for circular paths.
-    !! Used during expansion to avoid infinite recursion.
-    !!
-    !! @b Remarks
-    !! @ingroup group_macro
-    logical function is_circular(macros, idx) result(res)
-        type(macro), intent(in) :: macros(:)
-        integer, intent(in)     :: idx
-        !private
-        character(:), allocatable :: expanded
-        integer :: c, i, j, n
-        logical :: isopened, found
-        character :: quote
-        type(digraph) :: graph
-
-        res = .false.
-        if (size(macros) == 0) return
-        isopened = .false.
-
-        graph = digraph(size(macros))
-
-        do j = 1, size(macros)
-            expanded = macros(j)%value
-            do i = 1, size(macros)
-                n = len_trim(macros(i))
-                if (n == 0) cycle
-                c = 0
-                do while (c < len_trim(expanded))
-                    c = c + 1
-                    if (expanded(c:c) == '"' .or. expanded(c:c) == "'") then
-                        if (.not. isopened) then
-                            isopened = .true.
-                            quote = expanded(c:c)
-                        else
-                            if (expanded(c:c) == quote) isopened = .false.
-                        end if
-                    end if
-                    if (isopened) cycle
-                    if (c + n - 1 > len_trim(expanded)) exit
-
-                    found = .false.
-                    if (expanded(c:c + n - 1) == macros(i)) then
-                        found = .true.
-                        if (len_trim(expanded(c:)) > n) then
-                            found = verify(expanded(c + n:c + n), ' ()[]<>&;.,^~!/*-+\="' // "'") == 0
-                        end if
-                    end if
-
-                    if (found) then
-                        expanded(c:c + len_trim(macros(i)) - 1) = ' '
-                        call graph%add_edge(j, i)
-                    end if
-                end do
-            end do
-        end do
-
-        res = graph%is_circular(idx)
     end function
 
     !> Check if a macro with given name exists in table
@@ -731,61 +678,67 @@ contains
     !! Also detects direct self-references (A → A) and marks both sides as cyclic.
     !!
     !! @b Remarks
-    subroutine add_to(vec, val, n, chunk_size, finished)
-        type(macro), allocatable, intent(inout) :: vec(:)
-        type(macro), intent(in)                 :: val
-        integer, intent(inout)                  :: n
-        integer, intent(in)                     :: chunk_size
-        logical, intent(in)                     :: finished
+    subroutine add_to(array, val)
+        type(macro), allocatable, intent(inout) :: array(:)
+        type(macro), intent(in)                 :: val(..)
         !private
         type(macro), allocatable :: tmp(:)
-        integer :: csize, i
+        logical, allocatable :: isdef(:)
+        integer :: i, j, n
 
-        csize = chunk_size
-
-        if (finished) csize = 1
-        if (allocated(vec)) then
-            if (n == size(vec)) then
-                ! have to add another chunk:
-                allocate(tmp(size(vec) + csize))
-                tmp(1:size(vec)) = vec
-                call move_alloc(tmp, vec)
+        n = merge(size(array), 0, allocated(array))
+        
+        select rank(val)
+        rank(0)
+            allocate(isdef(1), source = .false.)
+            do i = 1, n
+                if (array(i) == val) then
+                    array(i) = val
+                    isdef(1) = .true.
+                end if
+            end do
+            if (.not. isdef(1)) then
+                allocate(tmp(n+1))
+                tmp(1:n) = array
+                tmp(n + 1) = val
+                call move_alloc(tmp, array)
+                if (allocated(tmp)) deallocate(tmp)
             end if
-            n = n + 1
-        else
-            ! the first element:
-            allocate(vec(csize))
-            n = 1
-        end if
-
-        vec(n) = val
-        if (finished) then
+        rank(1)
+            allocate(isdef(size(val)), source = .false.)
+            do concurrent (i = 1:n, j = 1:size(val))
+                if (array(i) == val(j)) then
+                    array(i) = val(j)
+                    isdef(j) = .true.
+                end if
+            end do
+            n = merge(size(array), 0, allocated(array)); allocate(tmp(n + count(isdef)))
+            tmp(1:n) = array
+            tmp(n + 1:) = pack(val, isdef)
+            call move_alloc(tmp, array)
             if (allocated(tmp)) deallocate(tmp)
-            if (n /= size(vec)) then
-                allocate(tmp(n), source=vec(1:n))
-                call move_alloc(tmp, vec)
-            end if
-        end if
-
-        do i = 1, size(vec) - 1
-            if (vec(i) == vec(n)%value .and. vec(i)%value == vec(n)) then
-                vec(i)%is_cyclic = .true.
-                vec(n)%is_cyclic = .true.
-            end if
+        rank default
+            error stop 'Unsupported dimension.'
+        end select
+        
+        do i = 1, size(array)
+            do j = n + 1, size(array)
+                if (i == j) cycle
+                if (array(i) == array(j)%value .and. array(i)%value == array(j)) then
+                    array(i)%is_cyclic = .true.
+                end if
+            end do
         end do
     end subroutine
 
     !> Add a complete macro object to the table
     !!
     !! @b Remarks
-    subroutine add_item(this, arg)
+    subroutine add_item(this, m)
         type(macro), intent(inout), allocatable :: this(:)
-        type(macro), intent(in)                 :: arg
-        !private
-        integer :: count
+        type(macro), intent(in)                 :: m
 
-        count = size(this)
-        call add_to(this, arg, count, BUFFER_SIZE, finished=.true.)
+        call add_to(this, m)
     end subroutine
 
     !> Add macro by name only (value = empty)
@@ -794,11 +747,9 @@ contains
     subroutine add_item_from_name(this, name)
         type(macro), intent(inout), allocatable :: this(:)
         character(*), intent(in)                :: name
-        !private
-        integer :: count
+
         if (.not. allocated(this)) allocate(this(0))
-        count = size(this)
-        call add_to(this, macro(name), count, BUFFER_SIZE, finished=.true.)
+        call add_to(this, macro(name))
     end subroutine
 
     !> Add macro with name and replacement text
@@ -808,28 +759,20 @@ contains
         type(macro), intent(inout), allocatable :: this(:)
         character(*), intent(in)                :: name
         character(*), intent(in)                :: value
-        !private
-        integer :: count
 
         if (.not. allocated(this)) allocate(this(0))
-        count = size(this)
-        call add_to(this, macro(name, value), count, BUFFER_SIZE, finished=.true.)
+        call add_to(this, macro(name, value))
     end subroutine
 
     !> Add multiple macros at once
     !!
     !! @b Remarks
-    subroutine add_range(this, args)
+    subroutine add_range(this, m)
         type(macro), intent(inout), allocatable :: this(:)
-        type(macro), intent(in)                 :: args(:)
-        !private
-        integer :: i, n, count
+        type(macro), intent(in)                 :: m(:)
 
         if (.not. allocated(this)) allocate(this(0))
-        n = size(args); count = size(this)
-        do i = 1, n
-            call add_to(this, args(i), count, BUFFER_SIZE, finished=i == n)
-        end do
+        call add_to(this, m)
     end subroutine
 
     !> Remove all macros from table
@@ -861,21 +804,21 @@ contains
     !> Insert macro at specific position
     !!
     !! @b Remarks
-    subroutine insert_item(this, i, arg)
+    subroutine insert_item(this, i, m)
         type(macro), intent(inout), allocatable :: this(:)
         integer, intent(in)                     :: i
-        type(macro), intent(in)                 :: arg
+        type(macro), intent(in)                 :: m
         !private
         integer :: j, count
 
         if (.not. allocated(this)) allocate(this(0))
         count = size(this)
-        call add_to(this, arg, count, BUFFER_SIZE, finished=.true.)
+        call add_to(this, m)
 
         do j = count, i + 1, -1
             this(j) = this(j - 1)
         end do
-        this(i) = arg
+        this(i) = m
     end subroutine
 
     !> Return number of defined macros

@@ -133,7 +133,7 @@ contains
         ! Extract the directory of the parent file
         dir = dirpath(parent_file)
         ! Find the position after the #include token
-        pos = index(uppercase(input), token) + len(token)
+        pos = index(lowercase(input), token) + len(token)
         include_file = trim(adjustl(input(pos:)))
         
         ! Determine include type and extract filename

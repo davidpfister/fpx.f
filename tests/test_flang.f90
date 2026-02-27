@@ -17,6 +17,7 @@ TESTPROGRAM(main)
 #endif
         call getfiles('', files)
 
+        global%implicit_continuation = .true.
         call add(global%macros, macro('__flang_major__','20'))
         call add(global%macros, macro('__flang_minor__','1'))
         call add(global%macros, macro('__flang_patchlevel__','6'))
