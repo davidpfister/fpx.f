@@ -45,6 +45,7 @@ console(main)
         use fpx_macro
         use fpx_parser
         use fpx_string
+        use fpx_os
 
         integer :: i, j, nargs
         character(:), allocatable :: infile, outfile
@@ -54,12 +55,22 @@ console(main)
        character(*), parameter :: version = '0.0.0'
 #endif
 
+        call add(global%macros, macro('__STDF__','1'))
+        call add(global%macros, macro('__FPX__','1'))
+        associate(os => get_os_type())
+            if (os == OS_WINDOWS .or. os == OS_WINDOWSx86) then
+                call add(global%macros, macro('_WIN32'))
+                if (os /= OS_WINDOWSx86) call add(global%macros, macro('_WIN64'))
+            end if
+        end associate
+        
         nargs = size(args)
         i = 1
 
         do while (i <= nargs)
+            if (len(args(i)%chars) < 1) cycle
             if (args(i)%chars(1:1) == '-') then
-                select case(args(i)%chars(2:2))
+                select case(args(i)%chars(2:))
                 case ('D')
                     if (len(args(i)%chars) > 2) then
                         j = index(args(i)%chars(2:), '=')
@@ -79,13 +90,13 @@ console(main)
                     if (len(args(i)%chars) > 2) then
                         global%includedir = [global%includedir, string(args(i)%chars(3:))]
                     end if
-                case ('v')
+                case ('v', '-version')
                     write(*, '(*(A,/))') 'fpx version '//version,     &
                                          'Copyright (C) 2025 davidpfister', &
                                          'This is free software; see the source for copying conditions.  There is NO', &
                                          'warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.'
                     stop 0, quiet = .true.
-                case ('h', '?')
+                case ('h', '?', '-help')
                     write(*, '(*(A,/))') '                              fpx preprocessor help', &
                                          '                             =======================', &
                                          'fpx is a extended preprocessor for modern Fortran in Fortran.', &
@@ -100,7 +111,7 @@ console(main)
                                          '-o                Output file path with name and extension.', &
                                          '-v                Display the version of the program.'
                     stop 0, quiet = .true.
-                case ('o')
+                case ('o', '-output')
                     outfile = args(i)
                 end select
             else
@@ -123,6 +134,14 @@ console(main)
             if (allocated(outfile)) then
                 call preprocess(stdin, trim(outfile))
             else
+                global%interactive = .true.
+
+                write(*, '(A)')
+                write(*, '(A)') '   Welcome to fpx, the extended Fortran preprocessor. '
+                write(*, '(A)') '   The program can be exited at any time by hitting'
+                write(*, '(A)') '   "Enter" at the prompt without entering any data, '
+                write(*, '(A)') '   or with the "quit" command.'
+                write(*, '(A)')
                 call preprocess(stdin, stdout)
             end if
         end if

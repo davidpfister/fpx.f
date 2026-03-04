@@ -60,7 +60,6 @@ module fpx_parser
     use fpx_include
     use fpx_path
     use fpx_global
-    use fpx_os
 
     implicit none; private
 
@@ -217,15 +216,6 @@ contains
         allocate(macros(sizeof(global%macros)), source=global%macros)
         if (.not. allocated(global%undef)) allocate(global%undef(0))
         if (.not. allocated(global%includedir)) allocate(global%includedir(0))
-        
-        call add(global%macros, macro('__STDF__','1'))
-        call add(global%macros, macro('__FPX__','1'))
-        associate(os => get_os_type())
-            if (os == OS_WINDOWS .or. os == OS_WINDOWSx86) then
-                call add(global%macros, macro('_WIN32'))
-                if (os /= OS_WINDOWSx86) call add(global%macros, macro('_WIN64'))
-            end if
-        end associate
 
         cond_depth = 0
         cond_stack(1)%active = .true.
@@ -260,26 +250,14 @@ contains
         logical, intent(in)                     :: from_include
         !private
         integer :: ierr, n
-        character(:), allocatable :: uline
-        logical :: interactive
 
-        interactive = iunit == stdin
-
-        if (interactive) then
-            write(*, *)
-            write(*, *) '   Welcome to fpx, the extended Fortran preprocessor. '
-            write(*, *) '   The program can be exited at any time by hitting'
-            write(*, *) "   'Enter' at the prompt without entering any data, "
-            write(*, *) "   or with the 'quit' command."
-        end if
         do
-            if (interactive) write(*, '(/a)', advance='no') ' [in]  '  ! Command line prompt
+            if (global%interactive) write(*, '(/a)', advance='no') ' [in]  '  ! Command line prompt
             read(iunit, '(A)', iostat=ierr) line
 
-            if (interactive) then
+            if (global%interactive) then
                 if (line == '') exit
-                uline = lowercase(trim(adjustl(line)))
-                if (uline == 'QUIT') exit
+                if (lowercase(trim(adjustl(line))) == 'quit') exit
             end if
             if (ierr /= 0) then
                 if (ierr == iostat_end .and. from_include) f_continue = tail(tmp) == '&'
@@ -337,7 +315,7 @@ contains
                     else
                         res = trim(tmp)
                     end if
-                    if (interactive) write(*, '(/a)', advance='no') ' [out] '  ! Command line prompt
+                    if (global%interactive) write(*, '(/a)', advance='no') ' [out] '  ! Command line prompt
                     write(ounit, '(A)') res
                     res = ''
                 end if

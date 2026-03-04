@@ -84,6 +84,7 @@ module fpx_global
         logical, public                     :: implicit_continuation = .false. !< Boolean controlling implicit continuation line.
         logical, public                     :: line_break = .false. !< Boolean controlling line break with double backslash.
         logical, public                     :: extra_macros = .false. !< Boolean controlling extra (non-standard macro definitions: __FILENAME__, __TIMESTAMP__).
+        logical, public                     :: interactive = .false. !< Boolean controlling whether the program is used in interactive mode (REPL) or not.
     end type
 
     !> @brief The single global instance used throughout fpx
