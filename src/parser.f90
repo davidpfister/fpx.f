@@ -60,6 +60,7 @@ module fpx_parser
     use fpx_include
     use fpx_path
     use fpx_global
+    use fpx_context
 
     implicit none; private
 
@@ -96,7 +97,6 @@ module fpx_parser
     integer :: iline                                    !< Current line number position
     integer :: icontinuation                            !< Continuation position
 
-
 contains
 
     !> Preprocess a file and write result to an optional output file (default: stdout)
@@ -116,7 +116,9 @@ contains
 
         open(newunit=iunit, file=filepath, status='old', action='read', iostat=ierr)
         if (ierr /= 0) then
-            if (verbose) print *, "Error opening input file: ", trim(filepath)
+            print '(A)', render(diagnostic_report(LEVEL_ERROR, &
+                        message = 'Error opening input file: '//trim(filepath)), &
+                        '')
             return
         else
             if (c_associated(getcwd_c(buf, size(buf, kind=c_size_t)))) then
@@ -128,7 +130,9 @@ contains
         if (present(outputfile)) then
             open(newunit=ounit, file=outputfile, status='replace', action='write', iostat=ierr)
             if (ierr /= 0) then
-                if (verbose) print *, "Error opening output file: ", trim(outputfile)
+                print '(A)', render(diagnostic_report(LEVEL_ERROR, &
+                        message = 'Error opening input file: '//trim(outputfile)), &
+                        '')
                 close(iunit)
                 return
             end if
@@ -159,7 +163,9 @@ contains
 
         open(newunit=ounit, file=ofile, status='replace', action='write', iostat=ierr)
         if (ierr /= 0) then
-            if (verbose) print *, "Error opening output file: ", trim(ofile)
+            print '(A)', render(diagnostic_report(LEVEL_ERROR, &
+                        message = 'Error opening input file: '//trim(ofile)), &
+                        '')
             close(iunit)
             return
         end if
@@ -184,7 +190,9 @@ contains
 
         open(newunit=iunit, file=ifile, status='old', action='read', iostat=ierr)
         if (ierr /= 0) then
-            if (verbose) print *, "Error opening input file: ", trim(ifile)
+            print '(A)', render(diagnostic_report(LEVEL_ERROR, &
+                        message = 'Error opening input file: '//trim(ifile)), &
+                        '')
             return
         else
             if (c_associated(getcwd_c(buf, size(buf, kind=c_size_t)))) then
@@ -323,9 +331,15 @@ contains
         end do
 
         if (cond_depth > 0) then
-            if (verbose) print *, "Error: Unclosed conditional block at end of file ", trim(name)
+            print '(A)', render(diagnostic_report(LEVEL_ERROR, &
+                        message = 'Unclosed conditional block at end of file', &
+                        label = label_type(LEVEL_ERROR, 'Missing closing statement', len(trim(line)) - 1, 1)), &
+                        trim(line))
         else if (c_continue) then
-            if (verbose) print *, "Error: Unexpected trailing new line '\'."
+            print '(A)', render(diagnostic_report(LEVEL_ERROR, &
+                        message = 'Unexpected character', &
+                        label = label_type(LEVEL_ERROR, 'Trailing new line "\"', len(trim(line)) - 1, 1)), &
+                        trim(line))
         end if
     end subroutine
 
@@ -358,6 +372,7 @@ contains
         logical :: active
         logical, save :: l_in_comment = .false.
         integer :: idx, comment_start, comment_end, n
+        type(context) :: ctx
 
         trimmed_line = trim(adjustl(current_line))
         rst = ''
@@ -376,46 +391,47 @@ contains
         n = len(trimmed_line); if (n == 0) return
 
         active = is_active()
-        if (verbose) print *, "Processing line ", linenum, ": '", trim(trimmed_line), "'"
-        if (verbose) print *, "is_active() = ", active, ", cond_depth = ", cond_depth
+        ctx = context(trimmed_line, linenum, filepath, filename(filepath))
         if (head(trimmed_line) == '#') then
             if (len(trimmed_line) == 1) then
-                return !null directive
+                return  !null directive
             else if (starts_with(lowercase(adjustl(trimmed_line(2:))), 'define') .and. active) then
-                call handle_define(trimmed_line, macros, 'define')
+                call handle_define(ctx, macros, 'define')
             else if (starts_with(lowercase(adjustl(trimmed_line(2:))), 'undef') .and. active) then
-                call handle_undef(trimmed_line, macros, 'undef')
+                call handle_undef(ctx, macros, 'undef')
             else if (starts_with(lowercase(adjustl(trimmed_line(2:))), 'warning') .and. active) then
-                call handle_warning(trimmed_line, macros, 'warning')
+                call handle_warning(ctx, macros, 'warning')
             else if (starts_with(lowercase(adjustl(trimmed_line(2:))), 'error') .and. active) then
-                call handle_error(trimmed_line, macros, 'error')
+                call handle_error(ctx, macros, 'error')
             else if (starts_with(lowercase(adjustl(trimmed_line(2:))), 'include') .and. active) then
-                call handle_include(trimmed_line, ounit, filepath, linenum, preprocess_unit, macros, 'include')
+                call handle_include(ctx, ounit, preprocess_unit, macros, 'include')
             else if (starts_with(lowercase(adjustl(trimmed_line(2:))), 'ifdef')) then
-                call handle_ifdef(trimmed_line, filepath, linenum, macros, 'ifdef')
+                call handle_ifdef(ctx, macros, 'ifdef')
             else if (starts_with(lowercase(adjustl(trimmed_line(2:))), 'ifndef')) then
-                call handle_ifndef(trimmed_line, filepath, linenum, macros, 'ifndef')
+                call handle_ifndef(ctx, macros, 'ifndef')
             else if (starts_with(lowercase(adjustl(trimmed_line(2:))), 'elifdef')) then
-                call handle_elifdef(trimmed_line, filepath, linenum, macros, 'elifdef')
+                call handle_elifdef(ctx, macros, 'elifdef')
             else if (starts_with(lowercase(adjustl(trimmed_line(2:))), 'elifndef')) then
-                call handle_elifndef(trimmed_line, filepath, linenum, macros, 'elifndef')
+                call handle_elifndef(ctx, macros, 'elifndef')
             else if (starts_with(lowercase(adjustl(trimmed_line(2:))), 'if')) then
-                call handle_if(trimmed_line, filepath, linenum, macros, 'if')
+                call handle_if(ctx, macros, 'if')
             else if (starts_with(lowercase(adjustl(trimmed_line(2:))), 'elif')) then
-                call handle_elif(trimmed_line, filepath, linenum, macros, 'elif')
+                call handle_elif(ctx, macros, 'elif')
             else if (starts_with(lowercase(adjustl(trimmed_line(2:))), 'else')) then
-                call handle_else(filepath, linenum)
+                call handle_else(ctx)
             else if (starts_with(lowercase(adjustl(trimmed_line(2:))), 'endif')) then
-                call handle_endif(filepath, linenum)
+                call handle_endif(ctx)
             else if (starts_with(lowercase(adjustl(trimmed_line(2:))), 'pragma') .and. active) then
-                rst = trimmed_line
+                rst = ctx%content
+            else
+                return
             end if
         else if (active) then
             if (.not. global%expand_macros) then
                 rst = trimmed_line
             else
-                rst = adjustl(expand_all(trimmed_line, macros, filepath, linenum, stch, global%extra_macros, global%implicit_continuation))
-                if (verbose) print *, "Writing to output: '", trim(rst), "'"
+                rst = adjustl(expand_all(trimmed_line, macros, filepath, linenum, stch, global%extra_macros, global%&
+                        implicit_continuation))
             end if
         end if
     end function

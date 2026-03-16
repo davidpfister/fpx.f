@@ -22,13 +22,13 @@
 !! 1. Manual token creation (mostly for testing/debugging):
 !! @code{.f90}
 !!    use fpx_token
-!!    
+!!
 !!    type(token) :: t1, t2, t3
-!!    
+!!
 !!    t1 = token('42',   number)         ! numeric literal
 !!    t2 = token('DEBUG', identifier)    ! macro name
 !!    t3 = token('>',    operator)       ! comparison operator
-!!    
+!!
 !!    print *, 'Token: ', t1%value, ' type=', t1%type   ! → 42 type=0
 !! @endcode
 !!
@@ -56,7 +56,7 @@ module fpx_token
     use fpx_constants, only: MAX_TOKENS
     use fpx_string
     use fpx_logging
-    
+
     implicit none; private
 
     public :: tokenize, &
@@ -64,7 +64,7 @@ module fpx_token
             tokens_enum, &
             unknown, &
             number, &
-            operator, &
+            operation, &
             identifier, &
             parenthesis, &
             defined
@@ -75,13 +75,13 @@ module fpx_token
     enum, bind(c)
         enumerator :: unknown = -1
         enumerator :: number = 0
-        enumerator :: operator = 1
+        enumerator :: operation = 1
         enumerator :: identifier = 2
         enumerator :: parenthesis = 3
         enumerator :: defined = 4
     end enum
 
-    !> @brief Kind parameter for token type enumeration. Values are (`unknown`, `number`, `operator`, `identifier`, `parenthesis`,
+    !> @brief Kind parameter for token type enumeration. Values are (`unknown`, `number`, `operation`, `identifier`, `parenthesis`,
     !! `defined`)
     !! @ingroup group_token
     integer, parameter :: tokens_enum = kind(unknown)
@@ -106,8 +106,9 @@ module fpx_token
     type, public :: token
         character(:), allocatable   :: value  !< Token value
         integer(tokens_enum)        :: type  !< Token type, from the enum @ref tokens_enum.
+        integer                     :: start
     end type
-    
+
     !> Converts a string to integer.
     !! <h2 class="groupheader">Methods</h2>
     !!
@@ -146,7 +147,7 @@ module fpx_token
     end interface
 
 contains
-    
+
     !> Tokenizes a preprocessor expression into an array of token structures.
     !! Handles whitespace, multi-character operators (`&&`, `||`, `==`, etc.),
     !! the `defined` operator (with or without parentheses), numbers in various bases,
@@ -185,7 +186,10 @@ contains
             if (.not. in_word) then
                 ntokens = ntokens + 1
                 if (ntokens > MAX_TOKENS) then
-                    if (verbose) print *, "Error: Too many tokens in expression"
+                    print '(A)', render(diagnostic_report(LEVEL_ERROR, &
+                        message = 'The maximum number of tokens has been reached', &
+                        label = label_type(LEVEL_ERROR, 'Too many tokens in expression.', 1, 1)), &
+                        expr)
                     return
                 end if
                 in_word = .true.
@@ -194,27 +198,32 @@ contains
             if (temp(i:i) == '(' .or. temp(i:i) == ')') then
                 tokens(ntokens)%value = temp(i:i)
                 tokens(ntokens)%type = parenthesis
+                tokens(ntokens)%start = i
                 i = i + 1
                 in_word = .false.
             else if (temp(i:i + 1) == '&&' .or. temp(i:i + 1) == '||' .or. temp(i:i + 1) == '==' .or. &
                         temp(i:i + 1) == '!=' .or. temp(i:i + 1) == '<=' .or. temp(i:i + 1) == '>=') then
                 tokens(ntokens)%value = temp(i:i + 1)
-                tokens(ntokens)%type = operator
+                tokens(ntokens)%type = operation
+                tokens(ntokens)%start = i
                 i = i + 2
                 in_word = .false.
             else if (temp(i:i) == '!') then
                 tokens(ntokens)%value = temp(i:i)
-                tokens(ntokens)%type = operator
+                tokens(ntokens)%type = operation
+                tokens(ntokens)%start = i
                 i = i + 1
                 in_word = .false.
             else if (temp(i:i + 1) == '**') then
                 tokens(ntokens)%value = temp(i:i + 1)
-                tokens(ntokens)%type = operator
+                tokens(ntokens)%type = operation
+                tokens(ntokens)%start = i
                 i = i + 2
                 in_word = .false.
             else if (temp(i:i + 1) == '<<' .or. temp(i:i + 1) == '>>') then
                 tokens(ntokens)%value = temp(i:i + 1)
-                tokens(ntokens)%type = operator
+                tokens(ntokens)%type = operation
+                tokens(ntokens)%start = i
                 i = i + 2
                 in_word = .false.
             else if (temp(i:i) == '<' .or. temp(i:i) == '>' .or. temp(i:i) == '=' .or. &
@@ -222,13 +231,15 @@ contains
                         temp(i:i) == '/' .or. temp(i:i) == '%' .or. &
                         temp(i:i) == '?' .or. temp(i:i) == ':') then
                 tokens(ntokens)%value = temp(i:i)
-                tokens(ntokens)%type = operator
+                tokens(ntokens)%type = operation
+                tokens(ntokens)%start = i
                 i = i + 1
                 in_word = .false.
             else if (temp(i:i) == '&' .or. temp(i:i) == '|' .or. temp(i:i) == '^' .or. &
                         temp(i:i) == '~') then
                 tokens(ntokens)%value = temp(i:i)
-                tokens(ntokens)%type = operator
+                tokens(ntokens)%type = operation
+                tokens(ntokens)%start = i
                 i = i + 1
                 in_word = .false.
             else if (starts_with(temp(i:), 'defined')) then
@@ -244,6 +255,7 @@ contains
                     end do
                     tokens(ntokens)%value = trim(adjustl(temp(i:pos - 1)))
                     tokens(ntokens)%type = defined
+                    tokens(ntokens)%start = i
                     i = pos + 1
                 else
                     pos = i
@@ -252,6 +264,7 @@ contains
                     end do
                     tokens(ntokens)%value = trim(adjustl(temp(i:pos - 1)))
                     tokens(ntokens)%type = defined
+                    tokens(ntokens)%start = i
                     i = pos
                 end if
                 in_word = .false.
@@ -259,6 +272,7 @@ contains
                 pos = i + pos
                 tokens(ntokens)%value = trim(adjustl(temp(i:pos - 1)))
                 tokens(ntokens)%type = number
+                tokens(ntokens)%start = i
                 i = pos
                 in_word = .false.
             else if (is_digit(temp(i:i))) then
@@ -268,6 +282,7 @@ contains
                 end do
                 tokens(ntokens)%value = trim(adjustl(temp(i:pos - 1)))
                 tokens(ntokens)%type = number
+                tokens(ntokens)%start = i
                 i = pos
                 in_word = .false.
             else
@@ -278,14 +293,10 @@ contains
                 end do
                 tokens(ntokens)%value = trim(temp(i:pos - 1))
                 tokens(ntokens)%type = identifier
+                tokens(ntokens)%start = i
                 i = pos
                 in_word = .false.
             end if
-        end do
-
-        if (verbose) print *, "Tokens for '", trim(expr), "':"
-        do i = 1, ntokens
-            if (verbose) print *, "  Token ", i, ": ", trim(tokens(i)%value), " (type ", tokens(i)%type, ")"
         end do
     end subroutine
 
@@ -325,7 +336,7 @@ contains
         if (pos > 0) i = strtol(str(:pos - 1), base, success=res)
         if (base == 10) res = .false.
     end function
-    
+
     !> Implementation of strtol function
     integer function strtol_default(str, success) result(val)
         character(*), intent(in)        :: str

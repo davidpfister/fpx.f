@@ -27,52 +27,53 @@ module fpx_diagnostics
     use fpx_macro
     use fpx_global
     use fpx_string
+    use fpx_context
 
     implicit none; private
 
     public :: handle_error, &
-              handle_warning
+            handle_warning
 
 contains
 
-    !> Process a #error directive. It causes the preprocessor to report a 
-    !! fatal error that stops the preprocessor. The string forming the rest 
+    !> Process a #error directive. It causes the preprocessor to report a
+    !! fatal error that stops the preprocessor. The string forming the rest
     !! of the line following ‘#error’ is printed in the standard error.
     !!
-    !! @param[in]    line    Full source line containing the #define
+    !! @param[in]    ctx     Context source line containing the #define
     !! @param[inout] macros  Current macro table (updated in-place)
     !! @param[in]    token   Usually 'DEFINE' – keyword matched in lowercase
     !!
     !! @b Remarks
     !! @ingroup group_diagnostics
-    subroutine handle_error(line, macros, token)
-        character(*), intent(in)                    :: line
+    subroutine handle_error(ctx, macros, token)
+        type(context), intent(in)                   :: ctx
         type(macro), allocatable, intent(inout)     :: macros(:)
         character(*), intent(in)                    :: token
         !private
         integer :: pos
 
-        pos = index(lowercase(line), token) + len(token)
-        error stop trim(adjustl(line(pos + 1:)))
+        pos = index(lowercase(ctx%content), token) + len(token)
+        error stop trim(adjustl(ctx%content(pos + 1:)))
     end subroutine
 
-    !> Process a #warning directive. It causes the preprocessor to report a 
-    !! warning that does not stop the preprocessor. The string forming the rest 
+    !> Process a #warning directive. It causes the preprocessor to report a
+    !! warning that does not stop the preprocessor. The string forming the rest
     !! of the line following ‘#warning’ is printed in the standard output.
-    !! @param[in]    line    Full source line containing the #undef
+    !! @param[in]    ctx     Context source line containing the #undef
     !! @param[inout] macros  Current macro table (updated in-place)
     !! @param[in]    token   Usually 'UNDEF' – keyword matched in lowercase
     !!
     !! @b Remarks
     !! @ingroup group_diagnostics
-    subroutine handle_warning(line, macros, token)
-        character(*), intent(in)                    :: line
+    subroutine handle_warning(ctx, macros, token)
+        type(context), intent(in)                   :: ctx
         type(macro), allocatable, intent(inout)     :: macros(:)
         character(*), intent(in)                    :: token
         !private
         integer :: pos
 
-        pos = index(lowercase(line), token) + len(token)
-        write(stdout, '(A)') trim(adjustl(line(pos + 1:)))
+        pos = index(lowercase(ctx%content), token) + len(token)
+        write(stdout, '(A)') trim(adjustl(ctx%content(pos + 1:)))
     end subroutine
 end module

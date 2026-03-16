@@ -53,6 +53,7 @@ module fpx_define
     use fpx_macro
     use fpx_string
     use fpx_global
+    use fpx_context
 
     implicit none; private
 
@@ -67,22 +68,22 @@ contains
     !! and stores the macro in the active macro table. Existing macros are
     !! overwritten. Respects `global%undef` list – macros listed there are ignored.
     !!
-    !! @param[in]    line    Full source line containing the #define
+    !! @param[in]    ctx     Context source line containing the #define
     !! @param[inout] macros  Current macro table (updated in-place)
     !! @param[in]    token   Usually 'DEFINE' – keyword matched in lowercase
     !!
     !! @b Remarks
     !! @ingroup group_define
-    subroutine handle_define(line, macros, token)
-        character(*), intent(in)                    :: line
+    subroutine handle_define(ctx, macros, token)
+        type(context), intent(in)                   :: ctx
         type(macro), allocatable, intent(inout)     :: macros(:)
         character(*), intent(in)                    :: token
         !private
         character(:), allocatable :: val, name, temp
         integer :: pos, paren_start, paren_end, i, npar, imacro
 
-        pos = index(lowercase(line), token) + len(token)
-        temp = trim(adjustl(line(pos + 1:)))
+        pos = index(lowercase(ctx%content), token) + len(token)
+        temp = trim(adjustl(ctx%content(pos + 1:)))
 
         paren_start = index(temp, '(')
         pos = index(temp, ' ')
@@ -94,12 +95,10 @@ contains
             if (global%undef .contains. name) return
             paren_end = index(temp, ')')
             if (paren_end == 0) then
-                if (verbose) print *, "Error: Unclosed parenthesis in macro definition: ", trim(line)
+                if (verbose) print *, "Error: Unclosed parenthesis in macro definition: ", trim(ctx%content)
                 return
             end if
             val = trim(adjustl(temp(paren_end + 1:)))
-            if (verbose) print *, "Raw value before allocation: ", val, ", length = ", len(val)
-
             temp = temp(paren_start + 1:paren_end - 1)
             npar = 0
             pos = 1
@@ -114,8 +113,10 @@ contains
             if (.not. allocated(macros)) allocate(macros(0))
 
             if (name == 'defined') then
-                if (verbose) print *, '"defined" cannot be used a a macro name'
-                return
+                print '(A)', render(diagnostic_report(LEVEL_ERROR, &
+                        message = '"defined" cannot be used a a macro name', &
+                        label = label_type(LEVEL_ERROR, '', index(ctx%content, 'defined', back=.true.), len('defined'))), &
+                        trim(ctx%content))
             end if
 
             if (.not. is_defined(name, macros, imacro)) then
@@ -142,13 +143,9 @@ contains
                         pos = pos + 1
                     end do
                     macros(imacro)%params(i) = temp(paren_start:pos - 1)
-                    if (verbose) print *, "Param ", i, ": '", macros(imacro)%params(i), &
-                            "', length = ", len_trim(macros(imacro)%params(i))
                     i = i + 1
                     pos = pos + 1
                 end do
-                if (verbose) print *, "Defined variadic macro: ", trim(name), &
-                        "(", (macros(imacro)%params(i) // ", ", i = 1, npar), "...) = ", trim(val)
             else
                 macros(imacro)%is_variadic = .false.
                 if (allocated(macros(imacro)%params)) deallocate(macros(imacro)%params)
@@ -166,15 +163,11 @@ contains
                         if (pos > len_trim(temp)) exit
                     end do
                     macros(imacro)%params(i) = temp(paren_start:pos - 1)
-                    if (verbose) print *, "Param ", i, ": '", trim(macros(imacro)%params(i)), &
-                            "', length = ", len_trim(macros(imacro)%params(i))
                     i = i + 1
                     if (pos <= len_trim(temp)) then
                         if (temp(pos:pos) == ',') pos = pos + 1
                     end if
                 end do
-                if (verbose) print *, "Defined macro: ", trim(name), "(", (macros(imacro)%params(i) // ", ", i = 1, npar - 1), &
-                        macros(imacro)%params(npar), ") = ", trim(val)
             end if
         else
             pos = index(temp, ' ')
@@ -194,22 +187,20 @@ contains
             else
                 macros(imacro) = macro(name, val)
             end if
-
-            if (verbose) print *, "Defined macro: ", trim(name), " = ", trim(val)
         end if
     end subroutine
 
     !> Process a #undef directive and remove a macro from the table
     !! Finds the named macro in the current table and removes it.
     !! Issues a warning if the macro was not previously defined.
-    !! @param[in]    line    Full source line containing the #undef
+    !! @param[in]    ctx     Context source line containing the #undef
     !! @param[inout] macros  Current macro table (updated in-place)
     !! @param[in]    token   Usually 'UNDEF' – keyword matched in lowercase
     !!
     !! @b Remarks
     !! @ingroup group_define
-    subroutine handle_undef(line, macros, token)
-        character(*), intent(in)                    :: line
+    subroutine handle_undef(ctx, macros, token)
+        type(context), intent(in)                   :: ctx
         type(macro), allocatable, intent(inout)     :: macros(:)
         character(*), intent(in)                    :: token
         !private
@@ -218,11 +209,11 @@ contains
         integer :: i, n, pos
 
         n = sizeof(macros)
-        pos = index(lowercase(line), token) + len(token)
-        name = trim(adjustl(line(pos:)))
+        pos = index(lowercase(ctx%content), token) + len(token)
+        name = trim(adjustl(ctx%content(pos:)))
         do i = 1, n
             if (macros(i) == name) then
-                if (verbose) print *, "Undefining macro: ", name
+                if (verbose) print *, "Warning: Undefining macro: ", name
                 call remove(macros, i)
                 exit
             end if

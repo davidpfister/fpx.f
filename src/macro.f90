@@ -186,8 +186,8 @@ contains
     !! @param[in]  filepath Current source file path
     !! @param[in]  iline   Current line number
     !! @param[out] stitch   Set to .true.true. if result ends with '&' (Fortran continuation)
-    !! @param[in]  has_extra   Has extra macros (non-standard) like __FILENAME__ and __TIMESTAMP__ 
-    !! @param[in]  implicit_conti If .true., implicit continuation is permitted 
+    !! @param[in]  has_extra   Has extra macros (non-standard) like __FILENAME__ and __TIMESTAMP__
+    !! @param[in]  implicit_conti If .true., implicit continuation is permitted
     !! @return Expanded line with all macros and predefined tokens replaced
     !!
     !! @b Remarks
@@ -215,7 +215,6 @@ contains
             if (pos > 0) then
                 start = pos + len('__FILE__')
                 expanded = trim(expanded(:pos - 1) // '"' // trim(filepath) // '"' // trim(expanded(start:)))
-                if (verbose) print *, "Substituted __FILE__ with '", trim(filepath), "', expanded: '", trim(expanded), "'"
             end if
         end do
 
@@ -227,7 +226,6 @@ contains
                 if (pos > 0) then
                     start = pos + len('__LINE__')
                     expanded = trim(expanded(:pos - 1) // tostring(iline) // trim(expanded(start:)))
-                    if (verbose) print *, "Substituted __LINE__ with '", iline, "', expanded: '", trim(expanded), "'"
                 end if
             end if
         end do
@@ -240,8 +238,6 @@ contains
                 if (pos > 0) then
                     start = pos + len('__DATE__')
                     expanded = trim(expanded(:pos - 1) // '"' // date%to_string('MMM-dd-yyyy') // '"' // trim(expanded(start:)))
-                    if (verbose) print *, "Substituted __DATE__ with '", date%to_string('MMM-dd-yyyy'), "', expanded: '", trim(&
-                            expanded), "'"
                 end if
             end if
         end do
@@ -254,8 +250,6 @@ contains
                 if (pos > 0) then
                     start = pos + len('__TIME__')
                     expanded = trim(expanded(:pos - 1) // '"' // date%to_string('HH:mm:ss') // '"' // trim(expanded(start:)))
-                    if (verbose) print *, "Substituted __TIME__ with '", date%to_string('HH:mm:ss'), "', expanded: '", trim(&
-                            expanded), "'"
                 end if
             end if
         end do
@@ -267,20 +261,18 @@ contains
                 if (pos > 0) then
                     start = pos + len('__FILENAME__')
                     expanded = trim(expanded(:pos - 1) // '"' // filename(filepath, .true.) // '"' // trim(expanded(start:)))
-                    if (verbose) print *, "Substituted __FILENAME__ with '", trim(filepath), "', expanded: '", trim(expanded), "'"
                 end if
             end do
-            
+
             ! Substitute __TIMESTAMP__
             pos = 1; do while (pos > 0)
                 pos = index(expanded, '__TIMESTAMP__')
                 if (pos > 0) then
                     if (pos > 0) then
                         start = pos + len('__TIMESTAMP__')
-                        expanded = trim(expanded(:pos - 1) // '"' // date%to_string('ddd MM yyyy') // ' ' // date%to_string('HH:mm:ss'&
+                        expanded = trim(expanded(:pos - 1) // '"' // date%to_string('ddd MM yyyy') // ' ' // date%to_string(&
+                                'HH:mm:ss'&
                                 &) // '"' // trim(expanded(start:)))
-                        if (verbose) print *, "Substituted __TIMESTAMP__ with '", date%to_string('ddd MM yyyy') // ' ' // date%&
-                                to_string('HH:mm:ss'), "', expanded: '", trim(expanded), "'"
                     end if
                 end if
             end do
@@ -300,7 +292,7 @@ contains
     !! @param[in]  line   Input line
     !! @param[in]  macros Current macro table
     !! @param[out] stitch .true. if final line ends with '&'
-    !! @param[in]  implicit_conti If .true., implicit continuation is permitted 
+    !! @param[in]  implicit_conti If .true., implicit continuation is permitted
     !! @return Line with user-defined macros expanded (predefined tokens untouched)
     !!
     !! @b Remarks
@@ -347,7 +339,6 @@ contains
             expanded = line
             if (size(macros) == 0) return
             isopened = .false.
-            if (verbose) print *, "Initial expanded: '", trim(expanded), "'"
 
             do i = 1, size(macros)
                 n = len_trim(macros(i)); if (n == 0) cycle
@@ -402,7 +393,6 @@ contains
                                     end do
                                     m_end = j - 1
                                     args_str = expanded(start:m_end)
-                                    if (verbose) print *, "Expanding macro: ", macros(i), ", args: ", trim(args_str)
                                     temp = trim(macros(i)%value)
 
                                     if (macros(i)%is_variadic) then
@@ -415,7 +405,6 @@ contains
                                             if (j > size(macros(i)%params) + 1) va_args = va_args // ', '
                                             va_args = va_args // arg_values(j)
                                         end do
-                                        if (verbose) print *, "__VA_ARGS__: '", trim(va_args), "'"
                                     else if (nargs /= size(macros(i)%params)) then
                                         if (verbose) print *, "Error: Incorrect number of arguments for macro ", macros(i)
                                         cycle
@@ -487,8 +476,6 @@ contains
                                                     else
                                                         temp = trim(temp(:pos - 1) // arg_values(j) // trim(temp(start:)))
                                                     end if
-                                                    if (verbose) print *, "Substituted param ", j, ": '", macros(i)%params(j), &
-                                                            "' with '", arg_values(j), "', temp: '", trim(temp), "'"
                                                 end if
                                             end do wloop
                                         end do jloop
@@ -531,14 +518,12 @@ contains
                                                 end if
 
                                                 ! Concatenate, replacing the full 'token1 ## token2' pattern
-                                                if (is_defined(token1, macros, idx = k)) &
-                                                    token1 = expand_macros_internal(token1, imacro, macros)
-                                                if (is_defined(token2, macros, idx = k)) &
-                                                    token2 = expand_macros_internal(token2, imacro, macros)
-                                                
+                                                if (is_defined(token1, macros, idx=k)) &
+                                                        token1 = expand_macros_internal(token1, imacro, macros)
+                                                if (is_defined(token2, macros, idx=k)) &
+                                                        token2 = expand_macros_internal(token2, imacro, macros)
+
                                                 temp = trim(prefix // trim(token1) // trim(token2) // suffix)
-                                                if (verbose) print *, "Concatenated '", trim(token1), "' and '", trim(token2), &
-                                                        "' to '", trim(token1) // trim(token2), "', temp: '", trim(temp), "'"
                                             end if
                                         end do
                                     end block
@@ -557,8 +542,7 @@ contains
                                                     else
                                                         temp = trim(temp(:pos - 1) // trim(va_args) // trim(temp(start + 1:)))
                                                     end if
-                                                    if (verbose) print *, "Substituted __VA_ARGS__ with '", trim(va_args), &
-                                                            "', temp: '", trim(temp), "'"
+
                                                     ! Substitute __VA_OPT__
                                                     pos = index(temp, '__VA_OPT__')
                                                     if (pos > 0) then
@@ -575,20 +559,14 @@ contains
                                         end if
                                     end block
 
-                                    if (verbose) print *, "Before recursive call, temp: '", trim(temp), "'"
                                     call graph%add_edge(imacro, i)
                                     if (.not. graph%is_circular(i)) then
                                         temp = expand_macros_internal(temp, i, macros)  ! Only for nested macros
                                     else
-                                        if (verbose) print *, "Circular macro detected: '", macros(i), "'"
+                                        if (verbose) print *, "Error: Circular macro detected: '", macros(i), "'"
                                         cycle
                                     end if
-                                    if (verbose) print *, "After recursive call, temp: '", trim(temp), "'"
-                                    if (verbose) print *, "Prefix: '", trim(expanded(:m_start - 1)), "'"
-                                    if (verbose) print *, "Temp: '", trim(temp), "'"
-                                    if (verbose) print *, "Suffix: '", trim(expanded(m_end + 1:)), "'"
                                     expanded = trim(expanded(:m_start - 1) // trim(temp) // expanded(m_end + 1:))
-                                    if (verbose) print *, "After substitution, expanded: '", trim(expanded), "'"
                                 end if
                             end if
                         else
@@ -599,10 +577,9 @@ contains
                                 expanded = trim(expanded(:m_start - 1) // trim(temp) // expanded(m_end + 1:))
                                 expanded = expand_macros_internal(expanded, imacro, macros)
                             else
-                                if (verbose) print *, "Circular macro detected: '", macros(i), "'"
+                                if (verbose) print *, "Error: Circular macro detected: '", macros(i), "'"
                                 cycle
                             end if
-                            if (verbose) print *, "Simple macro expanded: '", trim(expanded), "'"
                         end if
                     end if
                 end do
@@ -687,10 +664,10 @@ contains
         integer :: i, j, n
 
         n = merge(size(array), 0, allocated(array))
-        
-        select rank(val)
+
+        select rank (val)
         rank(0)
-            allocate(isdef(1), source = .false.)
+            allocate(isdef(1), source=.false.)
             do i = 1, n
                 if (array(i) == val) then
                     array(i) = val
@@ -698,14 +675,14 @@ contains
                 end if
             end do
             if (.not. isdef(1)) then
-                allocate(tmp(n+1))
+                allocate(tmp(n + 1))
                 tmp(1:n) = array
                 tmp(n + 1) = val
                 call move_alloc(tmp, array)
                 if (allocated(tmp)) deallocate(tmp)
             end if
         rank(1)
-            allocate(isdef(size(val)), source = .false.)
+            allocate(isdef(size(val)), source=.false.)
             do concurrent (i = 1:n, j = 1:size(val))
                 if (array(i) == val(j)) then
                     array(i) = val(j)
@@ -720,7 +697,7 @@ contains
         rank default
             error stop 'Unsupported dimension.'
         end select
-        
+
         do i = 1, size(array)
             do j = n + 1, size(array)
                 if (i == j) cycle

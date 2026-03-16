@@ -43,6 +43,7 @@ console(main)
                                                  stderr => error_unit, &
                                                  stdin => input_unit
         use fpx_macro
+        use fpx_logging, only: nocolor
         use fpx_parser
         use fpx_string
         use fpx_os
@@ -113,6 +114,8 @@ console(main)
                     stop 0, quiet = .true.
                 case ('o', '-output')
                     outfile = args(i)
+                case ('-no-color')
+                    nocolor = .true.
                 end select
             else
                 if (allocated(infile)) then

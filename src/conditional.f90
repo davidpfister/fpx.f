@@ -9,7 +9,6 @@
 !! - Proper nesting up to `MAX_COND_DEPTH` levels
 !! - Correct "first-match" semantics — once a branch is taken, later `#elif`/`#else` are skipped
 !! - Integration with macro expansion via `is_defined()` and expression evaluator
-!! - Comprehensive diagnostics when `verbose = .true.`
 !!
 !! The state is maintained in a global stack (`cond_stack`) with `cond_depth` tracking nesting.
 !! The function `is_active()` is used throughout the preprocessor to decide whether a line
@@ -63,6 +62,7 @@ module fpx_conditional
     use fpx_string
     use fpx_macro, only: macro, is_defined
     use fpx_operators, only: evaluate_expression
+    use fpx_context
 
     implicit none; private
 
@@ -123,17 +123,14 @@ contains
     !> Process a #if directive with constant expression evaluation
     !! Evaluates the expression after #if using `evaluate_expression()` and pushes
     !! a new state onto the conditional stack.
-    !! @param[in] line      Full source line containing the directive
-    !! @param[in] filename  Current file (for error messages)
-    !! @param[in] line_num  Line number (for error messages)
+    !! @param[in] ctx       Context source line containing the directive
     !! @param[in] macros    Current macro table
     !! @param[in] token     Usually 'IF'
     !!
     !! @b Remarks
     !! @ingroup group_conditional
-    subroutine handle_if(line, filename, line_num, macros, token)
-        character(*), intent(in)    :: line, filename
-        integer, intent(in)         :: line_num
+    subroutine handle_if(ctx, macros, token)
+        type(context), intent(in)   :: ctx
         type(macro), intent(in)     :: macros(:)
         character(*), intent(in)    :: token
         !private
@@ -142,35 +139,28 @@ contains
         integer :: pos
 
         if (cond_depth + 1 > MAX_COND_DEPTH) then
-            if (verbose) print *, "Error: Conditional nesting too deep at ", trim(filename), ":", line_num
+            if (verbose) print *, "Error: Conditional nesting too deep at ", trim(ctx%path), ":", ctx%line
             return
         end if
 
-        pos = index(lowercase(line), token) + len(token)
-        expr = trim(adjustl(line(pos:)))
-        if (verbose) print *, "Evaluating #if: '", trim(expr), "'"
+        pos = index(lowercase(ctx%content), token) + len(token)
+        expr = trim(adjustl(ctx%content(pos:)))
         result = evaluate_expression(expr, macros)
         parent_active = is_active()
         cond_depth = cond_depth + 1
         cond_stack(cond_depth + 1)%active = result .and. parent_active
         cond_stack(cond_depth + 1)%has_met = result
-        if (verbose) print *, "#if result: ", result, ", cond_depth = ", cond_depth, ", active = ", cond_stack(cond_depth + 1)%&
-                active
     end subroutine
 
     !> Process #ifdef – test if a macro is defined
-    !! @param[in] line      Full source line containing the directive
-    !! @param[in] filename  Current file (for error messages)
-    !! @param[in] line_num  Line number (for error messages)
+    !! @param[in] ctx       Context source line containing the directive
     !! @param[in] macros    Current macro table
     !! @param[in] token     Usually 'IFDEF'
     !!
     !! @b Remarks
     !! @ingroup group_conditional
-    subroutine handle_ifdef(line, filename, line_num, macros, token)
-        character(*), intent(in)        :: line
-        character(*), intent(in)        :: filename
-        integer, intent(in)             :: line_num
+    subroutine handle_ifdef(ctx, macros, token)
+        type(context), intent(in)       :: ctx
         type(macro), intent(in)         :: macros(:)
         character(*), intent(in)        :: token
         !private
@@ -179,12 +169,12 @@ contains
         integer :: pos
 
         if (cond_depth + 1 > MAX_COND_DEPTH) then
-            if (verbose) print *, "Error: Conditional nesting too deep at ", trim(filename), ":", line_num
+            if (verbose) print *, "Error: Conditional nesting too deep at ", trim(ctx%path), ":", ctx%line
             return
         end if
 
-        pos = index(lowercase(line), token) + len(token)
-        name = trim(adjustl(line(pos:)))
+        pos = index(lowercase(ctx%content), token) + len(token)
+        name = trim(adjustl(ctx%content(pos:)))
         defined = is_defined(name, macros)
         parent_active = is_active()
         cond_depth = cond_depth + 1
@@ -193,18 +183,14 @@ contains
     end subroutine
 
     !> Process #ifndef – test if a macro is NOT defined
-    !! @param[in] line      Full source line containing the directive
-    !! @param[in] filename  Current file (for error messages)
-    !! @param[in] line_num  Line number (for error messages)
+    !! @param[in] ctx       Context source line containing the directive
     !! @param[in] macros    Current macro table
     !! @param[in] token     Usually 'IFNDEF'
     !!
     !! @b Remarks
     !! @ingroup group_conditional
-    subroutine handle_ifndef(line, filename, line_num, macros, token)
-        character(*), intent(in)        :: line
-        character(*), intent(in)        :: filename
-        integer, intent(in)             :: line_num
+    subroutine handle_ifndef(ctx, macros, token)
+        type(context), intent(in)       :: ctx
         type(macro), intent(in)         :: macros(:)
         character(*), intent(in)        :: token
         !private
@@ -213,12 +199,12 @@ contains
         integer :: pos
 
         if (cond_depth + 1 > MAX_COND_DEPTH) then
-            if (verbose) print *, "Error: Conditional nesting too deep at ", trim(filename), ":", line_num
+            if (verbose) print *, "Error: Conditional nesting too deep at ", trim(ctx%path), ":", ctx%line
             return
         end if
 
-        pos = index(lowercase(line), token) + len(token)
-        name = trim(adjustl(line(pos:)))
+        pos = index(lowercase(ctx%content), token) + len(token)
+        name = trim(adjustl(ctx%content(pos:)))
         defined = is_defined(name, macros)
         parent_active = is_active()
         cond_depth = cond_depth + 1
@@ -228,17 +214,14 @@ contains
 
     !> Process #elif – alternative branch after #if/#elif
     !! Only activates if no previous branch in the group was taken.
-    !! @param[in] line      Full source line containing the directive
-    !! @param[in] filename  Current file (for error messages)
-    !! @param[in] line_num  Line number (for error messages)
+    !! @param[in] ctx       Context source line containing the directive
     !! @param[in] macros    Current macro table
     !! @param[in] token     Usually 'ELIF'
     !!
     !! @b Remarks
     !! @ingroup group_conditional
-    subroutine handle_elif(line, filename, line_num, macros, token)
-        character(*), intent(in)    :: line, filename
-        integer, intent(in)         :: line_num
+    subroutine handle_elif(ctx, macros, token)
+        type(context), intent(in)   :: ctx
         type(macro), intent(in)     :: macros(:)
         character(*), intent(in)    :: token
         !private
@@ -247,12 +230,12 @@ contains
         integer :: pos
 
         if (cond_depth == 0) then
-            if (verbose) print *, "Error: #elif without matching #if at ", trim(filename), ":", line_num
+            if (verbose) print *, "Error: #elif without matching #if at ", trim(ctx%path), ":", ctx%line
             return
         end if
 
-        pos = index(lowercase(line), token) + len(token)
-        expr = trim(adjustl(line(pos:)))
+        pos = index(lowercase(ctx%content), token) + len(token)
+        expr = trim(adjustl(ctx%content(pos:)))
         result = evaluate_expression(expr, macros)
         parent_active = cond_depth == 0 .or. cond_stack(cond_depth)%active
         if (.not. cond_stack(cond_depth + 1)%has_met) then
@@ -262,20 +245,16 @@ contains
             cond_stack(cond_depth + 1)%active = .false.
         end if
     end subroutine
-    
+
     !> Process #elifdef – test if a macro is defined
-    !! @param[in] line      Full source line containing the directive
-    !! @param[in] filename  Current file (for error messages)
-    !! @param[in] line_num  Line number (for error messages)
+    !! @param[in] ctx       Context source line containing the directive
     !! @param[in] macros    Current macro table
     !! @param[in] token     Usually 'ELIFDEF'
     !!
     !! @b Remarks
     !! @ingroup group_conditional
-    subroutine handle_elifdef(line, filename, line_num, macros, token)
-        character(*), intent(in)        :: line
-        character(*), intent(in)        :: filename
-        integer, intent(in)             :: line_num
+    subroutine handle_elifdef(ctx, macros, token)
+        type(context), intent(in)       :: ctx
         type(macro), intent(in)         :: macros(:)
         character(*), intent(in)        :: token
         !private
@@ -284,12 +263,12 @@ contains
         integer :: pos
 
         if (cond_depth == 0) then
-            if (verbose) print *, "Error: #elifdef without matching #if at ", trim(filename), ":", line_num
+            if (verbose) print *, "Error: #elifdef without matching #if at ", trim(ctx%path), ":", ctx%line
             return
         end if
 
-        pos = index(lowercase(line), token) + len(token)
-        name = trim(adjustl(line(pos:)))
+        pos = index(lowercase(ctx%content), token) + len(token)
+        name = trim(adjustl(ctx%content(pos:)))
         defined = is_defined(name, macros)
         parent_active = cond_depth == 0 .or. cond_stack(cond_depth)%active
         if (.not. cond_stack(cond_depth + 1)%has_met) then
@@ -299,20 +278,16 @@ contains
             cond_stack(cond_depth + 1)%active = .false.
         end if
     end subroutine
-    
+
     !> Process #elifndef – test if a macro is not defined
-    !! @param[in] line      Full source line containing the directive
-    !! @param[in] filename  Current file (for error messages)
-    !! @param[in] line_num  Line number (for error messages)
+    !! @param[in] ctx       Context source line containing the directive
     !! @param[in] macros    Current macro table
     !! @param[in] token     Usually 'ELIFNDEF'
     !!
     !! @b Remarks
     !! @ingroup group_conditional
-    subroutine handle_elifndef(line, filename, line_num, macros, token)
-        character(*), intent(in)        :: line
-        character(*), intent(in)        :: filename
-        integer, intent(in)             :: line_num
+    subroutine handle_elifndef(ctx, macros, token)
+        type(context), intent(in)       :: ctx
         type(macro), intent(in)         :: macros(:)
         character(*), intent(in)        :: token
         !private
@@ -321,12 +296,12 @@ contains
         integer :: pos
 
         if (cond_depth == 0) then
-            if (verbose) print *, "Error: #elifndef without matching #if at ", trim(filename), ":", line_num
+            if (verbose) print *, "Error: #elifndef without matching #if at ", trim(ctx%path), ":", ctx%line
             return
         end if
 
-        pos = index(lowercase(line), token) + len(token)
-        name = trim(adjustl(line(pos:)))
+        pos = index(lowercase(ctx%content), token) + len(token)
+        name = trim(adjustl(ctx%content(pos:)))
         defined = is_defined(name, macros)
         parent_active = cond_depth == 0 .or. cond_stack(cond_depth)%active
         if (.not. cond_stack(cond_depth + 1)%has_met) then
@@ -339,18 +314,17 @@ contains
 
     !> Process #else – final fallback branch
     !! Activates only if no previous #if/#elif branch was true.
-    !! @param[in] filename  Current file (for error messages)
-    !! @param[in] line_num  Line number (for error messages)
+    !! @param[in] ctx  Context (for error messages)
     !!
     !! @b Remarks
     !! @ingroup group_conditional
-    subroutine handle_else(filename, line_num)
-        character(*), intent(in) :: filename
-        integer, intent(in) :: line_num
+    subroutine handle_else(ctx)
+        type(context), intent(in) :: ctx
+        !private
         logical :: parent_active
 
         if (cond_depth == 0) then
-            if (verbose) print *, "Error: #else without matching #if at ", trim(filename), ":", line_num
+            if (verbose) print *, "Error: #else without matching #if at ", trim(ctx%path), ":", ctx%line
             return
         end if
 
@@ -361,26 +335,21 @@ contains
         else
             cond_stack(cond_depth + 1)%active = .false.
         end if
-        if (verbose) print *, "#else at depth ", cond_depth, ", active = ", cond_stack(cond_depth + 1)%active
     end subroutine
 
     !> Process #endif – end of conditional block
     !! Pops the top state from the stack. Reports error on unmatched #endif.
-    !! @param[in] filename  Current file (for error messages)
-    !! @param[in] line_num  Line number (for error messages)
+    !! @param[in] ctx  Context (for error messages)
     !!
     !! @b Remarks
     !! @ingroup group_conditional
-    subroutine handle_endif(filename, line_num)
-        character(*), intent(in) :: filename
-        integer, intent(in) :: line_num
+    subroutine handle_endif(ctx)
+        type(context), intent(in) :: ctx
 
         if (cond_depth == 0) then
-            if (verbose) print *, "Error: #endif without matching #if at ", trim(filename), ":", line_num
+            if (verbose) print *, "Error: #endif without matching #if at ", trim(ctx%path), ":", ctx%line
             return
         end if
-
-        if (verbose) print *, "#endif at depth ", cond_depth
         cond_depth = cond_depth - 1
     end subroutine
 

@@ -609,7 +609,7 @@ contains
             end if
         end do
     end function
-    
+
     !> Convert string to lower case (respects contents of quotes).
     !! @param[in] str input string
     !! @return Lower-case version of the string
