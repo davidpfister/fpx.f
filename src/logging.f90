@@ -55,8 +55,8 @@
 !!    print '(a)', render(diagnostic_report(level_error, &
 !!       message="duplicated key 'title' found", &
 !!       source="example.toml", &
-!!       label=[label_type(level_error, "table 'title' redefined here", 19, 2, 5, .true.), &
-!!              label_type(level_error, "first defined here", 2, 1, 5)]), &
+!!       label=[label_type("table 'title' redefined here", 19, 2, 5, .true.), &
+!!              label_type("first defined here", 2, 1, 5)]), &
 !!              input)
 !!    end
 !! @endcode
@@ -85,7 +85,8 @@
 !!
 !! @note This code is adapted from [pretty-diagnostics](https://github.com/awvwgk/pretty-diagnostics).
 module fpx_logging
-
+    use iso_c_binding
+    
     implicit none; private
 
     public :: render, &
@@ -175,6 +176,16 @@ module fpx_logging
                                                                'CYAN_INTENSE   ', '106            ', & !  Cyan intense.
                                                                'WHITE_INTENSE  ', '107            ' & !  White intense.
                                                                ], [2, 17]) !< Background colors.
+                                                               
+    interface
+        pure subroutine  memcpy(dest, src, n) bind(c,name='memcpy')
+            import
+            implicit none
+            integer(c_intptr_t), value:: dest
+            integer(c_intptr_t), value:: src
+            integer(c_size_t), value :: n
+        end subroutine
+    end interface
 
     interface render
         module procedure :: render_diagnostic
@@ -193,7 +204,7 @@ module fpx_logging
     
     type label_type
         !> Level of message
-        integer                     :: level
+        integer, allocatable        :: level
         !> Primary message
         logical                     :: primary
         !> Line number of message
@@ -315,38 +326,38 @@ contains
         enddo
     end function
 
-    type(label_type) function label_new(level, text, first, length) result(that)
-        integer, intent(in)                 :: level
-        character(*), intent(in), optional  :: text
+    type(label_type) function label_new(text, first, length, level) result(that)
+        character(*), intent(in)            :: text
         integer, intent(in)                 :: first
         integer, intent(in)                 :: length
+        integer, intent(in) , optional      :: level
 
-        if (present(text)) that%text = text
-        that%level = level
+        that%text = text
         that%line = 1
         that%first = max(1, first)
         that%last = that%first + length
-        that%primary = .false.
+        that%primary = .true.
+        if (present(level)) that%level = level
     end function
     
-    type(label_type) function label_new_with_line(level, text, line, first, length, primary) result(that)
-        integer, intent(in)                 :: level
-        character(*), intent(in), optional  :: text
+    type(label_type) function label_new_with_line(line, text, first, length, primary, level) result(that)
         integer, intent(in)                 :: line
+        character(*), intent(in)            :: text
         integer, intent(in)                 :: first
         integer, intent(in)                 :: length
         logical, intent(in), optional       :: primary
+        integer, intent(in) , optional      :: level
 
-        if (present(text)) that%text = text
-        that%level = level
+        that%text = text
         that%line = line
         that%first = max(1, first)
         that%last = that%first + length
         if (present(primary)) then
             that%primary = primary
         else
-            that%primary = .false.
+            that%primary = .true.
         end if
+        if (present(level)) that%level = level
     end function
 
     !> Create new diagnostic message
@@ -361,6 +372,8 @@ contains
         character(*), intent(in), optional              :: source
         type(label_type), intent(in), optional          :: label(..)
         type(diagnostic_report), intent(in), optional   :: diagnostic(:)
+        !private
+        integer :: i
 
         that%level = level
         if (present(message)) that%message = message
@@ -371,11 +384,21 @@ contains
                 rank(0)
                     allocate(that%label(1))
                     that%label(1) = label
+                    if (.not. allocated(that%label(1)%level)) that%label(1)%level = level
                 rank(1)
                     allocate(that%label, source = label)
+                    do i = 1, size(label)
+                        if (.not. allocated(that%label(i)%level)) that%label(i)%level = level
+                    end do
             end select
         end if
         if (present(diagnostic)) that%sub = diagnostic
+        
+        if (allocated(that%label)) then
+            if (.not. any(that%label(:)%primary)) then
+                that%label(1)%primary = .true.
+            end if
+        end if
     end function
 
     pure function line_tokens(input) result(res)
@@ -399,9 +422,10 @@ contains
         end do
     end function
 
-    pure recursive function render_diagnostic(diag, input) result(res)
-        character(*), intent(in)            :: input
-        type(diagnostic_report), intent(in) :: diag
+    pure recursive function render_diagnostic(diag, input, linemum) result(res)
+        type(diagnostic_report), intent(in)     :: diag
+        character(*), intent(in)                :: input
+        integer, intent(in), optional           :: linemum
         character(:), allocatable :: res
         !private
         integer :: i
@@ -409,12 +433,12 @@ contains
         res = render_message(diag%level, diag%message)
 
         if (allocated(diag%label)) then
-            res = res // NL // render_text_with_labels(input, diag%label, source=diag%source)
+            res = res // NL // render_text_with_labels(input, diag%label, source=diag%source, linemum=linemum)
         end if
 
         if (allocated(diag%sub)) then
             do i = 1, size(diag%sub)
-                res = res // NL // render_diagnostic(diag%sub(i), input)
+                res = res // NL // render_diagnostic(diag%sub(i), input, linemum)
             end do
         end if
     end function
@@ -459,14 +483,16 @@ contains
         res = repeat(' ', offset) // colorize('-->', foreground = 'blue') // ' ' // source
     end function
 
-    pure function render_text(input, source) result(res)
+    pure function render_text(input, source, linenum) result(res)
         character(*), intent(in)            :: input
         character(*), intent(in), optional  :: source
+        integer, intent(in), optional       :: linenum
         character(:), allocatable :: res
         !private
-        integer :: i, offset
+        integer :: i, offset, iline
         type(line_token), allocatable :: token(:)
 
+        iline = 1; if (present(linenum)) iline = linenum
         token = line_tokens(input)
         offset = integer_width(size(token))
 
@@ -478,65 +504,41 @@ contains
         end if
 
         do i = 1, size(token)
-            res = res // NL // render_line(input(token(i)%first:token(i)%last), to_string(i, offset))
+            res = res // NL // render_line(input(token(i)%first:token(i)%last), to_string(iline + i - 1, offset))
         end do
         res = res // NL // repeat(' ', offset + 1) // colorize('|', foreground = 'blue')
     end function
 
-    pure function render_text_with_label(input, label, source) result(res)
+    pure function render_text_with_label(input, label, source, linenum) result(res)
         character(*), intent(in)            :: input
         type(label_type), intent(in)        :: label
         character(*), intent(in), optional  :: source
+        integer, intent(in), optional       :: linenum
         character(:), allocatable :: res
-        !private
-        integer :: i, offset, first, last
-        type(line_token), allocatable :: token(:)
 
-        token = line_tokens(input)
-        first = max(1, label%line - 1)
-        last = min(size(token), label%line + 1)
-        offset = integer_width(last)
-
-        if (present(source)) then
-            res = render_source(source, offset) // ':' // &
-                    to_string(label%line) // ':' // &
-                    to_string(label%first) // '-' // to_string(label%last) // NL // &
-                    repeat(' ', offset + 1) // colorize('|', foreground = 'blue')
-        else
-            res = repeat(' ', offset + 1) // colorize('|', foreground = 'blue')
-        end if
-
-        do i = first, last
-            res = res // NL //&
-                    render_line(input(token(i)%first:token(i)%last), &
-                    to_string(i, offset))
-            if (i == label%line) then
-                res = res // NL //&
-                        repeat(' ', offset + 1) // colorize('|', foreground = 'blue') // &
-                        render_label(label)
-            end if
-        end do
-        res = res // NL // repeat(' ', offset + 1) // colorize('|', foreground = 'blue')
+        res = render_text_with_labels(input, [label], source, linenum)
     end function
-
-    pure function render_text_with_labels(input, label, source) result(res)
+    
+    pure function render_text_with_labels(input, labels, source, linemum) result(res)
         character(*), intent(in)            :: input
-        type(label_type), intent(in)        :: label(:)
+        type(label_type), intent(in)        :: labels(:)
         character(*), intent(in), optional  :: source
+        integer, intent(in), optional       :: linemum
         character(:), allocatable :: res
         !private
-        integer :: i, j, offset, first, last
+        integer :: i, j, offset, first, last, iline
         type(line_token), allocatable :: token(:)
         logical, allocatable :: display(:)
 
         token = line_tokens(input)
-        first = max(1, minval(label%line) - 1)
-        last = min(size(token), maxval(label%line) + 1)
+        first = max(1, minval(labels%line) - 1)
+        last = min(size(token), maxval(labels%line) + 1)
         offset = integer_width(last)
-
+        iline = 1; if (present(linemum)) iline = linemum
+        
         i = 1  ! Without a primary we use the first label
-        do j = 1, size(label)
-            if (label(j)%primary) then
+        do j = 1, size(labels)
+            if (labels(j)%primary) then
                 i = j
                 exit
             end if
@@ -544,16 +546,16 @@ contains
 
         if (present(source)) then
             res = render_source(source, offset) // ':' // &
-                    to_string(label(i)%line) // ':' // &
-                    to_string(label(i)%first) // '-' // to_string(label(i)%last) // NL // &
+                    to_string(labels(i)%line) // ':' // &
+                    to_string(labels(i)%first) // '-' // to_string(labels(i)%last) // NL // &
                     repeat(' ', offset + 1) // colorize('|', foreground = 'blue')
         else
             res = repeat(' ', offset + 1) // colorize('|', foreground = 'blue')
         end if
 
         allocate(display(first:last), source=.false.)
-        do j = 1, size(label)
-            display(max(first, label(j)%line - 1):min(last, label(j)%line + 1)) = .true.
+        do j = 1, size(labels)
+            display(max(first, labels(j)%line - 1):min(last, labels(j)%line + 1)) = .true.
         end do
 
         do i = first, last
@@ -567,13 +569,13 @@ contains
 
             res = res // NL //&
                     & render_line(input(token(i)%first:token(i)%last), &
-                    &             to_string(i, offset))
-            if (any(i == label%line)) then
-                do j = 1, size(label)
-                    if (label(j)%line /= i) cycle
+                    &             to_string(iline + i - 1, offset))
+            if (any(i == labels%line)) then
+                do j = 1, size(labels)
+                    if (labels(j)%line /= i) cycle
                     res = res // NL //&
                             & repeat(' ', offset + 1) // colorize('|', foreground = 'blue') // &
-                            & render_label(label(j))
+                            & render_label(labels(j))
                 end do
             end if
         end do
@@ -589,35 +591,42 @@ contains
         character(:), allocatable :: this_color
 
         marker = merge('^', '-', label%primary)
-        width = label%last - label%first + 1
+        width = label%last - label%first
 
-        select case (label%level)
-        case (LEVEL_ERROR)
-            res = repeat(' ', label%first) // colorize(repeat(marker, width), foreground = 'red', style = 'bold_on')
-            if (allocated(label%text)) then
-                res = res // ' ' // colorize(label%text, foreground = 'red', style = 'bold_on')
-            end if
-        case (LEVEL_WARNING)
-            res = repeat(' ', label%first) // colorize(repeat(marker, width), foreground = 'yellow', style = 'bold_on')
-            if (allocated(label%text)) then
-                res = res // ' ' // colorize(label%text, foreground = 'yellow', style = 'bold_on')
-            end if
-        case (LEVEL_HELP)
-            res = repeat(' ', label%first) // colorize(repeat(marker, width), foreground = 'cyan', style = 'bold_on')
-            if (allocated(label%text)) then
-                res = res // ' ' // colorize(label%text, foreground = 'cyan', style = 'bold_on')
-            end if
-        case (LEVEL_INFO)
-            res = repeat(' ', label%first) // colorize(repeat(marker, width), foreground = 'magenta', style = 'bold_on')
-            if (allocated(label%text)) then
-                res = res // ' ' // colorize(label%text, foreground = 'magenta', style = 'bold_on')
-            end if
-        case default
+        if (allocated(label%level)) then
+            select case (label%level)
+            case (LEVEL_ERROR)
+                res = repeat(' ', label%first) // colorize(repeat(marker, width), foreground = 'red', style = 'bold_on')
+                if (allocated(label%text)) then
+                    res = res // ' ' // colorize(label%text, foreground = 'red', style = 'bold_on')
+                end if
+            case (LEVEL_WARNING)
+                res = repeat(' ', label%first) // colorize(repeat(marker, width), foreground = 'yellow', style = 'bold_on')
+                if (allocated(label%text)) then
+                    res = res // ' ' // colorize(label%text, foreground = 'yellow', style = 'bold_on')
+                end if
+            case (LEVEL_HELP)
+                res = repeat(' ', label%first) // colorize(repeat(marker, width), foreground = 'cyan', style = 'bold_on')
+                if (allocated(label%text)) then
+                    res = res // ' ' // colorize(label%text, foreground = 'cyan', style = 'bold_on')
+                end if
+            case (LEVEL_INFO)
+                res = repeat(' ', label%first) // colorize(repeat(marker, width), foreground = 'magenta', style = 'bold_on')
+                if (allocated(label%text)) then
+                    res = res // ' ' // colorize(label%text, foreground = 'magenta', style = 'bold_on')
+                end if
+            case default
+                res = repeat(' ', label%first) // colorize(repeat(marker, width), foreground = 'blue', style = 'bold_on')
+                if (allocated(label%text)) then
+                    res = res // ' ' // colorize(label%text, foreground = 'blue', style = 'bold_on')
+                end if
+            end select
+        else
             res = repeat(' ', label%first) // colorize(repeat(marker, width), foreground = 'blue', style = 'bold_on')
             if (allocated(label%text)) then
                 res = res // ' ' // colorize(label%text, foreground = 'blue', style = 'bold_on')
             end if
-        end select
+        end if
     end function
 
     pure function render_line(input, line) result(res)

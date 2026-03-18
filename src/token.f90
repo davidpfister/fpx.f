@@ -188,7 +188,7 @@ contains
                 if (ntokens > MAX_TOKENS) then
                     print '(A)', render(diagnostic_report(LEVEL_ERROR, &
                         message = 'The maximum number of tokens has been reached', &
-                        label = label_type(LEVEL_ERROR, 'Too many tokens in expression.', 1, 1)), &
+                        label = label_type('Too many tokens in expression.', 1, 1)), &
                         expr)
                     return
                 end if

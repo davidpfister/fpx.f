@@ -95,7 +95,10 @@ contains
             if (global%undef .contains. name) return
             paren_end = index(temp, ')')
             if (paren_end == 0) then
-                if (verbose) print *, "Error: Unclosed parenthesis in macro definition: ", trim(ctx%content)
+                print '(A)', render(diagnostic_report(LEVEL_ERROR, &
+                        message = 'Synthax error', &
+                        label = label_type('Missing closing parenthesis in mecro definition', len(temp), 1)), &
+                        trim(ctx%content), ctx%line)
                 return
             end if
             val = trim(adjustl(temp(paren_end + 1:)))
@@ -114,9 +117,9 @@ contains
 
             if (name == 'defined') then
                 print '(A)', render(diagnostic_report(LEVEL_ERROR, &
-                        message = '"defined" cannot be used a a macro name', &
-                        label = label_type(LEVEL_ERROR, '', index(ctx%content, 'defined', back=.true.), len('defined'))), &
-                        trim(ctx%content))
+                        message = 'Reserved macro name', &
+                        label = label_type('"defined" cannot be used as a macro name', paren_start + 1, len(name))), &
+                        trim(ctx%content), ctx%line)
             end if
 
             if (.not. is_defined(name, macros, imacro)) then
@@ -213,14 +216,16 @@ contains
         name = trim(adjustl(ctx%content(pos:)))
         do i = 1, n
             if (macros(i) == name) then
-                if (verbose) print *, "Warning: Undefining macro: ", name
                 call remove(macros, i)
                 exit
             end if
         end do
 
         if (i > n) then
-            if (verbose) print *, "Warning: Macro ", name, " not found for #undef"
+            print '(A)', render(diagnostic_report(LEVEL_WARNING, &
+                        message = 'Unknown macro', &
+                        label = label_type(name // ' not found', pos, len(name))), &
+                        trim(ctx%content))
         end if
     end subroutine
 end module

@@ -333,13 +333,13 @@ contains
         if (cond_depth > 0) then
             print '(A)', render(diagnostic_report(LEVEL_ERROR, &
                         message = 'Unclosed conditional block at end of file', &
-                        label = label_type(LEVEL_ERROR, 'Missing closing statement', len(trim(line)) - 1, 1)), &
-                        trim(line))
+                        label = label_type('Missing conditional statement #endif', 1, 1)), &
+                        trim(line), iline)
         else if (c_continue) then
             print '(A)', render(diagnostic_report(LEVEL_ERROR, &
                         message = 'Unexpected character', &
-                        label = label_type(LEVEL_ERROR, 'Trailing new line "\"', len(trim(line)) - 1, 1)), &
-                        trim(line))
+                        label = label_type('Trailing new line "\"', len(trim(line)), 1)), &
+                        trim(line), iline)
         end if
     end subroutine
 

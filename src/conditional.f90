@@ -145,7 +145,7 @@ contains
 
         pos = index(lowercase(ctx%content), token) + len(token)
         expr = trim(adjustl(ctx%content(pos:)))
-        result = evaluate_expression(expr, macros)
+        result = evaluate_expression(expr, macros, ctx)
         parent_active = is_active()
         cond_depth = cond_depth + 1
         cond_stack(cond_depth + 1)%active = result .and. parent_active
@@ -236,7 +236,7 @@ contains
 
         pos = index(lowercase(ctx%content), token) + len(token)
         expr = trim(adjustl(ctx%content(pos:)))
-        result = evaluate_expression(expr, macros)
+        result = evaluate_expression(expr, macros, ctx)
         parent_active = cond_depth == 0 .or. cond_stack(cond_depth)%active
         if (.not. cond_stack(cond_depth + 1)%has_met) then
             cond_stack(cond_depth + 1)%active = result .and. parent_active
