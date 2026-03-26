@@ -52,11 +52,11 @@
 !!    - If the identifier is defined, its replacement text is recursively evaluated.
 !!    - The special `defined` operator yields 1 or 0 depending on whether the identifier exists.
 !!
-!!    The parser is fully re-entrant and has no global state except the `verbose` flag from
-!!    the logging module (used only for debugging).
+!!    The parser is fully re-entrant and has no global state.
 !!
 !!    Public interface:
-!!    - @link fpx_operators::evaluate_expression evaluate_expression @endlink: high-level function that tokenizes and evaluates in one
+!!    - @link fpx_operators::evaluate_expression evaluate_expression @endlink: high-level function that tokenizes and evaluates in
+!! one
 !! call
 !!    - @link fpx_operators::parse_expression parse_expression @endlink: low-level entry point for already-tokenized input
 !!
@@ -70,11 +70,16 @@ module fpx_operators
     use fpx_macro
     use fpx_logging
     use fpx_token
+    use fpx_context
 
     implicit none; private
 
-    public :: evaluate_expression, &
-            parse_expression
+    public :: evaluate_expression
+
+    interface evaluate_expression
+        module procedure :: evaluate_expression_default
+        module procedure :: evaluate_expression_with_context
+    end interface
 
 contains
 
@@ -85,14 +90,39 @@ contains
     !!
     !! @param[in] expr   Expression string to evaluate
     !! @param[in] macros Array of defined macros for substitution and `defined()` checks
-    !! @param[out] val   Optional integer result of the evaluation
+    !! @param[out] val   (optional) integer result of the evaluation
     !! @return .true. if the expression evaluated successfully to non-zero, .false. otherwise
     !!
     !! @b Remarks
     !! @ingroup group_operators
-    logical function evaluate_expression(expr, macros, val) result(res)
+    logical function evaluate_expression_default(expr, macros, val) result(res)
         character(*), intent(in)        :: expr
         type(macro), intent(in)         :: macros(:)
+        integer, intent(out), optional  :: val
+        !private
+        type(context) :: ctx
+
+        ctx = context(expr, 1, '', '')
+        res = evaluate_expression(expr, macros, ctx, val)
+    end function
+
+    !> Evaluates a preprocessor-style expression with macro substitution.
+    !! Tokenizes the input expression, expands macros where appropriate,
+    !! parses it according to operator precedence, and computes the integer result.
+    !! Returns .true. if evaluation succeeded and the result is non-zero.
+    !!
+    !! @param[in] expr   Expression string to evaluate
+    !! @param[in] macros Array of defined macros for substitution and `defined()` checks
+    !! @param[in] ctx Context
+    !! @param[out] val   (optional) integer result of the evaluation
+    !! @return .true. if the expression evaluated successfully to non-zero, .false. otherwise
+    !!
+    !! @b Remarks
+    !! @ingroup group_operators
+    logical function evaluate_expression_with_context(expr, macros, ctx, val) result(res)
+        character(*), intent(in)        :: expr
+        type(macro), intent(in)         :: macros(:)
+        type(context), intent(in)       :: ctx
         integer, intent(out), optional  :: val
         !private
         type(token), allocatable :: tokens(:)
@@ -100,16 +130,23 @@ contains
 
         call tokenize(expr, tokens, ntokens)
         if (ntokens == 0) then
-            if (verbose) print *, "No tokens found for expression"
+            call printf(render(diagnostic_report(LEVEL_ERROR, &
+                    message='Tokenization failed', &
+                    label=label_type('No tokens found', 1, len_trim(expr)), &
+                    source=trim(ctx%path)), &
+                    expr, ctx%line))
             res = .false.
             return
         end if
 
         pos = 1
-        result = parse_expression(tokens, ntokens, pos, macros)
-        if (verbose) print *, "Parsed '", trim(expr), "': pos = ", pos, ", ntokens = ", ntokens, ", result = ", result
+        result = parse_expression(expr, tokens, ntokens, pos, macros, ctx)
         if (pos <= ntokens) then
-            if (verbose) print *, "Error: Extra tokens in expression: ", trim(tokens(pos)%value)
+            call printf(render(diagnostic_report(LEVEL_ERROR, &
+                    message='Tokenization failed', &
+                    label=label_type('Extra tokens found', tokens(pos)%start, len_trim(tokens(pos)%value)), &
+                    source=trim(ctx%path)), &
+                    expr, ctx%line))
             res = .false.
             return
         end if
@@ -123,17 +160,20 @@ contains
     !! @param[in] ntokens   Number of valid tokens in the array
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
     !! @param[in] macros    Defined macros for expansion and `defined()` checks
+    !! @param[in] ctx Context
     !! @return Integer value of the parsed expression
     !!
     !! @b Remarks
     !! @ingroup group_operators
-    recursive integer function parse_expression(tokens, ntokens, pos, macros) result(val)
-        type(token), intent(in)   :: tokens(:)
+    recursive integer function parse_expression(expr, tokens, ntokens, pos, macros, ctx) result(val)
+        character(*), intent(in)    :: expr
+        type(token), intent(in)     :: tokens(:)
         integer, intent(in)         :: ntokens
         integer, intent(inout)      :: pos
-        type(macro), intent(in)   :: macros(:)
+        type(macro), intent(in)     :: macros(:)
+        type(context), intent(in)   :: ctx
 
-        val = parse_conditional(tokens, ntokens, pos, macros)
+        val = parse_conditional(expr, tokens, ntokens, pos, macros, ctx)
     end function
 
     !> Parses conditional expressions (?:). Right-associative.
@@ -141,34 +181,37 @@ contains
     !! @param[in] ntokens   Number of valid tokens in the array
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
     !! @param[in] macros    Defined macros for expansion and `defined()` checks
+    !! @param[in] ctx Context
     !! @return Integer value of the parsed expression
     !!
     !! @b Remarks
     !! @ingroup group_operators
-    recursive integer function parse_conditional(tokens, ntokens, pos, macros) result(val)
-        type(token), intent(in) :: tokens(:)
-        integer, intent(in) :: ntokens
-        integer, intent(inout) :: pos
-        type(macro), intent(in) :: macros(:)
-
+    recursive integer function parse_conditional(expr, tokens, ntokens, pos, macros, ctx) result(val)
+        character(*), intent(in)    :: expr
+        type(token), intent(in)     :: tokens(:)
+        integer, intent(in)         :: ntokens
+        integer, intent(inout)      :: pos
+        type(macro), intent(in)     :: macros(:)
+        type(context), intent(in)   :: ctx
+        !private
         integer :: condition, true_val, false_val
 
         ! First parse condition at higher precedence
-        condition = parse_or(tokens, ntokens, pos, macros)
+        condition = parse_or(expr, tokens, ntokens, pos, macros, ctx)
 
         ! Check for '?'
         if (pos <= ntokens .and. tokens(pos)%value == '?') then
-
-            if (verbose) print *, "Parsing ? at pos ", pos
-
             pos = pos + 1
-
             ! Parse true expression (full expression allowed)
-            true_val = parse_expression(tokens, ntokens, pos, macros)
+            true_val = parse_expression(expr, tokens, ntokens, pos, macros, ctx)
 
             ! Expect ':'
             if (pos > ntokens .or. tokens(pos)%value /= ':') then
-                if (verbose) print *, "Error: expected ':' in conditional expression"
+                call printf(render(diagnostic_report(LEVEL_ERROR, &
+                        message='Synthax error', &
+                        label=label_type('Expected ":" in conditional expression', 1, len(expr)), &
+                        source=trim(ctx%path)), &
+                        expr, ctx%line))
                 val = 0
                 return
             end if
@@ -176,15 +219,12 @@ contains
             pos = pos + 1
 
             ! Parse false expression (right-associative)
-            false_val = parse_conditional(tokens, ntokens, pos, macros)
+            false_val = parse_conditional(expr, tokens, ntokens, pos, macros, ctx)
 
             ! Evaluate condition
             val = merge(true_val, false_val, condition /= 0)
-
         else
-
             val = condition
-
         end if
 
     end function
@@ -194,22 +234,25 @@ contains
     !! @param[in] ntokens   Number of valid tokens in the array
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
     !! @param[in] macros    Defined macros for expansion and `defined()` checks
+    !! @param[in] ctx Context
     !! @return Integer value of the parsed expression
     !!
     !! @b Remarks
     !! @ingroup group_operators
-    recursive integer function parse_or(tokens, ntokens, pos, macros) result(val)
-        type(token), intent(in)   :: tokens(:)
+    recursive integer function parse_or(expr, tokens, ntokens, pos, macros, ctx) result(val)
+        character(*), intent(in)    :: expr
+        type(token), intent(in)     :: tokens(:)
         integer, intent(in)         :: ntokens
         integer, intent(inout)      :: pos
-        type(macro), intent(in)   :: macros(:)
+        type(macro), intent(in)     :: macros(:)
+        type(context), intent(in)   :: ctx
+        !private
         integer :: left
 
-        left = parse_and(tokens, ntokens, pos, macros)
+        left = parse_and(expr, tokens, ntokens, pos, macros, ctx)
         do while (pos <= ntokens .and. tokens(pos)%value == '||')
-            if (verbose) print *, "Parsing || at pos ", pos
             pos = pos + 1
-            val = merge(1, 0, left /= 0 .or. parse_and(tokens, ntokens, pos, macros) /= 0)
+            val = merge(1, 0, left /= 0 .or. parse_and(expr, tokens, ntokens, pos, macros, ctx) /= 0)
             left = val
         end do
         val = left
@@ -220,23 +263,25 @@ contains
     !! @param[in] ntokens   Number of valid tokens in the array
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
     !! @param[in] macros    Defined macros for expansion and `defined()` checks
+    !! @param[in] ctx Context
     !! @return Integer value of the parsed expression
     !!
     !! @b Remarks
     !! @ingroup group_operators
-    recursive integer function parse_and(tokens, ntokens, pos, macros) result(val)
-        type(token), intent(in)   :: tokens(:)
+    recursive integer function parse_and(expr, tokens, ntokens, pos, macros, ctx) result(val)
+        character(*), intent(in)    :: expr
+        type(token), intent(in)     :: tokens(:)
         integer, intent(in)         :: ntokens
         integer, intent(inout)      :: pos
-        type(macro), intent(in)   :: macros(:)
+        type(macro), intent(in)     :: macros(:)
+        type(context), intent(in)   :: ctx
         !private
         integer :: left
 
-        left = parse_bitwise_or(tokens, ntokens, pos, macros)
+        left = parse_bitwise_or(expr, tokens, ntokens, pos, macros, ctx)
         do while (pos <= ntokens .and. tokens(pos)%value == '&&')
-            if (verbose) print *, "Parsing && at pos ", pos
             pos = pos + 1
-            val = merge(1, 0, left /= 0 .and. parse_bitwise_or(tokens, ntokens, pos, macros) /= 0)
+            val = merge(1, 0, left /= 0 .and. parse_bitwise_or(expr, tokens, ntokens, pos, macros, ctx) /= 0)
             left = val
         end do
         val = left
@@ -247,23 +292,25 @@ contains
     !! @param[in] ntokens   Number of valid tokens in the array
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
     !! @param[in] macros    Defined macros for expansion and `defined()` checks
+    !! @param[in] ctx Context
     !! @return Integer value of the parsed expression
     !!
     !! @b Remarks
     !! @ingroup group_operators
-    recursive integer function parse_bitwise_or(tokens, ntokens, pos, macros) result(val)
-        type(token), intent(in)   :: tokens(:)
-        integer, intent(in)       :: ntokens
-        integer, intent(inout)    :: pos
-        type(macro), intent(in)   :: macros(:)
+    recursive integer function parse_bitwise_or(expr, tokens, ntokens, pos, macros, ctx) result(val)
+        character(*), intent(in)    :: expr
+        type(token), intent(in)     :: tokens(:)
+        integer, intent(in)         :: ntokens
+        integer, intent(inout)      :: pos
+        type(macro), intent(in)     :: macros(:)
+        type(context), intent(in)   :: ctx
         !private
         integer :: left
 
-        left = parse_bitwise_xor(tokens, ntokens, pos, macros)
+        left = parse_bitwise_xor(expr, tokens, ntokens, pos, macros, ctx)
         do while (pos <= ntokens .and. tokens(pos)%value == '|')
-            if (verbose) print *, "Parsing | at pos ", pos
             pos = pos + 1
-            val = parse_bitwise_xor(tokens, ntokens, pos, macros)
+            val = parse_bitwise_xor(expr, tokens, ntokens, pos, macros, ctx)
             left = ior(left, val)
         end do
         val = left
@@ -274,23 +321,25 @@ contains
     !! @param[in] ntokens   Number of valid tokens in the array
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
     !! @param[in] macros    Defined macros for expansion and `defined()` checks
+    !! @param[in] ctx Context
     !! @return Integer value of the parsed expression
     !!
     !! @b Remarks
     !! @ingroup group_operators
-    recursive integer function parse_bitwise_xor(tokens, ntokens, pos, macros) result(val)
-        type(token), intent(in)   :: tokens(:)
-        integer, intent(in)       :: ntokens
-        integer, intent(inout)    :: pos
-        type(macro), intent(in)   :: macros(:)
+    recursive integer function parse_bitwise_xor(expr, tokens, ntokens, pos, macros, ctx) result(val)
+        character(*), intent(in)    :: expr
+        type(token), intent(in)     :: tokens(:)
+        integer, intent(in)         :: ntokens
+        integer, intent(inout)      :: pos
+        type(macro), intent(in)     :: macros(:)
+        type(context), intent(in)   :: ctx
         !private
         integer :: left
 
-        left = parse_bitwise_and(tokens, ntokens, pos, macros)
+        left = parse_bitwise_and(expr, tokens, ntokens, pos, macros, ctx)
         do while (pos <= ntokens .and. tokens(pos)%value == '^')
-            if (verbose) print *, "Parsing ^ at pos ", pos
             pos = pos + 1
-            val = parse_bitwise_and(tokens, ntokens, pos, macros)
+            val = parse_bitwise_and(expr, tokens, ntokens, pos, macros, ctx)
             left = ieor(left, val)
         end do
         val = left
@@ -301,23 +350,25 @@ contains
     !! @param[in] ntokens   Number of valid tokens in the array
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
     !! @param[in] macros    Defined macros for expansion and `defined()` checks
+    !! @param[in] ctx Context
     !! @return Integer value of the parsed expression
     !!
     !! @b Remarks
     !! @ingroup group_operators
-    recursive integer function parse_bitwise_and(tokens, ntokens, pos, macros) result(val)
-        type(token), intent(in)   :: tokens(:)
-        integer, intent(in)       :: ntokens
-        integer, intent(inout)    :: pos
-        type(macro), intent(in)   :: macros(:)
+    recursive integer function parse_bitwise_and(expr, tokens, ntokens, pos, macros, ctx) result(val)
+        character(*), intent(in)    :: expr
+        type(token), intent(in)     :: tokens(:)
+        integer, intent(in)         :: ntokens
+        integer, intent(inout)      :: pos
+        type(macro), intent(in)     :: macros(:)
+        type(context), intent(in)   :: ctx
         !private
         integer :: left
 
-        left = parse_equality(tokens, ntokens, pos, macros)
+        left = parse_equality(expr, tokens, ntokens, pos, macros, ctx)
         do while (pos <= ntokens .and. tokens(pos)%value == '&')
-            if (verbose) print *, "Parsing && at pos ", pos
             pos = pos + 1
-            val = parse_equality(tokens, ntokens, pos, macros)
+            val = parse_equality(expr, tokens, ntokens, pos, macros, ctx)
             left = iand(left, val)
         end do
         val = left
@@ -328,28 +379,30 @@ contains
     !! @param[in] ntokens   Number of valid tokens in the array
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
     !! @param[in] macros    Defined macros for expansion and `defined()` checks
+    !! @param[in] ctx Context
     !! @return Integer value of the parsed expression
     !!
     !! @b Remarks
     !! @ingroup group_operators
-    recursive integer function parse_equality(tokens, ntokens, pos, macros) result(val)
-        type(token), intent(in)   :: tokens(:)
+    recursive integer function parse_equality(expr, tokens, ntokens, pos, macros, ctx) result(val)
+        character(*), intent(in)    :: expr
+        type(token), intent(in)     :: tokens(:)
         integer, intent(in)         :: ntokens
         integer, intent(inout)      :: pos
-        type(macro), intent(in)   :: macros(:)
+        type(macro), intent(in)     :: macros(:)
+        type(context), intent(in)   :: ctx
         !private
         integer :: left, right
 
-        left = parse_relational(tokens, ntokens, pos, macros)
+        left = parse_relational(expr, tokens, ntokens, pos, macros, ctx)
         do while (pos <= ntokens .and. (tokens(pos)%value == '==' .or. tokens(pos)%value == '!='))
-            if (verbose) print *, "Parsing ", trim(tokens(pos)%value), " at pos ", pos
             if (tokens(pos)%value == '==') then
                 pos = pos + 1
-                right = parse_relational(tokens, ntokens, pos, macros)
+                right = parse_relational(expr, tokens, ntokens, pos, macros, ctx)
                 val = merge(1, 0, left == right)
             else
                 pos = pos + 1
-                right = parse_relational(tokens, ntokens, pos, macros)
+                right = parse_relational(expr, tokens, ntokens, pos, macros, ctx)
                 val = merge(1, 0, left /= right)
             end if
             left = val
@@ -362,37 +415,39 @@ contains
     !! @param[in] ntokens   Number of valid tokens in the array
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
     !! @param[in] macros    Defined macros for expansion and `defined()` checks
+    !! @param[in] ctx Context
     !! @return Integer value of the parsed expression
     !!
     !! @b Remarks
     !! @ingroup group_operators
-    recursive integer function parse_relational(tokens, ntokens, pos, macros) result(val)
-        type(token), intent(in)   :: tokens(:)
-        integer, intent(in)       :: ntokens
-        integer, intent(inout)    :: pos
-        type(macro), intent(in)   :: macros(:)
+    recursive integer function parse_relational(expr, tokens, ntokens, pos, macros, ctx) result(val)
+        character(*), intent(in)    :: expr
+        type(token), intent(in)     :: tokens(:)
+        integer, intent(in)         :: ntokens
+        integer, intent(inout)      :: pos
+        type(macro), intent(in)     :: macros(:)
+        type(context), intent(in)   :: ctx
         !private
         integer :: left, right
 
-        left = parse_shifting(tokens, ntokens, pos, macros)
+        left = parse_shifting(expr, tokens, ntokens, pos, macros, ctx)
         do while (pos <= ntokens .and. (tokens(pos)%value == '<' .or. tokens(pos)%value == '>' .or. &
                 tokens(pos)%value == '<=' .or. tokens(pos)%value == '>='))
-            if (verbose) print *, "Parsing ", trim(tokens(pos)%value), " at pos ", pos
             if (tokens(pos)%value == '<') then
                 pos = pos + 1
-                right = parse_shifting(tokens, ntokens, pos, macros)
+                right = parse_shifting(expr, tokens, ntokens, pos, macros, ctx)
                 val = merge(1, 0, left < right)
             else if (tokens(pos)%value == '>') then
                 pos = pos + 1
-                right = parse_shifting(tokens, ntokens, pos, macros)
+                right = parse_shifting(expr, tokens, ntokens, pos, macros, ctx)
                 val = merge(1, 0, left > right)
             else if (tokens(pos)%value == '<=') then
                 pos = pos + 1
-                right = parse_shifting(tokens, ntokens, pos, macros)
+                right = parse_shifting(expr, tokens, ntokens, pos, macros, ctx)
                 val = merge(1, 0, left <= right)
             else
                 pos = pos + 1
-                right = parse_shifting(tokens, ntokens, pos, macros)
+                right = parse_shifting(expr, tokens, ntokens, pos, macros, ctx)
                 val = merge(1, 0, left >= right)
             end if
             left = val
@@ -405,28 +460,30 @@ contains
     !! @param[in] ntokens   Number of valid tokens in the array
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
     !! @param[in] macros    Defined macros for expansion and `defined()` checks
+    !! @param[in] ctx Context
     !! @return Integer value of the parsed expression
     !!
     !! @b Remarks
     !! @ingroup group_operators
-    recursive integer function parse_shifting(tokens, ntokens, pos, macros) result(val)
-        type(token), intent(in)   :: tokens(:)
-        integer, intent(in)       :: ntokens
-        integer, intent(inout)    :: pos
-        type(macro), intent(in)   :: macros(:)
+    recursive integer function parse_shifting(expr, tokens, ntokens, pos, macros, ctx) result(val)
+        character(*), intent(in)    :: expr
+        type(token), intent(in)     :: tokens(:)
+        integer, intent(in)         :: ntokens
+        integer, intent(inout)      :: pos
+        type(macro), intent(in)     :: macros(:)
+        type(context), intent(in)   :: ctx
         !private
         integer :: left, right
 
-        left = parse_additive(tokens, ntokens, pos, macros)
+        left = parse_additive(expr, tokens, ntokens, pos, macros, ctx)
         do while (pos <= ntokens .and. (tokens(pos)%value == '<<' .or. tokens(pos)%value == '>>'))
-            if (verbose) print *, "Parsing ", trim(tokens(pos)%value), " at pos ", pos
             if (tokens(pos)%value == '<<') then
                 pos = pos + 1
-                right = parse_additive(tokens, ntokens, pos, macros)
+                right = parse_additive(expr, tokens, ntokens, pos, macros, ctx)
                 val = lshift(left, right)
             else
                 pos = pos + 1
-                right = parse_additive(tokens, ntokens, pos, macros)
+                right = parse_additive(expr, tokens, ntokens, pos, macros, ctx)
                 val = rshift(left, right)
             end if
             left = val
@@ -439,28 +496,30 @@ contains
     !! @param[in] ntokens   Number of valid tokens in the array
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
     !! @param[in] macros    Defined macros for expansion and `defined()` checks
+    !! @param[in] ctx Context
     !! @return Integer value of the parsed expression
     !!
     !! @b Remarks
     !! @ingroup group_operators
-    recursive integer function parse_additive(tokens, ntokens, pos, macros) result(val)
-        type(token), intent(in)   :: tokens(:)
-        integer, intent(in)       :: ntokens
-        integer, intent(inout)    :: pos
-        type(macro), intent(in)   :: macros(:)
+    recursive integer function parse_additive(expr, tokens, ntokens, pos, macros, ctx) result(val)
+        character(*), intent(in)    :: expr
+        type(token), intent(in)     :: tokens(:)
+        integer, intent(in)         :: ntokens
+        integer, intent(inout)      :: pos
+        type(macro), intent(in)     :: macros(:)
+        type(context), intent(in)   :: ctx
         !private
         integer :: left, right
 
-        left = parse_multiplicative(tokens, ntokens, pos, macros)
+        left = parse_multiplicative(expr, tokens, ntokens, pos, macros, ctx)
         do while (pos <= ntokens .and. (tokens(pos)%value == '+' .or. tokens(pos)%value == '-'))
-            if (verbose) print *, "Parsing ", trim(tokens(pos)%value), " at pos ", pos
             if (tokens(pos)%value == '+') then
                 pos = pos + 1
-                right = parse_multiplicative(tokens, ntokens, pos, macros)
+                right = parse_multiplicative(expr, tokens, ntokens, pos, macros, ctx)
                 val = left + right
             else
                 pos = pos + 1
-                right = parse_multiplicative(tokens, ntokens, pos, macros)
+                right = parse_multiplicative(expr, tokens, ntokens, pos, macros, ctx)
                 val = left - right
             end if
             left = val
@@ -473,32 +532,34 @@ contains
     !! @param[in] ntokens   Number of valid tokens in the array
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
     !! @param[in] macros    Defined macros for expansion and `defined()` checks
+    !! @param[in] ctx    Context
     !! @return Integer value of the parsed expression
     !!
     !! @b Remarks
     !! @ingroup group_operators
-    recursive integer function parse_multiplicative(tokens, ntokens, pos, macros) result(val)
-        type(token), intent(in)   :: tokens(:)
-        integer, intent(in)       :: ntokens
-        integer, intent(inout)    :: pos
-        type(macro), intent(in)   :: macros(:)
+    recursive integer function parse_multiplicative(expr, tokens, ntokens, pos, macros, ctx) result(val)
+        character(*), intent(in)    :: expr
+        type(token), intent(in)     :: tokens(:)
+        integer, intent(in)         :: ntokens
+        integer, intent(inout)      :: pos
+        type(macro), intent(in)     :: macros(:)
+        type(context), intent(in)   :: ctx
         !private
         integer :: left, right
 
-        left = parse_power(tokens, ntokens, pos, macros)
+        left = parse_power(expr, tokens, ntokens, pos, macros, ctx)
         do while (pos <= ntokens .and. (tokens(pos)%value == '*' .or. tokens(pos)%value == '/' .or. tokens(pos)%value == '%'))
-            if (verbose) print *, "Parsing ", trim(tokens(pos)%value), " at pos ", pos
             if (tokens(pos)%value == '*') then
                 pos = pos + 1
-                right = parse_power(tokens, ntokens, pos, macros)
+                right = parse_power(expr, tokens, ntokens, pos, macros, ctx)
                 val = left * right
             else if (tokens(pos)%value == '/') then
                 pos = pos + 1
-                right = parse_power(tokens, ntokens, pos, macros)
+                right = parse_power(expr, tokens, ntokens, pos, macros, ctx)
                 val = left / right
             else
                 pos = pos + 1
-                right = parse_power(tokens, ntokens, pos, macros)
+                right = parse_power(expr, tokens, ntokens, pos, macros, ctx)
                 val = modulo(left, right)
             end if
             left = val
@@ -511,23 +572,25 @@ contains
     !! @param[in] ntokens   Number of valid tokens in the array
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
     !! @param[in] macros    Defined macros for expansion and `defined()` checks
+    !! @param[in] ctx    Context
     !! @return Integer value of the parsed expression
     !!
     !! @b Remarks
     !! @ingroup group_operators
-    recursive integer function parse_power(tokens, ntokens, pos, macros) result(val)
-        type(token), intent(in)   :: tokens(:)
-        integer, intent(in)       :: ntokens
-        integer, intent(inout)    :: pos
-        type(macro), intent(in)   :: macros(:)
+    recursive integer function parse_power(expr, tokens, ntokens, pos, macros, ctx) result(val)
+        character(*), intent(in)    :: expr
+        type(token), intent(in)     :: tokens(:)
+        integer, intent(in)         :: ntokens
+        integer, intent(inout)      :: pos
+        type(macro), intent(in)     :: macros(:)
+        type(context), intent(in)   :: ctx
         !private
         integer :: left, right
 
-        left = parse_unary(tokens, ntokens, pos, macros)
+        left = parse_unary(expr, tokens, ntokens, pos, macros, ctx)
         do while (pos <= ntokens .and. (tokens(pos)%value == '**'))
-            if (verbose) print *, "Parsing ", trim(tokens(pos)%value), " at pos ", pos
             pos = pos + 1
-            right = parse_unary(tokens, ntokens, pos, macros)
+            right = parse_unary(expr, tokens, ntokens, pos, macros, ctx)
             val = left**right
             left = val
         end do
@@ -539,92 +602,103 @@ contains
     !! @param[in] ntokens   Number of valid tokens in the array
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
     !! @param[in] macros    Defined macros for expansion and `defined()` checks
+    !! @param[in] ctx    Context
     !! @return Integer value of the parsed expression
     !!
     !! @b Remarks
     !! @ingroup group_operators
-    recursive integer function parse_unary(tokens, ntokens, pos, macros) result(val)
-        type(token), intent(in)   :: tokens(:)
-        integer, intent(in)       :: ntokens
-        integer, intent(inout)    :: pos
-        type(macro), intent(in)   :: macros(:)
-
-        if (pos <= ntokens .and. tokens(pos)%value == '!') then
-            if (verbose) print *, "Parsing ! at pos ", pos
-            pos = pos + 1
-            val = merge(0, 1, parse_unary(tokens, ntokens, pos, macros) /= 0)
-        else if (pos <= ntokens .and. tokens(pos)%value == '-') then
-            if (verbose) print *, "Parsing - at pos ", pos
-            pos = pos + 1
-            val = -parse_unary(tokens, ntokens, pos, macros)
-        else if (pos <= ntokens .and. tokens(pos)%value == '+') then
-            if (verbose) print *, "Parsing + at pos ", pos
-            pos = pos + 1
-            val = parse_unary(tokens, ntokens, pos, macros)
-        else if (pos <= ntokens .and. tokens(pos)%value == '~') then
-            if (verbose) print *, "Parsing + at pos ", pos
-            pos = pos + 1
-            val = not(parse_unary(tokens, ntokens, pos, macros))
-        else
-            val = parse_atom(tokens, ntokens, pos, macros)
-        end if
-    end function
-
-    !> Parses primary expressions: numbers, identifiers, `defined(...)`, parentheses.
-    !! @param[in] tokens    Array of tokens to parse
-    !! @param[in] ntokens   Number of valid tokens in the array
-    !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
-    !! @param[in] macros    Defined macros for expansion and `defined()` checks
-    !! @return Integer value of the parsed expression
-    !!
-    !! @b Remarks
-    !! @ingroup group_operators
-    recursive integer function parse_atom(tokens, ntokens, pos, macros) result(val)
+    recursive integer function parse_unary(expr, tokens, ntokens, pos, macros, ctx) result(val)
+        character(*), intent(in)    :: expr
         type(token), intent(in)     :: tokens(:)
         integer, intent(in)         :: ntokens
         integer, intent(inout)      :: pos
         type(macro), intent(in)     :: macros(:)
+        type(context), intent(in)   :: ctx
+
+        if (pos <= ntokens .and. tokens(pos)%value == '!') then
+            pos = pos + 1
+            val = merge(0, 1, parse_unary(expr, tokens, ntokens, pos, macros, ctx) /= 0)
+        else if (pos <= ntokens .and. tokens(pos)%value == '-') then
+            pos = pos + 1
+            val = -parse_unary(expr, tokens, ntokens, pos, macros, ctx)
+        else if (pos <= ntokens .and. tokens(pos)%value == '+') then
+            pos = pos + 1
+            val = parse_unary(expr, tokens, ntokens, pos, macros, ctx)
+        else if (pos <= ntokens .and. tokens(pos)%value == '~') then
+            pos = pos + 1
+            val = not(parse_unary(expr, tokens, ntokens, pos, macros, ctx))
+        else
+            val = parse_atom(expr, tokens, ntokens, pos, macros, ctx)
+        end if
+    end function
+
+    !> Parses primary expressions: numbers, identifiers, `defined(...)`, parentheses.
+    !! @param[in] expr      Input expression
+    !! @param[in] tokens    Array of tokens to parse
+    !! @param[in] ntokens   Number of valid tokens in the array
+    !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
+    !! @param[in] macros    Defined macros for expansion and `defined()` checks
+    !! @param[in] ctx    Context
+    !! @return Integer value of the parsed expression
+    !!
+    !! @b Remarks
+    !! @ingroup group_operators
+    recursive integer function parse_atom(expr, tokens, ntokens, pos, macros, ctx) result(val)
+        character(*), intent(in)    :: expr
+        type(token), intent(in)     :: tokens(:)
+        integer, intent(in)         :: ntokens
+        integer, intent(inout)      :: pos
+        type(macro), intent(in)     :: macros(:)
+        type(context), intent(in)   :: ctx
         !private
         integer :: i
         character(:), allocatable :: expanded
         logical :: stitch
 
         if (pos > ntokens) then
-            if (verbose) print *, "Error: Unexpected end of expression at pos ", pos
+            call printf(render(diagnostic_report(LEVEL_ERROR, &
+                    message='Synthax error', &
+                    label=label_type('Unexpected end of expression', pos, 1), &
+                    source=trim(ctx%path)), &
+                    expr, ctx%line))
             val = 0
             return
         end if
 
-        if (verbose) print *, "Parsing primary: ", trim(tokens(pos)%value), " at pos ", pos
         if (tokens(pos)%type == 0) then
             val = strtol(tokens(pos)%value)
             pos = pos + 1
         else if (tokens(pos)%type == 2) then
             if (is_defined(tokens(pos)%value, macros)) then
-                expanded = expand_macros(tokens(pos)%value, macros, stitch, global%implicit_continuation)
-                if (.not. evaluate_expression(expanded, macros, val)) val = 0
-                if (verbose) print *, "Expanded ", trim(tokens(pos)%value), " to ", trim(expanded), ", val = ", val
+                expanded = expand_macros(tokens(pos)%value, macros, stitch, global%implicit_continuation, ctx)
+                if (.not. evaluate_expression(expanded, macros, ctx, val)) val = 0
             else
                 val = 0
             end if
             pos = pos + 1
         else if (tokens(pos)%value == '(') then
             pos = pos + 1
-            val = parse_expression(tokens, ntokens, pos, macros)
+            val = parse_expression(expr, tokens, ntokens, pos, macros, ctx)
             if (pos > ntokens .or. tokens(pos)%value /= ')') then
-                if (verbose) print *, "Error: Missing closing parenthesis at pos ", pos
+                call printf(render(diagnostic_report(LEVEL_ERROR, &
+                        message='Synthax error', &
+                        label=label_type('Missing closing parenthesis in expression', len(expr), 1), &
+                        source=trim(ctx%path)), &
+                        expr, ctx%line))
                 val = 0
             else
-                if (verbose) print *, "Parsed ) at pos ", pos
                 pos = pos + 1
             end if
         else if (tokens(pos)%type == 4) then
             expanded = trim(tokens(pos)%value)
             val = merge(1, 0, is_defined(expanded, macros))
-            if (verbose) print *, "defined(", trim(expanded), ") = ", val
             pos = pos + 1
         else
-            if (verbose) print *, "Error: Invalid token in expression: ", trim(tokens(pos)%value)
+            call printf(render(diagnostic_report(LEVEL_ERROR, &
+                    message='Invalid expression', &
+                    label=label_type('Unknown token', 1, len_trim(tokens(pos)%value)), &
+                    source=trim(ctx%path)), &
+                    expr, ctx%line))
             val = 0
             pos = pos + 1
         end if

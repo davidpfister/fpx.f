@@ -1,5 +1,5 @@
 #include <assertion.inc>
-TESTPROGRAM(main)
+TESTPROGRAM(test_lfortran)
     block
         use fpx_parser
         use test_utils

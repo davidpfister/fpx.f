@@ -55,7 +55,7 @@ Casing:
 
 # Set the line size, breaking lines longer than the specified limit.
 # Default value is **`0`**, meaning no limit.
-ColumnLimit:     132
+ColumnLimit:     0
 
 # List of comment prefixes, i.e., text following the comment marker (`!`), that
 # should be interpreted as directives, which may be needed for proper line

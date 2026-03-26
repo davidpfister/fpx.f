@@ -65,6 +65,7 @@ module fpx_include
     use fpx_string
     use fpx_macro
     use fpx_global
+    use fpx_context
 
     implicit none; private
 
@@ -72,7 +73,7 @@ module fpx_include
 
     ! Include directive types
     integer, parameter, private :: INCLUDE_TYPE_SYSTEM = 1  ! < >
-    integer, parameter, private :: INCLUDE_TYPE_LOCAL  = 2  ! " "
+    integer, parameter, private :: INCLUDE_TYPE_LOCAL = 2  ! " "
 #ifdef _WIN32
     integer, parameter, private :: MAX_PATH_LEN = 256
 #else
@@ -104,21 +105,17 @@ contains
     !! - Angle bracket includes search: -I paths, PATH, cwd (skips parent directory)
     !! Opens the file and recursively preprocesses its contents into the output unit.
     !!
-    !! @param[in] input        Full line containing the #include directive
+    !! @param[in] ctx          Context line containing the #include directive
     !! @param[in] ounit        Output unit where preprocessed content is written
-    !! @param[in] parent_file  Path of the file containing the #include
-    !! @param[in] iline        Line number in parent file (for error messages)
     !! @param[in] preprocess   Procedure pointer to the main line-by-line preprocessor
     !! @param[inout] macros    Current macro table (shared across recursion levels)
     !! @param[in] token        Usually 'INCLUDE' – the directive keyword
     !!
     !! @b Remarks
     !! @ingroup group_include
-    recursive subroutine handle_include(input, ounit, parent_file, iline, preprocess, macros, token)
-        character(*), intent(in)                :: input
+    recursive subroutine handle_include(ctx, ounit, preprocess, macros, token)
+        type(context), intent(in)               :: ctx
         integer, intent(in)                     :: ounit
-        character(*), intent(in)                :: parent_file
-        integer, intent(in)                     :: iline
         procedure(read_unit)                    :: preprocess
         type(macro), allocatable, intent(inout) :: macros(:)
         character(*), intent(in)                :: token
@@ -131,11 +128,11 @@ contains
         logical :: exists
 
         ! Extract the directory of the parent file
-        dir = dirpath(parent_file)
+        dir = dirpath(ctx%path)
         ! Find the position after the #include token
-        pos = index(lowercase(input), token) + len(token)
-        include_file = trim(adjustl(input(pos:)))
-        
+        pos = index(lowercase(ctx%content), token) + len(token)
+        include_file = trim(adjustl(ctx%content(pos:)))
+
         ! Determine include type and extract filename
         if (include_file(1:1) == '"') then
             include_type = INCLUDE_TYPE_LOCAL
@@ -145,7 +142,11 @@ contains
             include_file = include_file(2:index(include_file(2:), '>'))
         else
             ! Malformed include directive
-            if (verbose) print *, 'Error: Malformed #include directive at ', trim(parent_file), ':', iline
+            call printf(render(diagnostic_report(LEVEL_ERROR, &
+                    message='Malformed #include directive', &
+                    label=label_type('Filepath should either be delimited by "<...>" or "..."', index(ctx%content, include_file), len(include_file)), &
+                    source=trim(ctx%path)), &
+                    ctx%content, ctx%line))
             return
         end if
 
@@ -156,8 +157,12 @@ contains
             if (exists) then
                 include_file = ifile
             else
-                if (verbose) then 
-                    print *, "Error: Cannot find include file '", trim(include_file), "' at ", trim(parent_file), ":", iline
+                if (verbose) then
+                    call printf(render(diagnostic_report(LEVEL_ERROR, &
+                            message='File not found', &
+                            label=label_type('Cannot find include file ' // trim(include_file), index(ctx%content, include_file), len(include_file)), &
+                            source=trim(ctx%path)), &
+                            ctx%content, ctx%line))
                     return
                 end if
             end if
@@ -173,7 +178,7 @@ contains
                     include_file = ifile
                 end if
             end if
-            
+
             ! If not found yet, search user-specified include directories (-I paths)
             if (.not. exists .and. allocated(global%includedir)) then
                 do i = 1, size(global%includedir)
@@ -184,13 +189,13 @@ contains
                         exit
                     end if
                 end do
-             end if
-             
+            end if
+
             ! If still not found, try the INCLUDE environmental variable
             if (.not. exists) then
                 block
                     character(:), allocatable :: ipaths(:)
-                    
+
                     ipaths = get_system_paths()
                     do i = 1, size(ipaths)
                         ifile = join(ipaths(i), include_file)
@@ -201,7 +206,7 @@ contains
                     end do
                 end block
             end if
-            
+
             ! If still not found, try current working directory as last resort
             if (.not. exists) then
                 ifile = join(cwd(), include_file)
@@ -210,10 +215,14 @@ contains
                     include_file = ifile
                 end if
             end if
-            
+
             ! If file was not found anywhere, report error
             if (.not. exists) then
-                if (verbose) print *, "Error: Cannot find include file '", trim(include_file), "' at ", trim(parent_file), ":", iline
+                call printf(render(diagnostic_report(LEVEL_ERROR, &
+                        message='File not found', &
+                        label=label_type('Cannot find include file ' // trim(include_file), index(ctx%content, include_file), len(include_file)), &
+                        source=trim(ctx%path)), &
+                        ctx%content, ctx%line))
                 return
             end if
         end if
@@ -221,10 +230,14 @@ contains
         ! Open and preprocess the include file
         open(newunit=iunit, file=include_file, status='old', action='read', iostat=ierr)
         if (ierr /= 0) then
-            if (verbose) print *, "Error: Cannot open include file '", trim(include_file), "' at ", trim(parent_file), ":", iline
+            call printf(render(diagnostic_report(LEVEL_ERROR, &
+                    message='File not found', &
+                    label=label_type('Cannot open include file ' // trim(include_file), index(ctx%content, include_file), len(include_file)), &
+                    source=trim(ctx%path)), &
+                    ctx%content, ctx%line))
             return
         end if
-        
+
         call preprocess(iunit, ounit, macros, .true.)
         close(iunit)
     end subroutine
@@ -241,32 +254,32 @@ contains
         character(:), allocatable :: path_env, tmp(:)
         integer :: lpath, i, n_paths, start_pos, end_pos, count
         character(len=1) :: path_sep
-        
+
 #ifdef _WIN32
         path_sep = ';'  ! Windows path separator
 #else
         path_sep = ':'  ! Unix/Linux/Mac path separator
 #endif
-        
+
         ! Get PATH environment variable length
         call get_environment_variable('INCLUDE', length=lpath)
         if (lpath <= 0) then
             allocate(character(len=0) :: paths(0)); return
         end if
-        
+
         ! Allocate and retrieve PATH value
         allocate(character(len=lpath) :: path_env)
         call get_environment_variable('INCLUDE', value=path_env)
-        
+
         ! Count number of paths (number of separators + 1)
         n_paths = 1
         do i = 1, len(path_env)
             if (path_env(i:i) == path_sep) n_paths = n_paths + 1
         end do
-        
+
         ! Allocate temporary array with maximum size
         allocate(character(len=MAX_PATH_LEN) :: tmp(n_paths))
-        
+
         ! Split INCLUDE into individual directories
         count = 0
         start_pos = 1
@@ -277,7 +290,7 @@ contains
                 else
                     end_pos = i - 1
                 end if
-                
+
                 if (end_pos >= start_pos) then
                     count = count + 1
                     tmp(count) = trim(adjustl(path_env(start_pos:end_pos)))
@@ -285,7 +298,7 @@ contains
                 start_pos = i + 1
             end if
         end do
-        
+
         ! Allocate result array with actual count
         if (count > 0) then
             allocate(character(len=MAX_PATH_LEN) :: paths(count))

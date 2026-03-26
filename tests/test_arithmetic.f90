@@ -1,5 +1,5 @@
 #include <assertion.inc>
-TESTPROGRAM(main)
+TESTPROGRAM(test_arithmetic)
 
     TEST('test_expression')
         use fpx_operators

@@ -21,21 +21,21 @@
 !!    type(macro), allocatable :: macros(:)
 !!    call add(macros, macro('PI', '3.1415926535'))
 !!    call add(macros, macro('MSG(x)', 'print *, ″Hello ″, x'))
-!!    print *, expand_all('area = PI * r**2', macros, 'circle.F90', 10, stitch, .false.)
+!!    print *, expand_all(context('area = PI * r**2', 10, './circle.F90', 'circle'), macros, stitch, .false., .false.)
 !!    !> prints: area = 3.1415926535 * r**2
 !! @endcode
 !!
 !! 2. Variadic macro with stringification and pasting:
 !! @code{.f90}
 !!    call add(macros, macro('DEBUG_PRINT(...)', 'print *, ″DEBUG[″, __FILE__, ″:″, __LINE__, ″]: ″, __VA_ARGS__'))
-!!    print *, expand_all('DEBUG_PRINT(″value =″, x)', macros, ″test.F90″, 42, stitch, .false.)
+!!    print *, expand_all(context('DEBUG_PRINT(″value =″, x)', 42, 'test.F90', 'text'), macros, stitch, .false., false)
 !!    !> prints: print *, 'DEBUG[', 'test.F90', ':', 42, ']: ', 'value =', x
 !! @endcode
 !!
 !! 3. Token pasting with ##:
 !! @code{.f90}
 !!    call add(macros, macro('MAKE_VAR(name,num)', 'var_name_##num'))
-!!    print *, expand_all('real :: MAKE_VAR(temp,42)', macros, 'file.F90', 5, stitch, .false.)
+!!    print *, expand_all(context('real :: MAKE_VAR(temp,42)', 5, 'file.F90', 'file'), macros, stitch, .false., .false.)
 !!    !> prints: real :: var_name_42
 !! @endcode
 module fpx_macro
@@ -45,6 +45,8 @@ module fpx_macro
     use fpx_graph
     use fpx_string
     use fpx_date
+    use fpx_logging
+    use fpx_context
 
     implicit none; private
 
@@ -90,7 +92,7 @@ module fpx_macro
     !! <h2  class="groupheader">Remarks</h2>
     !! @ingroup group_macro
     type, extends(string) :: macro
-        character(:), allocatable :: value  !< Name of the macro
+        character(:), allocatable :: value  !< Value of the macro
         type(string), allocatable :: params(:)  !< List of parameter for function like macros
         logical :: is_variadic  !< Indicate whether the macro is variadic or not.
         logical :: is_cyclic    !< Indicates whether the macro has cyclic dependencies or not.
@@ -181,22 +183,18 @@ contains
     !> Fully expand a line including predefined macros (__FILE__, __LINE__, etc.)
     !! First performs normal macro expansion via expand_macros(), then substitutes
     !! standard predefined tokens with current file/line/date information.
-    !! @param[in]  line     Input source line
+    !! @param[in]  ctx  Context
     !! @param[in]  macros   Current macro table
-    !! @param[in]  filepath Current source file path
-    !! @param[in]  iline   Current line number
     !! @param[out] stitch   Set to .true.true. if result ends with '&' (Fortran continuation)
-    !! @param[in]  has_extra   Has extra macros (non-standard) like __FILENAME__ and __TIMESTAMP__ 
-    !! @param[in]  implicit_conti If .true., implicit continuation is permitted 
+    !! @param[in]  has_extra   Has extra macros (non-standard) like __FILENAME__ and __TIMESTAMP__
+    !! @param[in]  implicit_conti If .true., implicit continuation is permitted
     !! @return Expanded line with all macros and predefined tokens replaced
     !!
     !! @b Remarks
     !! @ingroup group_macro
-    function expand_all(line, macros, filepath, iline, stitch, has_extra, implicit_conti) result(expanded)
-        character(*), intent(in)            :: line
+    function expand_all(ctx, macros, stitch, has_extra, implicit_conti) result(expanded)
+        type(context), intent(in)           :: ctx
         type(macro), intent(in)             :: macros(:)
-        character(*), intent(in)            :: filepath
-        integer, intent(in)                 :: iline
         logical, intent(out)                :: stitch
         logical, intent(in)                 :: has_extra
         logical, intent(in)                 :: implicit_conti
@@ -205,7 +203,7 @@ contains
         integer :: pos, start, sep, dot
         type(datetime) :: date
 
-        expanded = expand_macros(line, macros, stitch, implicit_conti)
+        expanded = expand_macros(ctx%content, macros, stitch, implicit_conti, ctx)
         date = now()
 
         ! Substitute __FILE__ (relative path to working directory)
@@ -214,8 +212,7 @@ contains
             pos = index(expanded, '__FILE__')
             if (pos > 0) then
                 start = pos + len('__FILE__')
-                expanded = trim(expanded(:pos - 1) // '"' // trim(filepath) // '"' // trim(expanded(start:)))
-                if (verbose) print *, "Substituted __FILE__ with '", trim(filepath), "', expanded: '", trim(expanded), "'"
+                expanded = trim(expanded(:pos - 1) // '"' // trim(ctx%path) // '"' // trim(expanded(start:)))
             end if
         end do
 
@@ -226,8 +223,7 @@ contains
             if (pos > 0) then
                 if (pos > 0) then
                     start = pos + len('__LINE__')
-                    expanded = trim(expanded(:pos - 1) // tostring(iline) // trim(expanded(start:)))
-                    if (verbose) print *, "Substituted __LINE__ with '", iline, "', expanded: '", trim(expanded), "'"
+                    expanded = trim(expanded(:pos - 1) // tostring(ctx%line) // trim(expanded(start:)))
                 end if
             end if
         end do
@@ -240,8 +236,6 @@ contains
                 if (pos > 0) then
                     start = pos + len('__DATE__')
                     expanded = trim(expanded(:pos - 1) // '"' // date%to_string('MMM-dd-yyyy') // '"' // trim(expanded(start:)))
-                    if (verbose) print *, "Substituted __DATE__ with '", date%to_string('MMM-dd-yyyy'), "', expanded: '", trim(&
-                            expanded), "'"
                 end if
             end if
         end do
@@ -254,8 +248,6 @@ contains
                 if (pos > 0) then
                     start = pos + len('__TIME__')
                     expanded = trim(expanded(:pos - 1) // '"' // date%to_string('HH:mm:ss') // '"' // trim(expanded(start:)))
-                    if (verbose) print *, "Substituted __TIME__ with '", date%to_string('HH:mm:ss'), "', expanded: '", trim(&
-                            expanded), "'"
                 end if
             end if
         end do
@@ -266,21 +258,19 @@ contains
                 pos = index(expanded, '__FILENAME__')
                 if (pos > 0) then
                     start = pos + len('__FILENAME__')
-                    expanded = trim(expanded(:pos - 1) // '"' // filename(filepath, .true.) // '"' // trim(expanded(start:)))
-                    if (verbose) print *, "Substituted __FILENAME__ with '", trim(filepath), "', expanded: '", trim(expanded), "'"
+                    expanded = trim(expanded(:pos - 1) // '"' // filename(ctx%path, .true.) // '"' // trim(expanded(start:)))
                 end if
             end do
-            
+
             ! Substitute __TIMESTAMP__
             pos = 1; do while (pos > 0)
                 pos = index(expanded, '__TIMESTAMP__')
                 if (pos > 0) then
                     if (pos > 0) then
                         start = pos + len('__TIMESTAMP__')
-                        expanded = trim(expanded(:pos - 1) // '"' // date%to_string('ddd MM yyyy') // ' ' // date%to_string('HH:mm:ss'&
+                        expanded = trim(expanded(:pos - 1) // '"' // date%to_string('ddd MM yyyy') // ' ' // date%to_string(&
+                                'HH:mm:ss'&
                                 &) // '"' // trim(expanded(start:)))
-                        if (verbose) print *, "Substituted __TIMESTAMP__ with '", date%to_string('ddd MM yyyy') // ' ' // date%&
-                                to_string('HH:mm:ss'), "', expanded: '", trim(expanded), "'"
                     end if
                 end if
             end do
@@ -297,19 +287,21 @@ contains
     !! - Recursion with cycle detection via digraph
     !! - Proper handling of nested parentheses and quoted strings
     !!
-    !! @param[in]  line   Input line
+    !! @param[in]  line  Line to be expanded
     !! @param[in]  macros Current macro table
     !! @param[out] stitch .true. if final line ends with '&'
-    !! @param[in]  implicit_conti If .true., implicit continuation is permitted 
+    !! @param[in]  implicit_conti If .true., implicit continuation is permitted
+    !! @param[in]  ctx  Context
     !! @return Line with user-defined macros expanded (predefined tokens untouched)
     !!
     !! @b Remarks
     !! @ingroup group_macro
-    function expand_macros(line, macros, stitch, implicit_conti) result(expanded)
+    function expand_macros(line, macros, stitch, implicit_conti, ctx) result(expanded)
         character(*), intent(in)    :: line
         type(macro), intent(in)     :: macros(:)
         logical, intent(out)        :: stitch
         logical, intent(in)         :: implicit_conti
+        type(context), intent(in)   :: ctx
         character(:), allocatable   :: expanded
         !private
         integer :: imacro, paren_level
@@ -347,7 +339,6 @@ contains
             expanded = line
             if (size(macros) == 0) return
             isopened = .false.
-            if (verbose) print *, "Initial expanded: '", trim(expanded), "'"
 
             do i = 1, size(macros)
                 n = len_trim(macros(i)); if (n == 0) cycle
@@ -402,12 +393,15 @@ contains
                                     end do
                                     m_end = j - 1
                                     args_str = expanded(start:m_end)
-                                    if (verbose) print *, "Expanding macro: ", macros(i), ", args: ", trim(args_str)
                                     temp = trim(macros(i)%value)
 
                                     if (macros(i)%is_variadic) then
                                         if (nargs < size(macros(i)%params)) then
-                                            if (verbose) print *, "Error: Too few arguments for macro ", macros(i)
+                                            call printf(render(diagnostic_report(LEVEL_ERROR, &
+                                                    message='Variadic macro issue', &
+                                                    label=label_type('Too few arguments for macro ' // macros(i), start, m_end - start), &
+                                                    source=trim(ctx%path)), &
+                                                    expanded, ctx%line))
                                             cycle
                                         end if
                                         va_args = ''
@@ -415,9 +409,12 @@ contains
                                             if (j > size(macros(i)%params) + 1) va_args = va_args // ', '
                                             va_args = va_args // arg_values(j)
                                         end do
-                                        if (verbose) print *, "__VA_ARGS__: '", trim(va_args), "'"
                                     else if (nargs /= size(macros(i)%params)) then
-                                        if (verbose) print *, "Error: Incorrect number of arguments for macro ", macros(i)
+                                        call printf(render(diagnostic_report(LEVEL_ERROR, &
+                                                message='Function-like macro issue', &
+                                                label=label_type('Incorrect number of arguments for macro ' // macros(i), start, m_end - start), &
+                                                source=trim(ctx%path)), &
+                                                expanded, ctx%line))
                                         cycle
                                     end if
 
@@ -487,8 +484,6 @@ contains
                                                     else
                                                         temp = trim(temp(:pos - 1) // arg_values(j) // trim(temp(start:)))
                                                     end if
-                                                    if (verbose) print *, "Substituted param ", j, ": '", macros(i)%params(j), &
-                                                            "' with '", arg_values(j), "', temp: '", trim(temp), "'"
                                                 end if
                                             end do wloop
                                         end do jloop
@@ -503,7 +498,11 @@ contains
                                                 ! Find token1 (before ##)
                                                 k = pos - 1
                                                 if (k <= 0) then
-                                                    if (verbose) print *, "Error: No token before ##"
+                                                    call printf(render(diagnostic_report(LEVEL_ERROR, &
+                                                            message='Synthax error', &
+                                                            label=label_type('No token before ##', pos, 2), &
+                                                            source=trim(ctx%path)), &
+                                                            temp, ctx%line))
                                                     cycle
                                                 end if
 
@@ -518,7 +517,11 @@ contains
                                                 ! Find token2 (after ##)
                                                 k = pos + 2
                                                 if (k > len(temp)) then
-                                                    if (verbose) print *, "Error: No token after ##"
+                                                    call printf(render(diagnostic_report(LEVEL_ERROR, &
+                                                            message='Synthax error', &
+                                                            label=label_type('No token after ##', pos, 2), &
+                                                            source=trim(ctx%path)), &
+                                                            temp, ctx%line))
                                                     cycle
                                                 end if
 
@@ -531,14 +534,12 @@ contains
                                                 end if
 
                                                 ! Concatenate, replacing the full 'token1 ## token2' pattern
-                                                if (is_defined(token1, macros, idx = k)) &
-                                                    token1 = expand_macros_internal(token1, imacro, macros)
-                                                if (is_defined(token2, macros, idx = k)) &
-                                                    token2 = expand_macros_internal(token2, imacro, macros)
-                                                
+                                                if (is_defined(token1, macros, idx=k)) &
+                                                        token1 = expand_macros_internal(token1, imacro, macros)
+                                                if (is_defined(token2, macros, idx=k)) &
+                                                        token2 = expand_macros_internal(token2, imacro, macros)
+
                                                 temp = trim(prefix // trim(token1) // trim(token2) // suffix)
-                                                if (verbose) print *, "Concatenated '", trim(token1), "' and '", trim(token2), &
-                                                        "' to '", trim(token1) // trim(token2), "', temp: '", trim(temp), "'"
                                             end if
                                         end do
                                     end block
@@ -557,8 +558,7 @@ contains
                                                     else
                                                         temp = trim(temp(:pos - 1) // trim(va_args) // trim(temp(start + 1:)))
                                                     end if
-                                                    if (verbose) print *, "Substituted __VA_ARGS__ with '", trim(va_args), &
-                                                            "', temp: '", trim(temp), "'"
+
                                                     ! Substitute __VA_OPT__
                                                     pos = index(temp, '__VA_OPT__')
                                                     if (pos > 0) then
@@ -575,20 +575,18 @@ contains
                                         end if
                                     end block
 
-                                    if (verbose) print *, "Before recursive call, temp: '", trim(temp), "'"
                                     call graph%add_edge(imacro, i)
                                     if (.not. graph%is_circular(i)) then
                                         temp = expand_macros_internal(temp, i, macros)  ! Only for nested macros
                                     else
-                                        if (verbose) print *, "Circular macro detected: '", macros(i), "'"
+                                        call printf(render(diagnostic_report(LEVEL_ERROR, &
+                                                message='Failed macro expansion', &
+                                                label=label_type('Circular macro detected', index(temp, macros(i)), len(macros(i))), &
+                                                source=trim(ctx%path)), &
+                                                temp, ctx%line))
                                         cycle
                                     end if
-                                    if (verbose) print *, "After recursive call, temp: '", trim(temp), "'"
-                                    if (verbose) print *, "Prefix: '", trim(expanded(:m_start - 1)), "'"
-                                    if (verbose) print *, "Temp: '", trim(temp), "'"
-                                    if (verbose) print *, "Suffix: '", trim(expanded(m_end + 1:)), "'"
                                     expanded = trim(expanded(:m_start - 1) // trim(temp) // expanded(m_end + 1:))
-                                    if (verbose) print *, "After substitution, expanded: '", trim(expanded), "'"
                                 end if
                             end if
                         else
@@ -599,10 +597,13 @@ contains
                                 expanded = trim(expanded(:m_start - 1) // trim(temp) // expanded(m_end + 1:))
                                 expanded = expand_macros_internal(expanded, imacro, macros)
                             else
-                                if (verbose) print *, "Circular macro detected: '", macros(i), "'"
+                                call printf(render(diagnostic_report(LEVEL_ERROR, &
+                                        message='Failed macro expansion', &
+                                        label=label_type('Circular macro detected', index(temp, macros(i)), len(macros(i))), &
+                                        source=trim(ctx%path)), &
+                                        temp, ctx%line))
                                 cycle
                             end if
-                            if (verbose) print *, "Simple macro expanded: '", trim(expanded), "'"
                         end if
                     end if
                 end do
@@ -687,10 +688,10 @@ contains
         integer :: i, j, n
 
         n = merge(size(array), 0, allocated(array))
-        
-        select rank(val)
+
+        select rank (val)
         rank(0)
-            allocate(isdef(1), source = .false.)
+            allocate(isdef(1), source=.false.)
             do i = 1, n
                 if (array(i) == val) then
                     array(i) = val
@@ -698,14 +699,14 @@ contains
                 end if
             end do
             if (.not. isdef(1)) then
-                allocate(tmp(n+1))
+                allocate(tmp(n + 1))
                 tmp(1:n) = array
                 tmp(n + 1) = val
                 call move_alloc(tmp, array)
                 if (allocated(tmp)) deallocate(tmp)
             end if
         rank(1)
-            allocate(isdef(size(val)), source = .false.)
+            allocate(isdef(size(val)), source=.false.)
             do concurrent (i = 1:n, j = 1:size(val))
                 if (array(i) == val(j)) then
                     array(i) = val(j)
@@ -717,10 +718,8 @@ contains
             tmp(n + 1:) = pack(val, isdef)
             call move_alloc(tmp, array)
             if (allocated(tmp)) deallocate(tmp)
-        rank default
-            error stop 'Unsupported dimension.'
         end select
-        
+
         do i = 1, size(array)
             do j = n + 1, size(array)
                 if (i == j) cycle
