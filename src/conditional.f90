@@ -140,8 +140,8 @@ contains
 
         if (cond_depth + 1 > MAX_COND_DEPTH) then
             call printf(render(diagnostic_report(LEVEL_ERROR, &
-                    message = 'Conditional nesting too deep', &
-                    source = trim(ctx%path)), &
+                    message='Conditional nesting too deep', &
+                    source=trim(ctx%path)), &
                     ctx%content, ctx%line))
             return
         end if
@@ -173,8 +173,8 @@ contains
 
         if (cond_depth + 1 > MAX_COND_DEPTH) then
             call printf(render(diagnostic_report(LEVEL_ERROR, &
-                    message = 'Conditional nesting too deep', &
-                    source = trim(ctx%path)), &
+                    message='Conditional nesting too deep', &
+                    source=trim(ctx%path)), &
                     ctx%content, ctx%line))
             return
         end if
@@ -206,8 +206,8 @@ contains
 
         if (cond_depth + 1 > MAX_COND_DEPTH) then
             call printf(render(diagnostic_report(LEVEL_ERROR, &
-                    message = 'Conditional nesting too deep', &
-                    source = trim(ctx%path)), &
+                    message='Conditional nesting too deep', &
+                    source=trim(ctx%path)), &
                     ctx%content, ctx%line))
             return
         end if
@@ -240,10 +240,10 @@ contains
 
         if (cond_depth == 0) then
             call printf(render(diagnostic_report(LEVEL_ERROR, &
-                        message = 'Synthax error', &
-                        label = label_type('#elif without matching #if', 1, len_trim(ctx%content)), &
-                        source = trim(ctx%path)), &
-                        ctx%content, ctx%line))
+                    message='Synthax error', &
+                    label=label_type('#elif without matching #if', 1, len_trim(ctx%content)), &
+                    source=trim(ctx%path)), &
+                    ctx%content, ctx%line))
             return
         end if
 
@@ -277,10 +277,10 @@ contains
 
         if (cond_depth == 0) then
             call printf(render(diagnostic_report(LEVEL_ERROR, &
-                        message = 'Synthax error', &
-                        label = label_type('#elifdef without matching #if', 1, len_trim(ctx%content)), &
-                        source = trim(ctx%path)), &
-                        ctx%content, ctx%line))
+                    message='Synthax error', &
+                    label=label_type('#elifdef without matching #if', 1, len_trim(ctx%content)), &
+                    source=trim(ctx%path)), &
+                    ctx%content, ctx%line))
             return
         end if
 
@@ -314,10 +314,10 @@ contains
 
         if (cond_depth == 0) then
             call printf(render(diagnostic_report(LEVEL_ERROR, &
-                        message = 'Synthax error', &
-                        label = label_type('#elifndef without matching #if', 1, len_trim(ctx%content)), &
-                        source = trim(ctx%path)), &
-                        ctx%content, ctx%line))
+                    message='Synthax error', &
+                    label=label_type('#elifndef without matching #if', 1, len_trim(ctx%content)), &
+                    source=trim(ctx%path)), &
+                    ctx%content, ctx%line))
             return
         end if
 
@@ -346,10 +346,10 @@ contains
 
         if (cond_depth == 0) then
             call printf(render(diagnostic_report(LEVEL_ERROR, &
-                        message = 'Synthax error', &
-                        label = label_type('#else without matching #if', 1, len_trim(ctx%content)), &
-                        source = trim(ctx%path)), &
-                        ctx%content, ctx%line))
+                    message='Synthax error', &
+                    label=label_type('#else without matching #if', 1, len_trim(ctx%content)), &
+                    source=trim(ctx%path)), &
+                    ctx%content, ctx%line))
             return
         end if
 
@@ -373,10 +373,10 @@ contains
 
         if (cond_depth == 0) then
             call printf(render(diagnostic_report(LEVEL_ERROR, &
-                        message = 'Synthax error', &
-                        label = label_type('#endif without matching #if', 1, len_trim(ctx%content)), &
-                        source = trim(ctx%path)), &
-                        ctx%content, ctx%line))
+                    message='Synthax error', &
+                    label=label_type('#endif without matching #if', 1, len_trim(ctx%content)), &
+                    source=trim(ctx%path)), &
+                    ctx%content, ctx%line))
             return
         end if
         cond_depth = cond_depth - 1

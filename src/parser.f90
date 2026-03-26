@@ -117,8 +117,8 @@ contains
         open(newunit=iunit, file=filepath, status='old', action='read', iostat=ierr)
         if (ierr /= 0) then
             call printf(render(diagnostic_report(LEVEL_ERROR, &
-                        message = 'Error opening input file: '//trim(filepath)), &
-                        ''))
+                    message='Error opening input file: ' // trim(filepath)), &
+                    ''))
             return
         else
             if (c_associated(getcwd_c(buf, size(buf, kind=c_size_t)))) then
@@ -131,7 +131,7 @@ contains
             open(newunit=ounit, file=outputfile, status='replace', action='write', iostat=ierr)
             if (ierr /= 0) then
                 call printf(render(diagnostic_report(LEVEL_ERROR, &
-                        message = 'Error opening input file: '//trim(outputfile)), &
+                        message='Error opening input file: ' // trim(outputfile)), &
                         ''))
                 close(iunit)
                 return
@@ -164,8 +164,8 @@ contains
         open(newunit=ounit, file=ofile, status='replace', action='write', iostat=ierr)
         if (ierr /= 0) then
             call printf(render(diagnostic_report(LEVEL_ERROR, &
-                        message = 'Error opening input file: '//trim(ofile)), &
-                        ''))
+                    message='Error opening input file: ' // trim(ofile)), &
+                    ''))
             close(iunit)
             return
         end if
@@ -191,8 +191,8 @@ contains
         open(newunit=iunit, file=ifile, status='old', action='read', iostat=ierr)
         if (ierr /= 0) then
             call printf(render(diagnostic_report(LEVEL_ERROR, &
-                        message = 'Error opening input file: '//trim(ifile)), &
-                        ''))
+                    message='Error opening input file: ' // trim(ifile)), &
+                    ''))
             return
         else
             if (c_associated(getcwd_c(buf, size(buf, kind=c_size_t)))) then
@@ -332,14 +332,14 @@ contains
 
         if (cond_depth > 0) then
             call printf(render(diagnostic_report(LEVEL_ERROR, &
-                        message = 'Unclosed conditional block at end of file', &
-                        label = label_type('Missing conditional statement #endif', 1, 1)), &
-                        trim(line), iline))
+                    message='Unclosed conditional block at end of file', &
+                    label=label_type('Missing conditional statement #endif', 1, 1)), &
+                    trim(line), iline))
         else if (c_continue) then
             call printf(render(diagnostic_report(LEVEL_ERROR, &
-                        message = 'Unexpected character', &
-                        label = label_type('Trailing new line "\"', len(trim(line)), 1)), &
-                        trim(line), iline))
+                    message='Unexpected character', &
+                    label=label_type('Trailing new line "\"', len(trim(line)), 1)), &
+                    trim(line), iline))
         end if
     end subroutine
 

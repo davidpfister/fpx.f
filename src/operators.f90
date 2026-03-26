@@ -75,7 +75,7 @@ module fpx_operators
     implicit none; private
 
     public :: evaluate_expression
-    
+
     interface evaluate_expression
         module procedure :: evaluate_expression_default
         module procedure :: evaluate_expression_with_context
@@ -101,7 +101,7 @@ contains
         integer, intent(out), optional  :: val
         !private
         type(context) :: ctx
-        
+
         ctx = context(expr, 1, '', '')
         res = evaluate_expression(expr, macros, ctx, val)
     end function
@@ -131,10 +131,10 @@ contains
         call tokenize(expr, tokens, ntokens)
         if (ntokens == 0) then
             call printf(render(diagnostic_report(LEVEL_ERROR, &
-                        message = 'Tokenization failed', &
-                        label = label_type('No tokens found', 1, len_trim(expr)), &
-                        source = trim(ctx%path)), &
-                        expr, ctx%line))
+                    message='Tokenization failed', &
+                    label=label_type('No tokens found', 1, len_trim(expr)), &
+                    source=trim(ctx%path)), &
+                    expr, ctx%line))
             res = .false.
             return
         end if
@@ -143,10 +143,10 @@ contains
         result = parse_expression(expr, tokens, ntokens, pos, macros, ctx)
         if (pos <= ntokens) then
             call printf(render(diagnostic_report(LEVEL_ERROR, &
-                        message = 'Tokenization failed', &
-                        label = label_type('Extra tokens found', tokens(pos)%start, len_trim(tokens(pos)%value)), &
-                        source = trim(ctx%path)), &
-                        expr, ctx%line))
+                    message='Tokenization failed', &
+                    label=label_type('Extra tokens found', tokens(pos)%start, len_trim(tokens(pos)%value)), &
+                    source=trim(ctx%path)), &
+                    expr, ctx%line))
             res = .false.
             return
         end if
@@ -208,9 +208,9 @@ contains
             ! Expect ':'
             if (pos > ntokens .or. tokens(pos)%value /= ':') then
                 call printf(render(diagnostic_report(LEVEL_ERROR, &
-                        message = 'Synthax error', &
-                        label = label_type('Expected ":" in conditional expression', 1, len(expr)), &
-                        source = trim(ctx%path)), &
+                        message='Synthax error', &
+                        label=label_type('Expected ":" in conditional expression', 1, len(expr)), &
+                        source=trim(ctx%path)), &
                         expr, ctx%line))
                 val = 0
                 return
@@ -415,7 +415,7 @@ contains
     !! @param[in] ntokens   Number of valid tokens in the array
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
     !! @param[in] macros    Defined macros for expansion and `defined()` checks
-    !! @param[in] ctx Context  
+    !! @param[in] ctx Context
     !! @return Integer value of the parsed expression
     !!
     !! @b Remarks
@@ -657,9 +657,9 @@ contains
 
         if (pos > ntokens) then
             call printf(render(diagnostic_report(LEVEL_ERROR, &
-                    message = 'Synthax error', &
-                    label = label_type('Unexpected end of expression', pos, 1), &
-                    source = trim(ctx%path)), &
+                    message='Synthax error', &
+                    label=label_type('Unexpected end of expression', pos, 1), &
+                    source=trim(ctx%path)), &
                     expr, ctx%line))
             val = 0
             return
@@ -681,9 +681,9 @@ contains
             val = parse_expression(expr, tokens, ntokens, pos, macros, ctx)
             if (pos > ntokens .or. tokens(pos)%value /= ')') then
                 call printf(render(diagnostic_report(LEVEL_ERROR, &
-                        message = 'Synthax error', &
-                        label = label_type('Missing closing parenthesis in expression', len(expr), 1), &
-                        source = trim(ctx%path)), &
+                        message='Synthax error', &
+                        label=label_type('Missing closing parenthesis in expression', len(expr), 1), &
+                        source=trim(ctx%path)), &
                         expr, ctx%line))
                 val = 0
             else
@@ -695,10 +695,10 @@ contains
             pos = pos + 1
         else
             call printf(render(diagnostic_report(LEVEL_ERROR, &
-                        message = 'Invalid expression', &
-                        label = label_type('Unknown token', 1, len_trim(tokens(pos)%value)), &
-                        source = trim(ctx%path)), &
-                        expr, ctx%line))
+                    message='Invalid expression', &
+                    label=label_type('Unknown token', 1, len_trim(tokens(pos)%value)), &
+                    source=trim(ctx%path)), &
+                    expr, ctx%line))
             val = 0
             pos = pos + 1
         end if

@@ -398,10 +398,10 @@ contains
                                     if (macros(i)%is_variadic) then
                                         if (nargs < size(macros(i)%params)) then
                                             call printf(render(diagnostic_report(LEVEL_ERROR, &
-                                                message = 'Variadic macro issue', &
-                                                label = label_type('Too few arguments for macro '//macros(i), start, m_end - start), &
-                                                source = trim(ctx%path)), &
-                                                expanded, ctx%line))
+                                                    message='Variadic macro issue', &
+                                                    label=label_type('Too few arguments for macro ' // macros(i), start, m_end - start), &
+                                                    source=trim(ctx%path)), &
+                                                    expanded, ctx%line))
                                             cycle
                                         end if
                                         va_args = ''
@@ -411,9 +411,9 @@ contains
                                         end do
                                     else if (nargs /= size(macros(i)%params)) then
                                         call printf(render(diagnostic_report(LEVEL_ERROR, &
-                                                message = 'Function-like macro issue', &
-                                                label = label_type('Incorrect number of arguments for macro '//macros(i), start, m_end - start), &
-                                                source = trim(ctx%path)), &
+                                                message='Function-like macro issue', &
+                                                label=label_type('Incorrect number of arguments for macro ' // macros(i), start, m_end - start), &
+                                                source=trim(ctx%path)), &
                                                 expanded, ctx%line))
                                         cycle
                                     end if
@@ -499,10 +499,10 @@ contains
                                                 k = pos - 1
                                                 if (k <= 0) then
                                                     call printf(render(diagnostic_report(LEVEL_ERROR, &
-                                                        message = 'Synthax error', &
-                                                        label = label_type('No token before ##', pos, 2), &
-                                                        source = trim(ctx%path)), &
-                                                        temp, ctx%line))
+                                                            message='Synthax error', &
+                                                            label=label_type('No token before ##', pos, 2), &
+                                                            source=trim(ctx%path)), &
+                                                            temp, ctx%line))
                                                     cycle
                                                 end if
 
@@ -518,10 +518,10 @@ contains
                                                 k = pos + 2
                                                 if (k > len(temp)) then
                                                     call printf(render(diagnostic_report(LEVEL_ERROR, &
-                                                        message = 'Synthax error', &
-                                                        label = label_type('No token after ##', pos, 2), &
-                                                        source = trim(ctx%path)), &
-                                                        temp, ctx%line))
+                                                            message='Synthax error', &
+                                                            label=label_type('No token after ##', pos, 2), &
+                                                            source=trim(ctx%path)), &
+                                                            temp, ctx%line))
                                                     cycle
                                                 end if
 
@@ -580,10 +580,10 @@ contains
                                         temp = expand_macros_internal(temp, i, macros)  ! Only for nested macros
                                     else
                                         call printf(render(diagnostic_report(LEVEL_ERROR, &
-                                                    message = 'Failed macro expansion', &
-                                                    label = label_type('Circular macro detected', index(temp, macros(i)), len(macros(i))), &
-                                                    source = trim(ctx%path)), &
-                                                    temp, ctx%line))
+                                                message='Failed macro expansion', &
+                                                label=label_type('Circular macro detected', index(temp, macros(i)), len(macros(i))), &
+                                                source=trim(ctx%path)), &
+                                                temp, ctx%line))
                                         cycle
                                     end if
                                     expanded = trim(expanded(:m_start - 1) // trim(temp) // expanded(m_end + 1:))
@@ -598,10 +598,10 @@ contains
                                 expanded = expand_macros_internal(expanded, imacro, macros)
                             else
                                 call printf(render(diagnostic_report(LEVEL_ERROR, &
-                                            message = 'Failed macro expansion', &
-                                            label = label_type('Circular macro detected', index(temp, macros(i)), len(macros(i))), &
-                                            source = trim(ctx%path)), &
-                                            temp, ctx%line))
+                                        message='Failed macro expansion', &
+                                        label=label_type('Circular macro detected', index(temp, macros(i)), len(macros(i))), &
+                                        source=trim(ctx%path)), &
+                                        temp, ctx%line))
                                 cycle
                             end if
                         end if

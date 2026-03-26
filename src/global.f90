@@ -84,7 +84,7 @@ module fpx_global
         logical, public                     :: line_break = .false.  !< Boolean controlling line break with double backslash.
         logical, public                     :: extra_macros = .false.  !< Boolean controlling extra (non-standard macro definitions: __FILENAME__, __TIMESTAMP__).
         logical, public                     :: interactive = .false.  !< Boolean controlling whether the program is used in interactive mode (REPL) or not.
-        logical, public                     :: nocolor = .false. !< @brief Switch for controling the ANSI color output. Default value is `.true.` (color mode on). Set to `.false.` to get raw string output.
+        logical, public                     :: nocolor = .false.  !< @brief Switch for controling the ANSI color output. Default value is `.true.` (color mode on). Set to `.false.` to get raw string output.
     end type
 
     !> @brief The single global instance used throughout fpx

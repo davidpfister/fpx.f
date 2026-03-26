@@ -96,9 +96,9 @@ contains
             paren_end = index(temp, ')')
             if (paren_end == 0) then
                 call printf(render(diagnostic_report(LEVEL_ERROR, &
-                        message = 'Synthax error', &
-                        label = label_type('Missing closing parenthesis in macro definition', len_trim(ctx%content) + 1, 1), &
-                        source = ctx%path), &
+                        message='Synthax error', &
+                        label=label_type('Missing closing parenthesis in macro definition', len_trim(ctx%content) + 1, 1), &
+                        source=ctx%path), &
                         trim(ctx%content), ctx%line))
                 return
             end if
@@ -118,9 +118,9 @@ contains
 
             if (name == 'defined') then
                 call printf(render(diagnostic_report(LEVEL_ERROR, &
-                        message = 'Reserved macro name', &
-                        label = label_type('"defined" cannot be used as a macro name', paren_start + 1, len(name)), &
-                        source = ctx%path), &
+                        message='Reserved macro name', &
+                        label=label_type('"defined" cannot be used as a macro name', paren_start + 1, len(name)), &
+                        source=ctx%path), &
                         trim(ctx%content), ctx%line))
             end if
 
@@ -225,10 +225,10 @@ contains
 
         if (i > n) then
             call printf(render(diagnostic_report(LEVEL_WARNING, &
-                        message = 'Unknown macro', &
-                        label = label_type(name // ' not found', pos, len(name)), &
-                        source = ctx%path), &
-                        trim(ctx%content)))
+                    message='Unknown macro', &
+                    label=label_type(name // ' not found', pos, len(name)), &
+                    source=ctx%path), &
+                    trim(ctx%content)))
         end if
     end subroutine
 end module

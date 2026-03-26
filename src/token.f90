@@ -187,9 +187,9 @@ contains
                 ntokens = ntokens + 1
                 if (ntokens > MAX_TOKENS) then
                     call printf(render(diagnostic_report(LEVEL_ERROR, &
-                        message = 'The maximum number of tokens has been reached', &
-                        label = label_type('Too many tokens in expression.', 1, 1)), &
-                        expr))
+                            message='The maximum number of tokens has been reached', &
+                            label=label_type('Too many tokens in expression.', 1, 1)), &
+                            expr))
                     return
                 end if
                 in_word = .true.

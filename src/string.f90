@@ -169,7 +169,7 @@ module fpx_string
         module procedure :: characters_contain_string
         module procedure :: characters_contain_character
     end interface
-    
+
     !> Index operator
     !!
     !! @b Remarks
@@ -793,29 +793,29 @@ contains
             end if
         end do
     end function
-    
+
     integer function index_string_string(str, substr, back) result(res)
         class(string), intent(in)           :: str
         class(string), intent(in)           :: substr
         logical, intent(in), optional       :: back
-        
-        res = index(str%chars, substr%chars, back = back)
+
+        res = index(str%chars, substr%chars, back=back)
     end function
-    
+
     integer function index_character_string(str, substr, back) result(res)
         character(*), intent(in)            :: str
         class(string), intent(in)           :: substr
         logical, intent(in), optional       :: back
-        
-        res = index(str, substr%chars, back = back)
+
+        res = index(str, substr%chars, back=back)
     end function
-    
+
     integer function index_string_character(str, substr, back) result(res)
         class(string), intent(in)           :: str
         character(*), intent(in)            :: substr
         logical, intent(in), optional       :: back
-        
-        res = index(str%chars, substr, back = back)
+
+        res = index(str%chars, substr, back=back)
     end function
-        
+
 end module

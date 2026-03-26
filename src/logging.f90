@@ -18,7 +18,7 @@
 !! 1. Simple colored message (used internally for verbose logging):
 !! @code{.f90}
 !!    use fpx_logging
-!!    
+!!
 !!    verbose = .true.
 !!    print '(A)', render('Macro expanded: PI = 3.14159')
 !! @endcode
@@ -86,7 +86,7 @@
 !! @note This code is adapted from [pretty-diagnostics](https://github.com/awvwgk/pretty-diagnostics).
 module fpx_logging
     use iso_c_binding
-    
+
     implicit none; private
 
     public :: render, &
@@ -98,86 +98,86 @@ module fpx_logging
             LEVEL_HELP, &
             LEVEL_NOTE, &
             LEVEL_INFO
-    
+
     !> @brief Master switch for verbose diagnostic output
     !! Default value is `.false.` (quiet mode).
     !! Set to `.true.` to get detailed step-by-step information about
-    !! preprocessing actions. Safe to modify at any time – the change takes
+    !! preprocessing actions. Safe to modify at any time ï¿½ the change takes
     !! effect immediately for all subsequent operations.
     !! @ingroup group_logging
     logical, public :: verbose
-    
+
     !> @brief Switch for controling the ANSI color output
     !! Default value is `.true.` (color mode on).
     !! Set to `.false.` to get raw string output.
     !! @ingroup group_logging
     logical, public :: nocolor = .false.
 
-    character(1), parameter :: NL = new_line('a') !< New line character.
-    character(1), parameter :: ESCAPE = achar(27) !< '\' character.
-    character(2), parameter :: CODE_START = ESCAPE//'[' !< Start ansi code, "\[".
-    character(1), parameter :: CODE_END = 'm' !< End ansi code, "m".
-    character(4), parameter :: CODE_CLEAR = CODE_START//'0'//CODE_END !< Clear all styles, "\[0m".
-    
+    character(1), parameter :: NL = new_line('a')  !< New line character.
+    character(1), parameter :: ESCAPE = achar(27)  !< '\' character.
+    character(2), parameter :: CODE_START = ESCAPE//'['  !< Start ansi code, "\[".
+    character(1), parameter :: CODE_END = 'm'  !< End ansi code, "m".
+    character(4), parameter :: CODE_CLEAR = CODE_START//'0'//CODE_END  !< Clear all styles, "\[0m".
+
     character(17), parameter :: STYLES(1:2, 1:16) = reshape([ &
-                                                            'BOLD_ON          ', '1                ', & !  Bold on.
-                                                            'ITALICS_ON       ', '3                ', & !  Italics on.
-                                                            'UNDERLINE_ON     ', '4                ', & !  Underline on.
-                                                            'INVERSE_ON       ', '7                ', & !  Inverse on: reverse foreground and background colors.
-                                                            'STRIKETHROUGH_ON ', '9                ', & !  Strikethrough on.
-                                                            'BOLD_OFF         ', '22               ', & !  Bold off.
-                                                            'ITALICS_OFF      ', '23               ', & !  Italics off.
-                                                            'UNDERLINE_OFF    ', '24               ', & !  Underline off.
-                                                            'INVERSE_OFF      ', '27               ', & !  Inverse off: reverse foreground and background colors.
-                                                            'STRIKETHROUGH_OFF', '29               ', & !  Strikethrough off.
-                                                            'FRAMED_ON        ', '51               ', & !  Framed on.
-                                                            'ENCIRCLED_ON     ', '52               ', & !  Encircled on.
-                                                            'OVERLINED_ON     ', '53               ', & !  Overlined on.
-                                                            'FRAMED_OFF       ', '54               ', & !  Framed off.
-                                                            'ENCIRCLED_OFF    ', '54               ', & !  Encircled off.
-                                                            'OVERLINED_OFF    ', '55               ' & !  Overlined off.
-                                                            ], [2, 16]) !< Styles.
-                                                            
+                                                            'BOLD_ON          ', '1                ', &  !  Bold on.
+                                                            'ITALICS_ON       ', '3                ', &  !  Italics on.
+                                                            'UNDERLINE_ON     ', '4                ', &  !  Underline on.
+                                                            'INVERSE_ON       ', '7                ', &  !  Inverse on: reverse foreground and background colors.
+                                                            'STRIKETHROUGH_ON ', '9                ', &  !  Strikethrough on.
+                                                            'BOLD_OFF         ', '22               ', &  !  Bold off.
+                                                            'ITALICS_OFF      ', '23               ', &  !  Italics off.
+                                                            'UNDERLINE_OFF    ', '24               ', &  !  Underline off.
+                                                            'INVERSE_OFF      ', '27               ', &  !  Inverse off: reverse foreground and background colors.
+                                                            'STRIKETHROUGH_OFF', '29               ', &  !  Strikethrough off.
+                                                            'FRAMED_ON        ', '51               ', &  !  Framed on.
+                                                            'ENCIRCLED_ON     ', '52               ', &  !  Encircled on.
+                                                            'OVERLINED_ON     ', '53               ', &  !  Overlined on.
+                                                            'FRAMED_OFF       ', '54               ', &  !  Framed off.
+                                                            'ENCIRCLED_OFF    ', '54               ', &  !  Encircled off.
+                                                            'OVERLINED_OFF    ', '55               ' &  !  Overlined off.
+                                                            ], [2, 16])  !< Styles.
+
     character(15), parameter :: COLORS_FG(1:2, 1:17) = reshape([ &
-                                                               'BLACK          ', '30             ', & !  Black.
-                                                               'RED            ', '31             ', & !  Red.
-                                                               'GREEN          ', '32             ', & !  Green.
-                                                               'YELLOW         ', '33             ', & !  Yellow.
-                                                               'BLUE           ', '34             ', & !  Blue.
-                                                               'MAGENTA        ', '35             ', & !  Magenta.
-                                                               'CYAN           ', '36             ', & !  Cyan.
-                                                               'WHITE          ', '37             ', & !  White.
-                                                               'DEFAULT        ', '39             ', & !  Default (white).
-                                                               'BLACK_INTENSE  ', '90             ', & !  Black intense.
-                                                               'RED_INTENSE    ', '91             ', & !  Red intense.
-                                                               'GREEN_INTENSE  ', '92             ', & !  Green intense.
-                                                               'YELLOW_INTENSE ', '93             ', & !  Yellow intense.
-                                                               'BLUE_INTENSE   ', '94             ', & !  Blue intense.
-                                                               'MAGENTA_INTENSE', '95             ', & !  Magenta intense.
-                                                               'CYAN_INTENSE   ', '96             ', & !  Cyan intense.
-                                                               'WHITE_INTENSE  ', '97             ' & !  White intense.
-                                                               ], [2, 17]) !< Foreground colors.
-                                                               
+                                                               'BLACK          ', '30             ', &  !  Black.
+                                                               'RED            ', '31             ', &  !  Red.
+                                                               'GREEN          ', '32             ', &  !  Green.
+                                                               'YELLOW         ', '33             ', &  !  Yellow.
+                                                               'BLUE           ', '34             ', &  !  Blue.
+                                                               'MAGENTA        ', '35             ', &  !  Magenta.
+                                                               'CYAN           ', '36             ', &  !  Cyan.
+                                                               'WHITE          ', '37             ', &  !  White.
+                                                               'DEFAULT        ', '39             ', &  !  Default (white).
+                                                               'BLACK_INTENSE  ', '90             ', &  !  Black intense.
+                                                               'RED_INTENSE    ', '91             ', &  !  Red intense.
+                                                               'GREEN_INTENSE  ', '92             ', &  !  Green intense.
+                                                               'YELLOW_INTENSE ', '93             ', &  !  Yellow intense.
+                                                               'BLUE_INTENSE   ', '94             ', &  !  Blue intense.
+                                                               'MAGENTA_INTENSE', '95             ', &  !  Magenta intense.
+                                                               'CYAN_INTENSE   ', '96             ', &  !  Cyan intense.
+                                                               'WHITE_INTENSE  ', '97             ' &  !  White intense.
+                                                               ], [2, 17])  !< Foreground colors.
+
     character(15), parameter :: COLORS_BG(1:2, 1:17) = reshape([ &
-                                                               'BLACK          ', '40             ', & !  Black.
-                                                               'RED            ', '41             ', & !  Red.
-                                                               'GREEN          ', '42             ', & !  Green.
-                                                               'YELLOW         ', '43             ', & !  Yellow.
-                                                               'BLUE           ', '44             ', & !  Blue.
-                                                               'MAGENTA        ', '45             ', & !  Magenta.
-                                                               'CYAN           ', '46             ', & !  Cyan.
-                                                               'WHITE          ', '47             ', & !  White.
-                                                               'DEFAULT        ', '49             ', & !  Default (black).
-                                                               'BLACK_INTENSE  ', '100            ', & !  Black intense.
-                                                               'RED_INTENSE    ', '101            ', & !  Red intense.
-                                                               'GREEN_INTENSE  ', '102            ', & !  Green intense.
-                                                               'YELLOW_INTENSE ', '103            ', & !  Yellow intense.
-                                                               'BLUE_INTENSE   ', '104            ', & !  Blue intense.
-                                                               'MAGENTA_INTENSE', '105            ', & !  Magenta intense.
-                                                               'CYAN_INTENSE   ', '106            ', & !  Cyan intense.
-                                                               'WHITE_INTENSE  ', '107            ' & !  White intense.
-                                                               ], [2, 17]) !< Background colors.
-                                                               
+                                                               'BLACK          ', '40             ', &  !  Black.
+                                                               'RED            ', '41             ', &  !  Red.
+                                                               'GREEN          ', '42             ', &  !  Green.
+                                                               'YELLOW         ', '43             ', &  !  Yellow.
+                                                               'BLUE           ', '44             ', &  !  Blue.
+                                                               'MAGENTA        ', '45             ', &  !  Magenta.
+                                                               'CYAN           ', '46             ', &  !  Cyan.
+                                                               'WHITE          ', '47             ', &  !  White.
+                                                               'DEFAULT        ', '49             ', &  !  Default (black).
+                                                               'BLACK_INTENSE  ', '100            ', &  !  Black intense.
+                                                               'RED_INTENSE    ', '101            ', &  !  Red intense.
+                                                               'GREEN_INTENSE  ', '102            ', &  !  Green intense.
+                                                               'YELLOW_INTENSE ', '103            ', &  !  Yellow intense.
+                                                               'BLUE_INTENSE   ', '104            ', &  !  Blue intense.
+                                                               'MAGENTA_INTENSE', '105            ', &  !  Magenta intense.
+                                                               'CYAN_INTENSE   ', '106            ', &  !  Cyan intense.
+                                                               'WHITE_INTENSE  ', '107            ' &  !  White intense.
+                                                               ], [2, 17])  !< Background colors.
+
     interface render
         module procedure :: render_diagnostic
         module procedure :: render_text
@@ -192,7 +192,7 @@ module fpx_logging
         enumerator :: LEVEL_NOTE = 3
         enumerator :: LEVEL_INFO = 4
     end enum
-    
+
     type label_type
         !> Level of message
         integer, allocatable        :: level
@@ -238,7 +238,7 @@ module fpx_logging
     end type
 
 contains
-    
+
     !> Colorize and stylize strings, DEFAULT kind.
     !! @param[in] string Input string.
     !! @param[in] foreground Foreground color definition.
@@ -270,11 +270,11 @@ contains
     end function
 
     !> Return the array-index corresponding to the queried color.
-    !! @note Because Foreground and backround colors lists share the same name, 
+    !! @note Because Foreground and backround colors lists share the same name,
     !! no matter what array is used to find the color index.
     !! Thus, the foreground array is used.
     elemental integer function color_index(color) result(res)
-        character(*), intent(in) :: color !< Color definition.
+        character(*), intent(in) :: color  !< Color definition.
         !private
         integer :: i
 
@@ -289,7 +289,7 @@ contains
 
     !> Return the array-index corresponding to the queried style.
     elemental integer function style_index(style) result(res)
-        character(*), intent(in) :: style !< Style definition.
+        character(*), intent(in) :: style  !< Style definition.
         !private
         integer :: i
 
@@ -301,11 +301,11 @@ contains
             end if
         end do
     end function
-    
+
     !> Return a string with all uppercase characters.
     elemental function upper(string)
-        character(*), intent(in) :: string !< Input string.
-        character(len(string)) :: upper !< Upper case string.
+        character(*), intent(in) :: string  !< Input string.
+        character(len(string)) :: upper  !< Upper case string.
         !private
         integer, parameter :: a = iachar('a'), z = iachar('z'), CASE_DIFF = iachar('a')-iachar('A')
         integer :: i, ichar
@@ -330,7 +330,7 @@ contains
         that%primary = .true.
         if (present(level)) that%level = level
     end function
-    
+
     type(label_type) pure function label_new_with_line(line, text, first, length, primary, level) result(that)
         integer, intent(in)                 :: line
         character(*), intent(in)            :: text
@@ -384,7 +384,7 @@ contains
             end select
         end if
         if (present(diagnostic)) that%sub = diagnostic
-        
+
         if (allocated(that%label)) then
             if (.not. any(that%label(:)%primary)) then
                 that%label(1)%primary = .true.
@@ -511,7 +511,7 @@ contains
 
         res = render_text_with_labels(input, [label], source, linenum)
     end function
-    
+
     pure function render_text_with_labels(input, labels, source, linemum) result(res)
         character(*), intent(in)            :: input
         type(label_type), intent(in)        :: labels(:)
@@ -528,7 +528,7 @@ contains
         last = min(size(token), maxval(labels%line) + 1)
         iline = 1; if (present(linemum)) iline = linemum
         offset = integer_width(iline)
-        
+
         i = 1  ! Without a primary we use the first label
         do j = 1, size(labels)
             if (labels(j)%primary) then
@@ -677,16 +677,16 @@ contains
             res = buffer(pos:)
         end if
     end function
-    
+
     !> Conditional pritn of the error/warning message.
     !! @param[in] str Input string.
     !! @param[in] fmt (optional) print format.
     subroutine printf(str, fmt)
         character(*), intent(in) :: str
         character(*), intent(in), optional :: fmt
-        
+
         if (verbose) then
-            if (present(fmt)) then 
+            if (present(fmt)) then
                 print fmt, str
             else
                 print '(A)', str

@@ -69,7 +69,7 @@
 !! @endcode
 module fpx_context
     implicit none; private
-    
+
     !> @brief Source location and content snapshot for precise diagnostics
     !!
     !! Instances of this type are created for every source file (including nested
@@ -92,5 +92,5 @@ module fpx_context
         character(:), allocatable   :: path
         character(:), allocatable   :: filename
     end type
-        
+
 end module
