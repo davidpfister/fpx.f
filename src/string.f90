@@ -65,7 +65,8 @@ module fpx_string
             len_trim,     &
             trim,         &
             operator(//), &
-            operator(.contains.)
+            operator(.contains.), &
+            index
 
     public :: starts_with,  &
             head,         &
@@ -167,6 +168,16 @@ module fpx_string
         module procedure :: strings_contain_character
         module procedure :: characters_contain_string
         module procedure :: characters_contain_character
+    end interface
+    
+    !> Index operator
+    !!
+    !! @b Remarks
+    !! @ingroup group_string
+    interface index
+        module procedure :: index_string_string
+        module procedure :: index_string_character
+        module procedure :: index_character_string
     end interface
 
 contains
@@ -782,4 +793,29 @@ contains
             end if
         end do
     end function
+    
+    integer function index_string_string(str, substr, back) result(res)
+        class(string), intent(in)           :: str
+        class(string), intent(in)           :: substr
+        logical, intent(in), optional       :: back
+        
+        res = index(str%chars, substr%chars, back = back)
+    end function
+    
+    integer function index_character_string(str, substr, back) result(res)
+        character(*), intent(in)            :: str
+        class(string), intent(in)           :: substr
+        logical, intent(in), optional       :: back
+        
+        res = index(str, substr%chars, back = back)
+    end function
+    
+    integer function index_string_character(str, substr, back) result(res)
+        class(string), intent(in)           :: str
+        character(*), intent(in)            :: substr
+        logical, intent(in), optional       :: back
+        
+        res = index(str%chars, substr, back = back)
+    end function
+        
 end module

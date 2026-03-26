@@ -95,10 +95,11 @@ contains
             if (global%undef .contains. name) return
             paren_end = index(temp, ')')
             if (paren_end == 0) then
-                print '(A)', render(diagnostic_report(LEVEL_ERROR, &
+                call printf(render(diagnostic_report(LEVEL_ERROR, &
                         message = 'Synthax error', &
-                        label = label_type('Missing closing parenthesis in mecro definition', len(temp), 1)), &
-                        trim(ctx%content), ctx%line)
+                        label = label_type('Missing closing parenthesis in macro definition', len_trim(ctx%content) + 1, 1), &
+                        source = ctx%path), &
+                        trim(ctx%content), ctx%line))
                 return
             end if
             val = trim(adjustl(temp(paren_end + 1:)))
@@ -116,10 +117,11 @@ contains
             if (.not. allocated(macros)) allocate(macros(0))
 
             if (name == 'defined') then
-                print '(A)', render(diagnostic_report(LEVEL_ERROR, &
+                call printf(render(diagnostic_report(LEVEL_ERROR, &
                         message = 'Reserved macro name', &
-                        label = label_type('"defined" cannot be used as a macro name', paren_start + 1, len(name))), &
-                        trim(ctx%content), ctx%line)
+                        label = label_type('"defined" cannot be used as a macro name', paren_start + 1, len(name)), &
+                        source = ctx%path), &
+                        trim(ctx%content), ctx%line))
             end if
 
             if (.not. is_defined(name, macros, imacro)) then
@@ -222,10 +224,11 @@ contains
         end do
 
         if (i > n) then
-            print '(A)', render(diagnostic_report(LEVEL_WARNING, &
+            call printf(render(diagnostic_report(LEVEL_WARNING, &
                         message = 'Unknown macro', &
-                        label = label_type(name // ' not found', pos, len(name))), &
-                        trim(ctx%content))
+                        label = label_type(name // ' not found', pos, len(name)), &
+                        source = ctx%path), &
+                        trim(ctx%content)))
         end if
     end subroutine
 end module

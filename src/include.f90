@@ -142,7 +142,11 @@ contains
             include_file = include_file(2:index(include_file(2:), '>'))
         else
             ! Malformed include directive
-            if (verbose) print *, 'Error: Malformed #include directive at ', trim(ctx%path), ':', ctx%line
+            call printf(render(diagnostic_report(LEVEL_ERROR, &
+                        message = 'Malformed #include directive', &
+                        label = label_type('Filepath should either be delimited by "<...>" or "..."', index(ctx%content, include_file), len(include_file)), &
+                        source = trim(ctx%path)), &
+                        ctx%content, ctx%line))
             return
         end if
 
@@ -154,7 +158,11 @@ contains
                 include_file = ifile
             else
                 if (verbose) then
-                    print *, "Error: Cannot find include file '", trim(include_file), "' at ", trim(ctx%path), ":", ctx%line
+                    call printf(render(diagnostic_report(LEVEL_ERROR, &
+                        message = 'File not found', &
+                        label = label_type('Cannot find include file '//trim(include_file), index(ctx%content, include_file), len(include_file)), &
+                        source = trim(ctx%path)), &
+                        ctx%content, ctx%line))
                     return
                 end if
             end if
@@ -210,8 +218,11 @@ contains
 
             ! If file was not found anywhere, report error
             if (.not. exists) then
-                if (verbose) print *, "Error: Cannot find include file '", trim(include_file), "' at ", trim(ctx%path), ":", &
-                        ctx%line
+                call printf(render(diagnostic_report(LEVEL_ERROR, &
+                        message = 'File not found', &
+                        label = label_type('Cannot find include file '//trim(include_file), index(ctx%content, include_file), len(include_file)), &
+                        source = trim(ctx%path)), &
+                        ctx%content, ctx%line))
                 return
             end if
         end if
@@ -219,7 +230,11 @@ contains
         ! Open and preprocess the include file
         open(newunit=iunit, file=include_file, status='old', action='read', iostat=ierr)
         if (ierr /= 0) then
-            if (verbose) print *, "Error: Cannot open include file '", trim(include_file), "' at ", trim(ctx%path), ":", ctx%line
+            call printf(render(diagnostic_report(LEVEL_ERROR, &
+                        message = 'File not found', &
+                        label = label_type('Cannot open include file '//trim(include_file), index(ctx%content, include_file), len(include_file)), &
+                        source = trim(ctx%path)), &
+                        ctx%content, ctx%line))
             return
         end if
 

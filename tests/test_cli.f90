@@ -1,5 +1,5 @@
 #include <assertion.inc>
-TESTPROGRAM(test)
+TESTPROGRAM(test_cli)
     TEST('cli')
         use test_utils
         use fpx_path

@@ -56,6 +56,11 @@ name = "test_lfortran"
 source-dir = "tests"
 main = "test_lfortran.f90"
 
+[[test]]
+name = "test_logging"
+source-dir = "tests"
+main = "test_logging.f90"
+
 [extra.fortitude.check]
 select = ["C", "E", "S"]
 ignore = ["S001", "S061", "C121", "C003"]

@@ -1,10 +1,11 @@
 #include <assertion.inc>
-TESTPROGRAM(main)
+TESTPROGRAM(test_c)
     block
         use fpx_parser
         use test_utils
         use fpx_path
         use fpx_macro
+        use fpx_logging
 
         character(256), allocatable  :: files(:)
         character(:), allocatable :: runs, ref
@@ -31,6 +32,7 @@ TESTPROGRAM(main)
                     integer :: ierr, unit, cunit
                     character(256), allocatable :: actual(:), expected(:)
 
+                    verbose = .false.
                     inquire(file=trim(files(i))//'.out', exist=exists)
 #if defined (_DEBUG) || defined (DEBUG)
                     ASSERT_TRUE(exists)

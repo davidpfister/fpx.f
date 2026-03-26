@@ -21,21 +21,21 @@
 !!    type(macro), allocatable :: macros(:)
 !!    call add(macros, macro('PI', '3.1415926535'))
 !!    call add(macros, macro('MSG(x)', 'print *, ″Hello ″, x'))
-!!    print *, expand_all('area = PI * r**2', macros, 'circle.F90', 10, stitch, .false.)
+!!    print *, expand_all(context('area = PI * r**2', 10, './circle.F90', 'circle'), macros, stitch, .false., .false.)
 !!    !> prints: area = 3.1415926535 * r**2
 !! @endcode
 !!
 !! 2. Variadic macro with stringification and pasting:
 !! @code{.f90}
 !!    call add(macros, macro('DEBUG_PRINT(...)', 'print *, ″DEBUG[″, __FILE__, ″:″, __LINE__, ″]: ″, __VA_ARGS__'))
-!!    print *, expand_all('DEBUG_PRINT(″value =″, x)', macros, ″test.F90″, 42, stitch, .false.)
+!!    print *, expand_all(context('DEBUG_PRINT(″value =″, x)', 42, 'test.F90', 'text'), macros, stitch, .false., false)
 !!    !> prints: print *, 'DEBUG[', 'test.F90', ':', 42, ']: ', 'value =', x
 !! @endcode
 !!
 !! 3. Token pasting with ##:
 !! @code{.f90}
 !!    call add(macros, macro('MAKE_VAR(name,num)', 'var_name_##num'))
-!!    print *, expand_all('real :: MAKE_VAR(temp,42)', macros, 'file.F90', 5, stitch, .false.)
+!!    print *, expand_all(context('real :: MAKE_VAR(temp,42)', 5, 'file.F90', 'file'), macros, stitch, .false., .false.)
 !!    !> prints: real :: var_name_42
 !! @endcode
 module fpx_macro
@@ -45,6 +45,8 @@ module fpx_macro
     use fpx_graph
     use fpx_string
     use fpx_date
+    use fpx_logging
+    use fpx_context
 
     implicit none; private
 
@@ -90,7 +92,7 @@ module fpx_macro
     !! <h2  class="groupheader">Remarks</h2>
     !! @ingroup group_macro
     type, extends(string) :: macro
-        character(:), allocatable :: value  !< Name of the macro
+        character(:), allocatable :: value  !< Value of the macro
         type(string), allocatable :: params(:)  !< List of parameter for function like macros
         logical :: is_variadic  !< Indicate whether the macro is variadic or not.
         logical :: is_cyclic    !< Indicates whether the macro has cyclic dependencies or not.
@@ -181,10 +183,8 @@ contains
     !> Fully expand a line including predefined macros (__FILE__, __LINE__, etc.)
     !! First performs normal macro expansion via expand_macros(), then substitutes
     !! standard predefined tokens with current file/line/date information.
-    !! @param[in]  line     Input source line
+    !! @param[in]  ctx  Context
     !! @param[in]  macros   Current macro table
-    !! @param[in]  filepath Current source file path
-    !! @param[in]  iline   Current line number
     !! @param[out] stitch   Set to .true.true. if result ends with '&' (Fortran continuation)
     !! @param[in]  has_extra   Has extra macros (non-standard) like __FILENAME__ and __TIMESTAMP__
     !! @param[in]  implicit_conti If .true., implicit continuation is permitted
@@ -192,11 +192,9 @@ contains
     !!
     !! @b Remarks
     !! @ingroup group_macro
-    function expand_all(line, macros, filepath, iline, stitch, has_extra, implicit_conti) result(expanded)
-        character(*), intent(in)            :: line
+    function expand_all(ctx, macros, stitch, has_extra, implicit_conti) result(expanded)
+        type(context), intent(in)           :: ctx
         type(macro), intent(in)             :: macros(:)
-        character(*), intent(in)            :: filepath
-        integer, intent(in)                 :: iline
         logical, intent(out)                :: stitch
         logical, intent(in)                 :: has_extra
         logical, intent(in)                 :: implicit_conti
@@ -205,7 +203,7 @@ contains
         integer :: pos, start, sep, dot
         type(datetime) :: date
 
-        expanded = expand_macros(line, macros, stitch, implicit_conti)
+        expanded = expand_macros(ctx%content, macros, stitch, implicit_conti, ctx)
         date = now()
 
         ! Substitute __FILE__ (relative path to working directory)
@@ -214,7 +212,7 @@ contains
             pos = index(expanded, '__FILE__')
             if (pos > 0) then
                 start = pos + len('__FILE__')
-                expanded = trim(expanded(:pos - 1) // '"' // trim(filepath) // '"' // trim(expanded(start:)))
+                expanded = trim(expanded(:pos - 1) // '"' // trim(ctx%path) // '"' // trim(expanded(start:)))
             end if
         end do
 
@@ -225,7 +223,7 @@ contains
             if (pos > 0) then
                 if (pos > 0) then
                     start = pos + len('__LINE__')
-                    expanded = trim(expanded(:pos - 1) // tostring(iline) // trim(expanded(start:)))
+                    expanded = trim(expanded(:pos - 1) // tostring(ctx%line) // trim(expanded(start:)))
                 end if
             end if
         end do
@@ -260,7 +258,7 @@ contains
                 pos = index(expanded, '__FILENAME__')
                 if (pos > 0) then
                     start = pos + len('__FILENAME__')
-                    expanded = trim(expanded(:pos - 1) // '"' // filename(filepath, .true.) // '"' // trim(expanded(start:)))
+                    expanded = trim(expanded(:pos - 1) // '"' // filename(ctx%path, .true.) // '"' // trim(expanded(start:)))
                 end if
             end do
 
@@ -289,19 +287,21 @@ contains
     !! - Recursion with cycle detection via digraph
     !! - Proper handling of nested parentheses and quoted strings
     !!
-    !! @param[in]  line   Input line
+    !! @param[in]  line  Line to be expanded
     !! @param[in]  macros Current macro table
     !! @param[out] stitch .true. if final line ends with '&'
     !! @param[in]  implicit_conti If .true., implicit continuation is permitted
+    !! @param[in]  ctx  Context
     !! @return Line with user-defined macros expanded (predefined tokens untouched)
     !!
     !! @b Remarks
     !! @ingroup group_macro
-    function expand_macros(line, macros, stitch, implicit_conti) result(expanded)
+    function expand_macros(line, macros, stitch, implicit_conti, ctx) result(expanded)
         character(*), intent(in)    :: line
         type(macro), intent(in)     :: macros(:)
         logical, intent(out)        :: stitch
         logical, intent(in)         :: implicit_conti
+        type(context), intent(in)   :: ctx
         character(:), allocatable   :: expanded
         !private
         integer :: imacro, paren_level
@@ -397,7 +397,11 @@ contains
 
                                     if (macros(i)%is_variadic) then
                                         if (nargs < size(macros(i)%params)) then
-                                            if (verbose) print *, "Error: Too few arguments for macro ", macros(i)
+                                            call printf(render(diagnostic_report(LEVEL_ERROR, &
+                                                message = 'Variadic macro issue', &
+                                                label = label_type('Too few arguments for macro '//macros(i), start, m_end - start), &
+                                                source = trim(ctx%path)), &
+                                                expanded, ctx%line))
                                             cycle
                                         end if
                                         va_args = ''
@@ -406,7 +410,11 @@ contains
                                             va_args = va_args // arg_values(j)
                                         end do
                                     else if (nargs /= size(macros(i)%params)) then
-                                        if (verbose) print *, "Error: Incorrect number of arguments for macro ", macros(i)
+                                        call printf(render(diagnostic_report(LEVEL_ERROR, &
+                                                message = 'Function-like macro issue', &
+                                                label = label_type('Incorrect number of arguments for macro '//macros(i), start, m_end - start), &
+                                                source = trim(ctx%path)), &
+                                                expanded, ctx%line))
                                         cycle
                                     end if
 
@@ -490,7 +498,11 @@ contains
                                                 ! Find token1 (before ##)
                                                 k = pos - 1
                                                 if (k <= 0) then
-                                                    if (verbose) print *, "Error: No token before ##"
+                                                    call printf(render(diagnostic_report(LEVEL_ERROR, &
+                                                        message = 'Synthax error', &
+                                                        label = label_type('No token before ##', pos, 2), &
+                                                        source = trim(ctx%path)), &
+                                                        temp, ctx%line))
                                                     cycle
                                                 end if
 
@@ -505,7 +517,11 @@ contains
                                                 ! Find token2 (after ##)
                                                 k = pos + 2
                                                 if (k > len(temp)) then
-                                                    if (verbose) print *, "Error: No token after ##"
+                                                    call printf(render(diagnostic_report(LEVEL_ERROR, &
+                                                        message = 'Synthax error', &
+                                                        label = label_type('No token after ##', pos, 2), &
+                                                        source = trim(ctx%path)), &
+                                                        temp, ctx%line))
                                                     cycle
                                                 end if
 
@@ -563,7 +579,11 @@ contains
                                     if (.not. graph%is_circular(i)) then
                                         temp = expand_macros_internal(temp, i, macros)  ! Only for nested macros
                                     else
-                                        if (verbose) print *, "Error: Circular macro detected: '", macros(i), "'"
+                                        call printf(render(diagnostic_report(LEVEL_ERROR, &
+                                                    message = 'Failed macro expansion', &
+                                                    label = label_type('Circular macro detected', index(temp, macros(i)), len(macros(i))), &
+                                                    source = trim(ctx%path)), &
+                                                    temp, ctx%line))
                                         cycle
                                     end if
                                     expanded = trim(expanded(:m_start - 1) // trim(temp) // expanded(m_end + 1:))
@@ -577,7 +597,11 @@ contains
                                 expanded = trim(expanded(:m_start - 1) // trim(temp) // expanded(m_end + 1:))
                                 expanded = expand_macros_internal(expanded, imacro, macros)
                             else
-                                if (verbose) print *, "Error: Circular macro detected: '", macros(i), "'"
+                                call printf(render(diagnostic_report(LEVEL_ERROR, &
+                                            message = 'Failed macro expansion', &
+                                            label = label_type('Circular macro detected', index(temp, macros(i)), len(macros(i))), &
+                                            source = trim(ctx%path)), &
+                                            temp, ctx%line))
                                 cycle
                             end if
                         end if
@@ -694,8 +718,6 @@ contains
             tmp(n + 1:) = pack(val, isdef)
             call move_alloc(tmp, array)
             if (allocated(tmp)) deallocate(tmp)
-        rank default
-            error stop 'Unsupported dimension.'
         end select
 
         do i = 1, size(array)

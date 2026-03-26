@@ -160,7 +160,7 @@ contains
     !! @ingroup group_token
     subroutine tokenize(expr, tokens, ntokens)
         character(*), intent(in)                :: expr
-        type(token), allocatable, intent(out) :: tokens(:)
+        type(token), allocatable, intent(out)   :: tokens(:)
         integer, intent(out)                    :: ntokens
         !private
         character(:), allocatable :: temp
@@ -186,10 +186,10 @@ contains
             if (.not. in_word) then
                 ntokens = ntokens + 1
                 if (ntokens > MAX_TOKENS) then
-                    print '(A)', render(diagnostic_report(LEVEL_ERROR, &
+                    call printf(render(diagnostic_report(LEVEL_ERROR, &
                         message = 'The maximum number of tokens has been reached', &
                         label = label_type('Too many tokens in expression.', 1, 1)), &
-                        expr)
+                        expr))
                     return
                 end if
                 in_word = .true.

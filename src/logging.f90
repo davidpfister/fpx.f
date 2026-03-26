@@ -20,7 +20,7 @@
 !!    use fpx_logging
 !!    
 !!    verbose = .true.
-!!    print *, render('Macro expanded: PI = 3.14159')
+!!    print '(A)', render('Macro expanded: PI = 3.14159')
 !! @endcode
 !!
 !! 2. Full diagnostic report (like a compiler error):
@@ -52,7 +52,7 @@
 !!  '  "omega"' // nl // &
 !!  ']'
 !!
-!!    print '(a)', render(diagnostic_report(level_error, &
+!!    print '(A)', render(diagnostic_report(level_error, &
 !!       message="duplicated key 'title' found", &
 !!       source="example.toml", &
 !!       label=[label_type("table 'title' redefined here", 19, 2, 5, .true.), &
@@ -90,6 +90,7 @@ module fpx_logging
     implicit none; private
 
     public :: render, &
+            printf, &
             diagnostic_report, &
             label_type, &
             LEVEL_ERROR, &
@@ -177,16 +178,6 @@ module fpx_logging
                                                                'WHITE_INTENSE  ', '107            ' & !  White intense.
                                                                ], [2, 17]) !< Background colors.
                                                                
-    interface
-        pure subroutine  memcpy(dest, src, n) bind(c,name='memcpy')
-            import
-            implicit none
-            integer(c_intptr_t), value:: dest
-            integer(c_intptr_t), value:: src
-            integer(c_size_t), value :: n
-        end subroutine
-    end interface
-
     interface render
         module procedure :: render_diagnostic
         module procedure :: render_text
@@ -263,7 +254,7 @@ contains
         integer :: i
 
         res = string
-        if (.not. nocolor) return
+        if (nocolor) return
         if (present(foreground)) then
             i = color_index(upper(foreground))
             if (i > 0) res = CODE_START//trim(COLORS_FG(2, i))//CODE_END//res//CODE_CLEAR
@@ -326,7 +317,7 @@ contains
         enddo
     end function
 
-    type(label_type) function label_new(text, first, length, level) result(that)
+    type(label_type) pure function label_new(text, first, length, level) result(that)
         character(*), intent(in)            :: text
         integer, intent(in)                 :: first
         integer, intent(in)                 :: length
@@ -340,7 +331,7 @@ contains
         if (present(level)) that%level = level
     end function
     
-    type(label_type) function label_new_with_line(line, text, first, length, primary, level) result(that)
+    type(label_type) pure function label_new_with_line(line, text, first, length, primary, level) result(that)
         integer, intent(in)                 :: line
         character(*), intent(in)            :: text
         integer, intent(in)                 :: first
@@ -434,6 +425,8 @@ contains
 
         if (allocated(diag%label)) then
             res = res // NL // render_text_with_labels(input, diag%label, source=diag%source, linemum=linemum)
+        else
+            res = res // NL // render_text_with_labels(input, [label_type('', 1, len_trim(input))], source=diag%source, linemum=linemum)
         end if
 
         if (allocated(diag%sub)) then
@@ -494,7 +487,7 @@ contains
 
         iline = 1; if (present(linenum)) iline = linenum
         token = line_tokens(input)
-        offset = integer_width(size(token))
+        offset = integer_width(iline)
 
         if (present(source)) then
             res = render_source(source, offset) // NL // &
@@ -533,8 +526,8 @@ contains
         token = line_tokens(input)
         first = max(1, minval(labels%line) - 1)
         last = min(size(token), maxval(labels%line) + 1)
-        offset = integer_width(last)
         iline = 1; if (present(linemum)) iline = linemum
+        offset = integer_width(iline)
         
         i = 1  ! Without a primary we use the first label
         do j = 1, size(labels)
@@ -596,35 +589,35 @@ contains
         if (allocated(label%level)) then
             select case (label%level)
             case (LEVEL_ERROR)
-                res = repeat(' ', label%first) // colorize(repeat(marker, width), foreground = 'red', style = 'bold_on')
+                res = repeat(' ', label%first) // colorize(repeat(marker, width), foreground = 'red')
                 if (allocated(label%text)) then
-                    res = res // ' ' // colorize(label%text, foreground = 'red', style = 'bold_on')
+                    res = res // ' ' // colorize(label%text, foreground = 'red')
                 end if
             case (LEVEL_WARNING)
-                res = repeat(' ', label%first) // colorize(repeat(marker, width), foreground = 'yellow', style = 'bold_on')
+                res = repeat(' ', label%first) // colorize(repeat(marker, width), foreground = 'yellow')
                 if (allocated(label%text)) then
-                    res = res // ' ' // colorize(label%text, foreground = 'yellow', style = 'bold_on')
+                    res = res // ' ' // colorize(label%text, foreground = 'yellow')
                 end if
             case (LEVEL_HELP)
-                res = repeat(' ', label%first) // colorize(repeat(marker, width), foreground = 'cyan', style = 'bold_on')
+                res = repeat(' ', label%first) // colorize(repeat(marker, width), foreground = 'cyan')
                 if (allocated(label%text)) then
-                    res = res // ' ' // colorize(label%text, foreground = 'cyan', style = 'bold_on')
+                    res = res // ' ' // colorize(label%text, foreground = 'cyan')
                 end if
             case (LEVEL_INFO)
-                res = repeat(' ', label%first) // colorize(repeat(marker, width), foreground = 'magenta', style = 'bold_on')
+                res = repeat(' ', label%first) // colorize(repeat(marker, width), foreground = 'magenta')
                 if (allocated(label%text)) then
-                    res = res // ' ' // colorize(label%text, foreground = 'magenta', style = 'bold_on')
+                    res = res // ' ' // colorize(label%text, foreground = 'magenta')
                 end if
             case default
-                res = repeat(' ', label%first) // colorize(repeat(marker, width), foreground = 'blue', style = 'bold_on')
+                res = repeat(' ', label%first) // colorize(repeat(marker, width), foreground = 'blue')
                 if (allocated(label%text)) then
-                    res = res // ' ' // colorize(label%text, foreground = 'blue', style = 'bold_on')
+                    res = res // ' ' // colorize(label%text, foreground = 'blue')
                 end if
             end select
         else
-            res = repeat(' ', label%first) // colorize(repeat(marker, width), foreground = 'blue', style = 'bold_on')
+            res = repeat(' ', label%first) // repeat(marker, width)
             if (allocated(label%text)) then
-                res = res // ' ' // colorize(label%text, foreground = 'blue', style = 'bold_on')
+                res = res // ' ' // colorize(label%text, foreground = 'blue')
             end if
         end if
     end function
@@ -684,5 +677,21 @@ contains
             res = buffer(pos:)
         end if
     end function
+    
+    !> Conditional pritn of the error/warning message.
+    !! @param[in] str Input string.
+    !! @param[in] fmt (optional) print format.
+    subroutine printf(str, fmt)
+        character(*), intent(in) :: str
+        character(*), intent(in), optional :: fmt
+        
+        if (verbose) then
+            if (present(fmt)) then 
+                print fmt, str
+            else
+                print '(A)', str
+            end if
+        end if
+    end subroutine
 
 end module

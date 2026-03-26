@@ -130,10 +130,11 @@ contains
 
         call tokenize(expr, tokens, ntokens)
         if (ntokens == 0) then
-            print '(A)', render(diagnostic_report(LEVEL_ERROR, &
+            call printf(render(diagnostic_report(LEVEL_ERROR, &
                         message = 'Tokenization failed', &
-                        label = label_type('No tokens found', 1, len_trim(expr))), &
-                        expr)
+                        label = label_type('No tokens found', 1, len_trim(expr)), &
+                        source = trim(ctx%path)), &
+                        expr, ctx%line))
             res = .false.
             return
         end if
@@ -141,10 +142,11 @@ contains
         pos = 1
         result = parse_expression(expr, tokens, ntokens, pos, macros, ctx)
         if (pos <= ntokens) then
-            print '(A)', render(diagnostic_report(LEVEL_ERROR, &
+            call printf(render(diagnostic_report(LEVEL_ERROR, &
                         message = 'Tokenization failed', &
-                        label = label_type('Extra tokens found', tokens(pos)%start, len_trim(tokens(pos)%value))), &
-                        expr)
+                        label = label_type('Extra tokens found', tokens(pos)%start, len_trim(tokens(pos)%value)), &
+                        source = trim(ctx%path)), &
+                        expr, ctx%line))
             res = .false.
             return
         end if
@@ -205,7 +207,11 @@ contains
 
             ! Expect ':'
             if (pos > ntokens .or. tokens(pos)%value /= ':') then
-                if (verbose) print *, "Error: expected ':' in conditional expression"
+                call printf(render(diagnostic_report(LEVEL_ERROR, &
+                        message = 'Synthax error', &
+                        label = label_type('Expected ":" in conditional expression', 1, len(expr)), &
+                        source = trim(ctx%path)), &
+                        expr, ctx%line))
                 val = 0
                 return
             end if
@@ -650,7 +656,11 @@ contains
         logical :: stitch
 
         if (pos > ntokens) then
-            if (verbose) print *, "Error: Unexpected end of expression at pos ", pos
+            call printf(render(diagnostic_report(LEVEL_ERROR, &
+                    message = 'Synthax error', &
+                    label = label_type('Unexpected end of expression', pos, 1), &
+                    source = trim(ctx%path)), &
+                    expr, ctx%line))
             val = 0
             return
         end if
@@ -660,7 +670,7 @@ contains
             pos = pos + 1
         else if (tokens(pos)%type == 2) then
             if (is_defined(tokens(pos)%value, macros)) then
-                expanded = expand_macros(tokens(pos)%value, macros, stitch, global%implicit_continuation)
+                expanded = expand_macros(tokens(pos)%value, macros, stitch, global%implicit_continuation, ctx)
                 if (.not. evaluate_expression(expanded, macros, ctx, val)) val = 0
             else
                 val = 0
@@ -670,10 +680,11 @@ contains
             pos = pos + 1
             val = parse_expression(expr, tokens, ntokens, pos, macros, ctx)
             if (pos > ntokens .or. tokens(pos)%value /= ')') then
-                print '(A)', render(diagnostic_report(LEVEL_ERROR, &
+                call printf(render(diagnostic_report(LEVEL_ERROR, &
                         message = 'Synthax error', &
-                        label = label_type('Missing closing parenthesis in expression', len(expr), 1)), &
-                        expr)
+                        label = label_type('Missing closing parenthesis in expression', len(expr), 1), &
+                        source = trim(ctx%path)), &
+                        expr, ctx%line))
                 val = 0
             else
                 pos = pos + 1
@@ -683,10 +694,11 @@ contains
             val = merge(1, 0, is_defined(expanded, macros))
             pos = pos + 1
         else
-            print '(A)', render(diagnostic_report(LEVEL_ERROR, &
+            call printf(render(diagnostic_report(LEVEL_ERROR, &
                         message = 'Invalid expression', &
-                        label = label_type('Unknown token', 1, len_trim(tokens(pos)%value))), &
-                        expr)
+                        label = label_type('Unknown token', 1, len_trim(tokens(pos)%value)), &
+                        source = trim(ctx%path)), &
+                        expr, ctx%line))
             val = 0
             pos = pos + 1
         end if

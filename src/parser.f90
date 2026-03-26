@@ -116,9 +116,9 @@ contains
 
         open(newunit=iunit, file=filepath, status='old', action='read', iostat=ierr)
         if (ierr /= 0) then
-            print '(A)', render(diagnostic_report(LEVEL_ERROR, &
+            call printf(render(diagnostic_report(LEVEL_ERROR, &
                         message = 'Error opening input file: '//trim(filepath)), &
-                        '')
+                        ''))
             return
         else
             if (c_associated(getcwd_c(buf, size(buf, kind=c_size_t)))) then
@@ -130,9 +130,9 @@ contains
         if (present(outputfile)) then
             open(newunit=ounit, file=outputfile, status='replace', action='write', iostat=ierr)
             if (ierr /= 0) then
-                print '(A)', render(diagnostic_report(LEVEL_ERROR, &
+                call printf(render(diagnostic_report(LEVEL_ERROR, &
                         message = 'Error opening input file: '//trim(outputfile)), &
-                        '')
+                        ''))
                 close(iunit)
                 return
             end if
@@ -163,9 +163,9 @@ contains
 
         open(newunit=ounit, file=ofile, status='replace', action='write', iostat=ierr)
         if (ierr /= 0) then
-            print '(A)', render(diagnostic_report(LEVEL_ERROR, &
+            call printf(render(diagnostic_report(LEVEL_ERROR, &
                         message = 'Error opening input file: '//trim(ofile)), &
-                        '')
+                        ''))
             close(iunit)
             return
         end if
@@ -190,9 +190,9 @@ contains
 
         open(newunit=iunit, file=ifile, status='old', action='read', iostat=ierr)
         if (ierr /= 0) then
-            print '(A)', render(diagnostic_report(LEVEL_ERROR, &
+            call printf(render(diagnostic_report(LEVEL_ERROR, &
                         message = 'Error opening input file: '//trim(ifile)), &
-                        '')
+                        ''))
             return
         else
             if (c_associated(getcwd_c(buf, size(buf, kind=c_size_t)))) then
@@ -331,15 +331,15 @@ contains
         end do
 
         if (cond_depth > 0) then
-            print '(A)', render(diagnostic_report(LEVEL_ERROR, &
+            call printf(render(diagnostic_report(LEVEL_ERROR, &
                         message = 'Unclosed conditional block at end of file', &
                         label = label_type('Missing conditional statement #endif', 1, 1)), &
-                        trim(line), iline)
+                        trim(line), iline))
         else if (c_continue) then
-            print '(A)', render(diagnostic_report(LEVEL_ERROR, &
+            call printf(render(diagnostic_report(LEVEL_ERROR, &
                         message = 'Unexpected character', &
                         label = label_type('Trailing new line "\"', len(trim(line)), 1)), &
-                        trim(line), iline)
+                        trim(line), iline))
         end if
     end subroutine
 
@@ -430,7 +430,7 @@ contains
             if (.not. global%expand_macros) then
                 rst = trimmed_line
             else
-                rst = adjustl(expand_all(trimmed_line, macros, filepath, linenum, stch, global%extra_macros, global%&
+                rst = adjustl(expand_all(ctx, macros, stch, global%extra_macros, global%&
                         implicit_continuation))
             end if
         end if
