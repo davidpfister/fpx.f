@@ -102,7 +102,7 @@ contains
         !private
         type(context) :: ctx
 
-        ctx = context(expr, 1, '', '')
+        ctx = context(expr, 1, '')
         res = evaluate_expression(expr, macros, ctx, val)
     end function
 

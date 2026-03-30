@@ -117,7 +117,8 @@ contains
         open(newunit=iunit, file=filepath, status='old', action='read', iostat=ierr)
         if (ierr /= 0) then
             call printf(render(diagnostic_report(LEVEL_ERROR, &
-                    message='Error opening input file: ' // trim(filepath)), &
+                    message='Error opening input file: ' // trim(filepath), &
+                    source=name), &
                     ''))
             return
         else
@@ -131,7 +132,8 @@ contains
             open(newunit=ounit, file=outputfile, status='replace', action='write', iostat=ierr)
             if (ierr /= 0) then
                 call printf(render(diagnostic_report(LEVEL_ERROR, &
-                        message='Error opening input file: ' // trim(outputfile)), &
+                        message='Error opening input file: ' // trim(outputfile), &
+                        source=name), &
                         ''))
                 close(iunit)
                 return
@@ -164,7 +166,8 @@ contains
         open(newunit=ounit, file=ofile, status='replace', action='write', iostat=ierr)
         if (ierr /= 0) then
             call printf(render(diagnostic_report(LEVEL_ERROR, &
-                    message='Error opening input file: ' // trim(ofile)), &
+                    message='Error opening input file: ' // trim(ofile), &
+                    source=name), &
                     ''))
             close(iunit)
             return
@@ -191,7 +194,8 @@ contains
         open(newunit=iunit, file=ifile, status='old', action='read', iostat=ierr)
         if (ierr /= 0) then
             call printf(render(diagnostic_report(LEVEL_ERROR, &
-                    message='Error opening input file: ' // trim(ifile)), &
+                    message='Error opening input file: ' // trim(ifile), &
+                    source=name), &
                     ''))
             return
         else
@@ -333,12 +337,14 @@ contains
         if (cond_depth > 0) then
             call printf(render(diagnostic_report(LEVEL_ERROR, &
                     message='Unclosed conditional block at end of file', &
-                    label=label_type('Missing conditional statement #endif', 1, 1)), &
+                    label=label_type('Missing conditional statement #endif', 1, 1), &
+                    source=name), &
                     trim(line), iline))
         else if (c_continue) then
             call printf(render(diagnostic_report(LEVEL_ERROR, &
                     message='Unexpected character', &
-                    label=label_type('Trailing new line "\"', len(trim(line)), 1)), &
+                    label=label_type('Trailing new line "\"', len(trim(line)), 1), &
+                    source=name), &
                     trim(line), iline))
         end if
     end subroutine
@@ -362,8 +368,8 @@ contains
     recursive function process_line(current_line, ounit, filepath, linenum, macros, stch) result(rst)
         character(*), intent(in)                :: current_line
         integer, intent(in)                     :: ounit
-        character(*), intent(in)                :: filepath
-        integer, intent(in)                     :: linenum
+        character(*), intent(inout)             :: filepath
+        integer, intent(inout)                  :: linenum
         type(macro), allocatable, intent(inout) :: macros(:)
         logical, intent(out)                    :: stch
         character(:), allocatable               :: rst
@@ -391,7 +397,7 @@ contains
         n = len(trimmed_line); if (n == 0) return
 
         active = is_active()
-        ctx = context(trimmed_line, linenum, filepath, filename(filepath))
+        ctx = context(trimmed_line, linenum, filepath)
         if (head(trimmed_line) == '#') then
             if (len(trimmed_line) == 1) then
                 return  !null directive
@@ -405,6 +411,8 @@ contains
                 call handle_error(ctx, macros, 'error')
             else if (starts_with(lowercase(adjustl(trimmed_line(2:))), 'include') .and. active) then
                 call handle_include(ctx, ounit, preprocess_unit, macros, 'include')
+            else if (starts_with(lowercase(adjustl(trimmed_line(2:))), 'line')) then
+                call handle_line(ctx, 'line')
             else if (starts_with(lowercase(adjustl(trimmed_line(2:))), 'ifdef')) then
                 call handle_ifdef(ctx, macros, 'ifdef')
             else if (starts_with(lowercase(adjustl(trimmed_line(2:))), 'ifndef')) then

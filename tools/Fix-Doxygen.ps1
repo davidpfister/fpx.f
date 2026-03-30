@@ -1,0 +1,36 @@
+<#
+.SYNOPSIS
+    Recursively scans .js files and removes "scope::" (or any XXX::) prefix 
+    inside <span>XXX::something</span> patterns.
+
+.PARAMETER Path
+    Root folder to start searching (default: current directory)
+
+.PARAMETER WhatIf
+    Shows what would be changed without making changes
+#>
+param(
+    [Parameter(Position = 0)]
+    [string]$Path = ".",
+
+    [switch]$WhatIf
+)
+
+$files = Get-ChildItem -Path $Path -Recurse -File -Include *.js -ErrorAction SilentlyContinue
+
+if ($files.Count -eq 0) {
+    Write-Host "No .js files found." -ForegroundColor DarkGray
+    exit
+}
+
+foreach ($file in $files) {
+    $content = Get-Content -Path $file.FullName -Raw -ErrorAction SilentlyContinue
+    if (-not $content) { continue }
+
+    $newContent = $content -replace '(?i)\[\s*"([^"]*?::)([^"]+?)"', '[ "$2"'
+
+    # Only show files that would actually change
+    if ($newContent -cne $content) {
+        Set-Content -Path $file.FullName -Value $newContent -Encoding UTF8 -NoNewline
+    }
+}
