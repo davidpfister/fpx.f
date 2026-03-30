@@ -36,7 +36,6 @@
 !!    type(context) :: ctx
 !!
 !!    ctx%path     = "/home/user/project/src/utils.F90"
-!!    ctx%filename = "utils.F90"
 !!    ctx%line     = 27
 !!    ctx%content  = "real :: x = PI * r**2"
 !!
@@ -50,7 +49,6 @@
 !!    type(context) :: included_ctx
 !!
 !!    included_ctx%path     = resolved_include_path
-!!    included_ctx%filename = basename(resolved_include_path)
 !!    included_ctx%line     = 1   ! reset for new file
 !!    included_ctx%content  = first_line_of_included_file
 !!
@@ -63,7 +61,6 @@
 !!
 !!    lbl = label_type(LEVEL_ERROR, "expected expression", &
 !!                     line=ctx%line, first=8, last=12, primary=.true.)
-!!    lbl%source = ctx%filename
 !!
 !!    diag = diagnostic_report(LEVEL_ERROR, "Invalid #if condition", ctx%path, [lbl])
 !! @endcode
@@ -80,7 +77,6 @@ module fpx_context
     !! - `content`   : The actual line of source code where the issue occurred
     !! - `line`      : 1-based line number in the current file
     !! - `path`      : Full absolute or relative path to the file
-    !! - `filename`  : Base name only (used for concise reporting)
     !!
     !! @par Remarks
     !! - Usually one `context` exists per currently processed file.
@@ -90,7 +86,6 @@ module fpx_context
         character(:), allocatable   :: content
         integer                     :: line
         character(:), allocatable   :: path
-        character(:), allocatable   :: filename
     end type
 
 end module
