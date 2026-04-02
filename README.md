@@ -1,29 +1,26 @@
 <!--! @mainpage -->
-<a id="readme-top"></a>
+<h1 class="title">
+    <span class="name">FPX</span>
+    <br>
+    <span class="text">A Fortran preprocessor</span>
+    <br>
+    <span class="tagline">
+    Simple, embeddable, and open-source preprocessor written in modern Fortran.
+    </span>
+</h1>
+<br>
 
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-[![MIT License][license-shield]][license-url]
-
-<!-- PROJECT LOGO -->
-<br />
-<div align="center">
-  <h3 align="center">fpx.f</h3>
-
-  <p align="center">
-    A Fortran preprocessor in Fortran for modern Fortran.
-    <br />
-    <a href="https://github.com/davidpfister/fpx.f"><strong>Explore the project »</strong></a>
-    <br />
-  </p>
+<div class="actions">
+    <div class="action">
+        <a class="button medium brand" href="index.html#autotoc_md2">Get Started</a>
+    </div>
+    <div class="action">
+        <a class="button medium alt" href="topics.html">API</a>
+    </div>
+    <div class="action">
+        <a class="button medium alt" href="https://github.com/davidpfister/fpx.f" target="_blank" rel="noreferrer">View on GitHub</a>
+    </div>
 </div>
-
-
-
-<!-- TABLE OF CONTENTS -->
-[TOC]
 
 # Introduction
 <!-- ABOUT THE PROJECT -->
@@ -152,7 +149,7 @@ The project was originally developed on Windows with Visual Studio 2019. The rep
 
 
 <!-- USAGE EXAMPLES -->
-## Usage
+## Quick Start
 
 ### Command line
 The preprocessor `fpx` can be used from the command-line using your favorite shell. 
@@ -198,16 +195,6 @@ By contributing to _fpx.f_, you certify that you own or are allowed to share the
 Distributed under the MIT License.
 
 <!-- MARKDOWN LINKS & IMAGES -->
-[contributors-shield]: https://img.shields.io/github/contributors/davidpfister/fpx.f.svg?style=for-the-badge
-[contributors-url]: https://github.com/davidpfister/fpx.f/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/davidpfister/fpx.f.svg?style=for-the-badge
-[forks-url]: https://github.com/davidpfister/fpx.f/network/members
-[stars-shield]: https://img.shields.io/github/stars/davidpfister/fpx.f.svg?style=for-the-badge
-[stars-url]: https://github.com/davidpfister/fpx.f/stargazers
-[issues-shield]: https://img.shields.io/github/issues/davidpfister/fpx.f.svg?style=for-the-badge
-[issues-url]: https://github.com/davidpfister/fpx.f/issues
-[license-shield]: https://img.shields.io/github/license/davidpfister/fpx.f.svg?style=for-the-badge
-[license-url]: https://github.com/davidpfister/fpx.f/master/LICENSE
 [gfortran]: https://img.shields.io/badge/gfortran-000000?style=for-the-badge&logo=gnu&logoColor=white
 [gfortran-url]: https://gcc.gnu.org/wiki/GFortran
 [ifort]: https://img.shields.io/badge/ifort-000000?style=for-the-badge&logo=Intel&logoColor=61DAFB

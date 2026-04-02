@@ -1,4 +1,4 @@
-var group__group__string =
+﻿var group__group__string =
 [
     [ "string", "structfpx__string_1_1string.html", [
       [ "assignment", "structfpx__string_1_1string.html#a4a3c3898b4d385097118507fa6fedf74", null ],
@@ -28,8 +28,10 @@ var group__group__string =
       [ "strings_contain_character", "interfacefpx__string_1_1operator_07_8contains_8_08.html#a2160ddf26e3dddfd05e620a46157b294", null ],
       [ "strings_contain_string", "interfacefpx__string_1_1operator_07_8contains_8_08.html#a2c57ffe961e9ae1df1da3ac591248ae1", null ]
     ] ],
+    [ "index", "interfacefpx__string_1_1index.html", null ],
     [ "concat", "group__group__string.html#gadb259182cf539d22a0de67734b243059", null ],
     [ "head", "group__group__string.html#gafaf25b317ddf986a177b9984e58b75ad", null ],
+    [ "lowercase", "group__group__string.html#gaa2b8ec4e39395a3550a97ea0ee92e0a2", null ],
     [ "previous", "group__group__string.html#gad5ed5d996518e663bf692512469bd632", null ],
     [ "starts_with", "group__group__string.html#gae5571ae03556ef6798087ca88b1ffd26", null ],
     [ "tail", "group__group__string.html#ga5f1082a048d0e212c77896988f601304", null ],

@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['sizeof_0',['sizeof',['../interfacefpx__macro_1_1sizeof.html',1,'fpx_macro']]],
-  ['string_1',['string',['../structfpx__string_1_1string.html',1,'fpx_string']]],
-  ['strtol_2',['strtol',['../interfacefpx__token_1_1strtol.html',1,'fpx_token']]]
+  ['read_5funit_0',['read_unit',['../interfacefpx__include_1_1read__unit.html',1,'fpx_include']]],
+  ['remove_1',['remove',['../interfacefpx__macro_1_1remove.html',1,'fpx_macro']]],
+  ['render_2',['render',['../interfacefpx__logging_1_1render.html',1,'fpx_logging']]]
 ];

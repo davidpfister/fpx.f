@@ -1,6 +1,6 @@
 !> @file
 !! @defgroup group_line Line
-!! Standard #line directive support for the fpx Fortran preprocessor
+!! Standard `#line` directive support for the fpx Fortran preprocessor
 !!
 !! This module implements full support for the ISO C99/C11 `#line` directive,
 !! which is also widely used in Fortran preprocessors.
@@ -57,10 +57,10 @@ contains
     !! filename (`ctx%path`) for subsequent diagnostics, `__LINE__`, and `__FILE__`
     !! expansions.
     !!
-    !! Fully compliant with ISO C99 / C11 §6.10.4 and common Fortran preprocessor behavior.
+    !! Fully compliant with ISO C99 / C11 ï¿½6.10.4 and common Fortran preprocessor behavior.
     !!
     !! @param[inout] ctx     Context source line containing the #line directive
-    !! @param[in]    token   Usually 'DEFINE' – keyword matched in lowercase
+    !! @param[in]    token   Usually 'DEFINE' ï¿½ keyword matched in lowercase
     !!
     !! @b Remarks
     !! @ingroup group_line

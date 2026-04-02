@@ -178,6 +178,10 @@ module fpx_logging
                                                                'WHITE_INTENSE  ', '107            ' &  !  White intense.
                                                                ], [2, 17])  !< Background colors.
 
+    !> Interface to render diagnostic messages and labels
+    !!
+    !! @b Remarks
+    !! @ingroup group_logging
     interface render
         module procedure :: render_diagnostic
         module procedure :: render_text
@@ -193,6 +197,52 @@ module fpx_logging
         enumerator :: LEVEL_INFO = 4
     end enum
 
+    !> Represents text as a sequence of ASCII code units.
+    !!        The derived type wraps an allocatable character array.
+    !!
+    !! <h2 class="groupheader">Examples</h2>
+    !! @code{.f90}
+    !! type(string) :: s
+    !! s = 'foo'
+    !! @endcode
+    !!
+    !! <h2 class="groupheader">Constructors</h2>
+    !! Initializes a new instance of the label_type class
+    !! <h3>label_type(character(*), integer, integer, (optional) integer)</h3>
+    !! @verbatim type(string) function string(character(*) text, integer first, integer length, (optional) integer level) @endverbatim
+    !!
+    !! @param[in] text Text displayed next to the label
+    !! @param[in] first Position of the label
+    !! @param[in] length Length of the label
+    !! @param[in] level (optional) Level of the label
+    !!
+    !! @b Examples
+    !! @code{.f90}
+    !! type(label_type) :: label
+    !! label = label_type('Syntax error', 5, 7)
+    !! @endcode
+    !! @return The constructed label_type object.
+    !!
+    !! <h3>label_type(integer, character(*), integer, integer, (optional) integer, (optional) logical)</h3>
+    !! @verbatim type(string) function label_type(integer line, character(*) text, integer first, integer length, (optional) integer level, (optional) logical primary) @endverbatim
+    !!
+    !! @param[in] line line number for the label
+    !! @param[in] text Text displayed next to the label
+    !! @param[in] first Position of the label
+    !! @param[in] length Length of the label
+    !! @param[in] level (optional) Level of the label
+    !! @param[in] primary .true. if the label is the primary one
+    !!
+    !! @b Examples
+    !! @code{.f90}
+    !! type(label_type) :: label
+    !! label = label_type(1, 'Syntax error', 5, 7, LEVEL_ERROR, .true.)
+    !! @endcode
+    !! @return The constructed label_type object.
+    !!
+    !! <h2 class="groupheader">Remarks</h2>
+    !!
+    !! @ingroup group_logging
     type label_type
         !> Level of message
         integer, allocatable        :: level
@@ -233,6 +283,7 @@ module fpx_logging
         module procedure diagnostic_new
     end interface
 
+    !! @private
     type :: line_token
         integer :: first, last
     end type

@@ -1,7 +1,11 @@
 var searchData=
 [
-  ['–_20predefined_20macros_20include_20paths_20etc_0',['Full control – predefined macros, include paths, etc.',['../md__c_1_2_users_2dev_2_documents_2_git_hub_2sandbox_2fpx_8f_2_8dox_2articles_2usage.html#autotoc_md48',1,'']]],
-  ['–_20preprocess_20a_20file_20to_20another_20file_1',['Minimal example – preprocess a file to another file',['../md__c_1_2_users_2dev_2_documents_2_git_hub_2sandbox_2fpx_8f_2_8dox_2articles_2usage.html#autotoc_md47',1,'']]],
-  ['–_20the_20modern_20fortran_20preprocessor_2',['fpx – The Modern Fortran Preprocessor',['../md__c_1_2_users_2dev_2_documents_2_git_hub_2sandbox_2fpx_8f_2_8dox_2articles_2usage.html',1,'']]],
-  ['–_20which_20way_20should_20you_20use_20fpx_3',['Summary – Which way should you use fpx?',['../md__c_1_2_users_2dev_2_documents_2_git_hub_2sandbox_2fpx_8f_2_8dox_2articles_2usage.html#autotoc_md52',1,'']]]
+  ['undef_20directive_0',['3.3 The undef directive',['../specifications.html#autotoc_md59',1,'']]],
+  ['usage_1',['Usage',['../usage.html',1,'Basic Usage'],['../introduction.html#autotoc_md29',1,'Most frequent Usage']]],
+  ['usage_2',['Basic usage',['../usage.html#autotoc_md124',1,'']]],
+  ['use_201990s_3',['Fortran 90/95: Reduced Need, Persistent Use (1990s)',['../introduction.html#autotoc_md26',1,'']]],
+  ['useful_20options_4',['Most useful options',['../usage.html#autotoc_md125',1,'']]],
+  ['using_20fpx_20as_20a_20library_20in_20your_20own_20code_5',['Using fpx as a Library (in your own code)',['../cheatsheet.html#autotoc_md18',1,'']]],
+  ['using_20fpx_20as_20an_20embedded_20library_20in_20your_20own_20fortran_20program_6',['Using fpx as an Embedded Library in Your Own Fortran Program',['../usage.html#autotoc_md127',1,'']]],
+  ['using_20fpx_20from_20the_20command_20line_20cli_7',['Using fpx from the Command Line (CLI)',['../usage.html#autotoc_md123',1,'']]]
 ];

@@ -156,6 +156,7 @@ contains
 
     !> Parses a sequence of tokens starting at position `pos` as a full expression.
     !! Entry point for the recursive descent parser. Delegates to parse_or().
+    !! @param[in] expr Expression to be processed
     !! @param[in] tokens    Array of tokens to parse
     !! @param[in] ntokens   Number of valid tokens in the array
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
@@ -177,6 +178,7 @@ contains
     end function
 
     !> Parses conditional expressions (?:). Right-associative.
+    !! @param[in] expr Expression to be processed
     !! @param[in] tokens    Array of tokens to parse
     !! @param[in] ntokens   Number of valid tokens in the array
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
@@ -230,6 +232,7 @@ contains
     end function
 
     !> Parses logical OR expressions (`||`).
+    !! @param[in] expr Expression to be processed
     !! @param[in] tokens    Array of tokens to parse
     !! @param[in] ntokens   Number of valid tokens in the array
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
@@ -259,6 +262,7 @@ contains
     end function
 
     !> Parses logical AND expressions (`&&`).
+    !! @param[in] expr Expression to be processed
     !! @param[in] tokens    Array of tokens to parse
     !! @param[in] ntokens   Number of valid tokens in the array
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
@@ -288,6 +292,7 @@ contains
     end function
 
     !> Parses bitwise OR expressions (`|`).
+    !! @param[in] expr Expression to be processed
     !! @param[in] tokens    Array of tokens to parse
     !! @param[in] ntokens   Number of valid tokens in the array
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
@@ -317,6 +322,7 @@ contains
     end function
 
     !> Parses bitwise XOR expressions (`^`).
+    !! @param[in] expr Expression to be processed
     !! @param[in] tokens    Array of tokens to parse
     !! @param[in] ntokens   Number of valid tokens in the array
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
@@ -346,6 +352,7 @@ contains
     end function
 
     !> Parses bitwise AND expressions (`&`).
+    !! @param[in] expr Expression to be processed
     !! @param[in] tokens    Array of tokens to parse
     !! @param[in] ntokens   Number of valid tokens in the array
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
@@ -375,6 +382,7 @@ contains
     end function
 
     !> Parses equality/inequality expressions (`==`, `!=`).
+    !! @param[in] expr Expression to be processed
     !! @param[in] tokens    Array of tokens to parse
     !! @param[in] ntokens   Number of valid tokens in the array
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
@@ -411,6 +419,7 @@ contains
     end function
 
     !> Parses relational expressions (`<`, `>`, `<=`, `>=`).
+    !! @param[in] expr Expression to be processed
     !! @param[in] tokens    Array of tokens to parse
     !! @param[in] ntokens   Number of valid tokens in the array
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
@@ -456,6 +465,7 @@ contains
     end function
 
     !> Parses shift expressions (`<<`, `>>`).
+    !! @param[in] expr Expression to be processed
     !! @param[in] tokens    Array of tokens to parse
     !! @param[in] ntokens   Number of valid tokens in the array
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
@@ -492,6 +502,7 @@ contains
     end function
 
     !> Parses additive expressions (`+`, `-`).
+    !! @param[in] expr Expression to be processed
     !! @param[in] tokens    Array of tokens to parse
     !! @param[in] ntokens   Number of valid tokens in the array
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
@@ -528,6 +539,7 @@ contains
     end function
 
     !> Parses multiplicative expressions (`*`, `/`, `%`).
+    !! @param[in] expr Expression to be processed
     !! @param[in] tokens    Array of tokens to parse
     !! @param[in] ntokens   Number of valid tokens in the array
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
@@ -568,6 +580,7 @@ contains
     end function
 
     !> Parses exponentiation (`**`). Right-associative.
+    !! @param[in] expr Expression to be processed
     !! @param[in] tokens    Array of tokens to parse
     !! @param[in] ntokens   Number of valid tokens in the array
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
@@ -598,6 +611,7 @@ contains
     end function
 
     !> Parses unary operators (`!`, `-`, `+`, `~`).
+    !! @param[in] expr Expression to be processed
     !! @param[in] tokens    Array of tokens to parse
     !! @param[in] ntokens   Number of valid tokens in the array
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)

@@ -59,6 +59,7 @@
 !! @endcode
 module fpx_string
     use fpx_constants
+    
     implicit none; private
 
     public :: len,          &

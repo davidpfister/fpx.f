@@ -1,4 +1,4 @@
-var group__group__graph =
+﻿var group__group__graph =
 [
     [ "digraph", "structfpx__graph_1_1digraph.html", [
       [ "add_edge", "structfpx__graph_1_1digraph.html#a05d6c024ecc6f31c0f92efeb094c8ff1", null ],

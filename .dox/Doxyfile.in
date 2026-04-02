@@ -1389,7 +1389,8 @@ HTML_STYLESHEET        =
 HTML_EXTRA_STYLESHEET  = ./config/doxygen-awesome-css/doxygen-awesome.css \
                          ./config/doxygen-awesome-css/doxygen-awesome-sidebar-only.css \
                          ./config/doxygen-awesome-css/doxygen-awesome-sidebar-only-darkmode-toggle.css \
-                         ./config/custom.css
+                         ./config/custom.css \
+                         ./config/table.css
                          
 # The HTML_EXTRA_FILES tag can be used to specify one or more extra images or
 # other source files which should be copied to the HTML output directory. Note
@@ -1399,11 +1400,12 @@ HTML_EXTRA_STYLESHEET  = ./config/doxygen-awesome-css/doxygen-awesome.css \
 # files will be copied as-is; there are no commands or markers available.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-HTML_EXTRA_FILES       = ./config//doxygen-awesome-css/doxygen-awesome-darkmode-toggle.js \
-                         ./config//doxygen-awesome-css/doxygen-awesome-fragment-copy-button.js \
-                         ./config//doxygen-awesome-css/doxygen-awesome-paragraph-link.js \
-                         ./config//doxygen-awesome-css/doxygen-awesome-interactive-toc.js \
-                         ./config//doxygen-awesome-css/doxygen-awesome-tabs.js
+HTML_EXTRA_FILES       = ./config/doxygen-awesome-css/doxygen-awesome-darkmode-toggle.js \
+                         ./config/doxygen-awesome-css/doxygen-awesome-fragment-copy-button.js \
+                         ./config/doxygen-awesome-css/doxygen-awesome-paragraph-link.js \
+                         ./config/doxygen-awesome-css/doxygen-awesome-interactive-toc.js \
+                         ./config/doxygen-awesome-css/doxygen-awesome-tabs.js \
+                         ./config/nav-buttons.js
 
 # The HTML_COLORSTYLE tag can be used to specify if the generated HTML output
 # should be rendered with a dark or light theme.
@@ -1736,7 +1738,7 @@ ENUM_VALUES_PER_LINE   = 4
 # Minimum value: 0, maximum value: 1500, default value: 250.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-TREEVIEW_WIDTH         = 280
+TREEVIEW_WIDTH         = 240
 
 # If the EXT_LINKS_IN_WINDOW option is set to YES, doxygen will open links to
 # external symbols imported via tag files in a separate window.

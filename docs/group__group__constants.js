@@ -1,4 +1,4 @@
-var group__group__constants =
+﻿var group__group__constants =
 [
     [ "chksize", "group__group__constants.html#ga38b42c16100fcac33e76ef949c38f0fe", null ],
     [ "max_cond_depth", "group__group__constants.html#gac4ff9f6877693278fc810b9aab345630", null ],

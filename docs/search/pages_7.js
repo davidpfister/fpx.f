@@ -1,6 +1,7 @@
 var searchData=
 [
-  ['f_0',['fpx.f',['../index.html',1,'']]],
-  ['fortran_20preprocessor_20requirements_2024_20114r2_1',['Fortran preprocessor requirements (24-114r2)',['../requirements.html',1,'j3']]],
-  ['fpx_20f_2',['fpx.f',['../index.html',1,'']]]
+  ['8_201_20static_20semantics_20specifications_0',['3.8.1 Static semantics specifications',['../specifications.html#autotoc_md75',1,'']]],
+  ['8_202_20evaluation_20semantics_20specifications_1',['3.8.2 Evaluation semantics specifications',['../specifications.html#autotoc_md76',1,'']]],
+  ['8_20include_20line_20processing_2',['8 INCLUDE line processing',['../specifications.html#autotoc_md95',1,'']]],
+  ['8_20the_20pragma_20directive_3',['3.8 The pragma directive',['../specifications.html#autotoc_md74',1,'']]]
 ];

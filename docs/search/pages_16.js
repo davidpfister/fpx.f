@@ -1,10 +1,26 @@
 var searchData=
 [
-  ['usage_0',['Usage',['../usage.html',1,'Basic Usage'],['../introduction.html#autotoc_md17',1,'Most frequent Usage'],['../C:/Users/DavidPfister/GitHub/sandbox/fpx.f/README.md#autotoc_md39',1,'Usage']]],
-  ['usage_1',['Basic usage',['../usage.html#autotoc_md24',1,'']]],
-  ['use_201990s_2',['Fortran 90/95: Reduced Need, Persistent Use (1990s)',['../introduction.html#autotoc_md14',1,'']]],
-  ['useful_20options_3',['Most useful options',['../usage.html#autotoc_md25',1,'']]],
-  ['using_20fpx_20as_20a_20library_20in_20your_20own_20code_4',['Using fpx as a Library (in your own code)',['../cheatsheet.html#autotoc_md6',1,'']]],
-  ['using_20fpx_20as_20an_20embedded_20library_20in_20your_20own_20fortran_20program_5',['Using fpx as an Embedded Library in Your Own Fortran Program',['../usage.html#autotoc_md27',1,'']]],
-  ['using_20fpx_20from_20the_20command_20line_20cli_6',['Using fpx from the Command Line (CLI)',['../usage.html#autotoc_md23',1,'']]]
+  ['macro_20definitions_20for_20code_20reuse_0',['Macro Definitions for Code Reuse',['../introduction.html#autotoc_md33',1,'']]],
+  ['macro_20directive_1',['macro directive',['../specifications.html#autotoc_md53',1,'3.1 The define object-like macro directive'],['../specifications.html#autotoc_md56',1,'3.2 The define function-like macro directive']]],
+  ['macro_20expansion_2',['Macro Expansion',['../macro.html',1,'j3']]],
+  ['macro_20expansion_3',['4.5 Fortran awareness during macro expansion',['../requirements.html#autotoc_md43',1,'']]],
+  ['macro_20expansion_20during_20argument_20substitution_4',['2.2.1 Macro expansion during argument substitution',['../macro.html#autotoc_md116',1,'']]],
+  ['macro_20identification_5',['2.1 Function-like macro identification',['../macro.html#autotoc_md110',1,'']]],
+  ['macro_20identification_20and_20expansion_6',['4 Macro identification and expansion',['../specifications.html#autotoc_md83',1,'']]],
+  ['macro_20identification_20and_20expansion_20in_20cpp_7',['4.1 Comparison to macro identification and expansion in CPP',['../specifications.html#autotoc_md84',1,'']]],
+  ['macro_20invocation_8',['2 Function-like macro invocation',['../macro.html#autotoc_md109',1,'']]],
+  ['macro_20invocations_9',['2.1.4 Comments in macro invocations',['../macro.html#autotoc_md114',1,'']]],
+  ['macro_20invocations_20fixed_20form_10',['2.1.3 Line breaks and continuations in macro invocations (fixed-form)',['../macro.html#autotoc_md113',1,'']]],
+  ['macro_20invocations_20free_20form_11',['2.1.2 Line breaks and continuations in macro invocations (free-form)',['../macro.html#autotoc_md112',1,'']]],
+  ['macro_20tricks_12',['Advanced Macro Tricks',['../cheatsheet.html#autotoc_md16',1,'']]],
+  ['macros_13',['Macros',['../macro.html#autotoc_md118',1,'2.3 Variadic Macros'],['../cheatsheet.html#autotoc_md15',1,'Built-in Predefined Macros']]],
+  ['macros_14',['7 Predefined macros',['../specifications.html#autotoc_md89',1,'']]],
+  ['macros_20defined_20by_20the_20preprocessor_15',['4.4 Macros defined by the preprocessor',['../requirements.html#autotoc_md42',1,'']]],
+  ['macros_20include_20paths_20etc_16',['Full control – predefined macros, include paths, etc.',['../usage.html#autotoc_md129',1,'']]],
+  ['memory_20string_20→_20string_17',['Preprocess from memory (string → string)',['../usage.html#autotoc_md130',1,'']]],
+  ['minimal_20example_20–_20preprocess_20a_20file_20to_20another_20file_18',['Minimal example – preprocess a file to another file',['../usage.html#autotoc_md128',1,'']]],
+  ['modern_20era_3a_20preprocessing_20today_202000s–2025_19',['Modern Era: Preprocessing Today (2000s–2025)',['../introduction.html#autotoc_md28',1,'']]],
+  ['most_20common_20directives_20',['Most Common Directives',['../cheatsheet.html#autotoc_md14',1,'']]],
+  ['most_20frequent_20usage_21',['Most frequent Usage',['../introduction.html#autotoc_md29',1,'']]],
+  ['most_20useful_20options_22',['Most useful options',['../usage.html#autotoc_md125',1,'']]]
 ];

@@ -16,10 +16,10 @@ param(
     [switch]$WhatIf
 )
 
-$files = Get-ChildItem -Path $Path -Recurse -File -Include *.js -ErrorAction SilentlyContinue
+$files = Get-ChildItem -Path $Path -Recurse -File -Include *.js,index.html -ErrorAction SilentlyContinue
 
 if ($files.Count -eq 0) {
-    Write-Host "No .js files found." -ForegroundColor DarkGray
+    Write-Host "No matching files found." -ForegroundColor DarkGray
     exit
 }
 
@@ -27,10 +27,23 @@ foreach ($file in $files) {
     $content = Get-Content -Path $file.FullName -Raw -ErrorAction SilentlyContinue
     if (-not $content) { continue }
 
-    $newContent = $content -replace '(?i)\[\s*"([^"]*?::)([^"]+?)"', '[ "$2"'
+    $newContent = $content
 
-    # Only show files that would actually change
+    # Existing JS replacement
+    if ($file.Extension -eq ".js") {
+        $newContent = $newContent -replace '(?i)\[\s*"([^"]*?::)([^"]+?)"', '[ "$2"'
+    }
+
+    # Special rule only for index.html
+    if ($file.Name -ieq "index.html") {
+        $newContent = $newContent -replace '<div class="header">', '<div class="header" style="display:none;">'
+    }
+
     if ($newContent -cne $content) {
-        Set-Content -Path $file.FullName -Value $newContent -Encoding UTF8 -NoNewline
+        if ($WhatIf) {
+            Write-Host "Would modify: $($file.FullName)" -ForegroundColor Yellow
+        } else {
+            Set-Content -Path $file.FullName -Value $newContent -Encoding UTF8 -NoNewline
+        }
     }
 }
