@@ -1,7 +1,5 @@
 # A bit of History {#introduction}
 
-[TOC]
-
 Fortran has powered simulations of galaxies, weather systems, and quantum phenomena for over seven decades. Its enduring strength lies in its clarity, performance, and mathematical soul—qualities that resonate deeply with its community of developers. Yet, nestled within this ecosystem is a contentious tool: the preprocessor. From its ad hoc beginnings in the 1970s to its modern incarnations in tools like `cpp`, `fpp`, and `fypp`, preprocessing has been both a lifeline and a lightning rod for Fortran developers. It enables portability across diverse platforms, conditional compilation for debugging, and code generation for complex libraries—capabilities critical to Fortran’s role in high-performance computing. But it also sparks fierce debate, with many Fortraners decrying its tendency to obscure code, disrupt the language’s elegant simplicity, and introduce bugs that haunt scientific precision. This article explores the pivotal uses of preprocessing in Fortran, delving into the passionate love-hate relationship that defines its place in the community—a tug-of-war between pragmatic necessity and a purist’s devotion to Fortran’s unadulterated clarity.
 
 ## A Brief History of Preprocessing
@@ -147,12 +145,14 @@ In modern Fortran (referring to standards like Fortran 2003, 2008, 2018, and the
     Where `constants.h` might contain:
     ```fortran
     #define GRAVITY_CONSTANT 9.80665_wp
+    ...
     ```
 - **Legacy Code Integration**:
   - Older Fortran 77 codebases, lacking modules, use `#include` to share `COMMON` blocks or subroutine declarations.
   - Example:
     ```fortran
     #include "common_blocks.inc"
+    ...
     ```
 - **Interface Definitions**:
   - For codes interfacing with C or other languages, `#include` pulls in header-like files defining data structures or function signatures.
@@ -177,6 +177,7 @@ In modern Fortran (referring to standards like Fortran 2003, 2008, 2018, and the
     DO i = 1, MAX_ITER
       ...
     END DO
+    ...
     ```
 - **Simplified Syntax**:
   - Macros streamline repetitive or verbose code, like array indexing or mathematical formulas in numerical algorithms.

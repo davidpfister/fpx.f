@@ -18,3 +18,4 @@ options test
 @doc
 option clean --all
 system cd ./.dox & doxygen ./Doxyfile.in & cd ..
+system powershell ./tools/Fix-Doxygen.ps1 -Path "./docs"

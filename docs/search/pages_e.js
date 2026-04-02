@@ -1,5 +1,27 @@
 var searchData=
 [
-  ['specifications_0',['J3 specifications',['../j3.html',1,'pages']]],
-  ['specifications_2024_20142r2_1',['Preprocessor Specifications (24-142r2)',['../specifications.html',1,'j3']]]
+  ['early_20days_3a_20ad_20hoc_20preprocessing_201950s–1970s_0',['Early Days: Ad Hoc Preprocessing (1950s–1970s)',['../introduction.html#autotoc_md24',1,'']]],
+  ['elif_20directives_1',['5 Expressions allowed in if and elif directives',['../specifications.html#autotoc_md87',1,'']]],
+  ['elif_20elifdef_20elifndef_20else_20endif_20conditional_20directives_2',['3.5 The if, ifdef, ifndef, elif, elifdef, elifndef, else, endif conditional directives',['../specifications.html#autotoc_md65',1,'']]],
+  ['elif_20expressions_3',['4.3 Operators accepted in if and elif expressions',['../requirements.html#autotoc_md41',1,'']]],
+  ['elifdef_20elifndef_20else_20endif_20conditional_20directives_4',['3.5 The if, ifdef, ifndef, elif, elifdef, elifndef, else, endif conditional directives',['../specifications.html#autotoc_md65',1,'']]],
+  ['elifndef_20else_20endif_20conditional_20directives_5',['3.5 The if, ifdef, ifndef, elif, elifdef, elifndef, else, endif conditional directives',['../specifications.html#autotoc_md65',1,'']]],
+  ['else_20endif_20conditional_20directives_6',['3.5 The if, ifdef, ifndef, elif, elifdef, elifndef, else, endif conditional directives',['../specifications.html#autotoc_md65',1,'']]],
+  ['embedded_7',['Embedded',['../index.html#autotoc_md10',1,'']]],
+  ['embedded_20library_20in_20your_20own_20fortran_20program_8',['Using fpx as an Embedded Library in Your Own Fortran Program',['../usage.html#autotoc_md127',1,'']]],
+  ['endif_20conditional_20directives_9',['3.5 The if, ifdef, ifndef, elif, elifdef, elifndef, else, endif conditional directives',['../specifications.html#autotoc_md65',1,'']]],
+  ['era_3a_20preprocessing_20today_202000s–2025_10',['Modern Era: Preprocessing Today (2000s–2025)',['../introduction.html#autotoc_md28',1,'']]],
+  ['error_20and_20warning_20directives_11',['3.6 The error and warning directives',['../specifications.html#autotoc_md68',1,'']]],
+  ['etc_12',['Full control – predefined macros, include paths, etc.',['../usage.html#autotoc_md129',1,'']]],
+  ['evaluation_20semantics_20specifications_13',['Evaluation semantics specifications',['../specifications.html#autotoc_md55',1,'3.1.2 Evaluation semantics specifications'],['../specifications.html#autotoc_md82',1,'3.10.2 Evaluation semantics specifications'],['../specifications.html#autotoc_md58',1,'3.2.2 Evaluation semantics specifications'],['../specifications.html#autotoc_md61',1,'3.3.2 Evaluation semantics specifications'],['../specifications.html#autotoc_md64',1,'3.4.2 Evaluation semantics specifications'],['../specifications.html#autotoc_md67',1,'3.5.2 Evaluation semantics specifications'],['../specifications.html#autotoc_md70',1,'3.6.2 Evaluation semantics specifications'],['../specifications.html#autotoc_md73',1,'3.7.2 Evaluation semantics specifications'],['../specifications.html#autotoc_md76',1,'3.8.2 Evaluation semantics specifications'],['../specifications.html#autotoc_md79',1,'3.9.2 Evaluation semantics specifications']]],
+  ['example_20–_20preprocess_20a_20file_20to_20another_20file_14',['Minimal example – preprocess a file to another file',['../usage.html#autotoc_md128',1,'']]],
+  ['examples_15',['Real-world examples',['../usage.html#autotoc_md126',1,'']]],
+  ['expansion_16',['Macro Expansion',['../macro.html',1,'j3']]],
+  ['expansion_17',['expansion',['../macro.html#autotoc_md115',1,'2.2 Argument substitution and expansion'],['../specifications.html#autotoc_md83',1,'4 Macro identification and expansion'],['../requirements.html#autotoc_md43',1,'4.5 Fortran awareness during macro expansion']]],
+  ['expansion_20during_20argument_20substitution_18',['2.2.1 Macro expansion during argument substitution',['../macro.html#autotoc_md116',1,'']]],
+  ['expansion_20in_20cpp_19',['4.1 Comparison to macro identification and expansion in CPP',['../specifications.html#autotoc_md84',1,'']]],
+  ['expressions_20',['expressions',['../requirements.html#autotoc_md41',1,'4.3 Operators accepted in if and elif expressions'],['../specifications.html#autotoc_md88',1,'5.1 Operators allowed in controlling expressions']]],
+  ['expressions_20allowed_20in_20if_20and_20elif_20directives_21',['5 Expressions allowed in if and elif directives',['../specifications.html#autotoc_md87',1,'']]],
+  ['external_20preprocessors_201980s_22',['Rise of External Preprocessors (1980s)',['../introduction.html#autotoc_md25',1,'']]],
+  ['external_20tools_23',['Interfacing with Build Systems and External Tools',['../introduction.html#autotoc_md34',1,'']]]
 ];

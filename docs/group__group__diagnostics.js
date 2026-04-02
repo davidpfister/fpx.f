@@ -1,5 +1,5 @@
-var group__group__diagnostics =
+﻿var group__group__diagnostics =
 [
-    [ "handle_error", "group__group__diagnostics.html#ga61bcae620ae31961a738d0e9391069c8", null ],
-    [ "handle_warning", "group__group__diagnostics.html#gad056abf172094490247a1f5eecda6e8c", null ]
+    [ "handle_error", "group__group__diagnostics.html#gaa4ec80ff50a60b7b1d6e43531a84e0a3", null ],
+    [ "handle_warning", "group__group__diagnostics.html#gafdddb957adc33b7f025877c9f23eb4ed", null ]
 ];

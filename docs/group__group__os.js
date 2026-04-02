@@ -1,4 +1,4 @@
-var group__group__os =
+﻿var group__group__os =
 [
     [ "os_cygwin", "group__group__os.html#gaea747ca4b17690fe52ab56cf44b0ef69", null ],
     [ "os_freebsd", "group__group__os.html#ga8a09a5ef377801c337f2ac24e992d811", null ],

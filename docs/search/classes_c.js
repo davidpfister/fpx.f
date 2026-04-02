@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['token_0',['token',['../structfpx__token_1_1token.html',1,'fpx_token']]],
-  ['trim_1',['trim',['../interfacefpx__string_1_1trim.html',1,'fpx_string']]]
+  ['sizeof_0',['sizeof',['../interfacefpx__macro_1_1sizeof.html',1,'fpx_macro']]],
+  ['string_1',['string',['../structfpx__string_1_1string.html',1,'fpx_string']]],
+  ['strtol_2',['strtol',['../interfacefpx__token_1_1strtol.html',1,'fpx_token']]]
 ];

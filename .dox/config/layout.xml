@@ -3,15 +3,10 @@
   <!-- Navigation index tabs for HTML output -->
   <navindex>
     <tab type="mainpage" visible="yes" title="fpx.f"/>
-    <tab type="classindex" visible="no" title="Types"/>
     <tab type="pages" visible="yes" title="Articles" intro=""/>
     <tab type="topics" visible="yes" title="API" intro=""/>
-      <!-- <tab type="classindex" visible="$ALPHABETICAL_INDEX" title=""/>
-      <tab type="hierarchy" visible="yes" title="" intro=""/> -->
-    <!-- <tab type="user" visible="yes" title="Code" url="dir_c43cb02980e08731d96f7af40bd734ea.html"/> -->
-    <!-- <tab type="classmembers" visible="no" title="Members" intro=""/> -->
     <tab type="filelist" visible="yes" title="Files" intro=""/>
-    <tab type="user" visible="yes" title="GitHub Repository" url="https://github.com/davidpfister/fpx.f"/>
+    <tab type="user" visible="yes" title="Code" url="https://github.com/davidpfister/fpx.f"/>
   </navindex>
 
   <!-- Layout definition for a class page -->

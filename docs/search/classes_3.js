@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['get_0',['get',['../interfacefpx__macro_1_1get.html',1,'fpx_macro']]],
-  ['global_5fsettings_1',['global_settings',['../structfpx__global_1_1global__settings.html',1,'fpx_global']]]
+  ['evaluate_5fexpression_0',['evaluate_expression',['../interfacefpx__operators_1_1evaluate__expression.html',1,'fpx_operators']]]
 ];

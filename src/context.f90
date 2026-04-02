@@ -1,6 +1,6 @@
 !> @file
 !! @defgroup group_context Context
-!! @brief Source context tracking for diagnostics and error reporting in fpx
+!! Source context tracking for diagnostics and error reporting in fpx
 !!
 !! This small but critical module defines the `context` type used throughout the fpx
 !! preprocessor to attach precise location information to every diagnostic message,
@@ -36,7 +36,6 @@
 !!    type(context) :: ctx
 !!
 !!    ctx%path     = "/home/user/project/src/utils.F90"
-!!    ctx%filename = "utils.F90"
 !!    ctx%line     = 27
 !!    ctx%content  = "real :: x = PI * r**2"
 !!
@@ -50,7 +49,6 @@
 !!    type(context) :: included_ctx
 !!
 !!    included_ctx%path     = resolved_include_path
-!!    included_ctx%filename = basename(resolved_include_path)
 !!    included_ctx%line     = 1   ! reset for new file
 !!    included_ctx%content  = first_line_of_included_file
 !!
@@ -63,34 +61,45 @@
 !!
 !!    lbl = label_type(LEVEL_ERROR, "expected expression", &
 !!                     line=ctx%line, first=8, last=12, primary=.true.)
-!!    lbl%source = ctx%filename
 !!
 !!    diag = diagnostic_report(LEVEL_ERROR, "Invalid #if condition", ctx%path, [lbl])
 !! @endcode
 module fpx_context
     implicit none; private
 
-    !> @brief Source location and content snapshot for precise diagnostics
-    !!
+    !> Source location and content snapshot for precise diagnostics
     !! Instances of this type are created for every source file (including nested
     !! #include files) and passed along with every warning, error, note, or info
     !! message to provide accurate line numbers, file names, and code snippets.
     !!
-    !! @par Fields
-    !! - `content`   : The actual line of source code where the issue occurred
-    !! - `line`      : 1-based line number in the current file
-    !! - `path`      : Full absolute or relative path to the file
-    !! - `filename`  : Base name only (used for concise reporting)
-    !!
-    !! @par Remarks
+    !! <h2  class="groupheader">Examples</h2>
+    !! @code{.f90}
+    !!    type(context) :: ctx
+    !!    ctx = context('lorem ipsum', __LINE__, 'myfile.f90')
+    !!    ...
+    !! @endcode
+    !! <h2  class="groupheader">Remarks</h2>
     !! - Usually one `context` exists per currently processed file.
     !! - When entering an `#include`, a new context is created for the included file.
     !! - Helps produce high-quality, IDE-friendly error messages.
+    !!
+    !! <h2  class="groupheader">Constructors</h2>
+    !! Initializes a new instance of the @ref context class
+    !! <h3>context(character(*),  integer, character(*))</h3>
+    !! @verbatim type(context) function context(character(*) content, integer line, character(*) path) @endverbatim
+    !!
+    !! @param[in] content The actual line of source code where the issue occurred
+    !! @param[in] line 1-based line number in the current file
+    !! @param[in] path Full absolute or relative path to the file
+    !!
+    !! @return The constructed datetime object.
+    !!
+    !! <h2  class="groupheader">Remarks</h2>
+    !! @ingroup group_context
     type, public :: context
         character(:), allocatable   :: content
         integer                     :: line
         character(:), allocatable   :: path
-        character(:), allocatable   :: filename
     end type
 
 end module

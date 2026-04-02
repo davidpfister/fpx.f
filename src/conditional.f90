@@ -3,7 +3,7 @@
 !! Full-featured conditional compilation (#if / #ifdef / #else / #endif) for the fpx preprocessor
 !! This module implements standard-conforming conditional compilation with support for:
 !! - `#if` with arbitrary constant expressions (using `evaluate_expression`)
-!! - `#ifdef` / `#ifndef` and #elifdef` / `#elifndef` for testing macro existence
+!! - `#ifdef` / `#ifndef` and `#elifdef` / `#elifndef` for testing macro existence
 !! - `#elif` chains (multiple alternative branches)
 !! - `#else` as final fallback
 !! - Proper nesting up to `MAX_COND_DEPTH` levels
@@ -125,7 +125,7 @@ contains
     !! a new state onto the conditional stack.
     !! @param[in] ctx       Context source line containing the directive
     !! @param[in] macros    Current macro table
-    !! @param[in] token     Usually 'IF'
+    !! @param[in] token     Usually 'if'
     !!
     !! @b Remarks
     !! @ingroup group_conditional
@@ -158,7 +158,7 @@ contains
     !> Process #ifdef – test if a macro is defined
     !! @param[in] ctx       Context source line containing the directive
     !! @param[in] macros    Current macro table
-    !! @param[in] token     Usually 'IFDEF'
+    !! @param[in] token     Usually 'ifdef'
     !!
     !! @b Remarks
     !! @ingroup group_conditional
@@ -191,7 +191,7 @@ contains
     !> Process #ifndef – test if a macro is NOT defined
     !! @param[in] ctx       Context source line containing the directive
     !! @param[in] macros    Current macro table
-    !! @param[in] token     Usually 'IFNDEF'
+    !! @param[in] token     Usually 'ifndef'
     !!
     !! @b Remarks
     !! @ingroup group_conditional
@@ -225,7 +225,7 @@ contains
     !! Only activates if no previous branch in the group was taken.
     !! @param[in] ctx       Context source line containing the directive
     !! @param[in] macros    Current macro table
-    !! @param[in] token     Usually 'ELIF'
+    !! @param[in] token     Usually 'elif'
     !!
     !! @b Remarks
     !! @ingroup group_conditional
@@ -262,7 +262,7 @@ contains
     !> Process #elifdef – test if a macro is defined
     !! @param[in] ctx       Context source line containing the directive
     !! @param[in] macros    Current macro table
-    !! @param[in] token     Usually 'ELIFDEF'
+    !! @param[in] token     Usually 'elifdef'
     !!
     !! @b Remarks
     !! @ingroup group_conditional
@@ -299,7 +299,7 @@ contains
     !> Process #elifndef – test if a macro is not defined
     !! @param[in] ctx       Context source line containing the directive
     !! @param[in] macros    Current macro table
-    !! @param[in] token     Usually 'ELIFNDEF'
+    !! @param[in] token     Usually 'elifndef'
     !!
     !! @b Remarks
     !! @ingroup group_conditional

@@ -1,5 +1,5 @@
 # Cheatsheet {#cheatsheet}
-[TOC]  
+
 ## CLI Quick Commands
 ```bash
 fpx file.F90                  → print to screen

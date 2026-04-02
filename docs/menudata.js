@@ -27,4 +27,4 @@ var menudata={children:[
 {text:"Articles",url:"pages.html"},
 {text:"API",url:"topics.html"},
 {text:"Files",url:"files.html"},
-{text:"GitHub Repository",url:"^https://github.com/davidpfister/fpx.f"}]}
+{text:"Code",url:"^https://github.com/davidpfister/fpx.f"}]}

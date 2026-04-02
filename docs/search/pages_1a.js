@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['–_20predefined_20macros_20include_20paths_20etc_0',['Full control – predefined macros, include paths, etc.',['../usage.html#autotoc_md29',1,'']]],
-  ['–_20preprocess_20a_20file_20to_20another_20file_1',['Minimal example – preprocess a file to another file',['../usage.html#autotoc_md28',1,'']]]
+  ['quick_20commands_0',['CLI Quick Commands',['../cheatsheet.html#autotoc_md13',1,'']]],
+  ['quick_20start_1',['Quick Start',['../index.html#autotoc_md8',1,'']]]
 ];

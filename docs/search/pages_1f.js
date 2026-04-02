@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['→_20string_0',['Preprocess from memory (string → string)',['../md__c_1_2_users_2dev_2_documents_2_git_hub_2sandbox_2fpx_8f_2_8dox_2articles_2usage.html#autotoc_md49',1,'']]]
+  ['variadic_20macros_0',['2.3 Variadic Macros',['../macro.html#autotoc_md118',1,'']]],
+  ['visual_20studio_202019_1',['Build with Visual Studio 2019',['../index.html#autotoc_md7',1,'']]]
 ];
