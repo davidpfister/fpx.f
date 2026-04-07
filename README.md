@@ -53,7 +53,7 @@ This project aims at providing a *simple*, *embeddable*, *open-source* preproces
 - stringification `#` and concatenation `##`
 - and more...       
 <!-- GETTING STARTED -->
-## Getting Started
+## Installation
 
 ### Requirements
 
@@ -81,7 +81,7 @@ Linting, indentation, and styling is done with [fprettify](https://github.com/fo
    fprettify './src/' -r --case 1 1 1 1 -i 4 --strict-indent --enable-replacements --strip-comments --c-relations
 ```
 
-### Installation
+### Building
 
 #### Get the code
 ```bash
@@ -182,7 +182,7 @@ end program
 _For more examples, please refer to the [Documentation](https://davidpfister.github.io/fpx.f/index.html)_
 
 <!-- CONTRIBUTING -->
-### Contributing
+## Contributing
 
 Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**. So, thank you for considering contributing to _fpx.f_.
 Please review and follow these [guidelines](https://github.com/davidpfister/fpx.f/tree/master?tab=contributing-ov-file) to make the contribution process simple and effective for all involved. In return, the developers will help address your problem, evaluate changes, and guide you through your pull requests.

@@ -1,7 +1,7 @@
 !> @file
 !! @defgroup group_conditional Conditional
-!! Full-featured conditional compilation (#if / #ifdef / #else / #endif) for the fpx preprocessor
-!! This module implements standard-conforming conditional compilation with support for:
+!! Full-featured conditional compilation (`#if` / `#ifdef` / `#else` / `#endif`) for the fpx preprocessor
+!! This module implements standard-conforming conditional compilation.
 !! - `#if` with arbitrary constant expressions (using `evaluate_expression`)
 !! - `#ifdef` / `#ifndef` and `#elifdef` / `#elifndef` for testing macro existence
 !! - `#elif` chains (multiple alternative branches)

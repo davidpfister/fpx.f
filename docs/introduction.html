@@ -56,6 +56,7 @@ MathJax.Hub.Config({
             <div id="projectname">
               <a href="index.html">fpx.f</a>
             </div>
+            <div id="projectbrief">A Fortran preprocessor</div>
           </td>
         </tr>
       </tbody>
@@ -120,16 +121,16 @@ $(function(){initNavTree('introduction.html','',''); });
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p><a class="anchor" id="md__c_1_2_users_2_david_pfister_2_git_hub_2sandbox_2fpx_8f_2_8dox_2articles_2introduction"></a></p>
-<p>Fortran has powered simulations of galaxies, weather systems, and quantum phenomena for over seven decades. Its enduring strength lies in its clarity, performance, and mathematical soul—qualities that resonate deeply with its community of developers. Yet, nestled within this ecosystem is a contentious tool: the preprocessor. From its ad hoc beginnings in the 1970s to its modern incarnations in tools like <span class="tt">cpp</span>, <span class="tt">fpp</span>, and <span class="tt">fypp</span>, preprocessing has been both a lifeline and a lightning rod for Fortran developers. It enables portability across diverse platforms, conditional compilation for debugging, and code generation for complex libraries—capabilities critical to Fortran’s role in high-performance computing. But it also sparks fierce debate, with many Fortraners decrying its tendency to obscure code, disrupt the language’s elegant simplicity, and introduce bugs that haunt scientific precision. This article explores the pivotal uses of preprocessing in Fortran, delving into the passionate love-hate relationship that defines its place in the community—a tug-of-war between pragmatic necessity and a purist’s devotion to Fortran’s unadulterated clarity.</p>
+<p>Fortran has powered simulations of galaxies, weather systems, and quantum phenomena for over seven decades. Its enduring strength lies in its clarity, performance, and mathematical soul, qualities that resonate deeply with its community of developers. Yet, nestled within this ecosystem is a contentious tool: the preprocessor. From its ad hoc beginnings in the 1970s to its modern incarnations in tools like <span class="tt">cpp</span>, <span class="tt">fpp</span>, and <span class="tt">fypp</span>, preprocessing has been both a lifeline and a lightning rod for Fortran developers. It enables portability across diverse platforms, conditional compilation for debugging, and code generation for complex libraries, capabilities critical to Fortran’s role in high-performance computing. But it also sparks fierce debate, with many Fortraners decrying its tendency to obscure code, disrupt the language’s elegant simplicity, and introduce bugs that haunt scientific precision. This article explores the pivotal uses of preprocessing in Fortran, delving into the passionate love-hate relationship that defines its place in the community, a tug-of-war between pragmatic necessity and a purist’s devotion to Fortran’s unadulterated clarity.</p>
 <h1 class="doxsection"><a class="anchor" id="autotoc_md23"></a>
 A Brief History of Preprocessing</h1>
 <p>Fortran, born in the 1950s for scientific and numerical computing, was designed for clarity and performance on early computers. Preprocessing was not part of its original vision. As Fortran evolved, the need for portability, code reuse, and conditional compilation grew, particularly in large-scale scientific projects. This led to the adoption of preprocessing tools, though their integration into Fortran’s ecosystem has been uneven and controversial. Below is a concise history of preprocessing in Fortran, culminating in the notable attempt to standardize it with CoCo.</p>
 <h2 class="doxsection"><a class="anchor" id="autotoc_md24"></a>
 Early Days: Ad Hoc Preprocessing (1950s–1970s)</h2>
-<p>In Fortran’s infancy (Fortran I, II, IV), preprocessing was virtually nonexistent. Developers relied on manual code edits or rudimentary scripts to handle tasks like platform-specific tweaks. Early computers varied widely in architecture, so scientists often customized code by hand for each system—a tedious process. Some used external tools, like simple text processors, to automate repetitive changes, but these were bespoke and non-standard. Fortran 66 and 77, with their rigid structure, offered no built-in preprocessing capabilities, leaving developers to cobble together solutions.</p>
+<p>In Fortran’s infancy (Fortran I, II, IV), preprocessing was virtually nonexistent. Developers relied on manual code edits or rudimentary scripts to handle tasks like platform-specific tweaks. Early computers varied widely in architecture, so scientists often customized code by hand for each system a tedious process. Some used external tools, like simple text processors, to automate repetitive changes, but these were bespoke and non-standard. Fortran 66 and 77, with their rigid structure, offered no built-in preprocessing capabilities, leaving developers to cobble together solutions.</p>
 <h2 class="doxsection"><a class="anchor" id="autotoc_md25"></a>
 Rise of External Preprocessors (1980s)</h2>
-<p>By the 1980s, Fortran 77 was the workhorse of scientific computing, and large projects—like climate models or finite element simulations—demanded portability across diverse hardware (e.g., Cray, VAX, IBM). The C preprocessor (<span class="tt">cpp</span>), developed for C, became a popular stopgap. Its <span class="tt">#define</span>, <span class="tt">#ifdef</span>, and <span class="tt">#include</span> directives allowed Fortran developers to write flexible code for multiple platforms. Files with <span class="tt">.F</span> or <span class="tt">.F77</span> extensions signaled preprocessing, distinguishing them from raw <span class="tt">.f</span> files. However, <span class="tt">cpp</span> was a imperfect fit: its C-centric syntax clashed with Fortran’s column-based formatting, and it could mangle Fortran’s fixed-form source, leading to errors. Dedicated Fortran preprocessors, like <span class="tt">fpp</span>, emerged to address these issues, offering better integration but lacking universal adoption.</p>
+<p>By the 1980s, Fortran 77 was the workhorse of scientific computing, and large projects, like climate models or finite element simulations, demanded portability across diverse hardware (e.g., Cray, VAX, IBM). The C preprocessor (<span class="tt">cpp</span>), developed for C, became a popular stopgap. Its <span class="tt">#define</span>, <span class="tt">#ifdef</span>, and <span class="tt">#include</span> directives allowed Fortran developers to write flexible code for multiple platforms. Files with <span class="tt">.F</span> or <span class="tt">.F77</span> extensions signaled preprocessing, distinguishing them from raw <span class="tt">.f</span> files. However, <span class="tt">cpp</span> was a imperfect fit: its C-centric syntax clashed with Fortran’s column-based formatting, and it could mangle Fortran’s fixed-form source, leading to errors. Dedicated Fortran preprocessors, like <span class="tt">fpp</span>, emerged to address these issues, offering better integration but lacking universal adoption.</p>
 <h2 class="doxsection"><a class="anchor" id="autotoc_md26"></a>
 Fortran 90/95: Reduced Need, Persistent Use (1990s)</h2>
 <p>Fortran 90 introduced modules, parameterized types, and dynamic memory, giving developers native tools for modularity and portability. These features reduced reliance on preprocessing for tasks like code reuse or constant definition. For example, modules replaced many <span class="tt">#include</span> use cases, and <span class="tt">PARAMETER</span> statements handled constants better than <span class="tt">#define</span>. Still, preprocessing persisted in large codebases, especially for conditional compilation (e.g., enabling/disabling debug code) or legacy Fortran 77 projects. Tools like <span class="tt">cpp</span> and <span class="tt">fpp</span> remained common, though their use was often seen as a necessary evil due to debugging challenges and code obfuscation.</p>
@@ -143,7 +144,8 @@ The CoCo Standardization Attempt (Late 1990s–Early 2000s)</h2>
 </ul>
 <p>CoCo’s syntax used directives prefixed with <span class="tt">??</span>, such as <span class="tt">??IF</span>, <span class="tt">??DEFINE</span>, or <span class="tt">??INCLUDE</span>, to distinguish them from Fortran code. For example: </p><div class="fragment"><div class="line">??<span class="keywordflow">IF</span> (debug)</div>
 <div class="line">  print *, <span class="stringliteral">&quot;Debug mode active&quot;</span></div>
-<div class="line">??endif</div>
+<div class="line">??<span class="keywordflow">ENDIF</span></div>
+<div class="line">...</div>
 </div><!-- fragment --><p> This allowed conditional compilation without external tools, and compilers could process it natively.</p>
 <p>However, CoCo never made it into the Fortran standard. Several factors contributed:</p><ul>
 <li><b>Community Pushback</b>: Many Fortran developers disliked preprocessing altogether, viewing it as a C-like intrusion that muddied the language’s clarity. They argued that Fortran 90/95/2003 features (e.g., modules, derived types) already addressed most use cases.</li>
@@ -175,7 +177,7 @@ Conditional Compilation</h2>
 </ul>
 </li>
 <li><b>Platform-Specific Code</b>:<ul>
-<li>Scientific software often runs on diverse systems—Linux clusters, GPUs, or supercomputers like those using Intel, AMD, or Cray architectures. Preprocessing lets developers tailor code to specific compilers, hardware, or libraries (e.g., MPI vs. OpenMP).</li>
+<li>Scientific software often runs on diverse systems, Linux clusters, GPUs, or supercomputers like those using Intel, AMD, or Cray architectures. Preprocessing lets developers tailor code to specific compilers, hardware, or libraries (e.g., MPI vs. OpenMP).</li>
 <li>Example: <div class="fragment"><div class="line"><span class="preprocessor">#ifdef USE_MPI</span></div>
 <div class="line"><span class="preprocessor"></span>  <span class="keyword">CALL </span>mpi_bcast(<span class="keyword">data</span>, <span class="keyword">size</span>, mpi_double, 0, comm, ierr)</div>
 <div class="line"><span class="preprocessor">#else</span></div>
@@ -361,7 +363,7 @@ Interfacing with Build Systems and External Tools</h2>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <address>
-    Copyright © 2026- davidpfister.
+    &#169; 2026 davidpfister. All Rights Reserved.
   </address>
 </div>
 </body>

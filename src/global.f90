@@ -2,7 +2,7 @@
 !! @defgroup group_global Global
 !! Central global configuration and shared state for the fpx Fortran preprocessor
 !! This module defines a single global instance `global` of type `global_settings`
-!! that holds all persistent, user-configurable state used across the entire preprocessing session:
+!! that holds all persistent, user-configurable state used across the entire preprocessing session.
 !!
 !! - `macros(:)`         : Dynamic table of all defined macros (object-like and function-like)
 !! - `undef(:)`          : List of symbols explicitly undefined via `#undef`

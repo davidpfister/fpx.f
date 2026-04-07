@@ -12,6 +12,7 @@ var searchData=
   ['build_20systems_20and_20external_20tools_9',['Interfacing with Build Systems and External Tools',['../introduction.html#autotoc_md34',1,'']]],
   ['build_20with_20fpm_10',['Build with fpm',['../index.html#autotoc_md6',1,'']]],
   ['build_20with_20visual_20studio_202019_11',['Build with Visual Studio 2019',['../index.html#autotoc_md7',1,'']]],
-  ['built_20in_20predefined_20macros_12',['Built-in Predefined Macros',['../cheatsheet.html#autotoc_md15',1,'']]],
-  ['by_20the_20preprocessor_13',['by the preprocessor',['../requirements.html#autotoc_md39',1,'4.1 Directives accepted by the preprocessor'],['../requirements.html#autotoc_md42',1,'4.4 Macros defined by the preprocessor']]]
+  ['building_12',['Building',['../index.html#autotoc_md4',1,'']]],
+  ['built_20in_20predefined_20macros_13',['Built-in Predefined Macros',['../cheatsheet.html#autotoc_md15',1,'']]],
+  ['by_20the_20preprocessor_14',['by the preprocessor',['../requirements.html#autotoc_md39',1,'4.1 Directives accepted by the preprocessor'],['../requirements.html#autotoc_md42',1,'4.4 Macros defined by the preprocessor']]]
 ];

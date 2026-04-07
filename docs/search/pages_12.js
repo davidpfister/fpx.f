@@ -26,7 +26,7 @@ var searchData=
   ['include_20line_20processing_23',['8 INCLUDE line processing',['../specifications.html#autotoc_md95',1,'']]],
   ['include_20paths_20etc_24',['Full control – predefined macros, include paths, etc.',['../usage.html#autotoc_md129',1,'']]],
   ['inclusion_25',['File Inclusion',['../introduction.html#autotoc_md32',1,'']]],
-  ['installation_26',['Installation',['../index.html#autotoc_md4',1,'']]],
+  ['installation_26',['Installation',['../index.html#autotoc_md2',1,'']]],
   ['interfacing_20with_20build_20systems_20and_20external_20tools_27',['Interfacing with Build Systems and External Tools',['../introduction.html#autotoc_md34',1,'']]],
   ['introduction_28',['Introduction',['../specifications.html#autotoc_md45',1,'1 Introduction'],['../requirements.html#autotoc_md35',1,'1. Introduction'],['../index.html#autotoc_md0',1,'Introduction']]],
   ['invocation_29',['2 Function-like macro invocation',['../macro.html#autotoc_md109',1,'']]],

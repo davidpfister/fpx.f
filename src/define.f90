@@ -2,7 +2,7 @@
 !! @defgroup group_define Define
 !! Processing of #define and #undef preprocessor directives
 !! This module implements the core logic for handling macro definition and removal
-!! during preprocessing in the fpx Fortran preprocessor. It supports:
+!! during preprocessing in the fpx Fortran preprocessor.
 !! - Object-like macros: `#define NAME value`
 !! - Function-like macros: `#define NAME(arg1, arg2, ...) replacement`
 !! - Variadic macros using `...` and automatic detection

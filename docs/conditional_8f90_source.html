@@ -49,6 +49,7 @@
             <div id="projectname">
               <a href="index.html">fpx.f</a>
             </div>
+            <div id="projectbrief">A Fortran preprocessor</div>
           </td>
         </tr>
       </tbody>
@@ -114,8 +115,8 @@ $(function(){initNavTree('conditional_8f90_source.html','',''); });
 <div class="contents">
 <a href="conditional_8f90.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">!&gt; @file</span></div>
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment">!! @defgroup group_conditional Conditional</span></div>
-<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment">!! Full-featured conditional compilation (#if / #ifdef / #else / #endif) for the fpx preprocessor</span></div>
-<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment">!! This module implements standard-conforming conditional compilation with support for:</span></div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment">!! Full-featured conditional compilation (`#if` / `#ifdef` / `#else` / `#endif`) for the fpx preprocessor</span></div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment">!! This module implements standard-conforming conditional compilation.</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="comment">!! - `#if` with arbitrary constant expressions (using `evaluate_expression`)</span></div>
 <div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="comment">!! - `#ifdef` / `#ifndef` and `#elifdef` / `#elifndef` for testing macro existence</span></div>
 <div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="comment">!! - `#elif` chains (multiple alternative branches)</span></div>
@@ -532,7 +533,7 @@ $(function(){initNavTree('conditional_8f90_source.html','',''); });
 <div class="ttc" id="agroup__group__macro_html_gad3bf37972bc247f25f116979e55ba74f"><div class="ttname"><a href="group__group__macro.html#gad3bf37972bc247f25f116979e55ba74f">fpx_macro::is_defined</a></div><div class="ttdeci">logical function, public is_defined(name, macros, idx)</div><div class="ttdoc">Check if a macro with given name exists in table.</div><div class="ttdef"><b>Definition</b> <a href="macro_8f90_source.html#l00624">macro.f90:625</a></div></div>
 <div class="ttc" id="agroup__group__string_html_gaa2b8ec4e39395a3550a97ea0ee92e0a2"><div class="ttname"><a href="group__group__string.html#gaa2b8ec4e39395a3550a97ea0ee92e0a2">fpx_string::lowercase</a></div><div class="ttdeci">pure character(len_trim(str)) function, public lowercase(str)</div><div class="ttdoc">Convert string to lower case (respects contents of quotes).</div><div class="ttdef"><b>Definition</b> <a href="string_8f90_source.html#l00639">string.f90:640</a></div></div>
 <div class="ttc" id="ainterfacefpx__logging_1_1render_html"><div class="ttname"><a href="interfacefpx__logging_1_1render.html">fpx_logging::render</a></div><div class="ttdoc">Interface to render diagnostic messages and labels.</div><div class="ttdef"><b>Definition</b> <a href="logging_8f90_source.html#l00185">logging.f90:185</a></div></div>
-<div class="ttc" id="ainterfacefpx__operators_1_1evaluate__expression_html"><div class="ttname"><a href="interfacefpx__operators_1_1evaluate__expression.html">fpx_operators::evaluate_expression</a></div><div class="ttdef"><b>Definition</b> <a href="operators_8f90_source.html#l00079">operators.f90:79</a></div></div>
+<div class="ttc" id="ainterfacefpx__operators_1_1evaluate__expression_html"><div class="ttname"><a href="interfacefpx__operators_1_1evaluate__expression.html">fpx_operators::evaluate_expression</a></div><div class="ttdef"><b>Definition</b> <a href="operators_8f90_source.html#l00081">operators.f90:81</a></div></div>
 <div class="ttc" id="ainterfacefpx__string_1_1index_html"><div class="ttname"><a href="interfacefpx__string_1_1index.html">fpx_string::index</a></div><div class="ttdoc">Index operator.</div><div class="ttdef"><b>Definition</b> <a href="string_8f90_source.html#l00178">string.f90:178</a></div></div>
 <div class="ttc" id="ainterfacefpx__string_1_1len__trim_html"><div class="ttname"><a href="interfacefpx__string_1_1len__trim.html">fpx_string::len_trim</a></div><div class="ttdoc">Return the trimmed length of a string.</div><div class="ttdef"><b>Definition</b> <a href="string_8f90_source.html#l00141">string.f90:141</a></div></div>
 <div class="ttc" id="ainterfacefpx__string_1_1len_html"><div class="ttname"><a href="interfacefpx__string_1_1len.html">fpx_string::len</a></div><div class="ttdoc">Return the length of a string.</div><div class="ttdef"><b>Definition</b> <a href="string_8f90_source.html#l00133">string.f90:133</a></div></div>
@@ -549,7 +550,7 @@ $(function(){initNavTree('conditional_8f90_source.html','',''); });
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <address>
-    Copyright © 2026- davidpfister.
+    &#169; 2026 davidpfister. All Rights Reserved.
   </address>
 </div>
 </body>

@@ -2,7 +2,7 @@
 !! @defgroup group_date Date
 !! Lightweight, high-performance date/time handling for the fpx preprocessor
 !! This module provides a compact `datetime` type and essential operations
-!! used primarily for expanding the standard predefined macros:
+!! used primarily for expanding the standard predefined macros.
 !! - `__DATE__` → e.g. 'Aug-12-2025'
 !! - `__TIME__` → e.g. '14:35:27'
 !! - `__TIMESTAMP__` → e.g. 'Tue 12-Aug-2025 14:35:27'

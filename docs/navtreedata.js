@@ -27,9 +27,9 @@ var NAVTREE =
   [ "fpx.f", "index.html", [
     [ "Introduction", "index.html#autotoc_md0", [
       [ "About the Project", "index.html#autotoc_md1", null ],
-      [ "Getting Started", "index.html#autotoc_md2", [
+      [ "Installation", "index.html#autotoc_md2", [
         [ "Requirements", "index.html#autotoc_md3", null ],
-        [ "Installation", "index.html#autotoc_md4", [
+        [ "Building", "index.html#autotoc_md4", [
           [ "Get the code", "index.html#autotoc_md5", null ],
           [ "Build with fpm", "index.html#autotoc_md6", null ],
           [ "Build with Visual Studio 2019", "index.html#autotoc_md7", null ]
@@ -37,9 +37,9 @@ var NAVTREE =
       ] ],
       [ "Quick Start", "index.html#autotoc_md8", [
         [ "Command line", "index.html#autotoc_md9", null ],
-        [ "Embedded", "index.html#autotoc_md10", null ],
-        [ "Contributing", "index.html#autotoc_md11", null ]
+        [ "Embedded", "index.html#autotoc_md10", null ]
       ] ],
+      [ "Contributing", "index.html#autotoc_md11", null ],
       [ "License", "index.html#autotoc_md12", null ]
     ] ],
     [ "Documentation", "pages.html", "pages" ],

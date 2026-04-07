@@ -1,6 +1,6 @@
 !> @file
 !! @defgroup group_context Context
-!! Source context tracking for diagnostics and error reporting in fpx
+!! Source context tracking for diagnostics and error reporting in fpx.
 !!
 !! This small but critical module defines the `context` type used throughout the fpx
 !! preprocessor to attach precise location information to every diagnostic message,
