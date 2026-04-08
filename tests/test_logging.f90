@@ -99,7 +99,7 @@ TESTPROGRAM(test_logging)
                         message='Error opening input file: ' // __FILE__, &
                         source=__FILE__), &
                         '')
-        EXPECT_STREQ(errmsg, 'error: Error opening input file: test_logging.f90'//nl//' --> '//__FILE__//':1:1-1'//nl//'  |'//nl//'  |')
+        EXPECT_STREQ(errmsg, 'error: Error opening input file: '//__FILE__//nl//' --> '//__FILE__//':1:1-1'//nl//'  |'//nl//'  |')
         
         errmsg = render(diagnostic_report(LEVEL_ERROR, &
                         message='Unclosed conditional block at end of file', &
@@ -113,7 +113,8 @@ TESTPROGRAM(test_logging)
                         label=label_type('Trailing new line "\"', len('#define _DEBUG \'), 1), &
                         source=__FILE__), &
                         '#define _DEBUG \', 1)
-        EXPECT_STREQ(errmsg, 'error: Unexpected character'//nl//' --> '//__FILE__//':1:16-17'//nl//'  |'//nl//'1 | #define _DEBUG \'//nl//'  |                ^ Trailing new line "\"'//nl//'  |')
+        EXPECT_STREQ(errmsg, 'error: Unexpected character'//nl//' --> '//__FILE__//':1:16-17'//nl//'  |'//nl//'1 | #define _DEBUG '//char(92)//nl//'  |                ^ Trailing new line "\"'//nl//'  |')
+
         !token
         errmsg = render(diagnostic_report(LEVEL_ERROR, &
                         message='The maximum number of tokens has been reached', &

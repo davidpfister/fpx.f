@@ -35,10 +35,11 @@ contains
         close(unit)
     end subroutine
 
-    subroutine getlines(filepath, res, keepall)
+    subroutine getlines(filepath, res, keepall, delete)
         character(*), intent(in)                    :: filepath
         character(256), allocatable, intent(out)    :: res(:)
-        logical, intent(in), optional                           :: keepall
+        logical, intent(in), optional               :: keepall
+        logical, intent(in), optional               :: delete
         !private
         logical :: exists, keep
         integer :: idx, ierr, count, k, unit, last, pos
@@ -70,7 +71,12 @@ contains
             res = [res, tmp]
             count = count + 1
         end do
-        close(unit)
+
+        if (.not. present(delete)) then
+            close(unit)
+        else
+            if (delete) close(unit, status='delete')
+        end if
     end subroutine
 
     subroutine readruns(filepath, res)
