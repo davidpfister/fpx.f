@@ -16,7 +16,7 @@ param(
     [switch]$WhatIf
 )
 
-$files = Get-ChildItem -Path $Path -Recurse -File -Include *.js,index.html -ErrorAction SilentlyContinue
+$files = Get-ChildItem -Path $Path -Recurse -File -Include *.js,*.html -ErrorAction SilentlyContinue
 
 if ($files.Count -eq 0) {
     Write-Host "No matching files found." -ForegroundColor DarkGray
@@ -32,6 +32,9 @@ foreach ($file in $files) {
     # Existing JS replacement
     if ($file.Extension -eq ".js") {
         $newContent = $newContent -replace '(?i)\[\s*"([^"]*?::)([^"]+?)"', '[ "$2"'
+    } elseif ($file.Extension -eq ".html") {
+        $newContent = $newContent -replace '<div class="line">...</div>', ''
+        $newContent = $newContent -replace '<div class="line"><span class="preprocessor"></span>...</div>', ''
     }
 
     # Special rule only for index.html

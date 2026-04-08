@@ -1,4 +1,4 @@
-<!-- HTML header for doxygen 1.9.1-->
+﻿<!-- HTML header for doxygen 1.9.1-->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" class="dark-mode">
   <head>
@@ -121,7 +121,7 @@ $(function(){initNavTree('usage.html','',''); });
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p><a class="anchor" id="md__c_1_2_users_2_david_pfister_2_git_hub_2sandbox_2fpx_8f_2_8dox_2articles_2usage"></a></p>
-<p>Perfect for Fortran projects that need <span class="tt">#include</span>, <span class="tt">#define</span>, <span class="tt">#ifdef</span>, macro expansion, <span class="tt">__FILE__</span>, <span class="tt">__LINE__</span>, <span class="tt">__DATE__</span>, etc. — all without leaving the Fortran ecosystem.</p>
+<p>Perfect for Fortran projects that need <span class="tt">#include</span>, <span class="tt">#define</span>, <span class="tt">#ifdef</span>, macro expansion, <span class="tt">__FILE__</span>, <span class="tt">__LINE__</span>, <span class="tt">__DATE__</span>, etc. â€” all without leaving the Fortran ecosystem.</p>
 <p><b>fpx: A fast, pure-Fortran, standards-compatible preprocessor written in Fortran</b></p>
 <h1 class="doxsection"><a class="anchor" id="autotoc_md123"></a>
 Using fpx from the Command Line (CLI)</h1>
@@ -137,7 +137,7 @@ Basic usage</h2>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><span class="tt">fpx src/main.F90 -o build/main.f90</span>  </td><td class="markdownTableBodyNone">Write preprocessed code to <span class="tt">build/main.f90</span>  </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><span class="tt">fpx</span> (no arguments)  </td><td class="markdownTableBodyNone">Interactive REPL mode – type lines and see them expanded instantly  </td></tr>
+<td class="markdownTableBodyNone"><span class="tt">fpx</span> (no arguments)  </td><td class="markdownTableBodyNone">Interactive REPL mode â€“ type lines and see them expanded instantly  </td></tr>
 </table>
 </center><center></center><h2 class="doxsection"><a class="anchor" id="autotoc_md125"></a>
 Most useful options</h2>
@@ -171,27 +171,27 @@ Real-world examples</h2>
 <div class="line">fpx -DNO_DEBUG src/messy.F90 -o clean.f90</div>
 <div class="line"> </div>
 <div class="line"># Interactive playground</div>
-<div class="line">fpx</div>
+
 <div class="line">[in]  #define MSG(x) print *, &#39;=&gt; &#39;, x</div>
 <div class="line">[out] </div>
 <div class="line">[in]  call MSG(&#39;Hello&#39;)</div>
 <div class="line">[out] call print *, &#39;=&gt; &#39;, &#39;Hello&#39;</div>
 </div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md127"></a>
 Using fpx as an Embedded Library in Your Own Fortran Program</h1>
-<p>You can call the preprocessor directly from any Fortran program — ideal for build systems, code generators, or tools.</p>
+<p>You can call the preprocessor directly from any Fortran program â€” ideal for build systems, code generators, or tools.</p>
 <p>Everything you need is in the module <span class="tt">fpx_parser</span>.</p>
 <h2 class="doxsection"><a class="anchor" id="autotoc_md128"></a>
-Minimal example – preprocess a file to another file</h2>
+Minimal example â€“ preprocess a file to another file</h2>
 <div class="fragment"><div class="line"><span class="keyword">program</span> demo_embed</div>
 <div class="line">    <span class="keywordtype">use </span>fpx_parser</div>
 <div class="line">    <span class="keywordtype">implicit none</span></div>
 <div class="line"> </div>
 <div class="line">    <span class="keyword">call </span><a class="code hl_interface" href="interfacefpx__parser_1_1preprocess.html">preprocess</a>(<span class="stringliteral">&#39;input.F90&#39;</span>, <span class="stringliteral">&#39;output.f90&#39;</span>)</div>
-<div class="line">    print *, <span class="stringliteral">&#39;Preprocessing finished → output.f90&#39;</span></div>
+<div class="line">    print *, <span class="stringliteral">&#39;Preprocessing finished â†’ output.f90&#39;</span></div>
 <div class="line"><span class="keyword">end program</span></div>
-<div class="ttc" id="ainterfacefpx__parser_1_1preprocess_html"><div class="ttname"><a href="interfacefpx__parser_1_1preprocess.html">fpx_parser::preprocess</a></div><div class="ttdoc">Generic interface to start preprocessing from various sources/sinks.</div><div class="ttdef"><b>Definition</b> <a href="parser_8f90_source.html#l00080">parser.f90:80</a></div></div>
+<div class="ttc" id="ainterfacefpx__parser_1_1preprocess_html"><div class="ttname"><a href="interfacefpx__parser_1_1preprocess.html">fpx_parser::preprocess</a></div><div class="ttdoc">Generic interface to start preprocessing from various sources/sinks.</div><div class="ttdef"><b>Definition</b> <a href="parser_8f90_source.html#l00081">parser.f90:81</a></div></div>
 </div><!-- fragment --><h2 class="doxsection"><a class="anchor" id="autotoc_md129"></a>
-Full control – predefined macros, include paths, etc.</h2>
+Full control â€“ predefined macros, include paths, etc.</h2>
 <div class="fragment"><div class="line"><span class="keyword">program</span> my_builder</div>
 <div class="line">    <span class="keywordtype">use </span>fpx_parser</div>
 <div class="line">    <span class="keywordtype">use </span>fpx_global</div>
@@ -218,7 +218,7 @@ Full control – predefined macros, include paths, etc.</h2>
 <div class="ttc" id="ainterfacefpx__macro_1_1add_html"><div class="ttname"><a href="interfacefpx__macro_1_1add.html">fpx_macro::add</a></div><div class="ttdoc">Add one or more macros to a dynamic table.</div><div class="ttdef"><b>Definition</b> <a href="macro_8f90_source.html#l00115">macro.f90:115</a></div></div>
 <div class="ttc" id="astructfpx__macro_1_1macro_html"><div class="ttname"><a href="structfpx__macro_1_1macro.html">fpx_macro::macro</a></div><div class="ttdoc">Derived type representing a single preprocessor macro Extends string  with macro-specific fields: rep...</div><div class="ttdef"><b>Definition</b> <a href="macro_8f90_source.html#l00094">macro.f90:94</a></div></div>
 </div><!-- fragment --><h2 class="doxsection"><a class="anchor" id="autotoc_md130"></a>
-Preprocess from memory (string → string)</h2>
+Preprocess from memory (string â†’ string)</h2>
 <div class="fragment"><div class="line"><span class="keyword">program</span> memory_preprocess</div>
 <div class="line">    <span class="keywordtype">use </span>fpx_parser</div>
 <div class="line">    <span class="keywordtype">character(:)</span>, <span class="keywordtype">allocatable</span> :: source</div>

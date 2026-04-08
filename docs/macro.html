@@ -1,4 +1,4 @@
-<!-- HTML header for doxygen 1.9.1-->
+﻿<!-- HTML header for doxygen 1.9.1-->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" class="dark-mode">
   <head>
@@ -263,18 +263,18 @@ Specifications</h1>
 </table>
 <p><b>EXAMPLE age01</b>:</p>
 <p>Given the macro definition: </p><div class="fragment"><div class="line"><span class="preprocessor">#define F(a,b,c) a;b;c</span></div>
-<div class="line"><span class="preprocessor"></span>...</div>
+
 </div><!-- fragment --><p> The invocation: </p><div class="fragment"><div class="line">f(1,,3)</div>
-<div class="line">...</div>
+
 </div><!-- fragment --><p> is equivalent to: </p><div class="fragment"><div class="line">1;;3</div>
-<div class="line">...</div>
+
 </div><!-- fragment --><p> The second argument is empty, so 'b' is replaced by a placemarker token, which is then removed (section 4).</p>
 <p><b>EXAMPLE age02</b>: </p><div class="fragment"><div class="line"><span class="preprocessor">#define ASSIGN(x, y) x = y</span></div>
 <div class="line"><span class="preprocessor"></span> </div>
 <div class="line">      assign( a(1,2)[3,4], 10 )</div>
-<div class="line">...</div>
+
 </div><!-- fragment --><p> the invocation is equivalent to: </p><div class="fragment"><div class="line">a(1,2)[3,4] = 10</div>
-<div class="line">...</div>
+
 </div><!-- fragment --><p> The commas within the bracketing characters do not act as argument separators, they are instead part of the first argument.</p>
 <p><b>EXAMPLE age03</b>:</p>
 <p>Given the macro definition: </p><div class="fragment"><div class="line"><span class="preprocessor">#define ACCUM(var, val) \</span></div>
@@ -282,16 +282,16 @@ Specifications</h1>
 <div class="line">    print *, <span class="stringliteral">&quot;value:&quot;</span>, var</div>
 <div class="line">    ...</div>
 </div><!-- fragment --><p> The invocation: </p><div class="fragment"><div class="line">accum( a(1,2)[3,4], 10 )</div>
-<div class="line">...</div>
+
 </div><!-- fragment --><p> is equivalent to: </p><div class="fragment"><div class="line">a(1,2)[3,4] = a(1,2)[3,4]+10 ; print *, <span class="stringliteral">&quot;value:&quot;</span>, a(1,2)[3,4]</div>
-<div class="line">...</div>
+
 </div><!-- fragment --><p><b>EXAMPLE age04</b>:</p>
 <p>Given the macro definition: </p><div class="fragment"><div class="line"><span class="preprocessor">#define ASSIGN(x, y) x = y</span></div>
-<div class="line"><span class="preprocessor"></span>...</div>
+
 </div><!-- fragment --><p> The invocation: </p><div class="fragment"><div class="line">assign(a(5,6)[7,8], foo{t1, t2}(9, b[10,11]))</div>
-<div class="line">...</div>
+
 </div><!-- fragment --><p> is equivalent to: </p><div class="fragment"><div class="line">a(5,6)[7,8] = foo{t1, t2}(9, b[10,11])</div>
-<div class="line">...</div>
+
 </div><!-- fragment --><h4 class="doxsection"><a class="anchor" id="autotoc_md112"></a>
 2.1.2 Line breaks and continuations in macro invocations (free-form)</h4>
 <p>This subsection describes the handling of line continuations during argument gathering within function-like macro invocations in free source form.</p>
@@ -314,7 +314,7 @@ Specifications</h1>
 <div class="line">mac(q,r</div>
 <div class="line">s,</div>
 <div class="line">t)</div>
-<div class="line">...</div>
+
 </div><!-- fragment --><p> have a processor-dependent interpretation.</p>
 <p>If MAC is a function-like macro which accepts three arguments, then the following lines: </p><div class="fragment"><div class="line">mac(a, &amp;</div>
 <div class="line">      b, &amp;</div>
@@ -333,7 +333,7 @@ Specifications</h1>
 <div class="line">mac(d,e f,g)</div>
 <div class="line">mac(h,ij,k)</div>
 <div class="line">mac(l,m no,p)</div>
-<div class="line">...</div>
+
 </div><!-- fragment --><p> where all line continuations and extraneous blank characters have been removed.</p>
 <h4 class="doxsection"><a class="anchor" id="autotoc_md113"></a>
 2.1.3 Line breaks and continuations in macro invocations (fixed-form)</h4>
@@ -401,14 +401,14 @@ Specifications</h1>
 </table>
 <p><b>EXAMPLE cme01</b>:</p>
 <p>Given the macro definition: </p><div class="fragment"><div class="line"><span class="preprocessor">#define ADD(a,b) a+b</span></div>
-<div class="line"><span class="preprocessor"></span>...</div>
+
 </div><!-- fragment --><p> The following invocation in free-form source: </p><div class="fragment"><div class="line">add(1, &amp; <span class="comment">! first argument is 1</span></div>
 <div class="line">      1)   <span class="comment">! second argument is 2</span></div>
 <div class="line">      ...</div>
 </div><!-- fragment --><p> is equivalent to: </p><div class="fragment"><div class="line">add(1,2)   <span class="comment">! second argument is 2</span></div>
-<div class="line">...</div>
+
 </div><!-- fragment --><p> and is equivalent to: </p><div class="fragment"><div class="line">1+2   <span class="comment">! second argument is 2</span></div>
-<div class="line">...</div>
+
 </div><!-- fragment --><p> <b>EXAMPLE cme02</b>: (free-form)</p>
 <p>If MAC is a function-like macro which accepts three arguments, then the following free form source lines: </p><div class="fragment"><div class="line">mac(d, &amp; <span class="comment">! comment 1</span></div>
 <div class="line">      e, &amp; <span class="comment">! comment 2</span></div>
@@ -427,13 +427,13 @@ Specifications</h1>
 <div class="line">mac(t,u&amp;<span class="comment">!comment 1</span></div>
 <div class="line">      v,&amp;<span class="comment">!comment 2</span></div>
 <div class="line">      w)</div>
-<div class="line">...</div>
+
 </div><!-- fragment --><p> are equivalent to: </p><div class="fragment"><div class="line">mac(d,e,f)</div>
 <div class="line">mac(g,h,i) <span class="comment">!$foo 3</span></div>
 <div class="line">mac(j,klm,n)</div>
 <div class="line">mac(o,pq r,s)</div>
 <div class="line">mac(t,u v,w)</div>
-<div class="line">...</div>
+
 </div><!-- fragment --><p> where all line continuations and extraneous blank characters have been removed.</p>
 <p><b>EXAMPLE cme03</b>: (fixed-form)</p>
 <dl class="section warning"><dt>Warning</dt><dd>J3 recommends against specifying preprocessing for fixed source form.</dd></dl>
@@ -490,11 +490,11 @@ Specifications</h1>
 <p><b>EXAMPLE ste01</b>:</p>
 <p>Given the macro definitions: </p><div class="fragment"><div class="line"><span class="preprocessor">#define fox rabbit</span></div>
 <div class="line"><span class="preprocessor"></span><span class="preprocessor">#define STR(x) #x</span></div>
-<div class="line"><span class="preprocessor"></span>...</div>
+
 </div><!-- fragment --><p> The invocation: </p><div class="fragment"><div class="line">str( the <span class="stringliteral">&quot;quick&quot;</span>   brown fox )</div>
-<div class="line">...</div>
+
 </div><!-- fragment --><p> is equivalent to: </p><div class="fragment"><div class="line"><span class="stringliteral">&quot;The &quot;</span><span class="stringliteral">&quot;quick&quot;</span><span class="stringliteral">&quot; brown fox&quot;</span></div>
-<div class="line">...</div>
+
 </div><!-- fragment --><h3 class="doxsection"><a class="anchor" id="autotoc_md118"></a>
 2.3 Variadic Macros</h3>
 <table class="markdownTable">
@@ -510,19 +510,19 @@ Specifications</h1>
 <p><b>EXAMPLE vme01</b>:</p>
 <p>Given the macro definitions: </p><div class="fragment"><div class="line"><span class="preprocessor">#define LOG(p, ...) call log_message(p, __VA_ARGS__)</span></div>
 <div class="line"><span class="preprocessor"></span><span class="preprocessor">#define WARN(...) call log_message(&quot;WARNING&quot;, __VA_ARGS__)</span></div>
-<div class="line"><span class="preprocessor"></span>...</div>
+
 </div><!-- fragment --><p> The invocation: </p><div class="fragment"><div class="line">log(<span class="stringliteral">&quot;Index out of bounds:&quot;</span>, i, j, k )</div>
-<div class="line">...</div>
+
 </div><!-- fragment --><p> is equivalent to: </p><div class="fragment"><div class="line"><span class="comment">call log_message(&quot;Index out of bounds:&quot;, i, j, k)</span></div>
-<div class="line">...</div>
+
 </div><!-- fragment --><p> The invocation: </p><div class="fragment"><div class="line">warn(<span class="stringliteral">&quot;Initialization failed&quot;</span>)</div>
-<div class="line">...</div>
+
 </div><!-- fragment --><p> is equivalent to: </p><div class="fragment"><div class="line"><span class="comment">call log_message(&quot;WARNING&quot;, &quot;Initialization failed&quot;)</span></div>
-<div class="line">...</div>
+
 </div><!-- fragment --><p> The invocation: </p><div class="fragment"><div class="line">log(<span class="stringliteral">&quot;Task complete&quot;</span>)</div>
-<div class="line">...</div>
+
 </div><!-- fragment --><p> is equivalent to: </p><div class="fragment"><div class="line"><span class="comment">call log_message(&quot;Task complete&quot;, )</span></div>
-<div class="line">...</div>
+
 </div><!-- fragment --><h4 class="doxsection"><a class="anchor" id="autotoc_md119"></a>
 2.3.1 __VA_OPT__</h4>
 <p>Syntax: </p><div class="fragment"><div class="line">&lt;va-opt-replacement&gt; &lt;&lt;is&gt;&gt;</div>
@@ -544,19 +544,19 @@ Specifications</h1>
 <p><b>EXAMPLE voe01</b>:</p>
 <p>Given the macro definitions: </p><div class="fragment"><div class="line"><span class="preprocessor">#define LOG(msg, ...) call log_message(msg __VA_OPT__(, __VA_ARGS__))</span></div>
 <div class="line"><span class="preprocessor"></span><span class="preprocessor">#define NOTHING</span></div>
-<div class="line"><span class="preprocessor"></span>...</div>
+
 </div><!-- fragment --><p> The invocation: </p><div class="fragment"><div class="line">log(<span class="stringliteral">&quot;hello&quot;</span>)</div>
-<div class="line">...</div>
+
 </div><!-- fragment --><p> is equivalent to: </p><div class="fragment"><div class="line"><span class="comment">call log_message(&quot;hello&quot; )</span></div>
-<div class="line">...</div>
+
 </div><!-- fragment --><p> The invocation: </p><div class="fragment"><div class="line">log(<span class="stringliteral">&quot;Answer:&quot;</span>, 42)</div>
-<div class="line">...</div>
+
 </div><!-- fragment --><p> is equivalent to: </p><div class="fragment"><div class="line"><span class="comment">call log_message(&quot;Answer:&quot; , 42)</span></div>
-<div class="line">...</div>
+
 </div><!-- fragment --><p> The invocation: </p><div class="fragment"><div class="line">log(<span class="stringliteral">&quot;nothing:&quot;</span>, nothing)</div>
-<div class="line">...</div>
+
 </div><!-- fragment --><p> is equivalent to </p><div class="fragment"><div class="line"><span class="comment">call log_message(&quot;nothing:&quot; )</span></div>
-<div class="line">...</div>
+
 </div><!-- fragment --><h2 class="doxsection"><a class="anchor" id="autotoc_md120"></a>
 3 The Token-Pasting Operator (##)</h2>
 <table class="markdownTable">
@@ -573,11 +573,11 @@ Specifications</h1>
 </table>
 <p><b>EXAMPLE tpe01</b>:</p>
 <p>Given the macro definition: </p><div class="fragment"><div class="line"><span class="preprocessor">#define MAKE_VAR(type, index) type ## var ## index</span></div>
-<div class="line"><span class="preprocessor"></span>...</div>
+
 </div><!-- fragment --><p> The invocation: </p><div class="fragment"><div class="line"><span class="keywordtype">integer</span> :: MAKE_VAR(<span class="keywordtype">real</span>, 1)</div>
-<div class="line">...</div>
+
 </div><!-- fragment --><p> is equivalent to: </p><div class="fragment"><div class="line"><span class="keywordtype">integer</span> :: realvar1</div>
-<div class="line">...</div>
+
 </div><!-- fragment --><h2 class="doxsection"><a class="anchor" id="autotoc_md121"></a>
 4 Rescanning and Recursion Prevention</h2>
 <p>|Code|Description| |:-&mdash;|:&mdash;|| |rs01|After a macro invocation is replaced, all placemarker tokens are removed from the replacement. This removal never pastes adjacent tokens together. The resulting sequence of tokens is rescanned, together with the subsequent tokens in the source file, for more macro names to expand.| |rs03|(C2023 6.10.5.4-2) If the name of the macro being replaced is found during this scan of the replacement list (not including the rest of the source file's preprocessing tokens), it is not replaced. Furthermore, if any nested replacements encounter the name of the macro being replaced, it is not replaced. These nonreplaced macro name preprocessing tokens are no longer available for further replacement even if they are later (re)examined in contexts in which that macro name preprocessing token would otherwise have been replaced.| |rs05|The resulting completely macro-replaced preprocessing token sequence is not recognized as a preprocessing directive, even if it resembles one.| |rs07|An INCLUDE line which results from a completely macro-replaced preprocessing token sequence is then processed as described in 25-142r2 section 8 (meaning the INCLUDE line is honored).|</p>
@@ -585,40 +585,40 @@ Specifications</h1>
 <p>Given the macro definitions: </p><div class="fragment"><div class="line"><span class="preprocessor">#define A A</span></div>
 <div class="line"><span class="preprocessor"></span><span class="preprocessor">#define B C</span></div>
 <div class="line"><span class="preprocessor"></span><span class="preprocessor">#define C B</span></div>
-<div class="line"><span class="preprocessor"></span>...</div>
+
 </div><!-- fragment --><p> The invocations: </p><div class="fragment"><div class="line">a</div>
 <div class="line">b</div>
-<div class="line">...</div>
+
 </div><!-- fragment --><p> once fully expanded are equivalent to: </p><div class="fragment"><div class="line">a</div>
 <div class="line">b</div>
-<div class="line">...</div>
+
 </div><!-- fragment --><p> Here A was expanded once, then expansion stopped due to rule rs03. Similarly, B was expanded once to C, then rescanned and expanded back into B, then expansion stopped due to rule rs03.</p>
 <p><b>EXAMPLE rse02</b>:</p>
 <p>Given the macro definitions: </p><div class="fragment"><div class="line"><span class="preprocessor">#define X(a) (a, Y(a))</span></div>
 <div class="line"><span class="preprocessor"></span><span class="preprocessor">#define Y(a) (a, X(a))</span></div>
-<div class="line"><span class="preprocessor"></span>...</div>
+
 </div><!-- fragment --><p> The invocation: </p><div class="fragment"><div class="line">x(1)</div>
-<div class="line">...</div>
+
 </div><!-- fragment --><p> is equivalent to: </p><div class="fragment"><div class="line">(1, (1, x(1)))</div>
-<div class="line">...</div>
+
 </div><!-- fragment --><p> <b>EXAMPLE rse03</b>:</p>
 <p>Given the macro definition: </p><div class="fragment"><div class="line"><span class="preprocessor">#define ID(x) x</span></div>
-<div class="line"><span class="preprocessor"></span>...</div>
+
 </div><!-- fragment --><p> The invocation </p><div class="fragment"><div class="line">id(id(1))</div>
-<div class="line">...</div>
+
 </div><!-- fragment --><p> is equivalent to: </p><div class="fragment"><div class="line">1</div>
-<div class="line">...</div>
+
 </div><!-- fragment --><p> <b>EXAMPLE rse05</b>:</p>
 <p>Given the macro definitions: </p><div class="fragment"><div class="line"><span class="preprocessor">#define H I</span></div>
 <div class="line"><span class="preprocessor"></span><span class="preprocessor">#define I(x) J(1)+x(2)</span></div>
 <div class="line"><span class="preprocessor"></span><span class="preprocessor">#define J H</span></div>
-<div class="line"><span class="preprocessor"></span>...</div>
+
 </div><!-- fragment --><p> The invocations: </p><div class="fragment"><div class="line">h(k)</div>
 <div class="line">h(h)</div>
-<div class="line">...</div>
+
 </div><!-- fragment --><p> are equivalent to: </p><div class="fragment"><div class="line">i(1)+k(2)</div>
 <div class="line">i(1)+i(2)</div>
-<div class="line">...</div>
+
 </div><!-- fragment --><h2 class="doxsection"><a class="anchor" id="autotoc_md122"></a>
 Appendix A: Divergences from C</h2>
 <p>In most ways, the FPP specified by this document and 25-142r2 adheres to the existing practice established by the C preprocessor over the past several decades. However FPP semantics also deliberately diverge from the analogous behavior of the C preprocessor as specified in C 2023. This non-normative section enumerates such deliberate differences that were discussed in this document, as a reference for readers to assist in comparisons.</p>

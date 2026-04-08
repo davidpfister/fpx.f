@@ -1,4 +1,4 @@
-<!-- HTML header for doxygen 1.9.1-->
+﻿<!-- HTML header for doxygen 1.9.1-->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" class="dark-mode">
   <head>
@@ -137,12 +137,12 @@ $(function(){initNavTree('group__group__define.html','',''); });
 <li>Define simple object-like macros: <div class="fragment"><div class="line"><span class="preprocessor">#define PI 3.141592653589793</span></div>
 <div class="line"><span class="preprocessor"></span><span class="preprocessor">#define DEBUG 1</span></div>
 <div class="line"><span class="preprocessor"></span><span class="preprocessor">#define MAX_SIZE 1024</span></div>
-<div class="line"><span class="preprocessor"></span>...</div>
+
 </div><!-- fragment --></li>
 <li>Define function-like and variadic macros: <div class="fragment"><div class="line"><span class="preprocessor">#define SQR(x) ((x)*(x))</span></div>
 <div class="line"><span class="preprocessor"></span><span class="preprocessor">#define LOG_MSG(level, ...)  print *, &#39;[LOG:&#39;, level, &#39;]&#39;, __VA_ARGS__</span></div>
 <div class="line"><span class="preprocessor"></span><span class="preprocessor">#define CONCAT(a,b) a ## _ ## b</span></div>
-<div class="line"><span class="preprocessor"></span>...</div>
+
 </div><!-- fragment --></li>
 <li>Undefine a macro: <div class="fragment"><div class="line"><span class="preprocessor">#undef DEBUG</span></div>
 <div class="line"><span class="preprocessor"></span><span class="comment">!&gt; Subsequent #ifdef DEBUG will be false</span></div>
@@ -152,7 +152,7 @@ $(function(){initNavTree('group__group__define.html','',''); });
 <div class="line"> </div>
 <div class="line"><a class="code hl_variable" href="group__group__logging.html#gae355b6081c8a7c696837dd711719c998">verbose</a> = .true.</div>
 <div class="line"><span class="keyword">call </span>preprocess(<span class="stringliteral">&#39;input.F90&#39;</span>)   <span class="comment">! Will show all macro definitions/undefs</span></div>
-<div class="line">...</div>
+
 <div class="ttc" id="agroup__group__logging_html_gae355b6081c8a7c696837dd711719c998"><div class="ttname"><a href="group__group__logging.html#gae355b6081c8a7c696837dd711719c998">fpx_logging::verbose</a></div><div class="ttdeci">logical, public verbose</div><div class="ttdoc">Master switch for verbose diagnostic output Default value is .false. (quiet mode)....</div><div class="ttdef"><b>Definition</b> <a href="logging_8f90_source.html#l00108">logging.f90:108</a></div></div>
 </div><!-- fragment --> </li>
 </ol>
@@ -181,12 +181,12 @@ $(function(){initNavTree('group__group__define.html','',''); });
       </table>
 </div><div class="memdoc">
 
-<p>Process a define directive and register or update a macro Parses the line after <span class="tt">#define</span>, distinguishes between object-like and function-like forms, handles variadic <span class="tt">...</span>, extracts parameters correctly, and stores the macro in the active macro table. Existing macros are overwritten. Respects <span class="tt">globalundef</span> list – macros listed there are ignored. </p>
+<p>Process a define directive and register or update a macro Parses the line after <span class="tt">#define</span>, distinguishes between object-like and function-like forms, handles variadic <span class="tt">...</span>, extracts parameters correctly, and stores the macro in the active macro table. Existing macros are overwritten. Respects <span class="tt">globalundef</span> list â€“ macros listed there are ignored. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">ctx</td><td>Context source line containing the define </td></tr>
     <tr><td class="paramdir">[in,out]</td><td class="paramname">macros</td><td>Current macro table (updated in-place) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">token</td><td>Usually 'DEFINE' – keyword matched in lowercase</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">token</td><td>Usually 'DEFINE' â€“ keyword matched in lowercase</td></tr>
   </table>
   </dd>
 </dl>
@@ -225,7 +225,7 @@ $(function(){initNavTree('group__group__define.html','',''); });
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">ctx</td><td>Context source line containing the undef </td></tr>
     <tr><td class="paramdir">[in,out]</td><td class="paramname">macros</td><td>Current macro table (updated in-place) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">token</td><td>Usually 'UNDEF' – keyword matched in lowercase</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">token</td><td>Usually 'UNDEF' â€“ keyword matched in lowercase</td></tr>
   </table>
   </dd>
 </dl>

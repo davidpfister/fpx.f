@@ -1,4 +1,4 @@
-<!-- HTML header for doxygen 1.9.1-->
+﻿<!-- HTML header for doxygen 1.9.1-->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" class="dark-mode">
   <head>
@@ -128,7 +128,7 @@ $(function(){initNavTree('group__group__conditional.html','',''); });
 <li><span class="tt">#elif</span> chains (multiple alternative branches)</li>
 <li><span class="tt">#else</span> as final fallback</li>
 <li>Proper nesting up to <span class="tt">MAX_COND_DEPTH</span> levels</li>
-<li>Correct "first-match" semantics — once a branch is taken, later <span class="tt">#elif</span>/<span class="tt">#else</span> are skipped</li>
+<li>Correct "first-match" semantics â€” once a branch is taken, later <span class="tt">#elif</span>/<span class="tt">#else</span> are skipped</li>
 <li>Integration with macro expansion via <span class="tt">is_defined()</span> and expression evaluator</li>
 </ul>
 <p>The state is maintained in a global stack (<span class="tt">cond_stack</span>) with <span class="tt">cond_depth</span> tracking nesting. The function <span class="tt">is_active()</span> is used throughout the preprocessor to decide whether a line should be emitted or skipped.</p>
@@ -140,7 +140,7 @@ $(function(){initNavTree('group__group__conditional.html','',''); });
 <div class="line"><span class="comment">! ... header content ...</span></div>
 <div class="line"> </div>
 <div class="line"><span class="preprocessor">#endif</span></div>
-<div class="line"><span class="preprocessor"></span>...</div>
+
 </div><!-- fragment --></li>
 <li>Feature selection with if and elif: <div class="fragment"><div class="line"><span class="preprocessor">#if DEBUG &gt;= 2</span></div>
 <div class="line"><span class="preprocessor"></span>   print *, <span class="stringliteral">&#39;Extra verbose debugging enabled&#39;</span></div>
@@ -149,19 +149,19 @@ $(function(){initNavTree('group__group__conditional.html','',''); });
 <div class="line"><span class="preprocessor">#else</span></div>
 <div class="line"><span class="preprocessor"></span>   <span class="comment">! Silent mode</span></div>
 <div class="line"><span class="preprocessor">#endif</span></div>
-<div class="line"><span class="preprocessor"></span>!..</div>
+
 </div><!-- fragment --></li>
 <li>Cross-platform code selection: <div class="fragment"><div class="line"><span class="preprocessor">#ifdef _OPENMP</span></div>
 <div class="line"><span class="preprocessor"></span>   <span class="keywordtype">use </span>omp_lib</div>
 <div class="line"><span class="preprocessor">#else</span></div>
 <div class="line"><span class="preprocessor"></span>   <span class="keywordtype">integer</span>, <span class="keywordtype">parameter</span> :: omp_get_thread_num = 0</div>
 <div class="line"><span class="preprocessor">#endif</span></div>
-<div class="line"><span class="preprocessor"></span>...</div>
+
 </div><!-- fragment --></li>
 <li>Complex expression in if (requires <span class="tt">evaluate_expression</span> support): <div class="fragment"><div class="line"><span class="preprocessor">#if defined(USE_MPI) &amp;&amp; (MPI_VERSION &gt;= 3)</span></div>
 <div class="line"><span class="preprocessor"></span>   <span class="keywordtype">use </span>mpi_f08</div>
 <div class="line"><span class="preprocessor">#endif</span></div>
-<div class="line"><span class="preprocessor"></span>...</div>
+
 </div><!-- fragment --> </li>
 </ol>
 </div><table class="memberdecls">
@@ -232,7 +232,7 @@ Data Types</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Process elif – alternative branch after if/elif Only activates if no previous branch in the group was taken. </p>
+<p>Process elif â€“ alternative branch after if/elif Only activates if no previous branch in the group was taken. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">ctx</td><td>Context source line containing the directive </td></tr>
@@ -271,7 +271,7 @@ Data Types</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Process elifdef – test if a macro is defined. </p>
+<p>Process elifdef â€“ test if a macro is defined. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">ctx</td><td>Context source line containing the directive </td></tr>
@@ -310,7 +310,7 @@ Data Types</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Process elifndef – test if a macro is not defined. </p>
+<p>Process elifndef â€“ test if a macro is not defined. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">ctx</td><td>Context source line containing the directive </td></tr>
@@ -340,7 +340,7 @@ Data Types</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Process else – final fallback branch Activates only if no previous if/elif branch was true. </p>
+<p>Process else â€“ final fallback branch Activates only if no previous if/elif branch was true. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">ctx</td><td>Context (for error messages)</td></tr>
@@ -368,7 +368,7 @@ Data Types</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Process endif – end of conditional block Pops the top state from the stack. Reports error on unmatched endif. </p>
+<p>Process endif â€“ end of conditional block Pops the top state from the stack. Reports error on unmatched endif. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">ctx</td><td>Context (for error messages)</td></tr>
@@ -444,7 +444,7 @@ Data Types</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Process ifdef – test if a macro is defined. </p>
+<p>Process ifdef â€“ test if a macro is defined. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">ctx</td><td>Context source line containing the directive </td></tr>
@@ -483,7 +483,7 @@ Data Types</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Process ifndef – test if a macro is NOT defined. </p>
+<p>Process ifndef â€“ test if a macro is NOT defined. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">ctx</td><td>Context source line containing the directive </td></tr>

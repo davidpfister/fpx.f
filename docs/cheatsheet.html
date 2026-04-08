@@ -1,4 +1,4 @@
-<!-- HTML header for doxygen 1.9.1-->
+﻿<!-- HTML header for doxygen 1.9.1-->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" class="dark-mode">
   <head>
@@ -123,35 +123,35 @@ $(function(){initNavTree('cheatsheet.html','',''); });
 <div class="textblock"><p><a class="anchor" id="md__c_1_2_users_2_david_pfister_2_git_hub_2sandbox_2fpx_8f_2_8dox_2articles_2cheatsheet"></a></p>
 <h1 class="doxsection"><a class="anchor" id="autotoc_md13"></a>
 CLI Quick Commands</h1>
-<div class="fragment"><div class="line">fpx file.F90                  → print to screen</div>
-<div class="line">fpx file.F90 -o out.f90       → write to file</div>
-<div class="line">fpx -DDEBUG=1 -Iinc file.F90  → define macro + include path</div>
-<div class="line">fpx                           → interactive REPL (great for testing)</div>
-<div class="line">fpx -v                        → show version</div>
-<div class="line">fpx -h                        → show help</div>
+<div class="fragment"><div class="line">fpx file.F90                  â†’ print to screen</div>
+<div class="line">fpx file.F90 -o out.f90       â†’ write to file</div>
+<div class="line">fpx -DDEBUG=1 -Iinc file.F90  â†’ define macro + include path</div>
+<div class="line">fpx                           â†’ interactive REPL (great for testing)</div>
+<div class="line">fpx -v                        â†’ show version</div>
+<div class="line">fpx -h                        â†’ show help</div>
 </div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md14"></a>
 Most Common Directives</h1>
 <center></center><center><table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadNone">Directive  </th><th class="markdownTableHeadNone">Meaning &amp; Example  </th></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><span class="tt">#define NAME value</span>  </td><td class="markdownTableBodyNone">Object-like macro → <span class="tt">NAME</span> becomes <span class="tt">value</span>  </td></tr>
+<td class="markdownTableBodyNone"><span class="tt">#define NAME value</span>  </td><td class="markdownTableBodyNone">Object-like macro â†’ <span class="tt">NAME</span> becomes <span class="tt">value</span>  </td></tr>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"></td><td class="markdownTableBodyNone"><span class="tt">#define PI 3.1415926535</span>  </td></tr>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><span class="tt">#define FUNC(x) x*x</span>  </td><td class="markdownTableBodyNone">Function-like macro  </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"></td><td class="markdownTableBodyNone"><span class="tt">real :: y = FUNC(5.0)</span> → <span class="tt">real :: y = 5.0*5.0</span>  </td></tr>
+<td class="markdownTableBodyNone"></td><td class="markdownTableBodyNone"><span class="tt">real :: y = FUNC(5.0)</span> â†’ <span class="tt">real :: y = 5.0*5.0</span>  </td></tr>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><span class="tt">#define LOG(...) print *, __VA_ARGS__</span>  </td><td class="markdownTableBodyNone">Variadic macro (C99-style)  </td></tr>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><span class="tt">#undef NAME</span>  </td><td class="markdownTableBodyNone">Remove a macro  </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><span class="tt">#ifdef NAME</span> … <span class="tt">#endif</span>  </td><td class="markdownTableBodyNone">If NAME is defined  </td></tr>
+<td class="markdownTableBodyNone"><span class="tt">#ifdef NAME</span> â€¦ <span class="tt">#endif</span>  </td><td class="markdownTableBodyNone">If NAME is defined  </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><span class="tt">#ifndef NAME</span> … <span class="tt">#endif</span>  </td><td class="markdownTableBodyNone">Classic header guard (most common)  </td></tr>
+<td class="markdownTableBodyNone"><span class="tt">#ifndef NAME</span> â€¦ <span class="tt">#endif</span>  </td><td class="markdownTableBodyNone">Classic header guard (most common)  </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><span class="tt">#if DEBUG &gt;= 2</span> …  </td><td class="markdownTableBodyNone">Full expressions allowed (<span class="tt">&amp;&amp;</span>, <span class="tt">!</span>, <span class="tt">defined(NAME)</span>)  </td></tr>
+<td class="markdownTableBodyNone"><span class="tt">#if DEBUG &gt;= 2</span> â€¦  </td><td class="markdownTableBodyNone">Full expressions allowed (<span class="tt">&amp;&amp;</span>, <span class="tt">!</span>, <span class="tt">defined(NAME)</span>)  </td></tr>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><span class="tt">#include "file.inc"</span>  </td><td class="markdownTableBodyNone">Local include (quotes)  </td></tr>
 <tr class="markdownTableRowOdd">
@@ -161,7 +161,7 @@ Most Common Directives</h1>
 Built-in Predefined Macros</h1>
 <center></center><center><table class="markdownTable">
 <tr class="markdownTableHead">
-<th class="markdownTableHeadNone">Macro  </th><th class="markdownTableHeadNone">Expands to…  </th></tr>
+<th class="markdownTableHeadNone">Macro  </th><th class="markdownTableHeadNone">Expands toâ€¦  </th></tr>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><span class="tt">__FILE__</span>  </td><td class="markdownTableBodyNone">"full/path/to/file.F90"  </td></tr>
 <tr class="markdownTableRowEven">
@@ -180,11 +180,11 @@ Advanced Macro Tricks</h1>
 <div class="fragment"><div class="line"><span class="preprocessor">#define STRINGIFY(x) #x</span></div>
 <div class="line"><span class="preprocessor"></span><span class="preprocessor">#define CONCAT(a,b)  a ## _ ## b</span></div>
 <div class="line"><span class="preprocessor"></span> </div>
-<div class="line"><span class="preprocessor">#define DEBUG_PRINT(...) print *, &quot;[DEBUG] &quot;, __FILE__, &quot;:&quot;, __LINE__, &quot; → &quot;, __VA_ARGS__</span></div>
+<div class="line"><span class="preprocessor">#define DEBUG_PRINT(...) print *, &quot;[DEBUG] &quot;, __FILE__, &quot;:&quot;, __LINE__, &quot; â†’ &quot;, __VA_ARGS__</span></div>
 <div class="line"><span class="preprocessor"></span><span class="preprocessor">#define ASSERT(cond) if (.not.(cond)) then; error stop &quot;Assertion failed: &quot; // STRINGIFY(cond); end if</span></div>
 <div class="line"><span class="preprocessor"></span> </div>
 <div class="line"><span class="keywordtype">integer</span> :: CONCAT(var,123)   <span class="comment">! var_123</span></div>
-<div class="line">...</div>
+
 </div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md17"></a>
 Common Patterns</h1>
 <div class="fragment"><div class="line"><span class="comment">! Header guard (recommended)</span></div>
@@ -206,14 +206,14 @@ Common Patterns</h1>
 <div class="line"><span class="preprocessor">#if defined(DEBUG) &amp;&amp; DEBUG &gt; 0</span></div>
 <div class="line"><span class="preprocessor"></span>  print *, <span class="stringliteral">&#39;Debug mode active&#39;</span></div>
 <div class="line"><span class="preprocessor">#endif</span></div>
-<div class="line"><span class="preprocessor"></span>...</div>
+
 </div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md18"></a>
 Using fpx as a Library (in your own code)</h1>
 <p>Add include paths </p><div class="fragment"><div class="line"><span class="keywordtype">use </span>fpx_parser</div>
 <div class="line"><span class="keywordtype">use </span>fpx_global</div>
 <div class="line"> </div>
 <div class="line"><a class="code hl_variable" href="group__group__global.html#ga8b8524880886f61f8c961589cffa7640">global</a>%includedir = [<span class="stringliteral">&#39;./inc&#39;</span>, <span class="stringliteral">&#39;../common&#39;</span>]</div>
-<div class="line">...</div>
+
 <div class="ttc" id="agroup__group__global_html_ga8b8524880886f61f8c961589cffa7640"><div class="ttname"><a href="group__group__global.html#ga8b8524880886f61f8c961589cffa7640">fpx_global::global</a></div><div class="ttdeci">type(global_settings), public global</div><div class="ttdoc">The single global instance used throughout fpx Initialized automatically with sensible defaults value...</div><div class="ttdef"><b>Definition</b> <a href="global_8f90_source.html#l00093">global.f90:93</a></div></div>
 </div><!-- fragment --><p>Add predefined macros &amp; preprocess</p>
 <div class="fragment"><div class="line"><span class="keywordtype">use </span>fpx_parser</div>
@@ -224,8 +224,8 @@ Using fpx as a Library (in your own code)</h1>
 <div class="line"> </div>
 <div class="line"><span class="comment">!preprocess</span></div>
 <div class="line"><span class="keyword">call </span><a class="code hl_interface" href="interfacefpx__parser_1_1preprocess.html">preprocess</a>(<span class="stringliteral">&#39;src/main.F90&#39;</span>, <span class="stringliteral">&#39;build/main.f90&#39;</span>)</div>
-<div class="line">...</div>
-<div class="ttc" id="ainterfacefpx__parser_1_1preprocess_html"><div class="ttname"><a href="interfacefpx__parser_1_1preprocess.html">fpx_parser::preprocess</a></div><div class="ttdoc">Generic interface to start preprocessing from various sources/sinks.</div><div class="ttdef"><b>Definition</b> <a href="parser_8f90_source.html#l00080">parser.f90:80</a></div></div>
+
+<div class="ttc" id="ainterfacefpx__parser_1_1preprocess_html"><div class="ttname"><a href="interfacefpx__parser_1_1preprocess.html">fpx_parser::preprocess</a></div><div class="ttdoc">Generic interface to start preprocessing from various sources/sinks.</div><div class="ttdef"><b>Definition</b> <a href="parser_8f90_source.html#l00081">parser.f90:81</a></div></div>
 </div><!-- fragment --> </div></div><!-- contents -->
 </div><!-- PageDoc -->
 </div><!-- doc-content -->
