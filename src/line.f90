@@ -45,6 +45,8 @@ module fpx_line
     use fpx_context
     
     implicit none; private
+
+    public :: handle_line
     
 contains
 

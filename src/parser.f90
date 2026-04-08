@@ -61,6 +61,7 @@ module fpx_parser
     use fpx_path
     use fpx_global
     use fpx_context
+    use fpx_line
 
     implicit none; private
 
