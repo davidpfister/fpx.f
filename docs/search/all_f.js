@@ -27,7 +27,7 @@ var searchData=
   ['free_20form_24',['2.1.2 Line breaks and continuations in macro invocations (free-form)',['../macro.html#autotoc_md112',1,'']]],
   ['frequent_20usage_25',['Most frequent Usage',['../introduction.html#autotoc_md29',1,'']]],
   ['from_20c_26',['from C',['../specifications.html#autotoc_md97',1,'Appendix A: Divergences from C'],['../macro.html#autotoc_md122',1,'Appendix A: Divergences from C']]],
-  ['from_20memory_20string_20→_20string_27',['Preprocess from memory (string → string)',['../usage.html#autotoc_md130',1,'']]],
+  ['from_20memory_20string_20string_27',['Preprocess from memory (string -&amp;gt; string)',['../usage.html#autotoc_md130',1,'']]],
   ['from_20the_20command_20line_20cli_28',['Using fpx from the Command Line (CLI)',['../usage.html#autotoc_md123',1,'']]],
   ['full_20control_20–_20predefined_20macros_20include_20paths_20etc_29',['Full control – predefined macros, include paths, etc.',['../usage.html#autotoc_md129',1,'']]],
   ['function_20like_20macro_20directive_30',['3.2 The define function-like macro directive',['../specifications.html#autotoc_md56',1,'']]],

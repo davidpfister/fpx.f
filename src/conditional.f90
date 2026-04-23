@@ -7,7 +7,7 @@
 !! - `#elif` chains (multiple alternative branches)
 !! - `#else` as final fallback
 !! - Proper nesting up to `MAX_COND_DEPTH` levels
-!! - Correct "first-match" semantics — once a branch is taken, later `#elif`/`#else` are skipped
+!! - Correct "first-match" semantics - once a branch is taken, later `#elif`/`#else` are skipped
 !! - Integration with macro expansion via `is_defined()` and expression evaluator
 !!
 !! The state is maintained in a global stack (`cond_stack`) with `cond_depth` tracking nesting.

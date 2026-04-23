@@ -17,7 +17,7 @@ var searchData=
   ['macros_14',['7 Predefined macros',['../specifications.html#autotoc_md89',1,'']]],
   ['macros_20defined_20by_20the_20preprocessor_15',['4.4 Macros defined by the preprocessor',['../requirements.html#autotoc_md42',1,'']]],
   ['macros_20include_20paths_20etc_16',['Full control – predefined macros, include paths, etc.',['../usage.html#autotoc_md129',1,'']]],
-  ['memory_20string_20→_20string_17',['Preprocess from memory (string → string)',['../usage.html#autotoc_md130',1,'']]],
+  ['memory_20string_20string_17',['Preprocess from memory (string -&amp;gt; string)',['../usage.html#autotoc_md130',1,'']]],
   ['minimal_20example_20–_20preprocess_20a_20file_20to_20another_20file_18',['Minimal example – preprocess a file to another file',['../usage.html#autotoc_md128',1,'']]],
   ['modern_20era_3a_20preprocessing_20today_202000s–2025_19',['Modern Era: Preprocessing Today (2000s–2025)',['../introduction.html#autotoc_md28',1,'']]],
   ['most_20common_20directives_20',['Most Common Directives',['../cheatsheet.html#autotoc_md14',1,'']]],

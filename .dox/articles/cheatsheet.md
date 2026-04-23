@@ -2,12 +2,12 @@
 
 ## CLI Quick Commands
 ```bash
-fpx file.F90                  → print to screen
-fpx file.F90 -o out.f90       → write to file
-fpx -DDEBUG=1 -Iinc file.F90  → define macro + include path
-fpx                           → interactive REPL (great for testing)
-fpx -v                        → show version
-fpx -h                        → show help
+fpx file.F90                  -> print to screen
+fpx file.F90 -o out.f90       -> write to file
+fpx -DDEBUG=1 -Iinc file.F90  -> define macro + include path
+fpx                           -> interactive REPL (great for testing)
+fpx -v                        -> show version
+fpx -h                        -> show help
 ```
 
 ## Most Common Directives
@@ -16,10 +16,10 @@ fpx -h                        → show help
 
 | Directive                 | Meaning & Example                                           |
 |---------------------------|-------------------------------------------------------------|
-| `#define NAME value`      | Object-like macro → `NAME` becomes `value`                  |
+| `#define NAME value`      | Object-like macro -> `NAME` becomes `value`                  |
 |                           | `#define PI 3.1415926535`                                   |
 | `#define FUNC(x) x*x`     | Function-like macro                                         |
-|                           | `real :: y = FUNC(5.0)` → `real :: y = 5.0*5.0`              |
+|                           | `real :: y = FUNC(5.0)` -> `real :: y = 5.0*5.0`              |
 | `#define LOG(...) print *, __VA_ARGS__` | Variadic macro (C99-style)                     |
 | `#undef NAME`             | Remove a macro                                              |
 | `#ifdef NAME` … `#endif`  | If NAME is defined                                          |
@@ -51,7 +51,7 @@ fpx -h                        → show help
 #define STRINGIFY(x) #x
 #define CONCAT(a,b)  a ## _ ## b
 
-#define DEBUG_PRINT(...) print *, "[DEBUG] ", __FILE__, ":", __LINE__, " → ", __VA_ARGS__
+#define DEBUG_PRINT(...) print *, "[DEBUG] ", __FILE__, ":", __LINE__, " -> ", __VA_ARGS__
 #define ASSERT(cond) if (.not.(cond)) then; error stop "Assertion failed: " // STRINGIFY(cond); end if
 
 integer :: CONCAT(var,123)   ! var_123

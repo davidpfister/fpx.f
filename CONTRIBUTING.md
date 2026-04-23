@@ -12,7 +12,7 @@ Please follow the style used in this repository for any Fortran code that you co
 ## Reporting a bug
 
 A bug is a *demonstrable problem* caused by the code in this repository.
-Good bug reports are extremely valuable to us—thank you!
+Good bug reports are extremely valuable to us-thank you!
 
 Before opening a bug report:
 

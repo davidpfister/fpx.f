@@ -24,7 +24,7 @@
 !!    g = digraph(3)            ! 3 macros indexed 1..3
 !!    call g%add_edge(1, 2)     ! macro1 depends on macro2
 !!    call g%add_edge(2, 3)     ! macro2 depends on macro3
-!!    call g%add_edge(3, 1)     ! macro3 depends on macro1 → cycle!
+!!    call g%add_edge(3, 1)     ! macro3 depends on macro1 -> cycle!
 !!
 !!    cycle = g%is_circular(1)  ! returns .true.
 !!    print *, 'Circular macro chain detected:', cycle
@@ -55,7 +55,7 @@ module fpx_graph
     !!    g = digraph(3)            ! 3 macros indexed 1..3
     !!    call g%add_edge(1, 2)     ! macro1 depends on macro2
     !!    call g%add_edge(2, 3)     ! macro2 depends on macro3
-    !!    call g%add_edge(3, 1)     ! macro3 depends on macro1 → cycle!
+    !!    call g%add_edge(3, 1)     ! macro3 depends on macro1 -> cycle!
     !!
     !!    cycle = g%is_circular(1)  ! returns .true.
     !!    print *, 'Circular macro chain detected:', cycle
@@ -111,7 +111,7 @@ contains
         allocate(that%list_sizes(vertices), source=0)
     end function
 
-    !> Add a directed edge from source → destination
+    !> Add a directed edge from source -> destination
     !! Silently ignores invalid indices. Optional `exists` flag indicates if edge was already present.
     !! @param[inout] this digraph object
     !! @param[in]    source      Source vertex (1-based)

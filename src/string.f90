@@ -13,7 +13,7 @@
 !! - Full support for formatted I/O (`write`, `print`)
 !! - Helper routines for parsing Fortran source (line continuation, upper/lower case conversion, etc.)
 !!
-!! The design is intentionally minimal — it provides only what's necessary for
+!! The design is intentionally minimal - it provides only what's necessary for
 !! robust string handling in scientific and preprocessing applications,
 !! avoiding the bloat of larger string libraries while remaining fast and standards-compliant.
 !! @note All procedures are `pure` or `elemental` when possible for maximum performance
@@ -421,7 +421,7 @@ contains
     !!
     !! @b Note
     !! - This implementation **ignores** `iotype` and `v_list` parameters
-    !!   → the same simple character output is always performed
+    !!   -> the same simple character output is always performed
     !! - The procedure always uses format `(A)`
     !! - Empty (not allocated) string is written as empty line (zero characters)
     !!
@@ -485,10 +485,10 @@ contains
     !! logical :: ok
     !! integer :: pos
     !!
-    !! ok = starts_with(line, 'hello')               ! → .true.
-    !! ok = starts_with(line, 'hello', pos)          ! → .true. and pos = 1
-    !! ok = starts_with(line, 'world')               ! → .false.
-    !! ok = starts_with('  test123  ', 'test')       ! → .true.
+    !! ok = starts_with(line, 'hello')               ! -> .true.
+    !! ok = starts_with(line, 'hello', pos)          ! -> .true. and pos = 1
+    !! ok = starts_with(line, 'world')               ! -> .false.
+    !! ok = starts_with('  test123  ', 'test')       ! -> .true.
     !! ...
     !! @endcode
     !!

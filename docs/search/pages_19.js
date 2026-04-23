@@ -18,7 +18,7 @@ var searchData=
   ['predefined_20macros_15',['7 Predefined macros',['../specifications.html#autotoc_md89',1,'']]],
   ['predefined_20macros_20include_20paths_20etc_16',['Full control – predefined macros, include paths, etc.',['../usage.html#autotoc_md129',1,'']]],
   ['preprocess_20a_20file_20to_20another_20file_17',['Minimal example – preprocess a file to another file',['../usage.html#autotoc_md128',1,'']]],
-  ['preprocess_20from_20memory_20string_20→_20string_18',['Preprocess from memory (string → string)',['../usage.html#autotoc_md130',1,'']]],
+  ['preprocess_20from_20memory_20string_20string_18',['Preprocess from memory (string -&amp;gt; string)',['../usage.html#autotoc_md130',1,'']]],
   ['preprocessing_19',['A Brief History of Preprocessing',['../introduction.html#autotoc_md23',1,'']]],
   ['preprocessing_201950s–1970s_20',['Early Days: Ad Hoc Preprocessing (1950s–1970s)',['../introduction.html#autotoc_md24',1,'']]],
   ['preprocessing_20today_202000s–2025_21',['Modern Era: Preprocessing Today (2000s–2025)',['../introduction.html#autotoc_md28',1,'']]],

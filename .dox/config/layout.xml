@@ -3,10 +3,9 @@
   <!-- Navigation index tabs for HTML output -->
   <navindex>
     <tab type="mainpage" visible="yes" title="fpx.f"/>
-    <tab type="pages" visible="yes" title="Articles" intro=""/>
+    <tab type="pages" visible="yes" title="Documentation" intro=""/>
     <tab type="topics" visible="yes" title="API" intro=""/>
     <tab type="filelist" visible="yes" title="Files" intro=""/>
-    <tab type="user" visible="yes" title="Code" url="https://github.com/davidpfister/fpx.f"/>
   </navindex>
 
   <!-- Layout definition for a class page -->

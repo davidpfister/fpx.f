@@ -68,7 +68,7 @@ module fpx_os
     !> @brief OpenBSD
     !! @ingroup group_os
     integer, parameter, public :: OS_OPENBSD = 7
-    !> @brief Microsoft Windows — explicitly 32-bit (x86) architecture.
+    !> @brief Microsoft Windows - explicitly 32-bit (x86) architecture.
     !!
     !! Mainly useful when different behavior is needed between 32-bit and 64-bit Windows
     !! @ingroup group_os

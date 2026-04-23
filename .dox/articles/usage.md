@@ -1,6 +1,6 @@
 # Basic Usage {#usage}
 
-Perfect for Fortran projects that need `#include`, `#define`, `#ifdef`, macro expansion, `__FILE__`, `__LINE__`, `__DATE__`, etc. — all without leaving the Fortran ecosystem.
+Perfect for Fortran projects that need `#include`, `#define`, `#ifdef`, macro expansion, `__FILE__`, `__LINE__`, `__DATE__`, etc. - all without leaving the Fortran ecosystem.
 
 **fpx: A fast, pure-Fortran, standards-compatible preprocessor written in Fortran**
 
@@ -61,7 +61,7 @@ fpx
 
 ## Using fpx as an Embedded Library in Your Own Fortran Program
 
-You can call the preprocessor directly from any Fortran program — ideal for build systems, code generators, or tools.
+You can call the preprocessor directly from any Fortran program - ideal for build systems, code generators, or tools.
 
 Everything you need is in the module `fpx_parser`.
 
@@ -73,7 +73,7 @@ program demo_embed
     implicit none
 
     call preprocess('input.F90', 'output.f90')
-    print *, 'Preprocessing finished → output.f90'
+    print *, 'Preprocessing finished -> output.f90'
 end program
 ```
 
@@ -104,7 +104,7 @@ program my_builder
 end program
 ```
 
-### Preprocess from memory (string → string)
+### Preprocess from memory (string -> string)
 
 ```fortran
 program memory_preprocess

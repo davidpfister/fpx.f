@@ -40,7 +40,7 @@ var searchData=
   ['predefined_20macros_20include_20paths_20etc_37',['Full control – predefined macros, include paths, etc.',['../usage.html#autotoc_md129',1,'']]],
   ['preprocess_38',['preprocess',['../interfacefpx__parser_1_1preprocess.html',1,'fpx_parser']]],
   ['preprocess_20a_20file_20to_20another_20file_39',['Minimal example – preprocess a file to another file',['../usage.html#autotoc_md128',1,'']]],
-  ['preprocess_20from_20memory_20string_20→_20string_40',['Preprocess from memory (string → string)',['../usage.html#autotoc_md130',1,'']]],
+  ['preprocess_20from_20memory_20string_20string_40',['Preprocess from memory (string -&amp;gt; string)',['../usage.html#autotoc_md130',1,'']]],
   ['preprocess_5ffile_41',['preprocess_file',['../interfacefpx__parser_1_1preprocess.html#ab89d17f91b95e7cc0531ae8d2971dab2',1,'fpx_parser::preprocess::preprocess_file()'],['../group__group__parser.html#gab89d17f91b95e7cc0531ae8d2971dab2',1,'fpx_parser::preprocess_file()']]],
   ['preprocess_5ffile_5fto_5funit_42',['preprocess_file_to_unit',['../interfacefpx__parser_1_1preprocess.html#a4320a015ed673ba1501c2db89944866d',1,'fpx_parser::preprocess::preprocess_file_to_unit()'],['../group__group__parser.html#ga4320a015ed673ba1501c2db89944866d',1,'fpx_parser::preprocess_file_to_unit(ifile, ounit)']]],
   ['preprocess_5funit_43',['preprocess_unit',['../group__group__parser.html#gaa5a3295db7ce58d8bc2e84a458cf5b46',1,'fpx_parser']]],

@@ -25,7 +25,7 @@ var pages =
       [ "Using fpx as an Embedded Library in Your Own Fortran Program", "usage.html#autotoc_md127", [
         [ "Minimal example – preprocess a file to another file", "usage.html#autotoc_md128", null ],
         [ "Full control – predefined macros, include paths, etc.", "usage.html#autotoc_md129", null ],
-        [ "Preprocess from memory (string → string)", "usage.html#autotoc_md130", null ]
+        [ "Preprocess from memory (string -&gt; string)", "usage.html#autotoc_md130", null ]
       ] ]
     ] ],
     [ "Cheatsheet", "cheatsheet.html", [

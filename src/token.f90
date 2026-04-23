@@ -29,16 +29,16 @@
 !!    t2 = token('DEBUG', identifier)    ! macro name
 !!    t3 = token('>',    operator)       ! comparison operator
 !!
-!!    print *, 'Token: ', t1%value, ' type=', t1%type   ! → 42 type=0
+!!    print *, 'Token: ', t1%value, ' type=', t1%type   ! -> 42 type=0
 !! @endcode
 !!
 !! 2. Typical internal usage during `#if` evaluation:
 !! @code{.f90}
 !!    ! (inside evaluate_expression)
 !!    tokens = tokenize('defined(USE_MPI) && MPI_VERSION >= 3')
-!!    ! tokens(1) → value=vdefined'  type=identifier
-!!    ! tokens(2) → value='('        type=parenthesis
-!!    ! tokens(3) → value='USE_MPI'  type=identifier
+!!    ! tokens(1) -> value=vdefined'  type=identifier
+!!    ! tokens(2) -> value='('        type=parenthesis
+!!    ! tokens(3) -> value='USE_MPI'  type=identifier
 !!    ! ...
 !! @endcode
 !!

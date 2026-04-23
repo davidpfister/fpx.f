@@ -44,8 +44,7 @@ var NAVTREE =
     ] ],
     [ "Documentation", "pages.html", "pages" ],
     [ "API", "topics.html", "topics" ],
-    [ "Files", "files.html", "files" ],
-    [ "Code", "^https://github.com/davidpfister/fpx.f", null ]
+    [ "Files", "files.html", "files" ]
   ] ]
 ];
 

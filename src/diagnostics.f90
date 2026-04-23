@@ -38,7 +38,7 @@ contains
 
     !> Process a #error directive. It causes the preprocessor to report a
     !! fatal error that stops the preprocessor. The string forming the rest
-    !! of the line following ‘#error’ is printed in the standard error.
+    !! of the line following ‘#error' is printed in the standard error.
     !!
     !! @param[in]    ctx     Context source line containing the #define
     !! @param[inout] macros  Current macro table (updated in-place)
@@ -59,7 +59,7 @@ contains
 
     !> Process a #warning directive. It causes the preprocessor to report a
     !! warning that does not stop the preprocessor. The string forming the rest
-    !! of the line following ‘#warning’ is printed in the standard output.
+    !! of the line following ‘#warning' is printed in the standard output.
     !! @param[in]    ctx     Context source line containing the #undef
     !! @param[inout] macros  Current macro table (updated in-place)
     !! @param[in]    token   Usually 'UNDEF' – keyword matched in lowercase

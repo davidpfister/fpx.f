@@ -29,11 +29,11 @@
 <p align="center">
   <img src="https://github.com/davidpfister/fpx.f/blob/master/.dox/images/logo.png?raw=true" width="300" height="300">
 </p>
- </center>
+</center>
 
 Fortran, the venerable language of scientific computing, has powered simulations of galaxies, weather systems, and quantum phenomena for over seven decades. Its enduring strength lies in its clarity, performance, and mathematical soul, qualities that resonate deeply with its community of developers. Yet, nestled within this ecosystem is a contentious tool: the preprocessor. From its ad hoc beginnings in the 1970s to its modern incarnations in tools like `cpp`, `fpp`, and `fypp`, preprocessing has been both a lifeline and a lightning rod for Fortran developers. 
 
-It enables portability across diverse platforms, conditional compilation for debugging, and code generation for complex libraries. These capabilities are critical to Fortran’s role in high-performance computing. But it also sparks fierce debate, with many Fortraners decrying its tendency to obscure code, disrupt the language’s elegant simplicity, and introduce bugs.   
+It enables portability across diverse platforms, conditional compilation for debugging, and code generation for complex libraries. These capabilities are critical to Fortran's role in high-performance computing. But it also sparks fierce debate, with many Fortraners decrying its tendency to obscure code, disrupt the language's elegant simplicity, and introduce bugs.   
 
 This project aims at providing a *simple*, *embeddable*, *open-source* preprocessor written in modern Fortran. `fpx` is mostly compliant to a C preprocessor, fine-tuned for the specificity of the Fortran language. 
 `fpx` is an embeddable preprocessor. It can be used as a command-line tool or directly embedded into any solution with the module `fpx_parser`.
@@ -194,7 +194,23 @@ By contributing to _fpx.f_, you certify that you own or are allowed to share the
 
 Distributed under the MIT License.
 
+[![Contributors][contributors-shield]][contributors-url]
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
+[![Issues][issues-shield]][issues-url]
+[![MIT License][license-shield]][license-url]
+
 <!-- MARKDOWN LINKS & IMAGES -->
+[contributors-shield]: https://img.shields.io/github/contributors/davidpfister/fpx.f.svg?style=for-the-badge
+[contributors-url]: https://github.com/davidpfister/fpx.f/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/davidpfister/fpx.f.svg?style=for-the-badge
+[forks-url]: https://github.com/davidpfister/fpx.f/network/members
+[stars-shield]: https://img.shields.io/github/stars/davidpfister/fpx.f.svg?style=for-the-badge
+[stars-url]: https://github.com/davidpfister/fpx.f/stargazers
+[issues-shield]: https://img.shields.io/github/issues/davidpfister/fpx.f.svg?style=for-the-badge
+[issues-url]: https://github.com/davidpfister/fpx.f/issues
+[license-shield]: https://img.shields.io/github/license/davidpfister/fpx.f.svg?style=for-the-badge
+[license-url]: https://github.com/davidpfister/fpx.f/master/LICENSE
 [gfortran]: https://img.shields.io/badge/gfortran-000000?style=for-the-badge&logo=gnu&logoColor=white
 [gfortran-url]: https://gcc.gnu.org/wiki/GFortran
 [ifort]: https://img.shields.io/badge/ifort-000000?style=for-the-badge&logo=Intel&logoColor=61DAFB

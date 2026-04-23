@@ -24,7 +24,6 @@
 */
 var menudata={children:[
 {text:"fpx.f",url:"index.html"},
-{text:"Articles",url:"pages.html"},
+{text:"Documentation",url:"pages.html"},
 {text:"API",url:"topics.html"},
-{text:"Files",url:"files.html"},
-{text:"Code",url:"^https://github.com/davidpfister/fpx.f"}]}
+{text:"Files",url:"files.html"}]}

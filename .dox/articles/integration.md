@@ -50,7 +50,7 @@ You can use option Qlocation, fpp,… to specify a directory for supporting tool
 
 > The Intel compilers provide a flag `-fpp-name=<name>` which can be used to specify an alternative preprocessor of the form:
 >
-> alt_fpp [ [–D<define>]..] [[-I<include directory>]..] inputfile 
+> alt_fpp [[-D<define>]..] [[-I<include directory>]..] inputfile 
 > which prints output to STDOUT that will get captured by the compiler for further processing.
 >
 > I've tried to use this with fypp, but I run into errors:

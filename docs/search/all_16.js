@@ -26,7 +26,7 @@ var searchData=
   ['max_5fline_5flen_23',['max_line_len',['../group__group__constants.html#gab5a717360891a02e951e875b734a32a8',1,'fpx_constants']]],
   ['max_5fparams_24',['max_params',['../group__group__constants.html#ga844a6ff7ced833f206ff32a7ae238321',1,'fpx_constants']]],
   ['max_5ftokens_25',['max_tokens',['../group__group__constants.html#ga7b898dec94b3f045e17d927b192d313d',1,'fpx_constants']]],
-  ['memory_20string_20→_20string_26',['Preprocess from memory (string → string)',['../usage.html#autotoc_md130',1,'']]],
+  ['memory_20string_20string_26',['Preprocess from memory (string -&amp;gt; string)',['../usage.html#autotoc_md130',1,'']]],
   ['message_27',['message',['../structfpx__logging_1_1diagnostic__report.html#aeb6486626266108b7e567face1fc6df8',1,'fpx_logging::diagnostic_report']]],
   ['millisecond_28',['millisecond',['../structfpx__date_1_1datetime.html#a92dbe951f9ce476e8f6e8f73a1ab61a0',1,'fpx_date::datetime']]],
   ['minimal_20example_20–_20preprocess_20a_20file_20to_20another_20file_29',['Minimal example – preprocess a file to another file',['../usage.html#autotoc_md128',1,'']]],

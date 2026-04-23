@@ -3,15 +3,15 @@
 !! Lightweight, high-performance date/time handling for the fpx preprocessor
 !! This module provides a compact `datetime` type and essential operations
 !! used primarily for expanding the standard predefined macros.
-!! - `__DATE__` → e.g. 'Aug-12-2025'
-!! - `__TIME__` → e.g. '14:35:27'
-!! - `__TIMESTAMP__` → e.g. 'Tue 12-Aug-2025 14:35:27'
+!! - `__DATE__` -> e.g. 'Aug-12-2025'
+!! - `__TIME__` -> e.g. '14:35:27'
+!! - `__TIMESTAMP__` -> e.g. 'Tue 12-Aug-2025 14:35:27'
 !!
 !! Features:
 !! - `now()` returns current local date/time using `date_and_time()`
 !! - Flexible string formatting via `to_string(fmt)`
 !! - Parsing from common string formats (ISO, US, RFC-like)
-!! - Day-of-week calculation via Zeller’s congruence
+!! - Day-of-week calculation via Zeller's congruence
 !! - Elemental and pure functions where possible for performance
 !! - Minimal memory footprint using small integer kinds (`int8`, `int16`)
 !!

@@ -676,7 +676,7 @@ contains
 
     !> Internal helper: grow dynamic macro array in chunks for efficiency
     !! Adds a new macro to the allocatable array, growing in BUFFER_SIZE increments.
-    !! Also detects direct self-references (A → A) and marks both sides as cyclic.
+    !! Also detects direct self-references (A -> A) and marks both sides as cyclic.
     !!
     !! @b Remarks
     subroutine add_to(array, val)
