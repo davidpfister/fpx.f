@@ -76,11 +76,6 @@ The following compilers are tested on the default branch of _fpx.f_:
 
 Unit test rely on the the header file [`assertion.inc`](https://github.com/davidpfister/fortiche/tree/master/src/assertion). Since the whole framework fits in a single file, it has been added directly to the repo. 
 
-Linting, indentation, and styling is done with [fprettify](https://github.com/fortran-lang/fprettify) with the following settings
-```bash
-   fprettify './src/' -r --case 1 1 1 1 -i 4 --strict-indent --enable-replacements --strip-comments --c-relations
-```
-
 ### Building
 
 #### Get the code
@@ -95,43 +90,14 @@ The repo can be build using _fpm_
 ```bash
    fpm build
 ```
-For convenience, the  repo also contains a response file that can be invoked as follows: 
-```bash
-   fpm @build
-```
-(For the Windows users, that command does not work in Powershell since '@' is a reserved symbol. One should use the '--%' as follows: `fpm --% @build`.
-This is linked to the following [issue](https://github.com/urbanjost/M_CLI2/issues/19))
 
 Building with ifort requires to specify the compiler name (gfortran by default)
 ```bash
-   fpm @build --compiler ifort
+   fpm build --compiler ifort
 ```
 Alternatively, the compiler can be set using fpm environment variables.
 ```bash
    set FPM_FC=ifort
-```
-
-Besides the build command, several commands are also available:
-```bash
-@pretiffy
-system fprettify .\src\ -r --case 1 1 1 1 -i 4 --strict-indent --enable-replacements --strip-comments --c-relations
-
-@clean
-option clean --all
-
-@rebuild
-system rmdir /s /q build
-option build
-
-@build
-option build
-
-@test
-options test --flag 'D_QUIET'
-
-@doc
-option clean --all
-system cd ./.dox & doxygen ./Doxyfile.in & cd ..
 ```
 
 The settings to the cpp preprocessor are specified in the file. 
