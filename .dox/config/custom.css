@@ -535,6 +535,10 @@ span.tagline {
     height: calc(100vh - var(--top-height) - var(--bottom-height)) !important;
 }
 
+#nav-tree {
+    overflow-y:auto;
+}
+
 #nav-tree-contents {
   margin-top: 18px;
 }

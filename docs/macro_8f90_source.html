@@ -791,236 +791,242 @@ $(function(){initNavTree('macro_8f90_source.html','',''); });
 <div class="line"><a id="l00654" name="l00654"></a><span class="lineno">  654</span>    <span class="keyword">contains</span><span class="comment"></span></div>
 <div class="line"><a id="l00655" name="l00655"></a><span class="lineno">  655</span><span class="comment">        !&gt; @private</span></div>
 <div class="line"><a id="l00656" name="l00656"></a><span class="lineno">  656</span>        <span class="keyword">subroutine </span>print_any(any)</div>
-<div class="line"><a id="l00657" name="l00657"></a><span class="lineno">  657</span>            use, <span class="keywordtype">intrinsic</span> :: iso_fortran_env, only: int8, int16, int32, int64, real32, real64, real128</div>
-<div class="line"><a id="l00658" name="l00658"></a><span class="lineno">  658</span>            <span class="keywordtype">class</span>(*), <span class="keywordtype">intent(in)</span>     :: any</div>
-<div class="line"><a id="l00659" name="l00659"></a><span class="lineno">  659</span> </div>
-<div class="line"><a id="l00660" name="l00660"></a><span class="lineno">  660</span>            <span class="keywordflow">select type</span> (any)</div>
-<div class="line"><a id="l00661" name="l00661"></a><span class="lineno">  661</span><span class="keywordflow">            type is</span> (<span class="keywordtype">integer</span>(kind=int8)); <span class="keyword">write</span>(line, <span class="stringliteral">&#39;(i0)&#39;</span>) any</div>
-<div class="line"><a id="l00662" name="l00662"></a><span class="lineno">  662</span><span class="keywordflow">            type is</span> (<span class="keywordtype">integer</span>(kind=int16)); <span class="keyword">write</span>(line, <span class="stringliteral">&#39;(i0)&#39;</span>) any</div>
-<div class="line"><a id="l00663" name="l00663"></a><span class="lineno">  663</span><span class="keywordflow">            type is</span> (<span class="keywordtype">integer</span>(kind=int32)); <span class="keyword">write</span>(line, <span class="stringliteral">&#39;(i0)&#39;</span>) any</div>
-<div class="line"><a id="l00664" name="l00664"></a><span class="lineno">  664</span><span class="keywordflow">            type is</span> (<span class="keywordtype">integer</span>(kind=int64)); <span class="keyword">write</span>(line, <span class="stringliteral">&#39;(i0)&#39;</span>) any</div>
-<div class="line"><a id="l00665" name="l00665"></a><span class="lineno">  665</span><span class="keywordflow">            type is</span> (real(kind=real32)); <span class="keyword">write</span>(line, <span class="stringliteral">&#39;(1pg0)&#39;</span>) any</div>
-<div class="line"><a id="l00666" name="l00666"></a><span class="lineno">  666</span><span class="keywordflow">            type is</span> (real(kind=real64)); <span class="keyword">write</span>(line, <span class="stringliteral">&#39;(1pg0)&#39;</span>) any</div>
-<div class="line"><a id="l00667" name="l00667"></a><span class="lineno">  667</span><span class="keywordflow">            type is</span> (real(kind=real128)); <span class="keyword">write</span>(line, <span class="stringliteral">&#39;(1pg0)&#39;</span>) any</div>
-<div class="line"><a id="l00668" name="l00668"></a><span class="lineno">  668</span><span class="keywordflow">            type is</span> (logical); <span class="keyword">write</span>(line, <span class="stringliteral">&#39;(1l)&#39;</span>) any</div>
-<div class="line"><a id="l00669" name="l00669"></a><span class="lineno">  669</span><span class="keywordflow">            type is</span> (<span class="keywordtype">character</span>(*)); write(line, <span class="stringliteral">&#39;(a)&#39;</span>) any</div>
-<div class="line"><a id="l00670" name="l00670"></a><span class="lineno">  670</span><span class="keywordflow">            type is</span> (<span class="keywordtype">complex</span>(kind=real32)); <span class="keyword">write</span>(line, <span class="stringliteral">&#39;(&quot;(&quot;,1pg0,&quot;,&quot;,1pg0,&quot;)&quot;)&#39;</span>) any</div>
-<div class="line"><a id="l00671" name="l00671"></a><span class="lineno">  671</span><span class="keywordflow">            type is</span> (<span class="keywordtype">complex</span>(kind=real64)); <span class="keyword">write</span>(line, <span class="stringliteral">&#39;(&quot;(&quot;,1pg0,&quot;,&quot;,1pg0,&quot;)&quot;)&#39;</span>) any</div>
-<div class="line"><a id="l00672" name="l00672"></a><span class="lineno">  672</span><span class="keywordflow">            type is</span> (<span class="keywordtype">complex</span>(kind=real128)); <span class="keyword">write</span>(line, <span class="stringliteral">&#39;(&quot;(&quot;,1pg0,&quot;,&quot;,1pg0,&quot;)&quot;)&#39;</span>) any</div>
-<div class="line"><a id="l00673" name="l00673"></a><span class="lineno">  673</span><span class="keywordflow">            end select</span></div>
-<div class="line"><a id="l00674" name="l00674"></a><span class="lineno">  674</span>        <span class="keyword">end subroutine</span></div>
+<div class="line"><a id="l00657" name="l00657"></a><span class="lineno">  657</span>            use, <span class="keywordtype">intrinsic</span> :: iso_fortran_env, only: int8, &amp;</div>
+<div class="line"><a id="l00658" name="l00658"></a><span class="lineno">  658</span>                    int16, &amp;</div>
+<div class="line"><a id="l00659" name="l00659"></a><span class="lineno">  659</span>                    int32, &amp;</div>
+<div class="line"><a id="l00660" name="l00660"></a><span class="lineno">  660</span>                    int64, &amp;</div>
+<div class="line"><a id="l00661" name="l00661"></a><span class="lineno">  661</span>                    real32, &amp;</div>
+<div class="line"><a id="l00662" name="l00662"></a><span class="lineno">  662</span>                    real64, &amp;</div>
+<div class="line"><a id="l00663" name="l00663"></a><span class="lineno">  663</span>                    real128</div>
+<div class="line"><a id="l00664" name="l00664"></a><span class="lineno">  664</span>            <span class="keywordtype">class</span>(*), <span class="keywordtype">intent(in)</span>     :: any</div>
+<div class="line"><a id="l00665" name="l00665"></a><span class="lineno">  665</span> </div>
+<div class="line"><a id="l00666" name="l00666"></a><span class="lineno">  666</span>            <span class="keywordflow">select type</span> (any)</div>
+<div class="line"><a id="l00667" name="l00667"></a><span class="lineno">  667</span><span class="keywordflow">            type is</span> (<span class="keywordtype">integer</span>(kind=int8)); <span class="keyword">write</span>(line, <span class="stringliteral">&#39;(i0)&#39;</span>) any</div>
+<div class="line"><a id="l00668" name="l00668"></a><span class="lineno">  668</span><span class="keywordflow">            type is</span> (<span class="keywordtype">integer</span>(kind=int16)); <span class="keyword">write</span>(line, <span class="stringliteral">&#39;(i0)&#39;</span>) any</div>
+<div class="line"><a id="l00669" name="l00669"></a><span class="lineno">  669</span><span class="keywordflow">            type is</span> (<span class="keywordtype">integer</span>(kind=int32)); <span class="keyword">write</span>(line, <span class="stringliteral">&#39;(i0)&#39;</span>) any</div>
+<div class="line"><a id="l00670" name="l00670"></a><span class="lineno">  670</span><span class="keywordflow">            type is</span> (<span class="keywordtype">integer</span>(kind=int64)); <span class="keyword">write</span>(line, <span class="stringliteral">&#39;(i0)&#39;</span>) any</div>
+<div class="line"><a id="l00671" name="l00671"></a><span class="lineno">  671</span><span class="keywordflow">            type is</span> (real(kind=real32)); <span class="keyword">write</span>(line, <span class="stringliteral">&#39;(1pg0)&#39;</span>) any</div>
+<div class="line"><a id="l00672" name="l00672"></a><span class="lineno">  672</span><span class="keywordflow">            type is</span> (real(kind=real64)); <span class="keyword">write</span>(line, <span class="stringliteral">&#39;(1pg0)&#39;</span>) any</div>
+<div class="line"><a id="l00673" name="l00673"></a><span class="lineno">  673</span><span class="keywordflow">            type is</span> (real(kind=real128)); <span class="keyword">write</span>(line, <span class="stringliteral">&#39;(1pg0)&#39;</span>) any</div>
+<div class="line"><a id="l00674" name="l00674"></a><span class="lineno">  674</span><span class="keywordflow">            type is</span> (logical); <span class="keyword">write</span>(line, <span class="stringliteral">&#39;(1l)&#39;</span>) any</div>
+<div class="line"><a id="l00675" name="l00675"></a><span class="lineno">  675</span><span class="keywordflow">            type is</span> (<span class="keywordtype">character</span>(*)); write(line, <span class="stringliteral">&#39;(a)&#39;</span>) any</div>
+<div class="line"><a id="l00676" name="l00676"></a><span class="lineno">  676</span><span class="keywordflow">            type is</span> (<span class="keywordtype">complex</span>(kind=real32)); <span class="keyword">write</span>(line, <span class="stringliteral">&#39;(&quot;(&quot;,1pg0,&quot;,&quot;,1pg0,&quot;)&quot;)&#39;</span>) any</div>
+<div class="line"><a id="l00677" name="l00677"></a><span class="lineno">  677</span><span class="keywordflow">            type is</span> (<span class="keywordtype">complex</span>(kind=real64)); <span class="keyword">write</span>(line, <span class="stringliteral">&#39;(&quot;(&quot;,1pg0,&quot;,&quot;,1pg0,&quot;)&quot;)&#39;</span>) any</div>
+<div class="line"><a id="l00678" name="l00678"></a><span class="lineno">  678</span><span class="keywordflow">            type is</span> (<span class="keywordtype">complex</span>(kind=real128)); <span class="keyword">write</span>(line, <span class="stringliteral">&#39;(&quot;(&quot;,1pg0,&quot;,&quot;,1pg0,&quot;)&quot;)&#39;</span>) any</div>
+<div class="line"><a id="l00679" name="l00679"></a><span class="lineno">  679</span><span class="keywordflow">            end select</span></div>
+<div class="line"><a id="l00680" name="l00680"></a><span class="lineno">  680</span>        <span class="keyword">end subroutine</span></div>
 </div>
-<div class="line"><a id="l00675" name="l00675"></a><span class="lineno">  675</span>    <span class="keyword">end function</span></div>
-<div class="line"><a id="l00676" name="l00676"></a><span class="lineno">  676</span><span class="comment"></span> </div>
-<div class="line"><a id="l00677" name="l00677"></a><span class="lineno">  677</span><span class="comment">    !&gt; Internal helper: grow dynamic macro array in chunks for efficiency</span></div>
-<div class="line"><a id="l00678" name="l00678"></a><span class="lineno">  678</span><span class="comment">    !! Adds a new macro to the allocatable array, growing in BUFFER_SIZE increments.</span></div>
-<div class="line"><a id="l00679" name="l00679"></a><span class="lineno">  679</span><span class="comment">    !! Also detects direct self-references (A -&gt; A) and marks both sides as cyclic.</span></div>
-<div class="line"><a id="l00680" name="l00680"></a><span class="lineno">  680</span><span class="comment">    !!</span></div>
-<div class="line"><a id="l00681" name="l00681"></a><span class="lineno">  681</span><span class="comment">    !! @b Remarks</span></div>
-<div class="foldopen" id="foldopen00682" data-start="" data-end="">
-<div class="line"><a id="l00682" name="l00682"></a><span class="lineno"><a class="line" href="macro_8f90.html#af29d460aa54f84e5bfeed53a88930bf7">  682</a></span>    <span class="keyword">subroutine </span>add_to(array, val)</div>
-<div class="line"><a id="l00683" name="l00683"></a><span class="lineno">  683</span>        <span class="keywordtype">type</span>(<a class="code hl_interface" href="structfpx__macro_1_1macro.html">macro</a>), <span class="keywordtype">allocatable</span>, <span class="keywordtype">intent(inout)</span> :: array(:)</div>
-<div class="line"><a id="l00684" name="l00684"></a><span class="lineno">  684</span>        <span class="keywordtype">type</span>(<a class="code hl_interface" href="structfpx__macro_1_1macro.html">macro</a>), <span class="keywordtype">intent(in)</span>                 :: val(..)</div>
-<div class="line"><a id="l00685" name="l00685"></a><span class="lineno">  685</span>        <span class="comment">!private</span></div>
-<div class="line"><a id="l00686" name="l00686"></a><span class="lineno">  686</span>        <span class="keywordtype">type</span>(<a class="code hl_interface" href="structfpx__macro_1_1macro.html">macro</a>), <span class="keywordtype">allocatable</span> :: tmp(:)</div>
-<div class="line"><a id="l00687" name="l00687"></a><span class="lineno">  687</span>        <span class="keywordtype">logical</span>, <span class="keywordtype">allocatable</span> :: isdef(:)</div>
-<div class="line"><a id="l00688" name="l00688"></a><span class="lineno">  688</span>        <span class="keywordtype">integer</span> :: i, j, n</div>
-<div class="line"><a id="l00689" name="l00689"></a><span class="lineno">  689</span> </div>
-<div class="line"><a id="l00690" name="l00690"></a><span class="lineno">  690</span>        n = merge(<span class="keyword">size</span>(array), 0, <span class="keyword">allocated</span>(array))</div>
-<div class="line"><a id="l00691" name="l00691"></a><span class="lineno">  691</span> </div>
-<div class="line"><a id="l00692" name="l00692"></a><span class="lineno">  692</span>        <span class="keywordflow">select rank</span> (val)</div>
-<div class="line"><a id="l00693" name="l00693"></a><span class="lineno">  693</span><span class="keywordflow">        rank</span>(0)</div>
-<div class="line"><a id="l00694" name="l00694"></a><span class="lineno">  694</span>            <span class="keyword">allocate</span>(isdef(1), source=.false.)</div>
-<div class="line"><a id="l00695" name="l00695"></a><span class="lineno">  695</span>            <span class="keywordflow">do</span> i = 1, n</div>
-<div class="line"><a id="l00696" name="l00696"></a><span class="lineno">  696</span>                <span class="keywordflow">if</span> (array(i) == val) <span class="keywordflow">then</span></div>
-<div class="line"><a id="l00697" name="l00697"></a><span class="lineno">  697</span>                    array(i) = val</div>
-<div class="line"><a id="l00698" name="l00698"></a><span class="lineno">  698</span>                    isdef(1) = .true.</div>
-<div class="line"><a id="l00699" name="l00699"></a><span class="lineno">  699</span><span class="keywordflow">                end if</span></div>
-<div class="line"><a id="l00700" name="l00700"></a><span class="lineno">  700</span><span class="keywordflow">            end do</span></div>
-<div class="line"><a id="l00701" name="l00701"></a><span class="lineno">  701</span>            <span class="keywordflow">if</span> (.not. isdef(1)) <span class="keywordflow">then</span></div>
-<div class="line"><a id="l00702" name="l00702"></a><span class="lineno">  702</span>                <span class="keyword">allocate</span>(tmp(n + 1))</div>
-<div class="line"><a id="l00703" name="l00703"></a><span class="lineno">  703</span>                tmp(1:n) = array</div>
-<div class="line"><a id="l00704" name="l00704"></a><span class="lineno">  704</span>                tmp(n + 1) = val</div>
-<div class="line"><a id="l00705" name="l00705"></a><span class="lineno">  705</span>                <span class="keyword">call </span>move_alloc(tmp, array)</div>
-<div class="line"><a id="l00706" name="l00706"></a><span class="lineno">  706</span>                <span class="keywordflow">if</span> (<span class="keyword">allocated</span>(tmp)) <span class="keyword">deallocate</span>(tmp)</div>
-<div class="line"><a id="l00707" name="l00707"></a><span class="lineno">  707</span><span class="keywordflow">            end if</span></div>
-<div class="line"><a id="l00708" name="l00708"></a><span class="lineno">  708</span><span class="keywordflow">        rank</span>(1)</div>
-<div class="line"><a id="l00709" name="l00709"></a><span class="lineno">  709</span>            <span class="keyword">allocate</span>(isdef(<span class="keyword">size</span>(val)), source=.false.)</div>
-<div class="line"><a id="l00710" name="l00710"></a><span class="lineno">  710</span>            <span class="keywordflow">do</span> concurrent(i = 1:n, j = 1:<span class="keyword">size</span>(val))</div>
-<div class="line"><a id="l00711" name="l00711"></a><span class="lineno">  711</span>                <span class="keywordflow">if</span> (array(i) == val(j)) <span class="keywordflow">then</span></div>
-<div class="line"><a id="l00712" name="l00712"></a><span class="lineno">  712</span>                    array(i) = val(j)</div>
-<div class="line"><a id="l00713" name="l00713"></a><span class="lineno">  713</span>                    isdef(j) = .true.</div>
-<div class="line"><a id="l00714" name="l00714"></a><span class="lineno">  714</span><span class="keywordflow">                end if</span></div>
-<div class="line"><a id="l00715" name="l00715"></a><span class="lineno">  715</span><span class="keywordflow">            end do</span></div>
-<div class="line"><a id="l00716" name="l00716"></a><span class="lineno">  716</span>            n = merge(<span class="keyword">size</span>(array), 0, <span class="keyword">allocated</span>(array)); <span class="keyword">allocate</span>(tmp(n + count(isdef)))</div>
-<div class="line"><a id="l00717" name="l00717"></a><span class="lineno">  717</span>            tmp(1:n) = array</div>
-<div class="line"><a id="l00718" name="l00718"></a><span class="lineno">  718</span>            tmp(n + 1:) = pack(val, isdef)</div>
-<div class="line"><a id="l00719" name="l00719"></a><span class="lineno">  719</span>            <span class="keyword">call </span>move_alloc(tmp, array)</div>
-<div class="line"><a id="l00720" name="l00720"></a><span class="lineno">  720</span>            <span class="keywordflow">if</span> (<span class="keyword">allocated</span>(tmp)) <span class="keyword">deallocate</span>(tmp)</div>
-<div class="line"><a id="l00721" name="l00721"></a><span class="lineno">  721</span><span class="keywordflow">        end select</span></div>
-<div class="line"><a id="l00722" name="l00722"></a><span class="lineno">  722</span> </div>
-<div class="line"><a id="l00723" name="l00723"></a><span class="lineno">  723</span>        <span class="keywordflow">do</span> i = 1, <span class="keyword">size</span>(array)</div>
-<div class="line"><a id="l00724" name="l00724"></a><span class="lineno">  724</span>            <span class="keywordflow">do</span> j = n + 1, <span class="keyword">size</span>(array)</div>
-<div class="line"><a id="l00725" name="l00725"></a><span class="lineno">  725</span>                <span class="keywordflow">if</span> (i == j) cycle</div>
-<div class="line"><a id="l00726" name="l00726"></a><span class="lineno">  726</span>                <span class="keywordflow">if</span> (array(i) == array(j)%value .and. array(i)%value == array(j)) <span class="keywordflow">then</span></div>
-<div class="line"><a id="l00727" name="l00727"></a><span class="lineno">  727</span>                    array(i)%is_cyclic = .true.</div>
-<div class="line"><a id="l00728" name="l00728"></a><span class="lineno">  728</span><span class="keywordflow">                end if</span></div>
-<div class="line"><a id="l00729" name="l00729"></a><span class="lineno">  729</span><span class="keywordflow">            end do</span></div>
-<div class="line"><a id="l00730" name="l00730"></a><span class="lineno">  730</span><span class="keywordflow">        end do</span></div>
+<div class="line"><a id="l00681" name="l00681"></a><span class="lineno">  681</span>    <span class="keyword">end function</span></div>
+<div class="line"><a id="l00682" name="l00682"></a><span class="lineno">  682</span><span class="comment"></span> </div>
+<div class="line"><a id="l00683" name="l00683"></a><span class="lineno">  683</span><span class="comment">    !&gt; Internal helper: grow dynamic macro array in chunks for efficiency</span></div>
+<div class="line"><a id="l00684" name="l00684"></a><span class="lineno">  684</span><span class="comment">    !! Adds a new macro to the allocatable array, growing in BUFFER_SIZE increments.</span></div>
+<div class="line"><a id="l00685" name="l00685"></a><span class="lineno">  685</span><span class="comment">    !! Also detects direct self-references (A -&gt; A) and marks both sides as cyclic.</span></div>
+<div class="line"><a id="l00686" name="l00686"></a><span class="lineno">  686</span><span class="comment">    !!</span></div>
+<div class="line"><a id="l00687" name="l00687"></a><span class="lineno">  687</span><span class="comment">    !! @b Remarks</span></div>
+<div class="foldopen" id="foldopen00688" data-start="" data-end="">
+<div class="line"><a id="l00688" name="l00688"></a><span class="lineno"><a class="line" href="macro_8f90.html#af29d460aa54f84e5bfeed53a88930bf7">  688</a></span>    <span class="keyword">subroutine </span>add_to(array, val)</div>
+<div class="line"><a id="l00689" name="l00689"></a><span class="lineno">  689</span>        <span class="keywordtype">type</span>(<a class="code hl_interface" href="structfpx__macro_1_1macro.html">macro</a>), <span class="keywordtype">allocatable</span>, <span class="keywordtype">intent(inout)</span> :: array(:)</div>
+<div class="line"><a id="l00690" name="l00690"></a><span class="lineno">  690</span>        <span class="keywordtype">type</span>(<a class="code hl_interface" href="structfpx__macro_1_1macro.html">macro</a>), <span class="keywordtype">intent(in)</span>                 :: val(..)</div>
+<div class="line"><a id="l00691" name="l00691"></a><span class="lineno">  691</span>        <span class="comment">!private</span></div>
+<div class="line"><a id="l00692" name="l00692"></a><span class="lineno">  692</span>        <span class="keywordtype">type</span>(<a class="code hl_interface" href="structfpx__macro_1_1macro.html">macro</a>), <span class="keywordtype">allocatable</span> :: tmp(:)</div>
+<div class="line"><a id="l00693" name="l00693"></a><span class="lineno">  693</span>        <span class="keywordtype">logical</span>, <span class="keywordtype">allocatable</span> :: isdef(:)</div>
+<div class="line"><a id="l00694" name="l00694"></a><span class="lineno">  694</span>        <span class="keywordtype">integer</span> :: i, j, n</div>
+<div class="line"><a id="l00695" name="l00695"></a><span class="lineno">  695</span> </div>
+<div class="line"><a id="l00696" name="l00696"></a><span class="lineno">  696</span>        n = merge(<span class="keyword">size</span>(array), 0, <span class="keyword">allocated</span>(array))</div>
+<div class="line"><a id="l00697" name="l00697"></a><span class="lineno">  697</span> </div>
+<div class="line"><a id="l00698" name="l00698"></a><span class="lineno">  698</span>        <span class="keywordflow">select rank</span> (val)</div>
+<div class="line"><a id="l00699" name="l00699"></a><span class="lineno">  699</span><span class="keywordflow">        rank</span>(0)</div>
+<div class="line"><a id="l00700" name="l00700"></a><span class="lineno">  700</span>            <span class="keyword">allocate</span>(isdef(1), source=.false.)</div>
+<div class="line"><a id="l00701" name="l00701"></a><span class="lineno">  701</span>            <span class="keywordflow">do</span> i = 1, n</div>
+<div class="line"><a id="l00702" name="l00702"></a><span class="lineno">  702</span>                <span class="keywordflow">if</span> (array(i) == val) <span class="keywordflow">then</span></div>
+<div class="line"><a id="l00703" name="l00703"></a><span class="lineno">  703</span>                    array(i) = val</div>
+<div class="line"><a id="l00704" name="l00704"></a><span class="lineno">  704</span>                    isdef(1) = .true.</div>
+<div class="line"><a id="l00705" name="l00705"></a><span class="lineno">  705</span><span class="keywordflow">                end if</span></div>
+<div class="line"><a id="l00706" name="l00706"></a><span class="lineno">  706</span><span class="keywordflow">            end do</span></div>
+<div class="line"><a id="l00707" name="l00707"></a><span class="lineno">  707</span>            <span class="keywordflow">if</span> (.not. isdef(1)) <span class="keywordflow">then</span></div>
+<div class="line"><a id="l00708" name="l00708"></a><span class="lineno">  708</span>                <span class="keyword">allocate</span>(tmp(n + 1))</div>
+<div class="line"><a id="l00709" name="l00709"></a><span class="lineno">  709</span>                tmp(1:n) = array</div>
+<div class="line"><a id="l00710" name="l00710"></a><span class="lineno">  710</span>                tmp(n + 1) = val</div>
+<div class="line"><a id="l00711" name="l00711"></a><span class="lineno">  711</span>                <span class="keyword">call </span>move_alloc(tmp, array)</div>
+<div class="line"><a id="l00712" name="l00712"></a><span class="lineno">  712</span>                <span class="keywordflow">if</span> (<span class="keyword">allocated</span>(tmp)) <span class="keyword">deallocate</span>(tmp)</div>
+<div class="line"><a id="l00713" name="l00713"></a><span class="lineno">  713</span><span class="keywordflow">            end if</span></div>
+<div class="line"><a id="l00714" name="l00714"></a><span class="lineno">  714</span><span class="keywordflow">        rank</span>(1)</div>
+<div class="line"><a id="l00715" name="l00715"></a><span class="lineno">  715</span>            <span class="keyword">allocate</span>(isdef(<span class="keyword">size</span>(val)), source=.false.)</div>
+<div class="line"><a id="l00716" name="l00716"></a><span class="lineno">  716</span>            <span class="keywordflow">do</span> concurrent(i = 1:n, j = 1:<span class="keyword">size</span>(val))</div>
+<div class="line"><a id="l00717" name="l00717"></a><span class="lineno">  717</span>                <span class="keywordflow">if</span> (array(i) == val(j)) <span class="keywordflow">then</span></div>
+<div class="line"><a id="l00718" name="l00718"></a><span class="lineno">  718</span>                    array(i) = val(j)</div>
+<div class="line"><a id="l00719" name="l00719"></a><span class="lineno">  719</span>                    isdef(j) = .true.</div>
+<div class="line"><a id="l00720" name="l00720"></a><span class="lineno">  720</span><span class="keywordflow">                end if</span></div>
+<div class="line"><a id="l00721" name="l00721"></a><span class="lineno">  721</span><span class="keywordflow">            end do</span></div>
+<div class="line"><a id="l00722" name="l00722"></a><span class="lineno">  722</span>            n = merge(<span class="keyword">size</span>(array), 0, <span class="keyword">allocated</span>(array)); <span class="keyword">allocate</span>(tmp(n + count(isdef)))</div>
+<div class="line"><a id="l00723" name="l00723"></a><span class="lineno">  723</span>            tmp(1:n) = array</div>
+<div class="line"><a id="l00724" name="l00724"></a><span class="lineno">  724</span>            tmp(n + 1:) = pack(val, isdef)</div>
+<div class="line"><a id="l00725" name="l00725"></a><span class="lineno">  725</span>            <span class="keyword">call </span>move_alloc(tmp, array)</div>
+<div class="line"><a id="l00726" name="l00726"></a><span class="lineno">  726</span>            <span class="keywordflow">if</span> (<span class="keyword">allocated</span>(tmp)) <span class="keyword">deallocate</span>(tmp)</div>
+<div class="line"><a id="l00727" name="l00727"></a><span class="lineno">  727</span><span class="keywordflow">        end select</span></div>
+<div class="line"><a id="l00728" name="l00728"></a><span class="lineno">  728</span> </div>
+<div class="line"><a id="l00729" name="l00729"></a><span class="lineno">  729</span>        <span class="keywordflow">do</span> i = 1, <span class="keyword">size</span>(array)</div>
+<div class="line"><a id="l00730" name="l00730"></a><span class="lineno">  730</span>            <span class="keywordflow">do</span> j = n + 1, <span class="keyword">size</span>(array)</div>
+<div class="line"><a id="l00731" name="l00731"></a><span class="lineno">  731</span>                <span class="keywordflow">if</span> (i == j) cycle</div>
+<div class="line"><a id="l00732" name="l00732"></a><span class="lineno">  732</span>                <span class="keywordflow">if</span> (array(i) == array(j)%value .and. array(i)%value == array(j)) <span class="keywordflow">then</span></div>
+<div class="line"><a id="l00733" name="l00733"></a><span class="lineno">  733</span>                    array(i)%is_cyclic = .true.</div>
+<div class="line"><a id="l00734" name="l00734"></a><span class="lineno">  734</span><span class="keywordflow">                end if</span></div>
+<div class="line"><a id="l00735" name="l00735"></a><span class="lineno">  735</span><span class="keywordflow">            end do</span></div>
+<div class="line"><a id="l00736" name="l00736"></a><span class="lineno">  736</span><span class="keywordflow">        end do</span></div>
 </div>
-<div class="line"><a id="l00731" name="l00731"></a><span class="lineno">  731</span>    <span class="keyword">end subroutine</span></div>
-<div class="line"><a id="l00732" name="l00732"></a><span class="lineno">  732</span><span class="comment"></span> </div>
-<div class="line"><a id="l00733" name="l00733"></a><span class="lineno">  733</span><span class="comment">    !&gt; Add a complete macro object to the table</span></div>
-<div class="line"><a id="l00734" name="l00734"></a><span class="lineno">  734</span><span class="comment">    !!</span></div>
-<div class="line"><a id="l00735" name="l00735"></a><span class="lineno">  735</span><span class="comment">    !! @b Remarks</span></div>
-<div class="foldopen" id="foldopen00736" data-start="" data-end="">
-<div class="line"><a id="l00736" name="l00736"></a><span class="lineno"><a class="line" href="interfacefpx__macro_1_1add.html#a327058e5ebbad2faec91dccb2be2fc4c">  736</a></span>    <span class="keyword">subroutine </span>add_item(this, m)</div>
-<div class="line"><a id="l00737" name="l00737"></a><span class="lineno">  737</span>        <span class="keywordtype">type</span>(<a class="code hl_interface" href="structfpx__macro_1_1macro.html">macro</a>), <span class="keywordtype">intent(inout)</span>, <span class="keywordtype">allocatable</span> :: this(:)</div>
-<div class="line"><a id="l00738" name="l00738"></a><span class="lineno">  738</span>        <span class="keywordtype">type</span>(<a class="code hl_interface" href="structfpx__macro_1_1macro.html">macro</a>), <span class="keywordtype">intent(in)</span>                 :: m</div>
-<div class="line"><a id="l00739" name="l00739"></a><span class="lineno">  739</span> </div>
-<div class="line"><a id="l00740" name="l00740"></a><span class="lineno">  740</span>        <span class="keyword">call </span>add_to(this, m)</div>
+<div class="line"><a id="l00737" name="l00737"></a><span class="lineno">  737</span>    <span class="keyword">end subroutine</span></div>
+<div class="line"><a id="l00738" name="l00738"></a><span class="lineno">  738</span><span class="comment"></span> </div>
+<div class="line"><a id="l00739" name="l00739"></a><span class="lineno">  739</span><span class="comment">    !&gt; Add a complete macro object to the table</span></div>
+<div class="line"><a id="l00740" name="l00740"></a><span class="lineno">  740</span><span class="comment">    !!</span></div>
+<div class="line"><a id="l00741" name="l00741"></a><span class="lineno">  741</span><span class="comment">    !! @b Remarks</span></div>
+<div class="foldopen" id="foldopen00742" data-start="" data-end="">
+<div class="line"><a id="l00742" name="l00742"></a><span class="lineno"><a class="line" href="interfacefpx__macro_1_1add.html#a327058e5ebbad2faec91dccb2be2fc4c">  742</a></span>    <span class="keyword">subroutine </span>add_item(this, m)</div>
+<div class="line"><a id="l00743" name="l00743"></a><span class="lineno">  743</span>        <span class="keywordtype">type</span>(<a class="code hl_interface" href="structfpx__macro_1_1macro.html">macro</a>), <span class="keywordtype">intent(inout)</span>, <span class="keywordtype">allocatable</span> :: this(:)</div>
+<div class="line"><a id="l00744" name="l00744"></a><span class="lineno">  744</span>        <span class="keywordtype">type</span>(<a class="code hl_interface" href="structfpx__macro_1_1macro.html">macro</a>), <span class="keywordtype">intent(in)</span>                 :: m</div>
+<div class="line"><a id="l00745" name="l00745"></a><span class="lineno">  745</span> </div>
+<div class="line"><a id="l00746" name="l00746"></a><span class="lineno">  746</span>        <span class="keyword">call </span>add_to(this, m)</div>
 </div>
-<div class="line"><a id="l00741" name="l00741"></a><span class="lineno">  741</span>    <span class="keyword">end subroutine</span></div>
-<div class="line"><a id="l00742" name="l00742"></a><span class="lineno">  742</span><span class="comment"></span> </div>
-<div class="line"><a id="l00743" name="l00743"></a><span class="lineno">  743</span><span class="comment">    !&gt; Add macro by name only (value = empty)</span></div>
-<div class="line"><a id="l00744" name="l00744"></a><span class="lineno">  744</span><span class="comment">    !!</span></div>
-<div class="line"><a id="l00745" name="l00745"></a><span class="lineno">  745</span><span class="comment">    !! @b Remarks</span></div>
-<div class="foldopen" id="foldopen00746" data-start="" data-end="">
-<div class="line"><a id="l00746" name="l00746"></a><span class="lineno"><a class="line" href="interfacefpx__macro_1_1add.html#a3f4c719b92a7dfa4d6647905fd660b71">  746</a></span>    <span class="keyword">subroutine </span>add_item_from_name(this, name)</div>
-<div class="line"><a id="l00747" name="l00747"></a><span class="lineno">  747</span>        <span class="keywordtype">type</span>(<a class="code hl_interface" href="structfpx__macro_1_1macro.html">macro</a>), <span class="keywordtype">intent(inout)</span>, <span class="keywordtype">allocatable</span> :: this(:)</div>
-<div class="line"><a id="l00748" name="l00748"></a><span class="lineno">  748</span>        <span class="keywordtype">character(*)</span>, <span class="keywordtype">intent(in)</span>                :: name</div>
-<div class="line"><a id="l00749" name="l00749"></a><span class="lineno">  749</span> </div>
-<div class="line"><a id="l00750" name="l00750"></a><span class="lineno">  750</span>        <span class="keywordflow">if</span> (.not. <span class="keyword">allocated</span>(this)) <span class="keyword">allocate</span>(this(0))</div>
-<div class="line"><a id="l00751" name="l00751"></a><span class="lineno">  751</span>        <span class="keyword">call </span>add_to(this, <a class="code hl_interface" href="structfpx__macro_1_1macro.html">macro</a>(name))</div>
+<div class="line"><a id="l00747" name="l00747"></a><span class="lineno">  747</span>    <span class="keyword">end subroutine</span></div>
+<div class="line"><a id="l00748" name="l00748"></a><span class="lineno">  748</span><span class="comment"></span> </div>
+<div class="line"><a id="l00749" name="l00749"></a><span class="lineno">  749</span><span class="comment">    !&gt; Add macro by name only (value = empty)</span></div>
+<div class="line"><a id="l00750" name="l00750"></a><span class="lineno">  750</span><span class="comment">    !!</span></div>
+<div class="line"><a id="l00751" name="l00751"></a><span class="lineno">  751</span><span class="comment">    !! @b Remarks</span></div>
+<div class="foldopen" id="foldopen00752" data-start="" data-end="">
+<div class="line"><a id="l00752" name="l00752"></a><span class="lineno"><a class="line" href="interfacefpx__macro_1_1add.html#a3f4c719b92a7dfa4d6647905fd660b71">  752</a></span>    <span class="keyword">subroutine </span>add_item_from_name(this, name)</div>
+<div class="line"><a id="l00753" name="l00753"></a><span class="lineno">  753</span>        <span class="keywordtype">type</span>(<a class="code hl_interface" href="structfpx__macro_1_1macro.html">macro</a>), <span class="keywordtype">intent(inout)</span>, <span class="keywordtype">allocatable</span> :: this(:)</div>
+<div class="line"><a id="l00754" name="l00754"></a><span class="lineno">  754</span>        <span class="keywordtype">character(*)</span>, <span class="keywordtype">intent(in)</span>                :: name</div>
+<div class="line"><a id="l00755" name="l00755"></a><span class="lineno">  755</span> </div>
+<div class="line"><a id="l00756" name="l00756"></a><span class="lineno">  756</span>        <span class="keywordflow">if</span> (.not. <span class="keyword">allocated</span>(this)) <span class="keyword">allocate</span>(this(0))</div>
+<div class="line"><a id="l00757" name="l00757"></a><span class="lineno">  757</span>        <span class="keyword">call </span>add_to(this, <a class="code hl_interface" href="structfpx__macro_1_1macro.html">macro</a>(name))</div>
 </div>
-<div class="line"><a id="l00752" name="l00752"></a><span class="lineno">  752</span>    <span class="keyword">end subroutine</span></div>
-<div class="line"><a id="l00753" name="l00753"></a><span class="lineno">  753</span><span class="comment"></span> </div>
-<div class="line"><a id="l00754" name="l00754"></a><span class="lineno">  754</span><span class="comment">    !&gt; Add macro with name and replacement text</span></div>
-<div class="line"><a id="l00755" name="l00755"></a><span class="lineno">  755</span><span class="comment">    !!</span></div>
-<div class="line"><a id="l00756" name="l00756"></a><span class="lineno">  756</span><span class="comment">    !! @b Remarks</span></div>
-<div class="foldopen" id="foldopen00757" data-start="" data-end="">
-<div class="line"><a id="l00757" name="l00757"></a><span class="lineno"><a class="line" href="interfacefpx__macro_1_1add.html#a827ade4b8ee2220c2204dd95e4f8642b">  757</a></span>    <span class="keyword">subroutine </span>add_item_from_name_and_value(this, name, value)</div>
-<div class="line"><a id="l00758" name="l00758"></a><span class="lineno">  758</span>        <span class="keywordtype">type</span>(<a class="code hl_interface" href="structfpx__macro_1_1macro.html">macro</a>), <span class="keywordtype">intent(inout)</span>, <span class="keywordtype">allocatable</span> :: this(:)</div>
-<div class="line"><a id="l00759" name="l00759"></a><span class="lineno">  759</span>        <span class="keywordtype">character(*)</span>, <span class="keywordtype">intent(in)</span>                :: name</div>
-<div class="line"><a id="l00760" name="l00760"></a><span class="lineno">  760</span>        <span class="keywordtype">character(*)</span>, <span class="keywordtype">intent(in)</span>                :: value</div>
-<div class="line"><a id="l00761" name="l00761"></a><span class="lineno">  761</span> </div>
-<div class="line"><a id="l00762" name="l00762"></a><span class="lineno">  762</span>        <span class="keywordflow">if</span> (.not. <span class="keyword">allocated</span>(this)) <span class="keyword">allocate</span>(this(0))</div>
-<div class="line"><a id="l00763" name="l00763"></a><span class="lineno">  763</span>        <span class="keyword">call </span>add_to(this, <a class="code hl_interface" href="structfpx__macro_1_1macro.html">macro</a>(name, <span class="keywordtype">value</span>))</div>
+<div class="line"><a id="l00758" name="l00758"></a><span class="lineno">  758</span>    <span class="keyword">end subroutine</span></div>
+<div class="line"><a id="l00759" name="l00759"></a><span class="lineno">  759</span><span class="comment"></span> </div>
+<div class="line"><a id="l00760" name="l00760"></a><span class="lineno">  760</span><span class="comment">    !&gt; Add macro with name and replacement text</span></div>
+<div class="line"><a id="l00761" name="l00761"></a><span class="lineno">  761</span><span class="comment">    !!</span></div>
+<div class="line"><a id="l00762" name="l00762"></a><span class="lineno">  762</span><span class="comment">    !! @b Remarks</span></div>
+<div class="foldopen" id="foldopen00763" data-start="" data-end="">
+<div class="line"><a id="l00763" name="l00763"></a><span class="lineno"><a class="line" href="interfacefpx__macro_1_1add.html#a827ade4b8ee2220c2204dd95e4f8642b">  763</a></span>    <span class="keyword">subroutine </span>add_item_from_name_and_value(this, name, value)</div>
+<div class="line"><a id="l00764" name="l00764"></a><span class="lineno">  764</span>        <span class="keywordtype">type</span>(<a class="code hl_interface" href="structfpx__macro_1_1macro.html">macro</a>), <span class="keywordtype">intent(inout)</span>, <span class="keywordtype">allocatable</span> :: this(:)</div>
+<div class="line"><a id="l00765" name="l00765"></a><span class="lineno">  765</span>        <span class="keywordtype">character(*)</span>, <span class="keywordtype">intent(in)</span>                :: name</div>
+<div class="line"><a id="l00766" name="l00766"></a><span class="lineno">  766</span>        <span class="keywordtype">character(*)</span>, <span class="keywordtype">intent(in)</span>                :: value</div>
+<div class="line"><a id="l00767" name="l00767"></a><span class="lineno">  767</span> </div>
+<div class="line"><a id="l00768" name="l00768"></a><span class="lineno">  768</span>        <span class="keywordflow">if</span> (.not. <span class="keyword">allocated</span>(this)) <span class="keyword">allocate</span>(this(0))</div>
+<div class="line"><a id="l00769" name="l00769"></a><span class="lineno">  769</span>        <span class="keyword">call </span>add_to(this, <a class="code hl_interface" href="structfpx__macro_1_1macro.html">macro</a>(name, <span class="keywordtype">value</span>))</div>
 </div>
-<div class="line"><a id="l00764" name="l00764"></a><span class="lineno">  764</span>    <span class="keyword">end subroutine</span></div>
-<div class="line"><a id="l00765" name="l00765"></a><span class="lineno">  765</span><span class="comment"></span> </div>
-<div class="line"><a id="l00766" name="l00766"></a><span class="lineno">  766</span><span class="comment">    !&gt; Add multiple macros at once</span></div>
-<div class="line"><a id="l00767" name="l00767"></a><span class="lineno">  767</span><span class="comment">    !!</span></div>
-<div class="line"><a id="l00768" name="l00768"></a><span class="lineno">  768</span><span class="comment">    !! @b Remarks</span></div>
-<div class="foldopen" id="foldopen00769" data-start="" data-end="">
-<div class="line"><a id="l00769" name="l00769"></a><span class="lineno"><a class="line" href="interfacefpx__macro_1_1add.html#a1eb0080240e062d96e1c4d49ab58d882">  769</a></span>    <span class="keyword">subroutine </span>add_range(this, m)</div>
-<div class="line"><a id="l00770" name="l00770"></a><span class="lineno">  770</span>        <span class="keywordtype">type</span>(<a class="code hl_interface" href="structfpx__macro_1_1macro.html">macro</a>), <span class="keywordtype">intent(inout)</span>, <span class="keywordtype">allocatable</span> :: this(:)</div>
-<div class="line"><a id="l00771" name="l00771"></a><span class="lineno">  771</span>        <span class="keywordtype">type</span>(<a class="code hl_interface" href="structfpx__macro_1_1macro.html">macro</a>), <span class="keywordtype">intent(in)</span>                 :: m(:)</div>
-<div class="line"><a id="l00772" name="l00772"></a><span class="lineno">  772</span> </div>
-<div class="line"><a id="l00773" name="l00773"></a><span class="lineno">  773</span>        <span class="keywordflow">if</span> (.not. <span class="keyword">allocated</span>(this)) <span class="keyword">allocate</span>(this(0))</div>
-<div class="line"><a id="l00774" name="l00774"></a><span class="lineno">  774</span>        <span class="keyword">call </span>add_to(this, m)</div>
+<div class="line"><a id="l00770" name="l00770"></a><span class="lineno">  770</span>    <span class="keyword">end subroutine</span></div>
+<div class="line"><a id="l00771" name="l00771"></a><span class="lineno">  771</span><span class="comment"></span> </div>
+<div class="line"><a id="l00772" name="l00772"></a><span class="lineno">  772</span><span class="comment">    !&gt; Add multiple macros at once</span></div>
+<div class="line"><a id="l00773" name="l00773"></a><span class="lineno">  773</span><span class="comment">    !!</span></div>
+<div class="line"><a id="l00774" name="l00774"></a><span class="lineno">  774</span><span class="comment">    !! @b Remarks</span></div>
+<div class="foldopen" id="foldopen00775" data-start="" data-end="">
+<div class="line"><a id="l00775" name="l00775"></a><span class="lineno"><a class="line" href="interfacefpx__macro_1_1add.html#a1eb0080240e062d96e1c4d49ab58d882">  775</a></span>    <span class="keyword">subroutine </span>add_range(this, m)</div>
+<div class="line"><a id="l00776" name="l00776"></a><span class="lineno">  776</span>        <span class="keywordtype">type</span>(<a class="code hl_interface" href="structfpx__macro_1_1macro.html">macro</a>), <span class="keywordtype">intent(inout)</span>, <span class="keywordtype">allocatable</span> :: this(:)</div>
+<div class="line"><a id="l00777" name="l00777"></a><span class="lineno">  777</span>        <span class="keywordtype">type</span>(<a class="code hl_interface" href="structfpx__macro_1_1macro.html">macro</a>), <span class="keywordtype">intent(in)</span>                 :: m(:)</div>
+<div class="line"><a id="l00778" name="l00778"></a><span class="lineno">  778</span> </div>
+<div class="line"><a id="l00779" name="l00779"></a><span class="lineno">  779</span>        <span class="keywordflow">if</span> (.not. <span class="keyword">allocated</span>(this)) <span class="keyword">allocate</span>(this(0))</div>
+<div class="line"><a id="l00780" name="l00780"></a><span class="lineno">  780</span>        <span class="keyword">call </span>add_to(this, m)</div>
 </div>
-<div class="line"><a id="l00775" name="l00775"></a><span class="lineno">  775</span>    <span class="keyword">end subroutine</span></div>
-<div class="line"><a id="l00776" name="l00776"></a><span class="lineno">  776</span><span class="comment"></span> </div>
-<div class="line"><a id="l00777" name="l00777"></a><span class="lineno">  777</span><span class="comment">    !&gt; Remove all macros from table</span></div>
-<div class="line"><a id="l00778" name="l00778"></a><span class="lineno">  778</span><span class="comment">    !!</span></div>
-<div class="line"><a id="l00779" name="l00779"></a><span class="lineno">  779</span><span class="comment">    !! @b Remarks</span></div>
-<div class="foldopen" id="foldopen00780" data-start="" data-end="">
-<div class="line"><a id="l00780" name="l00780"></a><span class="lineno"><a class="line" href="interfacefpx__macro_1_1clear.html#a4f994e57053fe61253d895c1e91a56ce">  780</a></span>    <span class="keyword">subroutine </span>clear_item(this)</div>
-<div class="line"><a id="l00781" name="l00781"></a><span class="lineno">  781</span>        <span class="keywordtype">type</span>(<a class="code hl_interface" href="structfpx__macro_1_1macro.html">macro</a>), <span class="keywordtype">intent(inout)</span>, <span class="keywordtype">allocatable</span> :: this(:)</div>
-<div class="line"><a id="l00782" name="l00782"></a><span class="lineno">  782</span> </div>
-<div class="line"><a id="l00783" name="l00783"></a><span class="lineno">  783</span>        <span class="keywordflow">if</span> (<span class="keyword">allocated</span>(this)) <span class="keyword">deallocate</span>(this)</div>
-<div class="line"><a id="l00784" name="l00784"></a><span class="lineno">  784</span>        <span class="keyword">allocate</span>(this(0))</div>
+<div class="line"><a id="l00781" name="l00781"></a><span class="lineno">  781</span>    <span class="keyword">end subroutine</span></div>
+<div class="line"><a id="l00782" name="l00782"></a><span class="lineno">  782</span><span class="comment"></span> </div>
+<div class="line"><a id="l00783" name="l00783"></a><span class="lineno">  783</span><span class="comment">    !&gt; Remove all macros from table</span></div>
+<div class="line"><a id="l00784" name="l00784"></a><span class="lineno">  784</span><span class="comment">    !!</span></div>
+<div class="line"><a id="l00785" name="l00785"></a><span class="lineno">  785</span><span class="comment">    !! @b Remarks</span></div>
+<div class="foldopen" id="foldopen00786" data-start="" data-end="">
+<div class="line"><a id="l00786" name="l00786"></a><span class="lineno"><a class="line" href="interfacefpx__macro_1_1clear.html#a4f994e57053fe61253d895c1e91a56ce">  786</a></span>    <span class="keyword">subroutine </span>clear_item(this)</div>
+<div class="line"><a id="l00787" name="l00787"></a><span class="lineno">  787</span>        <span class="keywordtype">type</span>(<a class="code hl_interface" href="structfpx__macro_1_1macro.html">macro</a>), <span class="keywordtype">intent(inout)</span>, <span class="keywordtype">allocatable</span> :: this(:)</div>
+<div class="line"><a id="l00788" name="l00788"></a><span class="lineno">  788</span> </div>
+<div class="line"><a id="l00789" name="l00789"></a><span class="lineno">  789</span>        <span class="keywordflow">if</span> (<span class="keyword">allocated</span>(this)) <span class="keyword">deallocate</span>(this)</div>
+<div class="line"><a id="l00790" name="l00790"></a><span class="lineno">  790</span>        <span class="keyword">allocate</span>(this(0))</div>
 </div>
-<div class="line"><a id="l00785" name="l00785"></a><span class="lineno">  785</span>    <span class="keyword">end subroutine</span></div>
-<div class="line"><a id="l00786" name="l00786"></a><span class="lineno">  786</span><span class="comment"></span> </div>
-<div class="line"><a id="l00787" name="l00787"></a><span class="lineno">  787</span><span class="comment">    !&gt; Retrieve macro by 1-based index</span></div>
-<div class="line"><a id="l00788" name="l00788"></a><span class="lineno">  788</span><span class="comment">    !!</span></div>
-<div class="line"><a id="l00789" name="l00789"></a><span class="lineno">  789</span><span class="comment">    !! @b Remarks</span></div>
-<div class="foldopen" id="foldopen00790" data-start="" data-end="">
-<div class="line"><a id="l00790" name="l00790"></a><span class="lineno"><a class="line" href="interfacefpx__macro_1_1get.html#a7604180d974de569928d3b87aee85320">  790</a></span>    <span class="keyword">function </span>get_item(this, key) <span class="keyword">result</span>(res)</div>
-<div class="line"><a id="l00791" name="l00791"></a><span class="lineno">  791</span>        <span class="keywordtype">type</span>(<a class="code hl_interface" href="structfpx__macro_1_1macro.html">macro</a>), <span class="keywordtype">intent(inout)</span>  :: this(:)</div>
-<div class="line"><a id="l00792" name="l00792"></a><span class="lineno">  792</span>        <span class="keywordtype">integer</span>, <span class="keywordtype">intent(in)</span>         :: key</div>
-<div class="line"><a id="l00793" name="l00793"></a><span class="lineno">  793</span>        <span class="keywordtype">type</span>(<a class="code hl_interface" href="structfpx__macro_1_1macro.html">macro</a>), <span class="keywordtype">allocatable</span>    :: res</div>
-<div class="line"><a id="l00794" name="l00794"></a><span class="lineno">  794</span>        <span class="comment">!private</span></div>
-<div class="line"><a id="l00795" name="l00795"></a><span class="lineno">  795</span>        <span class="keywordtype">integer</span> :: n</div>
-<div class="line"><a id="l00796" name="l00796"></a><span class="lineno">  796</span> </div>
-<div class="line"><a id="l00797" name="l00797"></a><span class="lineno">  797</span>        n = <a class="code hl_interface" href="interfacefpx__macro_1_1sizeof.html">sizeof</a>(this)</div>
-<div class="line"><a id="l00798" name="l00798"></a><span class="lineno">  798</span>        <span class="keywordflow">if</span> (key &gt; 0 .and. key &lt;= n) <span class="keywordflow">then</span></div>
-<div class="line"><a id="l00799" name="l00799"></a><span class="lineno">  799</span>            res = this(key)</div>
-<div class="line"><a id="l00800" name="l00800"></a><span class="lineno">  800</span><span class="keywordflow">        end if</span></div>
+<div class="line"><a id="l00791" name="l00791"></a><span class="lineno">  791</span>    <span class="keyword">end subroutine</span></div>
+<div class="line"><a id="l00792" name="l00792"></a><span class="lineno">  792</span><span class="comment"></span> </div>
+<div class="line"><a id="l00793" name="l00793"></a><span class="lineno">  793</span><span class="comment">    !&gt; Retrieve macro by 1-based index</span></div>
+<div class="line"><a id="l00794" name="l00794"></a><span class="lineno">  794</span><span class="comment">    !!</span></div>
+<div class="line"><a id="l00795" name="l00795"></a><span class="lineno">  795</span><span class="comment">    !! @b Remarks</span></div>
+<div class="foldopen" id="foldopen00796" data-start="" data-end="">
+<div class="line"><a id="l00796" name="l00796"></a><span class="lineno"><a class="line" href="interfacefpx__macro_1_1get.html#a7604180d974de569928d3b87aee85320">  796</a></span>    <span class="keyword">function </span>get_item(this, key) <span class="keyword">result</span>(res)</div>
+<div class="line"><a id="l00797" name="l00797"></a><span class="lineno">  797</span>        <span class="keywordtype">type</span>(<a class="code hl_interface" href="structfpx__macro_1_1macro.html">macro</a>), <span class="keywordtype">intent(inout)</span>  :: this(:)</div>
+<div class="line"><a id="l00798" name="l00798"></a><span class="lineno">  798</span>        <span class="keywordtype">integer</span>, <span class="keywordtype">intent(in)</span>         :: key</div>
+<div class="line"><a id="l00799" name="l00799"></a><span class="lineno">  799</span>        <span class="keywordtype">type</span>(<a class="code hl_interface" href="structfpx__macro_1_1macro.html">macro</a>), <span class="keywordtype">allocatable</span>    :: res</div>
+<div class="line"><a id="l00800" name="l00800"></a><span class="lineno">  800</span>        <span class="comment">!private</span></div>
+<div class="line"><a id="l00801" name="l00801"></a><span class="lineno">  801</span>        <span class="keywordtype">integer</span> :: n</div>
+<div class="line"><a id="l00802" name="l00802"></a><span class="lineno">  802</span> </div>
+<div class="line"><a id="l00803" name="l00803"></a><span class="lineno">  803</span>        n = <a class="code hl_interface" href="interfacefpx__macro_1_1sizeof.html">sizeof</a>(this)</div>
+<div class="line"><a id="l00804" name="l00804"></a><span class="lineno">  804</span>        <span class="keywordflow">if</span> (key &gt; 0 .and. key &lt;= n) <span class="keywordflow">then</span></div>
+<div class="line"><a id="l00805" name="l00805"></a><span class="lineno">  805</span>            res = this(key)</div>
+<div class="line"><a id="l00806" name="l00806"></a><span class="lineno">  806</span><span class="keywordflow">        end if</span></div>
 </div>
-<div class="line"><a id="l00801" name="l00801"></a><span class="lineno">  801</span>    <span class="keyword">end function</span></div>
-<div class="line"><a id="l00802" name="l00802"></a><span class="lineno">  802</span><span class="comment"></span> </div>
-<div class="line"><a id="l00803" name="l00803"></a><span class="lineno">  803</span><span class="comment">    !&gt; Insert macro at specific position</span></div>
-<div class="line"><a id="l00804" name="l00804"></a><span class="lineno">  804</span><span class="comment">    !!</span></div>
-<div class="line"><a id="l00805" name="l00805"></a><span class="lineno">  805</span><span class="comment">    !! @b Remarks</span></div>
-<div class="foldopen" id="foldopen00806" data-start="" data-end="">
-<div class="line"><a id="l00806" name="l00806"></a><span class="lineno"><a class="line" href="interfacefpx__macro_1_1insert.html#a2ffc17397c66207bd747892999731695">  806</a></span>    <span class="keyword">subroutine </span>insert_item(this, i, m)</div>
-<div class="line"><a id="l00807" name="l00807"></a><span class="lineno">  807</span>        <span class="keywordtype">type</span>(<a class="code hl_interface" href="structfpx__macro_1_1macro.html">macro</a>), <span class="keywordtype">intent(inout)</span>, <span class="keywordtype">allocatable</span> :: this(:)</div>
-<div class="line"><a id="l00808" name="l00808"></a><span class="lineno">  808</span>        <span class="keywordtype">integer</span>, <span class="keywordtype">intent(in)</span>                     :: i</div>
-<div class="line"><a id="l00809" name="l00809"></a><span class="lineno">  809</span>        <span class="keywordtype">type</span>(<a class="code hl_interface" href="structfpx__macro_1_1macro.html">macro</a>), <span class="keywordtype">intent(in)</span>                 :: m</div>
-<div class="line"><a id="l00810" name="l00810"></a><span class="lineno">  810</span>        <span class="comment">!private</span></div>
-<div class="line"><a id="l00811" name="l00811"></a><span class="lineno">  811</span>        <span class="keywordtype">integer</span> :: j, count</div>
-<div class="line"><a id="l00812" name="l00812"></a><span class="lineno">  812</span> </div>
-<div class="line"><a id="l00813" name="l00813"></a><span class="lineno">  813</span>        <span class="keywordflow">if</span> (.not. <span class="keyword">allocated</span>(this)) <span class="keyword">allocate</span>(this(0))</div>
-<div class="line"><a id="l00814" name="l00814"></a><span class="lineno">  814</span>        count = <span class="keyword">size</span>(this)</div>
-<div class="line"><a id="l00815" name="l00815"></a><span class="lineno">  815</span>        <span class="keyword">call </span>add_to(this, m)</div>
-<div class="line"><a id="l00816" name="l00816"></a><span class="lineno">  816</span> </div>
-<div class="line"><a id="l00817" name="l00817"></a><span class="lineno">  817</span>        <span class="keywordflow">do</span> j = count, i + 1, -1</div>
-<div class="line"><a id="l00818" name="l00818"></a><span class="lineno">  818</span>            this(j) = this(j - 1)</div>
-<div class="line"><a id="l00819" name="l00819"></a><span class="lineno">  819</span><span class="keywordflow">        end do</span></div>
-<div class="line"><a id="l00820" name="l00820"></a><span class="lineno">  820</span>        this(i) = m</div>
+<div class="line"><a id="l00807" name="l00807"></a><span class="lineno">  807</span>    <span class="keyword">end function</span></div>
+<div class="line"><a id="l00808" name="l00808"></a><span class="lineno">  808</span><span class="comment"></span> </div>
+<div class="line"><a id="l00809" name="l00809"></a><span class="lineno">  809</span><span class="comment">    !&gt; Insert macro at specific position</span></div>
+<div class="line"><a id="l00810" name="l00810"></a><span class="lineno">  810</span><span class="comment">    !!</span></div>
+<div class="line"><a id="l00811" name="l00811"></a><span class="lineno">  811</span><span class="comment">    !! @b Remarks</span></div>
+<div class="foldopen" id="foldopen00812" data-start="" data-end="">
+<div class="line"><a id="l00812" name="l00812"></a><span class="lineno"><a class="line" href="interfacefpx__macro_1_1insert.html#a2ffc17397c66207bd747892999731695">  812</a></span>    <span class="keyword">subroutine </span>insert_item(this, i, m)</div>
+<div class="line"><a id="l00813" name="l00813"></a><span class="lineno">  813</span>        <span class="keywordtype">type</span>(<a class="code hl_interface" href="structfpx__macro_1_1macro.html">macro</a>), <span class="keywordtype">intent(inout)</span>, <span class="keywordtype">allocatable</span> :: this(:)</div>
+<div class="line"><a id="l00814" name="l00814"></a><span class="lineno">  814</span>        <span class="keywordtype">integer</span>, <span class="keywordtype">intent(in)</span>                     :: i</div>
+<div class="line"><a id="l00815" name="l00815"></a><span class="lineno">  815</span>        <span class="keywordtype">type</span>(<a class="code hl_interface" href="structfpx__macro_1_1macro.html">macro</a>), <span class="keywordtype">intent(in)</span>                 :: m</div>
+<div class="line"><a id="l00816" name="l00816"></a><span class="lineno">  816</span>        <span class="comment">!private</span></div>
+<div class="line"><a id="l00817" name="l00817"></a><span class="lineno">  817</span>        <span class="keywordtype">integer</span> :: j, count</div>
+<div class="line"><a id="l00818" name="l00818"></a><span class="lineno">  818</span> </div>
+<div class="line"><a id="l00819" name="l00819"></a><span class="lineno">  819</span>        <span class="keywordflow">if</span> (.not. <span class="keyword">allocated</span>(this)) <span class="keyword">allocate</span>(this(0))</div>
+<div class="line"><a id="l00820" name="l00820"></a><span class="lineno">  820</span>        count = <span class="keyword">size</span>(this)</div>
+<div class="line"><a id="l00821" name="l00821"></a><span class="lineno">  821</span>        <span class="keyword">call </span>add_to(this, m)</div>
+<div class="line"><a id="l00822" name="l00822"></a><span class="lineno">  822</span> </div>
+<div class="line"><a id="l00823" name="l00823"></a><span class="lineno">  823</span>        <span class="keywordflow">do</span> j = count, i + 1, -1</div>
+<div class="line"><a id="l00824" name="l00824"></a><span class="lineno">  824</span>            this(j) = this(j - 1)</div>
+<div class="line"><a id="l00825" name="l00825"></a><span class="lineno">  825</span><span class="keywordflow">        end do</span></div>
+<div class="line"><a id="l00826" name="l00826"></a><span class="lineno">  826</span>        this(i) = m</div>
 </div>
-<div class="line"><a id="l00821" name="l00821"></a><span class="lineno">  821</span>    <span class="keyword">end subroutine</span></div>
-<div class="line"><a id="l00822" name="l00822"></a><span class="lineno">  822</span><span class="comment"></span> </div>
-<div class="line"><a id="l00823" name="l00823"></a><span class="lineno">  823</span><span class="comment">    !&gt; Return number of defined macros</span></div>
-<div class="line"><a id="l00824" name="l00824"></a><span class="lineno">  824</span><span class="comment">    !!</span></div>
-<div class="line"><a id="l00825" name="l00825"></a><span class="lineno">  825</span><span class="comment">    !! @b Remarks</span></div>
-<div class="foldopen" id="foldopen00826" data-start="" data-end="">
-<div class="line"><a id="l00826" name="l00826"></a><span class="lineno"><a class="line" href="interfacefpx__macro_1_1sizeof.html#af4a12610db54c0300058849a1374341d">  826</a></span>    <span class="keyword">integer </span><span class="keyword">function </span>size_item(this) <span class="keyword">result</span>(res)</div>
-<div class="line"><a id="l00827" name="l00827"></a><span class="lineno">  827</span>        <span class="keywordtype">type</span>(<a class="code hl_interface" href="structfpx__macro_1_1macro.html">macro</a>), <span class="keywordtype">intent(inout)</span>, <span class="keywordtype">allocatable</span>  :: this(:)</div>
-<div class="line"><a id="l00828" name="l00828"></a><span class="lineno">  828</span> </div>
-<div class="line"><a id="l00829" name="l00829"></a><span class="lineno">  829</span>        res = merge(<span class="keyword">size</span>(this), 0, <span class="keyword">allocated</span>(this))</div>
+<div class="line"><a id="l00827" name="l00827"></a><span class="lineno">  827</span>    <span class="keyword">end subroutine</span></div>
+<div class="line"><a id="l00828" name="l00828"></a><span class="lineno">  828</span><span class="comment"></span> </div>
+<div class="line"><a id="l00829" name="l00829"></a><span class="lineno">  829</span><span class="comment">    !&gt; Return number of defined macros</span></div>
+<div class="line"><a id="l00830" name="l00830"></a><span class="lineno">  830</span><span class="comment">    !!</span></div>
+<div class="line"><a id="l00831" name="l00831"></a><span class="lineno">  831</span><span class="comment">    !! @b Remarks</span></div>
+<div class="foldopen" id="foldopen00832" data-start="" data-end="">
+<div class="line"><a id="l00832" name="l00832"></a><span class="lineno"><a class="line" href="interfacefpx__macro_1_1sizeof.html#af4a12610db54c0300058849a1374341d">  832</a></span>    <span class="keyword">integer </span><span class="keyword">function </span>size_item(this) <span class="keyword">result</span>(res)</div>
+<div class="line"><a id="l00833" name="l00833"></a><span class="lineno">  833</span>        <span class="keywordtype">type</span>(<a class="code hl_interface" href="structfpx__macro_1_1macro.html">macro</a>), <span class="keywordtype">intent(inout)</span>, <span class="keywordtype">allocatable</span>  :: this(:)</div>
+<div class="line"><a id="l00834" name="l00834"></a><span class="lineno">  834</span> </div>
+<div class="line"><a id="l00835" name="l00835"></a><span class="lineno">  835</span>        res = merge(<span class="keyword">size</span>(this), 0, <span class="keyword">allocated</span>(this))</div>
 </div>
-<div class="line"><a id="l00830" name="l00830"></a><span class="lineno">  830</span>    <span class="keyword">end function</span></div>
-<div class="line"><a id="l00831" name="l00831"></a><span class="lineno">  831</span><span class="comment"></span> </div>
-<div class="line"><a id="l00832" name="l00832"></a><span class="lineno">  832</span><span class="comment">    !&gt; Remove macro at given index</span></div>
-<div class="line"><a id="l00833" name="l00833"></a><span class="lineno">  833</span><span class="comment">    !!</span></div>
-<div class="line"><a id="l00834" name="l00834"></a><span class="lineno">  834</span><span class="comment">    !! @b Remarks</span></div>
-<div class="foldopen" id="foldopen00835" data-start="" data-end="">
-<div class="line"><a id="l00835" name="l00835"></a><span class="lineno"><a class="line" href="interfacefpx__macro_1_1remove.html#a068e7d980a27b70532c743e01ff01b0c">  835</a></span>    <span class="keyword">subroutine </span>remove_item(this, i)</div>
-<div class="line"><a id="l00836" name="l00836"></a><span class="lineno">  836</span>        <span class="keywordtype">type</span>(<a class="code hl_interface" href="structfpx__macro_1_1macro.html">macro</a>), <span class="keywordtype">intent(inout)</span>, <span class="keywordtype">allocatable</span> :: this(:)</div>
-<div class="line"><a id="l00837" name="l00837"></a><span class="lineno">  837</span>        <span class="keywordtype">integer</span>, <span class="keywordtype">intent(in)</span>                     :: i</div>
-<div class="line"><a id="l00838" name="l00838"></a><span class="lineno">  838</span>        <span class="comment">!private</span></div>
-<div class="line"><a id="l00839" name="l00839"></a><span class="lineno">  839</span>        <span class="keywordtype">type</span>(<a class="code hl_interface" href="structfpx__macro_1_1macro.html">macro</a>), <span class="keywordtype">allocatable</span> :: tmp(:)</div>
-<div class="line"><a id="l00840" name="l00840"></a><span class="lineno">  840</span>        <span class="keywordtype">integer</span> :: k, j, n</div>
-<div class="line"><a id="l00841" name="l00841"></a><span class="lineno">  841</span> </div>
-<div class="line"><a id="l00842" name="l00842"></a><span class="lineno">  842</span>        <span class="keywordflow">if</span> (.not. <span class="keyword">allocated</span>(this)) <span class="keyword">allocate</span>(this(0))</div>
-<div class="line"><a id="l00843" name="l00843"></a><span class="lineno">  843</span>        n = <span class="keyword">size</span>(this)</div>
-<div class="line"><a id="l00844" name="l00844"></a><span class="lineno">  844</span>        <span class="keywordflow">if</span> (<span class="keyword">allocated</span>(this(i)%params)) <span class="keyword">deallocate</span>(this(i)%params)</div>
-<div class="line"><a id="l00845" name="l00845"></a><span class="lineno">  845</span>        <span class="keywordflow">if</span> (n &gt; 1) <span class="keywordflow">then</span></div>
-<div class="line"><a id="l00846" name="l00846"></a><span class="lineno">  846</span>            this(i:n - 1) = this(i + 1:n)</div>
-<div class="line"><a id="l00847" name="l00847"></a><span class="lineno">  847</span>            <span class="keyword">allocate</span>(tmp(n - 1))</div>
-<div class="line"><a id="l00848" name="l00848"></a><span class="lineno">  848</span>            tmp = this(:n - 1)</div>
-<div class="line"><a id="l00849" name="l00849"></a><span class="lineno">  849</span>            <span class="keyword">deallocate</span>(this)</div>
-<div class="line"><a id="l00850" name="l00850"></a><span class="lineno">  850</span>            <span class="keyword">call </span>move_alloc(tmp, this)</div>
-<div class="line"><a id="l00851" name="l00851"></a><span class="lineno">  851</span> </div>
-<div class="line"><a id="l00852" name="l00852"></a><span class="lineno">  852</span>            this(:)%is_cyclic = .false.</div>
-<div class="line"><a id="l00853" name="l00853"></a><span class="lineno">  853</span>            <span class="keywordflow">do</span> k = 1, <span class="keyword">size</span>(this)</div>
-<div class="line"><a id="l00854" name="l00854"></a><span class="lineno">  854</span>                <span class="keywordflow">do</span> j = 1, <span class="keyword">size</span>(this)</div>
-<div class="line"><a id="l00855" name="l00855"></a><span class="lineno">  855</span>                    <span class="keywordflow">if</span> (this(k) == this(j)%value .and. this(k)%value == this(j)) <span class="keywordflow">then</span></div>
-<div class="line"><a id="l00856" name="l00856"></a><span class="lineno">  856</span>                        this(i)%is_cyclic = .true.</div>
-<div class="line"><a id="l00857" name="l00857"></a><span class="lineno">  857</span>                        this(j)%is_cyclic = .true.</div>
-<div class="line"><a id="l00858" name="l00858"></a><span class="lineno">  858</span><span class="keywordflow">                    end if</span></div>
-<div class="line"><a id="l00859" name="l00859"></a><span class="lineno">  859</span><span class="keywordflow">                end do</span></div>
-<div class="line"><a id="l00860" name="l00860"></a><span class="lineno">  860</span><span class="keywordflow">            end do</span></div>
-<div class="line"><a id="l00861" name="l00861"></a><span class="lineno">  861</span>        <span class="keywordflow">else</span></div>
-<div class="line"><a id="l00862" name="l00862"></a><span class="lineno">  862</span>            <span class="keyword">deallocate</span>(this); <span class="keyword">allocate</span>(this(0))</div>
-<div class="line"><a id="l00863" name="l00863"></a><span class="lineno">  863</span><span class="keywordflow">        end if</span></div>
+<div class="line"><a id="l00836" name="l00836"></a><span class="lineno">  836</span>    <span class="keyword">end function</span></div>
+<div class="line"><a id="l00837" name="l00837"></a><span class="lineno">  837</span><span class="comment"></span> </div>
+<div class="line"><a id="l00838" name="l00838"></a><span class="lineno">  838</span><span class="comment">    !&gt; Remove macro at given index</span></div>
+<div class="line"><a id="l00839" name="l00839"></a><span class="lineno">  839</span><span class="comment">    !!</span></div>
+<div class="line"><a id="l00840" name="l00840"></a><span class="lineno">  840</span><span class="comment">    !! @b Remarks</span></div>
+<div class="foldopen" id="foldopen00841" data-start="" data-end="">
+<div class="line"><a id="l00841" name="l00841"></a><span class="lineno"><a class="line" href="interfacefpx__macro_1_1remove.html#a068e7d980a27b70532c743e01ff01b0c">  841</a></span>    <span class="keyword">subroutine </span>remove_item(this, i)</div>
+<div class="line"><a id="l00842" name="l00842"></a><span class="lineno">  842</span>        <span class="keywordtype">type</span>(<a class="code hl_interface" href="structfpx__macro_1_1macro.html">macro</a>), <span class="keywordtype">intent(inout)</span>, <span class="keywordtype">allocatable</span> :: this(:)</div>
+<div class="line"><a id="l00843" name="l00843"></a><span class="lineno">  843</span>        <span class="keywordtype">integer</span>, <span class="keywordtype">intent(in)</span>                     :: i</div>
+<div class="line"><a id="l00844" name="l00844"></a><span class="lineno">  844</span>        <span class="comment">!private</span></div>
+<div class="line"><a id="l00845" name="l00845"></a><span class="lineno">  845</span>        <span class="keywordtype">type</span>(<a class="code hl_interface" href="structfpx__macro_1_1macro.html">macro</a>), <span class="keywordtype">allocatable</span> :: tmp(:)</div>
+<div class="line"><a id="l00846" name="l00846"></a><span class="lineno">  846</span>        <span class="keywordtype">integer</span> :: k, j, n</div>
+<div class="line"><a id="l00847" name="l00847"></a><span class="lineno">  847</span> </div>
+<div class="line"><a id="l00848" name="l00848"></a><span class="lineno">  848</span>        <span class="keywordflow">if</span> (.not. <span class="keyword">allocated</span>(this)) <span class="keyword">allocate</span>(this(0))</div>
+<div class="line"><a id="l00849" name="l00849"></a><span class="lineno">  849</span>        n = <span class="keyword">size</span>(this)</div>
+<div class="line"><a id="l00850" name="l00850"></a><span class="lineno">  850</span>        <span class="keywordflow">if</span> (<span class="keyword">allocated</span>(this(i)%params)) <span class="keyword">deallocate</span>(this(i)%params)</div>
+<div class="line"><a id="l00851" name="l00851"></a><span class="lineno">  851</span>        <span class="keywordflow">if</span> (n &gt; 1) <span class="keywordflow">then</span></div>
+<div class="line"><a id="l00852" name="l00852"></a><span class="lineno">  852</span>            this(i:n - 1) = this(i + 1:n)</div>
+<div class="line"><a id="l00853" name="l00853"></a><span class="lineno">  853</span>            <span class="keyword">allocate</span>(tmp(n - 1))</div>
+<div class="line"><a id="l00854" name="l00854"></a><span class="lineno">  854</span>            tmp = this(:n - 1)</div>
+<div class="line"><a id="l00855" name="l00855"></a><span class="lineno">  855</span>            <span class="keyword">deallocate</span>(this)</div>
+<div class="line"><a id="l00856" name="l00856"></a><span class="lineno">  856</span>            <span class="keyword">call </span>move_alloc(tmp, this)</div>
+<div class="line"><a id="l00857" name="l00857"></a><span class="lineno">  857</span> </div>
+<div class="line"><a id="l00858" name="l00858"></a><span class="lineno">  858</span>            this(:)%is_cyclic = .false.</div>
+<div class="line"><a id="l00859" name="l00859"></a><span class="lineno">  859</span>            <span class="keywordflow">do</span> k = 1, <span class="keyword">size</span>(this)</div>
+<div class="line"><a id="l00860" name="l00860"></a><span class="lineno">  860</span>                <span class="keywordflow">do</span> j = 1, <span class="keyword">size</span>(this)</div>
+<div class="line"><a id="l00861" name="l00861"></a><span class="lineno">  861</span>                    <span class="keywordflow">if</span> (this(k) == this(j)%value .and. this(k)%value == this(j)) <span class="keywordflow">then</span></div>
+<div class="line"><a id="l00862" name="l00862"></a><span class="lineno">  862</span>                        this(i)%is_cyclic = .true.</div>
+<div class="line"><a id="l00863" name="l00863"></a><span class="lineno">  863</span>                        this(j)%is_cyclic = .true.</div>
+<div class="line"><a id="l00864" name="l00864"></a><span class="lineno">  864</span><span class="keywordflow">                    end if</span></div>
+<div class="line"><a id="l00865" name="l00865"></a><span class="lineno">  865</span><span class="keywordflow">                end do</span></div>
+<div class="line"><a id="l00866" name="l00866"></a><span class="lineno">  866</span><span class="keywordflow">            end do</span></div>
+<div class="line"><a id="l00867" name="l00867"></a><span class="lineno">  867</span>        <span class="keywordflow">else</span></div>
+<div class="line"><a id="l00868" name="l00868"></a><span class="lineno">  868</span>            <span class="keyword">deallocate</span>(this); <span class="keyword">allocate</span>(this(0))</div>
+<div class="line"><a id="l00869" name="l00869"></a><span class="lineno">  869</span><span class="keywordflow">        end if</span></div>
 </div>
-<div class="line"><a id="l00864" name="l00864"></a><span class="lineno">  864</span>    <span class="keyword">end subroutine</span></div>
-<div class="line"><a id="l00865" name="l00865"></a><span class="lineno">  865</span><span class="keyword">end module</span></div>
+<div class="line"><a id="l00870" name="l00870"></a><span class="lineno">  870</span>    <span class="keyword">end subroutine</span></div>
+<div class="line"><a id="l00871" name="l00871"></a><span class="lineno">  871</span><span class="keyword">end module</span></div>
 <div class="ttc" id="agroup__group__macro_html_ga23244cd1e6b3d8a76c5fd6f971bcddf8"><div class="ttname"><a href="group__group__macro.html#ga23244cd1e6b3d8a76c5fd6f971bcddf8">fpx_macro::buffer_size</a></div><div class="ttdeci">integer, parameter buffer_size</div><div class="ttdoc">Default buffer size.</div><div class="ttdef"><b>Definition</b> <a href="#l00067">macro.f90:67</a></div></div>
 <div class="ttc" id="agroup__group__macro_html_ga24a427812ae7752128afd5298198b2c7"><div class="ttname"><a href="group__group__macro.html#ga24a427812ae7752128afd5298198b2c7">fpx_macro::expand_all</a></div><div class="ttdeci">character(:) function, allocatable, public expand_all(ctx, macros, stitch, has_extra, implicit_conti)</div><div class="ttdoc">Fully expand a line including predefined macros (FILE, LINE, etc.) First performs normal macro expans...</div><div class="ttdef"><b>Definition</b> <a href="#l00195">macro.f90:196</a></div></div>
 <div class="ttc" id="agroup__group__macro_html_ga45a27625c418ce241e9f30d103eaca18"><div class="ttname"><a href="group__group__macro.html#ga45a27625c418ce241e9f30d103eaca18">fpx_macro::expand_macros</a></div><div class="ttdeci">character(:) function, allocatable, public expand_macros(line, macros, stitch, implicit_conti, ctx)</div><div class="ttdoc">Core recursive macro expander (handles function-like, variadic, #, ##).</div><div class="ttdef"><b>Definition</b> <a href="#l00299">macro.f90:300</a></div></div>

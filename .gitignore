@@ -405,3 +405,4 @@ sys.info
 tests/**/*.out
 tests/cli/main.out.exe
 tests/output.txt
+test_object_type.mod
