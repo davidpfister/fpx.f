@@ -170,8 +170,7 @@ Requirements</h3>
 <li>a preprocessor. <em>fpx.f</em> uses some preprocessor macros. It is known to work both with intel <span class="tt">fpp</span> and <span class="tt">cpp</span>. The goal is for <span class="tt">fpx</span> to preproces itself at some point. In particular, the console line application uses the header file <a href="https://github.com/davidpfister/fortiche/tree/master/src/app">'app.inc'</a> from the <a href="https://github.com/davidpfister/fortiche">'fortiche'</a> repo.</li>
 </ul>
 <p>Unit test rely on the the header file <a href="https://github.com/davidpfister/fortiche/tree/master/src/assertion"><span class="tt">assertion.inc</span></a>. Since the whole framework fits in a single file, it has been added directly to the repo.</p>
-<p>Linting, indentation, and styling is done with <a href="https://github.com/fortran-lang/fprettify">fprettify</a> with the following settings </p><div class="fragment"><div class="line">fprettify &#39;./src/&#39; -r --case 1 1 1 1 -i 4 --strict-indent --enable-replacements --strip-comments --c-relations</div>
-</div><!-- fragment --><h3 class="doxsection"><a class="anchor" id="autotoc_md4"></a>
+<h3 class="doxsection"><a class="anchor" id="autotoc_md4"></a>
 Building</h3>
 <h4 class="doxsection"><a class="anchor" id="autotoc_md5"></a>
 Get the code</h4>
@@ -180,29 +179,8 @@ Get the code</h4>
 </div><!-- fragment --><h4 class="doxsection"><a class="anchor" id="autotoc_md6"></a>
 Build with fpm</h4>
 <p>The repo can be build using <em>fpm</em> </p><div class="fragment"><div class="line">fpm build</div>
-</div><!-- fragment --><p> For convenience, the repo also contains a response file that can be invoked as follows: </p><div class="fragment"><div class="line">fpm @build</div>
-</div><!-- fragment --><p> (For the Windows users, that command does not work in Powershell since '@' is a reserved symbol. One should use the '&ndash;' as follows: <span class="tt">fpm --% @build</span>. This is linked to the following <a href="https://github.com/urbanjost/M_CLI2/issues/19">issue</a>)</p>
-<p>Building with ifort requires to specify the compiler name (gfortran by default) </p><div class="fragment"><div class="line">fpm @build --compiler ifort</div>
+</div><!-- fragment --><p>Building with ifort requires to specify the compiler name (gfortran by default) </p><div class="fragment"><div class="line">fpm build --compiler ifort</div>
 </div><!-- fragment --><p> Alternatively, the compiler can be set using fpm environment variables. </p><div class="fragment"><div class="line">set FPM_FC=ifort</div>
-</div><!-- fragment --><p>Besides the build command, several commands are also available: </p><div class="fragment"><div class="line">@pretiffy</div>
-<div class="line">system fprettify .\src\ -r --case 1 1 1 1 -i 4 --strict-indent --enable-replacements --strip-comments --c-relations</div>
-<div class="line"> </div>
-<div class="line">@clean</div>
-<div class="line">option clean --all</div>
-<div class="line"> </div>
-<div class="line">@rebuild</div>
-<div class="line">system rmdir /s /q build</div>
-<div class="line">option build</div>
-<div class="line"> </div>
-<div class="line">@build</div>
-<div class="line">option build</div>
-<div class="line"> </div>
-<div class="line">@test</div>
-<div class="line">options test --flag &#39;D_QUIET&#39;</div>
-<div class="line"> </div>
-<div class="line">@doc</div>
-<div class="line">option clean --all</div>
-<div class="line">system cd ./.dox &amp; doxygen ./Doxyfile.in &amp; cd ..</div>
 </div><!-- fragment --><p>The settings to the cpp preprocessor are specified in the file.</p>
 <div class="fragment"><div class="line">[preprocess]</div>
 <div class="line">cpp.suffixes = [&quot;F90&quot;, &quot;f90&quot;]</div>
