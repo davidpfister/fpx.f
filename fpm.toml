@@ -63,5 +63,5 @@ main = "test_logging.f90"
 
 [extra.fortitude.check]
 select = ["C", "E", "S"]
-ignore = ["S001", "S061", "C121", "C003"]
+ignore = ["S001", "S061", "C121", "C003", "C072"]
 line-length = 132

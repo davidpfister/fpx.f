@@ -115,68 +115,68 @@ module fpx_logging
 
     character(1), parameter :: NL = new_line('a')  !< New line character.
     character(1), parameter :: ESCAPE = achar(27)  !< '\' character.
-    character(2), parameter :: CODE_START = ESCAPE//'['  !< Start ansi code, "\[".
+    character(2), parameter :: CODE_START = ESCAPE // '['  !< Start ansi code, "\[".
     character(1), parameter :: CODE_END = 'm'  !< End ansi code, "m".
-    character(4), parameter :: CODE_CLEAR = CODE_START//'0'//CODE_END  !< Clear all styles, "\[0m".
+    character(4), parameter :: CODE_CLEAR = CODE_START // '0' // CODE_END  !< Clear all styles, "\[0m".
 
     character(17), parameter :: STYLES(1:2, 1:16) = reshape([ &
-                                                            'BOLD_ON          ', '1                ', &  !  Bold on.
-                                                            'ITALICS_ON       ', '3                ', &  !  Italics on.
-                                                            'UNDERLINE_ON     ', '4                ', &  !  Underline on.
-                                                            'INVERSE_ON       ', '7                ', &  !  Inverse on: reverse foreground and background colors.
-                                                            'STRIKETHROUGH_ON ', '9                ', &  !  Strikethrough on.
-                                                            'BOLD_OFF         ', '22               ', &  !  Bold off.
-                                                            'ITALICS_OFF      ', '23               ', &  !  Italics off.
-                                                            'UNDERLINE_OFF    ', '24               ', &  !  Underline off.
-                                                            'INVERSE_OFF      ', '27               ', &  !  Inverse off: reverse foreground and background colors.
-                                                            'STRIKETHROUGH_OFF', '29               ', &  !  Strikethrough off.
-                                                            'FRAMED_ON        ', '51               ', &  !  Framed on.
-                                                            'ENCIRCLED_ON     ', '52               ', &  !  Encircled on.
-                                                            'OVERLINED_ON     ', '53               ', &  !  Overlined on.
-                                                            'FRAMED_OFF       ', '54               ', &  !  Framed off.
-                                                            'ENCIRCLED_OFF    ', '54               ', &  !  Encircled off.
-                                                            'OVERLINED_OFF    ', '55               ' &  !  Overlined off.
-                                                            ], [2, 16])  !< Styles.
+            'BOLD_ON          ', '1                ', &  !  Bold on.
+            'ITALICS_ON       ', '3                ', &  !  Italics on.
+            'UNDERLINE_ON     ', '4                ', &  !  Underline on.
+            'INVERSE_ON       ', '7                ', &  !  Inverse on: reverse foreground and background colors.
+            'STRIKETHROUGH_ON ', '9                ', &  !  Strikethrough on.
+            'BOLD_OFF         ', '22               ', &  !  Bold off.
+            'ITALICS_OFF      ', '23               ', &  !  Italics off.
+            'UNDERLINE_OFF    ', '24               ', &  !  Underline off.
+            'INVERSE_OFF      ', '27               ', &  !  Inverse off: reverse foreground and background colors.
+            'STRIKETHROUGH_OFF', '29               ', &  !  Strikethrough off.
+            'FRAMED_ON        ', '51               ', &  !  Framed on.
+            'ENCIRCLED_ON     ', '52               ', &  !  Encircled on.
+            'OVERLINED_ON     ', '53               ', &  !  Overlined on.
+            'FRAMED_OFF       ', '54               ', &  !  Framed off.
+            'ENCIRCLED_OFF    ', '54               ', &  !  Encircled off.
+            'OVERLINED_OFF    ', '55               ' &  !  Overlined off.
+            ], [2, 16])  !< Styles.
 
     character(15), parameter :: COLORS_FG(1:2, 1:17) = reshape([ &
-                                                               'BLACK          ', '30             ', &  !  Black.
-                                                               'RED            ', '31             ', &  !  Red.
-                                                               'GREEN          ', '32             ', &  !  Green.
-                                                               'YELLOW         ', '33             ', &  !  Yellow.
-                                                               'BLUE           ', '34             ', &  !  Blue.
-                                                               'MAGENTA        ', '35             ', &  !  Magenta.
-                                                               'CYAN           ', '36             ', &  !  Cyan.
-                                                               'WHITE          ', '37             ', &  !  White.
-                                                               'DEFAULT        ', '39             ', &  !  Default (white).
-                                                               'BLACK_INTENSE  ', '90             ', &  !  Black intense.
-                                                               'RED_INTENSE    ', '91             ', &  !  Red intense.
-                                                               'GREEN_INTENSE  ', '92             ', &  !  Green intense.
-                                                               'YELLOW_INTENSE ', '93             ', &  !  Yellow intense.
-                                                               'BLUE_INTENSE   ', '94             ', &  !  Blue intense.
-                                                               'MAGENTA_INTENSE', '95             ', &  !  Magenta intense.
-                                                               'CYAN_INTENSE   ', '96             ', &  !  Cyan intense.
-                                                               'WHITE_INTENSE  ', '97             ' &  !  White intense.
-                                                               ], [2, 17])  !< Foreground colors.
+            'BLACK          ', '30             ', &  !  Black.
+            'RED            ', '31             ', &  !  Red.
+            'GREEN          ', '32             ', &  !  Green.
+            'YELLOW         ', '33             ', &  !  Yellow.
+            'BLUE           ', '34             ', &  !  Blue.
+            'MAGENTA        ', '35             ', &  !  Magenta.
+            'CYAN           ', '36             ', &  !  Cyan.
+            'WHITE          ', '37             ', &  !  White.
+            'DEFAULT        ', '39             ', &  !  Default (white).
+            'BLACK_INTENSE  ', '90             ', &  !  Black intense.
+            'RED_INTENSE    ', '91             ', &  !  Red intense.
+            'GREEN_INTENSE  ', '92             ', &  !  Green intense.
+            'YELLOW_INTENSE ', '93             ', &  !  Yellow intense.
+            'BLUE_INTENSE   ', '94             ', &  !  Blue intense.
+            'MAGENTA_INTENSE', '95             ', &  !  Magenta intense.
+            'CYAN_INTENSE   ', '96             ', &  !  Cyan intense.
+            'WHITE_INTENSE  ', '97             ' &  !  White intense.
+            ], [2, 17])  !< Foreground colors.
 
     character(15), parameter :: COLORS_BG(1:2, 1:17) = reshape([ &
-                                                               'BLACK          ', '40             ', &  !  Black.
-                                                               'RED            ', '41             ', &  !  Red.
-                                                               'GREEN          ', '42             ', &  !  Green.
-                                                               'YELLOW         ', '43             ', &  !  Yellow.
-                                                               'BLUE           ', '44             ', &  !  Blue.
-                                                               'MAGENTA        ', '45             ', &  !  Magenta.
-                                                               'CYAN           ', '46             ', &  !  Cyan.
-                                                               'WHITE          ', '47             ', &  !  White.
-                                                               'DEFAULT        ', '49             ', &  !  Default (black).
-                                                               'BLACK_INTENSE  ', '100            ', &  !  Black intense.
-                                                               'RED_INTENSE    ', '101            ', &  !  Red intense.
-                                                               'GREEN_INTENSE  ', '102            ', &  !  Green intense.
-                                                               'YELLOW_INTENSE ', '103            ', &  !  Yellow intense.
-                                                               'BLUE_INTENSE   ', '104            ', &  !  Blue intense.
-                                                               'MAGENTA_INTENSE', '105            ', &  !  Magenta intense.
-                                                               'CYAN_INTENSE   ', '106            ', &  !  Cyan intense.
-                                                               'WHITE_INTENSE  ', '107            ' &  !  White intense.
-                                                               ], [2, 17])  !< Background colors.
+            'BLACK          ', '40             ', &  !  Black.
+            'RED            ', '41             ', &  !  Red.
+            'GREEN          ', '42             ', &  !  Green.
+            'YELLOW         ', '43             ', &  !  Yellow.
+            'BLUE           ', '44             ', &  !  Blue.
+            'MAGENTA        ', '45             ', &  !  Magenta.
+            'CYAN           ', '46             ', &  !  Cyan.
+            'WHITE          ', '47             ', &  !  White.
+            'DEFAULT        ', '49             ', &  !  Default (black).
+            'BLACK_INTENSE  ', '100            ', &  !  Black intense.
+            'RED_INTENSE    ', '101            ', &  !  Red intense.
+            'GREEN_INTENSE  ', '102            ', &  !  Green intense.
+            'YELLOW_INTENSE ', '103            ', &  !  Yellow intense.
+            'BLUE_INTENSE   ', '104            ', &  !  Blue intense.
+            'MAGENTA_INTENSE', '105            ', &  !  Magenta intense.
+            'CYAN_INTENSE   ', '106            ', &  !  Cyan intense.
+            'WHITE_INTENSE  ', '107            ' &  !  White intense.
+            ], [2, 17])  !< Background colors.
 
     !> Interface to render diagnostic messages and labels
     !!
@@ -308,15 +308,15 @@ contains
         if (nocolor) return
         if (present(foreground)) then
             i = color_index(upper(foreground))
-            if (i > 0) res = CODE_START//trim(COLORS_FG(2, i))//CODE_END//res//CODE_CLEAR
+            if (i > 0) res = CODE_START // trim(COLORS_FG(2, i)) // CODE_END // res // CODE_CLEAR
         end if
         if (present(background)) then
             i = color_index(upper(background))
-            if (i > 0) res = CODE_START//trim(COLORS_BG(2, i))//CODE_END//res//CODE_CLEAR
+            if (i > 0) res = CODE_START // trim(COLORS_BG(2, i)) // CODE_END // res // CODE_CLEAR
         end if
         if (present(style)) then
             i = style_index(upper(style))
-            if (i > 0) res = CODE_START//trim(STYLES(2, i))//CODE_END//res//CODE_CLEAR
+            if (i > 0) res = CODE_START // trim(STYLES(2, i)) // CODE_END // res // CODE_CLEAR
         end if
     end function
 
@@ -345,7 +345,7 @@ contains
         integer :: i
 
         res = 0
-        do i = 1, size(STYLES, dim = 2)
+        do i = 1, size(STYLES, dim=2)
             if (trim(STYLES(1, i)) == trim(adjustl(style))) then
                 res = i
                 exit
@@ -358,21 +358,21 @@ contains
         character(*), intent(in) :: string  !< Input string.
         character(len(string)) :: upper  !< Upper case string.
         !private
-        integer, parameter :: a = iachar('a'), z = iachar('z'), CASE_DIFF = iachar('a')-iachar('A')
+        integer, parameter :: a = iachar('a'), z = iachar('z'), CASE_DIFF = iachar('a') - iachar('A')
         integer :: i, ichar
 
         do i = 1, len(string)
             ichar = iachar(string(i:i))
             if (ichar >= a .and. ichar <= z) ichar = ichar - CASE_DIFF
             upper(i:i) = achar(ichar)
-        enddo
+        end do
     end function
 
     type(label_type) pure function label_new(text, first, length, level) result(that)
         character(*), intent(in)            :: text
         integer, intent(in)                 :: first
         integer, intent(in)                 :: length
-        integer, intent(in) , optional      :: level
+        integer, intent(in), optional      :: level
 
         that%text = text
         that%line = 1
@@ -388,7 +388,7 @@ contains
         integer, intent(in)                 :: first
         integer, intent(in)                 :: length
         logical, intent(in), optional       :: primary
-        integer, intent(in) , optional      :: level
+        integer, intent(in), optional      :: level
 
         that%text = text
         that%line = line
@@ -422,16 +422,16 @@ contains
         if (present(source)) that%source = source
         if (present(label)) then
             if (allocated(that%label)) deallocate(that%label)
-            select rank(label)
-                rank(0)
-                    allocate(that%label(1))
-                    that%label(1) = label
-                    if (.not. allocated(that%label(1)%level)) that%label(1)%level = level
-                rank(1)
-                    allocate(that%label, source = label)
-                    do i = 1, size(label)
-                        if (.not. allocated(that%label(i)%level)) that%label(i)%level = level
-                    end do
+            select rank (label)
+            rank(0)
+                allocate(that%label(1))
+                that%label(1) = label
+                if (.not. allocated(that%label(1)%level)) that%label(1)%level = level
+            rank(1)
+                allocate(that%label, source=label)
+                do i = 1, size(label)
+                    if (.not. allocated(that%label(i)%level)) that%label(i)%level = level
+                end do
             end select
         end if
         if (present(diagnostic)) that%sub = diagnostic
@@ -493,7 +493,7 @@ contains
         character(:), allocatable :: res
 
         if (present(message)) then
-            res = level_name(level) // colorize(': ' // message, style = 'bold_on')
+            res = level_name(level) // colorize(': ' // message, style='bold_on')
         else
             res = level_name(level)
         end if
@@ -505,17 +505,17 @@ contains
 
         select case (level)
         case (LEVEL_ERROR)
-            res = colorize('error', foreground = 'red', style = 'bold_on')
+            res = colorize('error', foreground='red', style='bold_on')
         case (LEVEL_WARNING)
-            res = colorize('warning', foreground = 'yellow', style = 'bold_on')
+            res = colorize('warning', foreground='yellow', style='bold_on')
         case (LEVEL_HELP)
-            res = colorize('help', foreground = 'cyan', style = 'bold_on')
+            res = colorize('help', foreground='cyan', style='bold_on')
         case (LEVEL_NOTE)
-            res = colorize('note', foreground = 'blue', style = 'bold_on')
+            res = colorize('note', foreground='blue', style='bold_on')
         case (LEVEL_INFO)
-            res = colorize('info', foreground = 'magenta', style = 'bold_on')
+            res = colorize('info', foreground='magenta', style='bold_on')
         case default
-            res = colorize('unknown', foreground = 'blue', style = 'bold_on')
+            res = colorize('unknown', foreground='blue', style='bold_on')
         end select
     end function
 
@@ -524,7 +524,7 @@ contains
         integer, intent(in)         :: offset
         character(:), allocatable :: res
 
-        res = repeat(' ', offset) // colorize('-->', foreground = 'blue') // ' ' // source
+        res = repeat(' ', offset) // colorize('-->', foreground='blue') // ' ' // source
     end function
 
     pure function render_text(input, source, linenum) result(res)
@@ -542,15 +542,15 @@ contains
 
         if (present(source)) then
             res = render_source(source, offset) // NL // &
-                    repeat(' ', offset + 1) // colorize('|', foreground = 'blue')
+                    repeat(' ', offset + 1) // colorize('|', foreground='blue')
         else
-            res = repeat(' ', offset + 1) // colorize('|', foreground = 'blue')
+            res = repeat(' ', offset + 1) // colorize('|', foreground='blue')
         end if
 
         do i = 1, size(token)
             res = res // NL // render_line(input(token(i)%first:token(i)%last), to_string(iline + i - 1, offset))
         end do
-        res = res // NL // repeat(' ', offset + 1) // colorize('|', foreground = 'blue')
+        res = res // NL // repeat(' ', offset + 1) // colorize('|', foreground='blue')
     end function
 
     pure function render_text_with_label(input, label, source, linenum) result(res)
@@ -592,9 +592,9 @@ contains
             res = render_source(source, offset) // ':' // &
                     to_string(labels(i)%line) // ':' // &
                     to_string(labels(i)%first) // '-' // to_string(labels(i)%last) // NL // &
-                    repeat(' ', offset + 1) // colorize('|', foreground = 'blue')
+                    repeat(' ', offset + 1) // colorize('|', foreground='blue')
         else
-            res = repeat(' ', offset + 1) // colorize('|', foreground = 'blue')
+            res = repeat(' ', offset + 1) // colorize('|', foreground='blue')
         end if
 
         allocate(display(first:last), source=.false.)
@@ -606,7 +606,7 @@ contains
             if (.not. display(i)) then
                 if (display(i - 1)) then
                     res = res // NL //&
-                            repeat(' ', offset + 1) // colorize(':', foreground = 'blue')
+                            repeat(' ', offset + 1) // colorize(':', foreground='blue')
                 end if
                 cycle
             end if
@@ -618,12 +618,12 @@ contains
                 do j = 1, size(labels)
                     if (labels(j)%line /= i) cycle
                     res = res // NL //&
-                            & repeat(' ', offset + 1) // colorize('|', foreground = 'blue') // &
+                            & repeat(' ', offset + 1) // colorize('|', foreground='blue') // &
                             & render_label(labels(j))
                 end do
             end if
         end do
-        res = res // NL // repeat(' ', offset + 1) // colorize('|', foreground = 'blue')
+        res = res // NL // repeat(' ', offset + 1) // colorize('|', foreground='blue')
     end function
 
     pure function render_label(label) result(res)
@@ -640,35 +640,35 @@ contains
         if (allocated(label%level)) then
             select case (label%level)
             case (LEVEL_ERROR)
-                res = repeat(' ', label%first) // colorize(repeat(marker, width), foreground = 'red')
+                res = repeat(' ', label%first) // colorize(repeat(marker, width), foreground='red')
                 if (allocated(label%text)) then
-                    res = res // ' ' // colorize(label%text, foreground = 'red')
+                    res = res // ' ' // colorize(label%text, foreground='red')
                 end if
             case (LEVEL_WARNING)
-                res = repeat(' ', label%first) // colorize(repeat(marker, width), foreground = 'yellow')
+                res = repeat(' ', label%first) // colorize(repeat(marker, width), foreground='yellow')
                 if (allocated(label%text)) then
-                    res = res // ' ' // colorize(label%text, foreground = 'yellow')
+                    res = res // ' ' // colorize(label%text, foreground='yellow')
                 end if
             case (LEVEL_HELP)
-                res = repeat(' ', label%first) // colorize(repeat(marker, width), foreground = 'cyan')
+                res = repeat(' ', label%first) // colorize(repeat(marker, width), foreground='cyan')
                 if (allocated(label%text)) then
-                    res = res // ' ' // colorize(label%text, foreground = 'cyan')
+                    res = res // ' ' // colorize(label%text, foreground='cyan')
                 end if
             case (LEVEL_INFO)
-                res = repeat(' ', label%first) // colorize(repeat(marker, width), foreground = 'magenta')
+                res = repeat(' ', label%first) // colorize(repeat(marker, width), foreground='magenta')
                 if (allocated(label%text)) then
-                    res = res // ' ' // colorize(label%text, foreground = 'magenta')
+                    res = res // ' ' // colorize(label%text, foreground='magenta')
                 end if
             case default
-                res = repeat(' ', label%first) // colorize(repeat(marker, width), foreground = 'blue')
+                res = repeat(' ', label%first) // colorize(repeat(marker, width), foreground='blue')
                 if (allocated(label%text)) then
-                    res = res // ' ' // colorize(label%text, foreground = 'blue')
+                    res = res // ' ' // colorize(label%text, foreground='blue')
                 end if
             end select
         else
             res = repeat(' ', label%first) // repeat(marker, width)
             if (allocated(label%text)) then
-                res = res // ' ' // colorize(label%text, foreground = 'blue')
+                res = res // ' ' // colorize(label%text, foreground='blue')
             end if
         end if
     end function
@@ -678,7 +678,7 @@ contains
         character(*), intent(in)    :: line
         character(:), allocatable :: res
 
-        res = line // ' ' // colorize('|', foreground = 'blue') // ' ' // input
+        res = line // ' ' // colorize('|', foreground='blue') // ' ' // input
     end function
 
     pure integer function integer_width(input) result(res)

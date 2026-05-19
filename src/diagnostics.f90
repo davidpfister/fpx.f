@@ -22,7 +22,8 @@
 !!    ...
 !! @endcode
 module fpx_diagnostics
-    use, intrinsic :: iso_fortran_env, only: stdout => output_unit
+    use, intrinsic :: iso_fortran_env, only: &
+            stdout => output_unit
     use fpx_logging
     use fpx_macro
     use fpx_global

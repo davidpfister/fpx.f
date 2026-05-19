@@ -1,6 +1,6 @@
 @pretiffy
 system codee format ./src
-system fortitute check ./src --fix
+system fortitude check ./src --fix
 option run --list
 
 @clean

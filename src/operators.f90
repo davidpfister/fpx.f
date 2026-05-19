@@ -2,7 +2,7 @@
 !! @defgroup group_operators Operators
 !! Module implementing a full C-preprocessor-style constant expression evaluator using a top-down recursive descent parser.
 !! The module provides the ability to evaluate integer constant expressions of the kind used in
-!! classical preprocessor. 
+!! classical preprocessor.
 !!
 !! This includes support for:
 !! - All C-style arithmetic, bitwise, logical, relational, and conditional operators

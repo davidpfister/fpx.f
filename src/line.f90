@@ -38,16 +38,16 @@
 !! - The line number in `#line N` refers to the **next** line after the directive.
 !! - Filename must be quoted if provided.
 !! - Invalid line numbers or malformed directives emit a warning but are ignored.
-!! - Updates the shared `context` object used by the logging and macro systems.   
+!! - Updates the shared `context` object used by the logging and macro systems.
 module fpx_line
     use fpx_path
     use fpx_logging
     use fpx_context
-    
+
     implicit none; private
 
     public :: handle_line
-    
+
 contains
 
     !> Handle the standard #line directive
@@ -80,17 +80,17 @@ contains
 
         if (len_trim(temp) == 0) then
             call printf(render(diagnostic_report(LEVEL_WARNING, &
-                        message='Synthax error', &
-                        label=label_type('#line directive with no arguments', index(token, lowercase(ctx%content)) + len(token) + 1, 1), &
-                        source=ctx%path), &
-                        trim(ctx%content), ctx%line))
+                    message='Synthax error', &
+                    label=label_type('#line directive with no arguments', index(token, lowercase(ctx%content)) + len(token) + 1, 1), &
+                    source=ctx%path), &
+                    trim(ctx%content), ctx%line))
             return
         end if
 
         ! Extract line number
         pos = index(temp, ' ')
         if (pos > 0) then
-            num_str = temp(:pos-1)
+            num_str = temp(:pos - 1)
             fname = trim(adjustl(temp(pos:)))
             has_filename = .true.
         else
@@ -102,10 +102,10 @@ contains
         read(num_str, *, iostat=iostat) new_line
         if (iostat /= 0 .or. new_line < 1) then
             call printf(render(diagnostic_report(LEVEL_WARNING, &
-                        message='Synthax error', &
-                        label=label_type('Invalid line number in #line directive', index(token, lowercase(ctx%content)) + len(token) + 1, len(num_str)), &
-                        source=ctx%path), &
-                        trim(ctx%content), ctx%line))
+                    message='Synthax error', &
+                    label=label_type('Invalid line number in #line directive', index(token, lowercase(ctx%content)) + len(token) + 1, len(num_str)), &
+                    source=ctx%path), &
+                    trim(ctx%content), ctx%line))
         end if
 
         ! Update current line number (subtract 1 because the next line will be +1)
