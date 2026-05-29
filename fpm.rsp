@@ -7,7 +7,7 @@ option run --list
 option clean --all
 
 @rebuild
-option clean --all
+system rmdir /s /q build
 option build
 
 @build
