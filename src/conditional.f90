@@ -60,8 +60,7 @@ module fpx_conditional
     use fpx_constants
     use fpx_logging
     use fpx_string
-    use fpx_macro, only: macro, &
-            is_defined
+    use fpx_macro, only: macro, is_defined
     use fpx_operators, only: evaluate_expression
     use fpx_context
 

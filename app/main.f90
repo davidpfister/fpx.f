@@ -39,9 +39,7 @@
 #include <app.inc>
 console(main)
     main(args)
-        use, intrinsic :: iso_fortran_env, only: stdout => output_unit, &
-                                                 stderr => error_unit, &
-                                                 stdin => input_unit
+        use, intrinsic :: iso_fortran_env, only: stdout => output_unit, stderr => error_unit, stdin => input_unit
         use fpx_macro
         use fpx_logging, only: nocolor
         use fpx_parser
@@ -92,8 +90,11 @@ console(main)
                         global%includedir = [global%includedir, string(args(i)%chars(3:))]
                     end if
                 case ('v', '-version')
-                    write(*, '(*(A,/))') 'fpx version '//version,     &
-                                         'Copyright (C) 2025 davidpfister', &
+                    write(*, '(*(A,/))') 'Version:          '//version,     &
+                                         'Description:      Fortran preprocessor in modern Fortran', &
+                                         'Copyright (C):    2025 davidpfister', &
+                                         'License:          MIT', &
+                                         '', &
                                          'This is free software; see the source for copying conditions.  There is NO', &
                                          'warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.'
                     stop 0, quiet = .true.
@@ -104,18 +105,31 @@ console(main)
                                          '', &
                                          '                             Preprocessor Option List', &
                                          '                             -----------------------', &
-                                         '-D<macro>         Define a <macro> with no value.', &
-                                         '-D<macro>=<val>   Define a <macro> with <val> as its value.', &
-                                         '-U<macro>         Undefine <macro>', &
-                                         '-I<dir>           Add <dir> to the end of the global include paths.', &
-                                         '-h, -?            Display this help', &
-                                         '-o                Output file path with name and extension.', &
-                                         '-v                Display the version of the program.'
+                                         '-D<macro>             Define a <macro> with no value.', &
+                                         '-D<macro>=<val>       Define a <macro> with <val> as its value.', &
+                                         '-U<macro>             Undefine <macro>', &
+                                         '-I<dir>               Add <dir> to the end of the global include paths.', &
+                                         '-h, -?                Display help messages', &
+                                         '-o                    Output file path with name and extension.', &
+                                         '-v                    Display the version of the program.', &
+                                         '--no-color            Disable ANSI coloring.', &
+                                         '--implicit-conti      Activate implicit continuation line in macro expansion.', &
+                                         '--exclude-comments    Exclude comments from macro expansion', &
+                                         '--extra-macros        Support extra macros (__FILENAME__, __TIMESTAMP__).', &
+                                         '--no-macros           Deactivate macros expansion.'
                     stop 0, quiet = .true.
                 case ('o', '-output')
                     outfile = args(i)
                 case ('-no-color')
                     nocolor = .true.
+                case ('-implicit-conti')
+                    global%implicit_continuation = .true.
+                case ('-exclude-comments')
+                    global%exlude_comments = .true.
+                case ('-extra-macros')
+                    global%extra_macros = .true.
+                case ('-no-macros')
+                    global%expand_macros = .false.
                 end select
             else
                 if (allocated(infile)) then

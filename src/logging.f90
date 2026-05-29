@@ -477,7 +477,8 @@ contains
         if (allocated(diag%label)) then
             res = res // NL // render_text_with_labels(input, diag%label, source=diag%source, linemum=linemum)
         else
-            res = res // NL // render_text_with_labels(input, [label_type('', 1, len_trim(input))], source=diag%source, linemum=linemum)
+            res = res // NL // render_text_with_labels(input, [label_type('', 1, len_trim(input))], source=diag%source, linemum=&
+                    linemum)
         end if
 
         if (allocated(diag%sub)) then

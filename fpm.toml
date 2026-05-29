@@ -14,7 +14,7 @@ auto-examples = false
 
 [preprocess]
 cpp.suffixes = ["F90", "f90"]
-cpp.macros = ["_WIN32", "_FPM"]
+cpp.macros = ["_WIN32", "_FPM", "_VERSION='2.0.0'"]
 
 [library]
 source-dir = "src"

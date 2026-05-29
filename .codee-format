@@ -24,7 +24,7 @@ AlignAssignmentOperators: true
 # lines.
 AlignUseItems:
   # Set the kind of alignment used when breaking module imports into separate lines
-  Kind:            OneItemPerLine
+  Kind:            Regular
   # Set the preference for how the first line is used when breaking module imports into separate lines
   FirstLineFit:    FitIfPossible
 
@@ -55,7 +55,7 @@ Casing:
 
 # Set the line size, breaking lines longer than the specified limit.
 # Default value is **`0`**, meaning no limit.
-ColumnLimit:     0
+ColumnLimit:     132
 
 # List of comment prefixes, i.e., text following the comment marker (`!`), that
 # should be interpreted as directives, which may be needed for proper line

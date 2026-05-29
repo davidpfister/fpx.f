@@ -41,9 +41,9 @@ module fpx_os
     implicit none; private
 
     public ::   get_os_type, &
-            os_is_unix
+            os_is_unix, &
+            OS_NAME
 
-    public :: OS_NAME
     !> @brief Unknown / undetected operating system
     !! @ingroup group_os
     integer, parameter, public :: OS_UNKNOWN = 0

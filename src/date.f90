@@ -44,9 +44,7 @@
 !!    ...
 !! @endcode
 module fpx_date
-    use, intrinsic :: iso_fortran_env, only: &
-            i1 => int8, &
-            i2 => int16
+    use, intrinsic :: iso_fortran_env, only: i1 => int8, i2 => int16
     implicit none; private
 
     public :: now

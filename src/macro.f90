@@ -399,7 +399,8 @@ contains
                                         if (nargs < size(macros(i)%params)) then
                                             call printf(render(diagnostic_report(LEVEL_ERROR, &
                                                     message='Variadic macro issue', &
-                                                    label=label_type('Too few arguments for macro ' // macros(i), start, m_end - start), &
+                                                    label=label_type('Too few arguments for macro ' // macros(i), start, m_end - &
+                                                            start), &
                                                     source=trim(ctx%path)), &
                                                     expanded, ctx%line))
                                             cycle
@@ -412,7 +413,8 @@ contains
                                     else if (nargs /= size(macros(i)%params)) then
                                         call printf(render(diagnostic_report(LEVEL_ERROR, &
                                                 message='Function-like macro issue', &
-                                                label=label_type('Incorrect number of arguments for macro ' // macros(i), start, m_end - start), &
+                                                label=label_type('Incorrect number of arguments for macro ' // macros(i), start, &
+                                                        m_end - start), &
                                                 source=trim(ctx%path)), &
                                                 expanded, ctx%line))
                                         cycle
@@ -581,7 +583,8 @@ contains
                                     else
                                         call printf(render(diagnostic_report(LEVEL_ERROR, &
                                                 message='Failed macro expansion', &
-                                                label=label_type('Circular macro detected', index(temp, macros(i)), len(macros(i))), &
+                                                label=label_type('Circular macro detected', index(temp, macros(i)), len(macros(i)))&
+                                                        , &
                                                 source=trim(ctx%path)), &
                                                 temp, ctx%line))
                                         cycle

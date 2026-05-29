@@ -48,6 +48,7 @@
 module fpx_path
     use, intrinsic :: iso_c_binding
     use fpx_string
+
     ! allow(default-public-accessibility)
     implicit none; public
 

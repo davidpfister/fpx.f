@@ -81,7 +81,8 @@ contains
         if (len_trim(temp) == 0) then
             call printf(render(diagnostic_report(LEVEL_WARNING, &
                     message='Synthax error', &
-                    label=label_type('#line directive with no arguments', index(token, lowercase(ctx%content)) + len(token) + 1, 1), &
+                    label=label_type('#line directive with no arguments', index(token, lowercase(ctx%content)) + len(token) + 1, 1)&
+                            , &
                     source=ctx%path), &
                     trim(ctx%content), ctx%line))
             return
@@ -103,7 +104,8 @@ contains
         if (iostat /= 0 .or. new_line < 1) then
             call printf(render(diagnostic_report(LEVEL_WARNING, &
                     message='Synthax error', &
-                    label=label_type('Invalid line number in #line directive', index(token, lowercase(ctx%content)) + len(token) + 1, len(num_str)), &
+                    label=label_type('Invalid line number in #line directive', index(token, lowercase(ctx%content)) + len(token) + &
+                            1, len(num_str)), &
                     source=ctx%path), &
                     trim(ctx%content), ctx%line))
         end if
