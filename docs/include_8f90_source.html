@@ -261,185 +261,189 @@ $(function(){initNavTree('include_8f90_source.html','',''); });
 <div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span>            <span class="comment">! Malformed include directive</span></div>
 <div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span>            <span class="keyword">call </span>printf(<a class="code hl_interface" href="interfacefpx__logging_1_1render.html">render</a>(<a class="code hl_interface" href="structfpx__logging_1_1diagnostic__report.html">diagnostic_report</a>(level_error, &amp;</div>
 <div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span>                    message=<span class="stringliteral">&#39;Malformed #include directive&#39;</span>, &amp;</div>
-<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span>                    label=<a class="code hl_interface" href="structfpx__logging_1_1label__type.html">label_type</a>(<span class="stringliteral">&#39;Filepath should either be delimited by &quot;&lt;...&gt;&quot; or &quot;...&quot;&#39;</span>, <a class="code hl_interface" href="interfacefpx__string_1_1index.html">index</a>(ctx%content, include_file), <a class="code hl_interface" href="interfacefpx__string_1_1len.html">len</a>(include_file)), &amp;</div>
-<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span>                    source=<a class="code hl_interface" href="interfacefpx__string_1_1trim.html">trim</a>(ctx%path)), &amp;</div>
-<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span>                    ctx%content, ctx%line))</div>
-<div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span>            <span class="keywordflow">return</span></div>
-<div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span><span class="keywordflow">        end if</span></div>
-<div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span> </div>
-<div class="line"><a id="l00153" name="l00153"></a><span class="lineno">  153</span>        <span class="comment">! Handle absolute/rooted paths (same for both types)</span></div>
-<div class="line"><a id="l00154" name="l00154"></a><span class="lineno">  154</span>        ifile = include_file</div>
-<div class="line"><a id="l00155" name="l00155"></a><span class="lineno">  155</span>        <span class="keywordflow">if</span> (<a class="code hl_function" href="group__group__path.html#gad078c4cc1b67c2165a367d9a3e141adf">is_rooted</a>(ifile)) <span class="keywordflow">then</span></div>
-<div class="line"><a id="l00156" name="l00156"></a><span class="lineno">  156</span>            <span class="keyword">inquire</span>(file=ifile, exist=exists)</div>
-<div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span>            <span class="keywordflow">if</span> (exists) <span class="keywordflow">then</span></div>
-<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span>                include_file = ifile</div>
-<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span>            <span class="keywordflow">else</span></div>
-<div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span>                <span class="keywordflow">if</span> (<a class="code hl_variable" href="group__group__logging.html#gae355b6081c8a7c696837dd711719c998">verbose</a>) <span class="keywordflow">then</span></div>
-<div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span>                    <span class="keyword">call </span>printf(<a class="code hl_interface" href="interfacefpx__logging_1_1render.html">render</a>(<a class="code hl_interface" href="structfpx__logging_1_1diagnostic__report.html">diagnostic_report</a>(level_error, &amp;</div>
-<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span>                            message=<span class="stringliteral">&#39;File not found&#39;</span>, &amp;</div>
-<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span>                            label=<a class="code hl_interface" href="structfpx__logging_1_1label__type.html">label_type</a>(<span class="stringliteral">&#39;Cannot find include file &#39;</span> // <a class="code hl_interface" href="interfacefpx__string_1_1trim.html">trim</a>(include_file), <a class="code hl_interface" href="interfacefpx__string_1_1index.html">index</a>(ctx%content, include_file), <a class="code hl_interface" href="interfacefpx__string_1_1len.html">len</a>(include_file)), &amp;</div>
-<div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span>                            source=<a class="code hl_interface" href="interfacefpx__string_1_1trim.html">trim</a>(ctx%path)), &amp;</div>
-<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span>                            ctx%content, ctx%line))</div>
-<div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span>                    <span class="keywordflow">return</span></div>
-<div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span><span class="keywordflow">                end if</span></div>
-<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span><span class="keywordflow">            end if</span></div>
-<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span>        <span class="keywordflow">else</span></div>
-<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span>            <span class="comment">! Relative path - search according to include type</span></div>
-<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span>            exists = .false.</div>
-<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span>            <span class="comment">! For quoted includes (#include &quot;file&quot;), search parent directory first</span></div>
-<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span>            ifile = <a class="code hl_interface" href="interfacefpx__path_1_1join.html">join</a>(dir, include_file)</div>
-<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span>            <span class="keywordflow">if</span> (include_type == include_type_local) <span class="keywordflow">then</span></div>
-<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span>                ifile = <a class="code hl_interface" href="interfacefpx__path_1_1join.html">join</a>(dir, include_file)</div>
-<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span>                <span class="keyword">inquire</span>(file=ifile, exist=exists)</div>
-<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span>                <span class="keywordflow">if</span> (exists) <span class="keywordflow">then</span></div>
-<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span>                    include_file = ifile</div>
-<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span><span class="keywordflow">                end if</span></div>
-<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span><span class="keywordflow">            end if</span></div>
-<div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span> </div>
-<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span>            <span class="comment">! If not found yet, search user-specified include directories (-I paths)</span></div>
-<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span>            <span class="keywordflow">if</span> (.not. exists .and. <span class="keyword">allocated</span>(<a class="code hl_variable" href="group__group__global.html#ga8b8524880886f61f8c961589cffa7640">global</a>%includedir)) <span class="keywordflow">then</span></div>
-<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span>                <span class="keywordflow">do</span> i = 1, <span class="keyword">size</span>(<a class="code hl_variable" href="group__group__global.html#ga8b8524880886f61f8c961589cffa7640">global</a>%includedir)</div>
-<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span>                    ifile = <a class="code hl_interface" href="interfacefpx__path_1_1join.html">join</a>(<a class="code hl_variable" href="group__group__global.html#ga8b8524880886f61f8c961589cffa7640">global</a>%includedir(i), include_file)</div>
-<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span>                    <span class="keyword">inquire</span>(file=ifile, exist=exists)</div>
-<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span>                    <span class="keywordflow">if</span> (exists) <span class="keywordflow">then</span></div>
-<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>                        include_file = ifile</div>
-<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span>                        <span class="keywordflow">exit</span></div>
-<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span><span class="keywordflow">                    end if</span></div>
-<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span><span class="keywordflow">                end do</span></div>
-<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span><span class="keywordflow">            end if</span></div>
-<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span> </div>
-<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span>            <span class="comment">! If still not found, try the INCLUDE environmental variable</span></div>
-<div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span>            <span class="keywordflow">if</span> (.not. exists) <span class="keywordflow">then</span></div>
-<div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span>                block</div>
-<div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span>                    <span class="keywordtype">character(:)</span>, <span class="keywordtype">allocatable</span> :: ipaths(:)</div>
-<div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span> </div>
-<div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span>                    ipaths = <a class="code hl_function" href="group__group__include.html#gab85fc44adeb3b7f5e98cbd402427585f">get_system_paths</a>()</div>
-<div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span>                    <span class="keywordflow">do</span> i = 1, <span class="keyword">size</span>(ipaths)</div>
-<div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span>                        ifile = <a class="code hl_interface" href="interfacefpx__path_1_1join.html">join</a>(ipaths(i), include_file)</div>
-<div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span>                        <span class="keyword">inquire</span>(file=ifile, exist=exists)</div>
-<div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span>                        <span class="keywordflow">if</span> (exists) <span class="keywordflow">then</span></div>
-<div class="line"><a id="l00204" name="l00204"></a><span class="lineno">  204</span>                            include_file = ifile</div>
-<div class="line"><a id="l00205" name="l00205"></a><span class="lineno">  205</span><span class="keywordflow">                        end if</span></div>
-<div class="line"><a id="l00206" name="l00206"></a><span class="lineno">  206</span><span class="keywordflow">                    end do</span></div>
-<div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span>                <span class="keyword">end </span>block</div>
-<div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span><span class="keywordflow">            end if</span></div>
-<div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span> </div>
-<div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span>            <span class="comment">! If still not found, try current working directory as last resort</span></div>
-<div class="line"><a id="l00211" name="l00211"></a><span class="lineno">  211</span>            <span class="keywordflow">if</span> (.not. exists) <span class="keywordflow">then</span></div>
-<div class="line"><a id="l00212" name="l00212"></a><span class="lineno">  212</span>                ifile = <a class="code hl_interface" href="interfacefpx__path_1_1join.html">join</a>(<a class="code hl_function" href="group__group__path.html#gaee1434d13417f0b481ab61549867aba7">cwd</a>(), include_file)</div>
-<div class="line"><a id="l00213" name="l00213"></a><span class="lineno">  213</span>                <span class="keyword">inquire</span>(file=ifile, exist=exists)</div>
-<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span>                <span class="keywordflow">if</span> (exists) <span class="keywordflow">then</span></div>
-<div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span>                    include_file = ifile</div>
-<div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span><span class="keywordflow">                end if</span></div>
-<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span><span class="keywordflow">            end if</span></div>
-<div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span> </div>
-<div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span>            <span class="comment">! If file was not found anywhere, report error</span></div>
-<div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span>            <span class="keywordflow">if</span> (.not. exists) <span class="keywordflow">then</span></div>
-<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span>                <span class="keyword">call </span>printf(<a class="code hl_interface" href="interfacefpx__logging_1_1render.html">render</a>(<a class="code hl_interface" href="structfpx__logging_1_1diagnostic__report.html">diagnostic_report</a>(level_error, &amp;</div>
-<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span>                        message=<span class="stringliteral">&#39;File not found&#39;</span>, &amp;</div>
-<div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span>                        label=<a class="code hl_interface" href="structfpx__logging_1_1label__type.html">label_type</a>(<span class="stringliteral">&#39;Cannot find include file &#39;</span> // <a class="code hl_interface" href="interfacefpx__string_1_1trim.html">trim</a>(include_file), <a class="code hl_interface" href="interfacefpx__string_1_1index.html">index</a>(ctx%content, include_file), <a class="code hl_interface" href="interfacefpx__string_1_1len.html">len</a>(include_file)), &amp;</div>
-<div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span>                        source=<a class="code hl_interface" href="interfacefpx__string_1_1trim.html">trim</a>(ctx%path)), &amp;</div>
-<div class="line"><a id="l00225" name="l00225"></a><span class="lineno">  225</span>                        ctx%content, ctx%line))</div>
-<div class="line"><a id="l00226" name="l00226"></a><span class="lineno">  226</span>                <span class="keywordflow">return</span></div>
-<div class="line"><a id="l00227" name="l00227"></a><span class="lineno">  227</span><span class="keywordflow">            end if</span></div>
-<div class="line"><a id="l00228" name="l00228"></a><span class="lineno">  228</span><span class="keywordflow">        end if</span></div>
-<div class="line"><a id="l00229" name="l00229"></a><span class="lineno">  229</span> </div>
-<div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span>        <span class="comment">! Open and preprocess the include file</span></div>
-<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span>        <span class="keyword">open</span>(newunit=iunit, file=include_file, status=<span class="stringliteral">&#39;old&#39;</span>, action=<span class="stringliteral">&#39;read&#39;</span>, iostat=ierr)</div>
-<div class="line"><a id="l00232" name="l00232"></a><span class="lineno">  232</span>        <span class="keywordflow">if</span> (ierr /= 0) <span class="keywordflow">then</span></div>
-<div class="line"><a id="l00233" name="l00233"></a><span class="lineno">  233</span>            <span class="keyword">call </span>printf(<a class="code hl_interface" href="interfacefpx__logging_1_1render.html">render</a>(<a class="code hl_interface" href="structfpx__logging_1_1diagnostic__report.html">diagnostic_report</a>(level_error, &amp;</div>
-<div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span>                    message=<span class="stringliteral">&#39;File not found&#39;</span>, &amp;</div>
-<div class="line"><a id="l00235" name="l00235"></a><span class="lineno">  235</span>                    label=<a class="code hl_interface" href="structfpx__logging_1_1label__type.html">label_type</a>(<span class="stringliteral">&#39;Cannot open include file &#39;</span> // <a class="code hl_interface" href="interfacefpx__string_1_1trim.html">trim</a>(include_file), <a class="code hl_interface" href="interfacefpx__string_1_1index.html">index</a>(ctx%content, include_file), <a class="code hl_interface" href="interfacefpx__string_1_1len.html">len</a>(include_file)), &amp;</div>
-<div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span>                    source=<a class="code hl_interface" href="interfacefpx__string_1_1trim.html">trim</a>(ctx%path)), &amp;</div>
-<div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span>                    ctx%content, ctx%line))</div>
-<div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span>            <span class="keywordflow">return</span></div>
-<div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span><span class="keywordflow">        end if</span></div>
-<div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span> </div>
-<div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span>        <span class="keyword">call </span>preprocess(iunit, ounit, macros, .true.)</div>
-<div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span>        <span class="keyword">close</span>(iunit)</div>
+<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span>                    label=<a class="code hl_interface" href="structfpx__logging_1_1label__type.html">label_type</a>(<span class="stringliteral">&#39;Filepath should either be delimited by &quot;&lt;...&gt;&quot; or &quot;...&quot;&#39;</span>, <a class="code hl_interface" href="interfacefpx__string_1_1index.html">index</a>(ctx%content, include_file), &amp;</div>
+<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span>                            <a class="code hl_interface" href="interfacefpx__string_1_1len.html">len</a>(include_file)), &amp;</div>
+<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span>                    source=<a class="code hl_interface" href="interfacefpx__string_1_1trim.html">trim</a>(ctx%path)), &amp;</div>
+<div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span>                    ctx%content, ctx%line))</div>
+<div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span>            <span class="keywordflow">return</span></div>
+<div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span><span class="keywordflow">        end if</span></div>
+<div class="line"><a id="l00153" name="l00153"></a><span class="lineno">  153</span> </div>
+<div class="line"><a id="l00154" name="l00154"></a><span class="lineno">  154</span>        <span class="comment">! Handle absolute/rooted paths (same for both types)</span></div>
+<div class="line"><a id="l00155" name="l00155"></a><span class="lineno">  155</span>        ifile = include_file</div>
+<div class="line"><a id="l00156" name="l00156"></a><span class="lineno">  156</span>        <span class="keywordflow">if</span> (<a class="code hl_function" href="group__group__path.html#gad078c4cc1b67c2165a367d9a3e141adf">is_rooted</a>(ifile)) <span class="keywordflow">then</span></div>
+<div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span>            <span class="keyword">inquire</span>(file=ifile, exist=exists)</div>
+<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span>            <span class="keywordflow">if</span> (exists) <span class="keywordflow">then</span></div>
+<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span>                include_file = ifile</div>
+<div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span>            <span class="keywordflow">else</span></div>
+<div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span>                <span class="keywordflow">if</span> (<a class="code hl_variable" href="group__group__logging.html#gae355b6081c8a7c696837dd711719c998">verbose</a>) <span class="keywordflow">then</span></div>
+<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span>                    <span class="keyword">call </span>printf(<a class="code hl_interface" href="interfacefpx__logging_1_1render.html">render</a>(<a class="code hl_interface" href="structfpx__logging_1_1diagnostic__report.html">diagnostic_report</a>(level_error, &amp;</div>
+<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span>                            message=<span class="stringliteral">&#39;File not found&#39;</span>, &amp;</div>
+<div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span>                            label=<a class="code hl_interface" href="structfpx__logging_1_1label__type.html">label_type</a>(<span class="stringliteral">&#39;Cannot find include file &#39;</span> // <a class="code hl_interface" href="interfacefpx__string_1_1trim.html">trim</a>(include_file), <a class="code hl_interface" href="interfacefpx__string_1_1index.html">index</a>(ctx%content, include_file), &amp;</div>
+<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span>                                    <a class="code hl_interface" href="interfacefpx__string_1_1len.html">len</a>(include_file)), &amp;</div>
+<div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span>                            source=<a class="code hl_interface" href="interfacefpx__string_1_1trim.html">trim</a>(ctx%path)), &amp;</div>
+<div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span>                            ctx%content, ctx%line))</div>
+<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span>                    <span class="keywordflow">return</span></div>
+<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span><span class="keywordflow">                end if</span></div>
+<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span><span class="keywordflow">            end if</span></div>
+<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span>        <span class="keywordflow">else</span></div>
+<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span>            <span class="comment">! Relative path - search according to include type</span></div>
+<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span>            exists = .false.</div>
+<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span>            <span class="comment">! For quoted includes (#include &quot;file&quot;), search parent directory first</span></div>
+<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span>            ifile = <a class="code hl_interface" href="interfacefpx__path_1_1join.html">join</a>(dir, include_file)</div>
+<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span>            <span class="keywordflow">if</span> (include_type == include_type_local) <span class="keywordflow">then</span></div>
+<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span>                ifile = <a class="code hl_interface" href="interfacefpx__path_1_1join.html">join</a>(dir, include_file)</div>
+<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span>                <span class="keyword">inquire</span>(file=ifile, exist=exists)</div>
+<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span>                <span class="keywordflow">if</span> (exists) <span class="keywordflow">then</span></div>
+<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span>                    include_file = ifile</div>
+<div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span><span class="keywordflow">                end if</span></div>
+<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span><span class="keywordflow">            end if</span></div>
+<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span> </div>
+<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span>            <span class="comment">! If not found yet, search user-specified include directories (-I paths)</span></div>
+<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span>            <span class="keywordflow">if</span> (.not. exists .and. <span class="keyword">allocated</span>(<a class="code hl_variable" href="group__group__global.html#ga8b8524880886f61f8c961589cffa7640">global</a>%includedir)) <span class="keywordflow">then</span></div>
+<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span>                <span class="keywordflow">do</span> i = 1, <span class="keyword">size</span>(<a class="code hl_variable" href="group__group__global.html#ga8b8524880886f61f8c961589cffa7640">global</a>%includedir)</div>
+<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span>                    ifile = <a class="code hl_interface" href="interfacefpx__path_1_1join.html">join</a>(<a class="code hl_variable" href="group__group__global.html#ga8b8524880886f61f8c961589cffa7640">global</a>%includedir(i), include_file)</div>
+<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>                    <span class="keyword">inquire</span>(file=ifile, exist=exists)</div>
+<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span>                    <span class="keywordflow">if</span> (exists) <span class="keywordflow">then</span></div>
+<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span>                        include_file = ifile</div>
+<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span>                        <span class="keywordflow">exit</span></div>
+<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span><span class="keywordflow">                    end if</span></div>
+<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span><span class="keywordflow">                end do</span></div>
+<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span><span class="keywordflow">            end if</span></div>
+<div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span> </div>
+<div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span>            <span class="comment">! If still not found, try the INCLUDE environmental variable</span></div>
+<div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span>            <span class="keywordflow">if</span> (.not. exists) <span class="keywordflow">then</span></div>
+<div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span>                block</div>
+<div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span>                    <span class="keywordtype">character(:)</span>, <span class="keywordtype">allocatable</span> :: ipaths(:)</div>
+<div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span> </div>
+<div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span>                    ipaths = <a class="code hl_function" href="group__group__include.html#gab85fc44adeb3b7f5e98cbd402427585f">get_system_paths</a>()</div>
+<div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span>                    <span class="keywordflow">do</span> i = 1, <span class="keyword">size</span>(ipaths)</div>
+<div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span>                        ifile = <a class="code hl_interface" href="interfacefpx__path_1_1join.html">join</a>(ipaths(i), include_file)</div>
+<div class="line"><a id="l00204" name="l00204"></a><span class="lineno">  204</span>                        <span class="keyword">inquire</span>(file=ifile, exist=exists)</div>
+<div class="line"><a id="l00205" name="l00205"></a><span class="lineno">  205</span>                        <span class="keywordflow">if</span> (exists) <span class="keywordflow">then</span></div>
+<div class="line"><a id="l00206" name="l00206"></a><span class="lineno">  206</span>                            include_file = ifile</div>
+<div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span><span class="keywordflow">                        end if</span></div>
+<div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span><span class="keywordflow">                    end do</span></div>
+<div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span>                <span class="keyword">end </span>block</div>
+<div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span><span class="keywordflow">            end if</span></div>
+<div class="line"><a id="l00211" name="l00211"></a><span class="lineno">  211</span> </div>
+<div class="line"><a id="l00212" name="l00212"></a><span class="lineno">  212</span>            <span class="comment">! If still not found, try current working directory as last resort</span></div>
+<div class="line"><a id="l00213" name="l00213"></a><span class="lineno">  213</span>            <span class="keywordflow">if</span> (.not. exists) <span class="keywordflow">then</span></div>
+<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span>                ifile = <a class="code hl_interface" href="interfacefpx__path_1_1join.html">join</a>(<a class="code hl_function" href="group__group__path.html#gaee1434d13417f0b481ab61549867aba7">cwd</a>(), include_file)</div>
+<div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span>                <span class="keyword">inquire</span>(file=ifile, exist=exists)</div>
+<div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span>                <span class="keywordflow">if</span> (exists) <span class="keywordflow">then</span></div>
+<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span>                    include_file = ifile</div>
+<div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span><span class="keywordflow">                end if</span></div>
+<div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span><span class="keywordflow">            end if</span></div>
+<div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span> </div>
+<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span>            <span class="comment">! If file was not found anywhere, report error</span></div>
+<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span>            <span class="keywordflow">if</span> (.not. exists) <span class="keywordflow">then</span></div>
+<div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span>                <span class="keyword">call </span>printf(<a class="code hl_interface" href="interfacefpx__logging_1_1render.html">render</a>(<a class="code hl_interface" href="structfpx__logging_1_1diagnostic__report.html">diagnostic_report</a>(level_error, &amp;</div>
+<div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span>                        message=<span class="stringliteral">&#39;File not found&#39;</span>, &amp;</div>
+<div class="line"><a id="l00225" name="l00225"></a><span class="lineno">  225</span>                        label=<a class="code hl_interface" href="structfpx__logging_1_1label__type.html">label_type</a>(<span class="stringliteral">&#39;Cannot find include file &#39;</span> // <a class="code hl_interface" href="interfacefpx__string_1_1trim.html">trim</a>(include_file), <a class="code hl_interface" href="interfacefpx__string_1_1index.html">index</a>(ctx%content, include_file), <a class="code hl_interface" href="interfacefpx__string_1_1len.html">len</a>(&amp;</div>
+<div class="line"><a id="l00226" name="l00226"></a><span class="lineno">  226</span>                                include_file)), &amp;</div>
+<div class="line"><a id="l00227" name="l00227"></a><span class="lineno">  227</span>                        source=<a class="code hl_interface" href="interfacefpx__string_1_1trim.html">trim</a>(ctx%path)), &amp;</div>
+<div class="line"><a id="l00228" name="l00228"></a><span class="lineno">  228</span>                        ctx%content, ctx%line))</div>
+<div class="line"><a id="l00229" name="l00229"></a><span class="lineno">  229</span>                <span class="keywordflow">return</span></div>
+<div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span><span class="keywordflow">            end if</span></div>
+<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span><span class="keywordflow">        end if</span></div>
+<div class="line"><a id="l00232" name="l00232"></a><span class="lineno">  232</span> </div>
+<div class="line"><a id="l00233" name="l00233"></a><span class="lineno">  233</span>        <span class="comment">! Open and preprocess the include file</span></div>
+<div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span>        <span class="keyword">open</span>(newunit=iunit, file=include_file, status=<span class="stringliteral">&#39;old&#39;</span>, action=<span class="stringliteral">&#39;read&#39;</span>, iostat=ierr)</div>
+<div class="line"><a id="l00235" name="l00235"></a><span class="lineno">  235</span>        <span class="keywordflow">if</span> (ierr /= 0) <span class="keywordflow">then</span></div>
+<div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span>            <span class="keyword">call </span>printf(<a class="code hl_interface" href="interfacefpx__logging_1_1render.html">render</a>(<a class="code hl_interface" href="structfpx__logging_1_1diagnostic__report.html">diagnostic_report</a>(level_error, &amp;</div>
+<div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span>                    message=<span class="stringliteral">&#39;File not found&#39;</span>, &amp;</div>
+<div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span>                    label=<a class="code hl_interface" href="structfpx__logging_1_1label__type.html">label_type</a>(<span class="stringliteral">&#39;Cannot open include file &#39;</span> // <a class="code hl_interface" href="interfacefpx__string_1_1trim.html">trim</a>(include_file), <a class="code hl_interface" href="interfacefpx__string_1_1index.html">index</a>(ctx%content, include_file), <a class="code hl_interface" href="interfacefpx__string_1_1len.html">len</a>(&amp;</div>
+<div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span>                            include_file)), &amp;</div>
+<div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span>                    source=<a class="code hl_interface" href="interfacefpx__string_1_1trim.html">trim</a>(ctx%path)), &amp;</div>
+<div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span>                    ctx%content, ctx%line))</div>
+<div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span>            <span class="keywordflow">return</span></div>
+<div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span><span class="keywordflow">        end if</span></div>
+<div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span> </div>
+<div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span>        <span class="keyword">call </span>preprocess(iunit, ounit, macros, .true.)</div>
+<div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span>        <span class="keyword">close</span>(iunit)</div>
 </div>
-<div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span>    <span class="keyword">end subroutine</span></div>
-<div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span><span class="comment"></span> </div>
-<div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span><span class="comment">    !&gt; Get system include paths from PATH environment variable</span></div>
-<div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span><span class="comment">    !! Returns an array of directory paths found in PATH</span></div>
-<div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span><span class="comment">    !! @return Array of path strings, empty if PATH not set</span></div>
-<div class="line"><a id="l00248" name="l00248"></a><span class="lineno">  248</span><span class="comment">    !!</span></div>
-<div class="line"><a id="l00249" name="l00249"></a><span class="lineno">  249</span><span class="comment">    !! @b Remarks</span></div>
-<div class="line"><a id="l00250" name="l00250"></a><span class="lineno">  250</span><span class="comment">    !! @ingroup group_include</span></div>
-<div class="foldopen" id="foldopen00251" data-start="" data-end="">
-<div class="line"><a id="l00251" name="l00251"></a><span class="lineno"><a class="line" href="group__group__include.html#gab85fc44adeb3b7f5e98cbd402427585f">  251</a></span>    <span class="keyword">function </span><a class="code hl_function" href="group__group__include.html#gab85fc44adeb3b7f5e98cbd402427585f">get_system_paths</a>() <span class="keyword">result</span>(paths)</div>
-<div class="line"><a id="l00252" name="l00252"></a><span class="lineno">  252</span>        <span class="keywordtype">character(:)</span>, <span class="keywordtype">allocatable</span> :: paths(:)</div>
-<div class="line"><a id="l00253" name="l00253"></a><span class="lineno">  253</span>        <span class="comment">!private</span></div>
-<div class="line"><a id="l00254" name="l00254"></a><span class="lineno">  254</span>        <span class="keywordtype">character(:)</span>, <span class="keywordtype">allocatable</span> :: path_env, tmp(:)</div>
-<div class="line"><a id="l00255" name="l00255"></a><span class="lineno">  255</span>        <span class="keywordtype">integer</span> :: lpath, i, n_paths, start_pos, end_pos, count</div>
-<div class="line"><a id="l00256" name="l00256"></a><span class="lineno">  256</span>        <span class="keywordtype">character(len=1)</span> :: path_sep</div>
-<div class="line"><a id="l00257" name="l00257"></a><span class="lineno">  257</span> </div>
-<div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span><span class="preprocessor">#ifdef _WIN32</span></div>
-<div class="line"><a id="l00259" name="l00259"></a><span class="lineno">  259</span><span class="preprocessor"></span>        path_sep = <span class="stringliteral">&#39;;&#39;</span>  <span class="comment">! Windows path separator</span></div>
-<div class="line"><a id="l00260" name="l00260"></a><span class="lineno">  260</span><span class="preprocessor">#else</span></div>
-<div class="line"><a id="l00261" name="l00261"></a><span class="lineno">  261</span><span class="preprocessor"></span>        path_sep = <span class="stringliteral">&#39;:&#39;</span>  <span class="comment">! Unix/Linux/Mac path separator</span></div>
-<div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span><span class="preprocessor"></span> </div>
-<div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span>        <span class="comment">! Get PATH environment variable length</span></div>
-<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span>        <span class="keyword">call </span>get_environment_variable(<span class="stringliteral">&#39;INCLUDE&#39;</span>, length=lpath)</div>
-<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span>        <span class="keywordflow">if</span> (lpath &lt;= 0) <span class="keywordflow">then</span></div>
-<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span>            <span class="keyword">allocate</span>(<span class="keywordtype">character(len=0)</span> :: paths(0)); return</div>
-<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span><span class="keywordflow">        end if</span></div>
-<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span> </div>
-<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span>        <span class="comment">! Allocate and retrieve PATH value</span></div>
-<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span>        <span class="keyword">allocate</span>(<span class="keywordtype">character(len=lpath)</span> :: path_env)</div>
-<div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span>        <span class="keyword">call </span>get_environment_variable(<span class="stringliteral">&#39;INCLUDE&#39;</span>, <span class="keywordtype">value</span>=path_env)</div>
+<div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span>    <span class="keyword">end subroutine</span></div>
+<div class="line"><a id="l00248" name="l00248"></a><span class="lineno">  248</span><span class="comment"></span> </div>
+<div class="line"><a id="l00249" name="l00249"></a><span class="lineno">  249</span><span class="comment">    !&gt; Get system include paths from PATH environment variable</span></div>
+<div class="line"><a id="l00250" name="l00250"></a><span class="lineno">  250</span><span class="comment">    !! Returns an array of directory paths found in PATH</span></div>
+<div class="line"><a id="l00251" name="l00251"></a><span class="lineno">  251</span><span class="comment">    !! @return Array of path strings, empty if PATH not set</span></div>
+<div class="line"><a id="l00252" name="l00252"></a><span class="lineno">  252</span><span class="comment">    !!</span></div>
+<div class="line"><a id="l00253" name="l00253"></a><span class="lineno">  253</span><span class="comment">    !! @b Remarks</span></div>
+<div class="line"><a id="l00254" name="l00254"></a><span class="lineno">  254</span><span class="comment">    !! @ingroup group_include</span></div>
+<div class="foldopen" id="foldopen00255" data-start="" data-end="">
+<div class="line"><a id="l00255" name="l00255"></a><span class="lineno"><a class="line" href="group__group__include.html#gab85fc44adeb3b7f5e98cbd402427585f">  255</a></span>    <span class="keyword">function </span><a class="code hl_function" href="group__group__include.html#gab85fc44adeb3b7f5e98cbd402427585f">get_system_paths</a>() <span class="keyword">result</span>(paths)</div>
+<div class="line"><a id="l00256" name="l00256"></a><span class="lineno">  256</span>        <span class="keywordtype">character(:)</span>, <span class="keywordtype">allocatable</span> :: paths(:)</div>
+<div class="line"><a id="l00257" name="l00257"></a><span class="lineno">  257</span>        <span class="comment">!private</span></div>
+<div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span>        <span class="keywordtype">character(:)</span>, <span class="keywordtype">allocatable</span> :: path_env, tmp(:)</div>
+<div class="line"><a id="l00259" name="l00259"></a><span class="lineno">  259</span>        <span class="keywordtype">integer</span> :: lpath, i, n_paths, start_pos, end_pos, count</div>
+<div class="line"><a id="l00260" name="l00260"></a><span class="lineno">  260</span>        <span class="keywordtype">character(len=1)</span> :: path_sep</div>
+<div class="line"><a id="l00261" name="l00261"></a><span class="lineno">  261</span> </div>
+<div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span><span class="preprocessor">#ifdef _WIN32</span></div>
+<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span><span class="preprocessor"></span>        path_sep = <span class="stringliteral">&#39;;&#39;</span>  <span class="comment">! Windows path separator</span></div>
+<div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span><span class="preprocessor">#else</span></div>
+<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span><span class="preprocessor"></span>        path_sep = <span class="stringliteral">&#39;:&#39;</span>  <span class="comment">! Unix/Linux/Mac path separator</span></div>
+<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span><span class="preprocessor"></span> </div>
+<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span>        <span class="comment">! Get PATH environment variable length</span></div>
+<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span>        <span class="keyword">call </span>get_environment_variable(<span class="stringliteral">&#39;INCLUDE&#39;</span>, length=lpath)</div>
+<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span>        <span class="keywordflow">if</span> (lpath &lt;= 0) <span class="keywordflow">then</span></div>
+<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span>            <span class="keyword">allocate</span>(<span class="keywordtype">character(len=0)</span> :: paths(0)); return</div>
+<div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span><span class="keywordflow">        end if</span></div>
 <div class="line"><a id="l00273" name="l00273"></a><span class="lineno">  273</span> </div>
-<div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span>        <span class="comment">! Count number of paths (number of separators + 1)</span></div>
-<div class="line"><a id="l00275" name="l00275"></a><span class="lineno">  275</span>        n_paths = 1</div>
-<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span>        <span class="keywordflow">do</span> i = 1, len(path_env)</div>
-<div class="line"><a id="l00277" name="l00277"></a><span class="lineno">  277</span>            <span class="keywordflow">if</span> (path_env(i:i) == path_sep) n_paths = n_paths + 1</div>
-<div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span><span class="keywordflow">        end do</span></div>
-<div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span> </div>
-<div class="line"><a id="l00280" name="l00280"></a><span class="lineno">  280</span>        <span class="comment">! Allocate temporary array with maximum size</span></div>
-<div class="line"><a id="l00281" name="l00281"></a><span class="lineno">  281</span>        <span class="keyword">allocate</span>(<span class="keywordtype">character(len=MAX_PATH_LEN)</span> :: tmp(n_paths))</div>
-<div class="line"><a id="l00282" name="l00282"></a><span class="lineno">  282</span> </div>
-<div class="line"><a id="l00283" name="l00283"></a><span class="lineno">  283</span>        <span class="comment">! Split INCLUDE into individual directories</span></div>
-<div class="line"><a id="l00284" name="l00284"></a><span class="lineno">  284</span>        count = 0</div>
-<div class="line"><a id="l00285" name="l00285"></a><span class="lineno">  285</span>        start_pos = 1</div>
-<div class="line"><a id="l00286" name="l00286"></a><span class="lineno">  286</span>        <span class="keywordflow">do</span> i = 1, len(path_env) + 1</div>
-<div class="line"><a id="l00287" name="l00287"></a><span class="lineno">  287</span>            <span class="keywordflow">if</span> (i &gt; len(path_env) .or. path_env(i:i) == path_sep) <span class="keywordflow">then</span></div>
-<div class="line"><a id="l00288" name="l00288"></a><span class="lineno">  288</span>                <span class="keywordflow">if</span> (i &gt; len(path_env)) <span class="keywordflow">then</span></div>
-<div class="line"><a id="l00289" name="l00289"></a><span class="lineno">  289</span>                    end_pos = i - 1</div>
-<div class="line"><a id="l00290" name="l00290"></a><span class="lineno">  290</span>                <span class="keywordflow">else</span></div>
-<div class="line"><a id="l00291" name="l00291"></a><span class="lineno">  291</span>                    end_pos = i - 1</div>
-<div class="line"><a id="l00292" name="l00292"></a><span class="lineno">  292</span><span class="keywordflow">                end if</span></div>
-<div class="line"><a id="l00293" name="l00293"></a><span class="lineno">  293</span> </div>
-<div class="line"><a id="l00294" name="l00294"></a><span class="lineno">  294</span>                <span class="keywordflow">if</span> (end_pos &gt;= start_pos) <span class="keywordflow">then</span></div>
-<div class="line"><a id="l00295" name="l00295"></a><span class="lineno">  295</span>                    count = count + 1</div>
-<div class="line"><a id="l00296" name="l00296"></a><span class="lineno">  296</span>                    tmp(count) = trim(adjustl(path_env(start_pos:end_pos)))</div>
-<div class="line"><a id="l00297" name="l00297"></a><span class="lineno">  297</span><span class="keywordflow">                end if</span></div>
-<div class="line"><a id="l00298" name="l00298"></a><span class="lineno">  298</span>                start_pos = i + 1</div>
-<div class="line"><a id="l00299" name="l00299"></a><span class="lineno">  299</span><span class="keywordflow">            end if</span></div>
-<div class="line"><a id="l00300" name="l00300"></a><span class="lineno">  300</span><span class="keywordflow">        end do</span></div>
-<div class="line"><a id="l00301" name="l00301"></a><span class="lineno">  301</span> </div>
-<div class="line"><a id="l00302" name="l00302"></a><span class="lineno">  302</span>        <span class="comment">! Allocate result array with actual count</span></div>
-<div class="line"><a id="l00303" name="l00303"></a><span class="lineno">  303</span>        <span class="keywordflow">if</span> (count &gt; 0) <span class="keywordflow">then</span></div>
-<div class="line"><a id="l00304" name="l00304"></a><span class="lineno">  304</span>            <span class="keyword">allocate</span>(<span class="keywordtype">character(len=MAX_PATH_LEN)</span> :: paths(count))</div>
-<div class="line"><a id="l00305" name="l00305"></a><span class="lineno">  305</span>            paths(:) = tmp(1:count)</div>
-<div class="line"><a id="l00306" name="l00306"></a><span class="lineno">  306</span>        <span class="keywordflow">else</span></div>
-<div class="line"><a id="l00307" name="l00307"></a><span class="lineno">  307</span>            <span class="keyword">allocate</span>(<span class="keywordtype">character(len=0)</span> :: paths(0))</div>
-<div class="line"><a id="l00308" name="l00308"></a><span class="lineno">  308</span><span class="keywordflow">        end if</span></div>
+<div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span>        <span class="comment">! Allocate and retrieve PATH value</span></div>
+<div class="line"><a id="l00275" name="l00275"></a><span class="lineno">  275</span>        <span class="keyword">allocate</span>(<span class="keywordtype">character(len=lpath)</span> :: path_env)</div>
+<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span>        <span class="keyword">call </span>get_environment_variable(<span class="stringliteral">&#39;INCLUDE&#39;</span>, <span class="keywordtype">value</span>=path_env)</div>
+<div class="line"><a id="l00277" name="l00277"></a><span class="lineno">  277</span> </div>
+<div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span>        <span class="comment">! Count number of paths (number of separators + 1)</span></div>
+<div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span>        n_paths = 1</div>
+<div class="line"><a id="l00280" name="l00280"></a><span class="lineno">  280</span>        <span class="keywordflow">do</span> i = 1, len(path_env)</div>
+<div class="line"><a id="l00281" name="l00281"></a><span class="lineno">  281</span>            <span class="keywordflow">if</span> (path_env(i:i) == path_sep) n_paths = n_paths + 1</div>
+<div class="line"><a id="l00282" name="l00282"></a><span class="lineno">  282</span><span class="keywordflow">        end do</span></div>
+<div class="line"><a id="l00283" name="l00283"></a><span class="lineno">  283</span> </div>
+<div class="line"><a id="l00284" name="l00284"></a><span class="lineno">  284</span>        <span class="comment">! Allocate temporary array with maximum size</span></div>
+<div class="line"><a id="l00285" name="l00285"></a><span class="lineno">  285</span>        <span class="keyword">allocate</span>(<span class="keywordtype">character(len=MAX_PATH_LEN)</span> :: tmp(n_paths))</div>
+<div class="line"><a id="l00286" name="l00286"></a><span class="lineno">  286</span> </div>
+<div class="line"><a id="l00287" name="l00287"></a><span class="lineno">  287</span>        <span class="comment">! Split INCLUDE into individual directories</span></div>
+<div class="line"><a id="l00288" name="l00288"></a><span class="lineno">  288</span>        count = 0</div>
+<div class="line"><a id="l00289" name="l00289"></a><span class="lineno">  289</span>        start_pos = 1</div>
+<div class="line"><a id="l00290" name="l00290"></a><span class="lineno">  290</span>        <span class="keywordflow">do</span> i = 1, len(path_env) + 1</div>
+<div class="line"><a id="l00291" name="l00291"></a><span class="lineno">  291</span>            <span class="keywordflow">if</span> (i &gt; len(path_env) .or. path_env(i:i) == path_sep) <span class="keywordflow">then</span></div>
+<div class="line"><a id="l00292" name="l00292"></a><span class="lineno">  292</span>                <span class="keywordflow">if</span> (i &gt; len(path_env)) <span class="keywordflow">then</span></div>
+<div class="line"><a id="l00293" name="l00293"></a><span class="lineno">  293</span>                    end_pos = i - 1</div>
+<div class="line"><a id="l00294" name="l00294"></a><span class="lineno">  294</span>                <span class="keywordflow">else</span></div>
+<div class="line"><a id="l00295" name="l00295"></a><span class="lineno">  295</span>                    end_pos = i - 1</div>
+<div class="line"><a id="l00296" name="l00296"></a><span class="lineno">  296</span><span class="keywordflow">                end if</span></div>
+<div class="line"><a id="l00297" name="l00297"></a><span class="lineno">  297</span> </div>
+<div class="line"><a id="l00298" name="l00298"></a><span class="lineno">  298</span>                <span class="keywordflow">if</span> (end_pos &gt;= start_pos) <span class="keywordflow">then</span></div>
+<div class="line"><a id="l00299" name="l00299"></a><span class="lineno">  299</span>                    count = count + 1</div>
+<div class="line"><a id="l00300" name="l00300"></a><span class="lineno">  300</span>                    tmp(count) = trim(adjustl(path_env(start_pos:end_pos)))</div>
+<div class="line"><a id="l00301" name="l00301"></a><span class="lineno">  301</span><span class="keywordflow">                end if</span></div>
+<div class="line"><a id="l00302" name="l00302"></a><span class="lineno">  302</span>                start_pos = i + 1</div>
+<div class="line"><a id="l00303" name="l00303"></a><span class="lineno">  303</span><span class="keywordflow">            end if</span></div>
+<div class="line"><a id="l00304" name="l00304"></a><span class="lineno">  304</span><span class="keywordflow">        end do</span></div>
+<div class="line"><a id="l00305" name="l00305"></a><span class="lineno">  305</span> </div>
+<div class="line"><a id="l00306" name="l00306"></a><span class="lineno">  306</span>        <span class="comment">! Allocate result array with actual count</span></div>
+<div class="line"><a id="l00307" name="l00307"></a><span class="lineno">  307</span>        <span class="keywordflow">if</span> (count &gt; 0) <span class="keywordflow">then</span></div>
+<div class="line"><a id="l00308" name="l00308"></a><span class="lineno">  308</span>            <span class="keyword">allocate</span>(<span class="keywordtype">character(len=MAX_PATH_LEN)</span> :: paths(count))</div>
+<div class="line"><a id="l00309" name="l00309"></a><span class="lineno">  309</span>            paths(:) = tmp(1:count)</div>
+<div class="line"><a id="l00310" name="l00310"></a><span class="lineno">  310</span>        <span class="keywordflow">else</span></div>
+<div class="line"><a id="l00311" name="l00311"></a><span class="lineno">  311</span>            <span class="keyword">allocate</span>(<span class="keywordtype">character(len=0)</span> :: paths(0))</div>
+<div class="line"><a id="l00312" name="l00312"></a><span class="lineno">  312</span><span class="keywordflow">        end if</span></div>
 </div>
-<div class="line"><a id="l00309" name="l00309"></a><span class="lineno">  309</span>    <span class="keyword">end function</span></div>
-<div class="line"><a id="l00310" name="l00310"></a><span class="lineno">  310</span> </div>
-<div class="line"><a id="l00311" name="l00311"></a><span class="lineno">  311</span><span class="keyword">end module</span></div>
-<div class="ttc" id="agroup__group__global_html_ga8b8524880886f61f8c961589cffa7640"><div class="ttname"><a href="group__group__global.html#ga8b8524880886f61f8c961589cffa7640">fpx_global::global</a></div><div class="ttdeci">type(global_settings), public global</div><div class="ttdoc">The single global instance used throughout fpx Initialized automatically with sensible defaults value...</div><div class="ttdef"><b>Definition</b> <a href="global_8f90_source.html#l00093">global.f90:93</a></div></div>
+<div class="line"><a id="l00313" name="l00313"></a><span class="lineno">  313</span>    <span class="keyword">end function</span></div>
+<div class="line"><a id="l00314" name="l00314"></a><span class="lineno">  314</span> </div>
+<div class="line"><a id="l00315" name="l00315"></a><span class="lineno">  315</span><span class="keyword">end module</span></div>
+<div class="ttc" id="agroup__group__global_html_ga8b8524880886f61f8c961589cffa7640"><div class="ttname"><a href="group__group__global.html#ga8b8524880886f61f8c961589cffa7640">fpx_global::global</a></div><div class="ttdeci">type(global_settings), public global</div><div class="ttdoc">The single global instance used throughout fpx Initialized automatically with sensible defaults value...</div><div class="ttdef"><b>Definition</b> <a href="global_8f90_source.html#l00092">global.f90:92</a></div></div>
 <div class="ttc" id="agroup__group__include_html_gaa2164306cb7e02304b8f602a63658787"><div class="ttname"><a href="group__group__include.html#gaa2164306cb7e02304b8f602a63658787">fpx_include::handle_include</a></div><div class="ttdeci">recursive subroutine, public handle_include(ctx, ounit, preprocess, macros, token)</div><div class="ttdoc">Process a include directive encountered during preprocessing Resolves the include file name (quoted o...</div><div class="ttdef"><b>Definition</b> <a href="#l00116">include.f90:117</a></div></div>
-<div class="ttc" id="agroup__group__include_html_gab85fc44adeb3b7f5e98cbd402427585f"><div class="ttname"><a href="group__group__include.html#gab85fc44adeb3b7f5e98cbd402427585f">fpx_include::get_system_paths</a></div><div class="ttdeci">character(:) function, dimension(:), allocatable get_system_paths()</div><div class="ttdoc">Get system include paths from PATH environment variable Returns an array of directory paths found in ...</div><div class="ttdef"><b>Definition</b> <a href="#l00251">include.f90:252</a></div></div>
+<div class="ttc" id="agroup__group__include_html_gab85fc44adeb3b7f5e98cbd402427585f"><div class="ttname"><a href="group__group__include.html#gab85fc44adeb3b7f5e98cbd402427585f">fpx_include::get_system_paths</a></div><div class="ttdeci">character(:) function, dimension(:), allocatable get_system_paths()</div><div class="ttdoc">Get system include paths from PATH environment variable Returns an array of directory paths found in ...</div><div class="ttdef"><b>Definition</b> <a href="#l00255">include.f90:256</a></div></div>
 <div class="ttc" id="agroup__group__logging_html_gae355b6081c8a7c696837dd711719c998"><div class="ttname"><a href="group__group__logging.html#gae355b6081c8a7c696837dd711719c998">fpx_logging::verbose</a></div><div class="ttdeci">logical, public verbose</div><div class="ttdoc">Master switch for verbose diagnostic output Default value is .false. (quiet mode)....</div><div class="ttdef"><b>Definition</b> <a href="logging_8f90_source.html#l00108">logging.f90:108</a></div></div>
-<div class="ttc" id="agroup__group__path_html_gad078c4cc1b67c2165a367d9a3e141adf"><div class="ttname"><a href="group__group__path.html#gad078c4cc1b67c2165a367d9a3e141adf">fpx_path::is_rooted</a></div><div class="ttdeci">pure logical function is_rooted(filepath)</div><div class="ttdoc">Returns .true. if the path is rooted (starts with a separator) or is absolute. A rooted path begins w...</div><div class="ttdef"><b>Definition</b> <a href="path_8f90_source.html#l00150">path.f90:151</a></div></div>
-<div class="ttc" id="agroup__group__path_html_gae5c7c7a17e6ec9a4bdbf7762f34b1e70"><div class="ttname"><a href="group__group__path.html#gae5c7c7a17e6ec9a4bdbf7762f34b1e70">fpx_path::dirpath</a></div><div class="ttdeci">pure character(:) function, allocatable dirpath(filepath)</div><div class="ttdoc">Returns the directory part of a path (everything before the last separator).</div><div class="ttdef"><b>Definition</b> <a href="path_8f90_source.html#l00294">path.f90:295</a></div></div>
-<div class="ttc" id="agroup__group__path_html_gaee1434d13417f0b481ab61549867aba7"><div class="ttname"><a href="group__group__path.html#gaee1434d13417f0b481ab61549867aba7">fpx_path::cwd</a></div><div class="ttdeci">character(:) function, allocatable cwd()</div><div class="ttdoc">Returns the current working directory as a deferred-length character string. Returns empty string on ...</div><div class="ttdef"><b>Definition</b> <a href="path_8f90_source.html#l00392">path.f90:393</a></div></div>
+<div class="ttc" id="agroup__group__path_html_gad078c4cc1b67c2165a367d9a3e141adf"><div class="ttname"><a href="group__group__path.html#gad078c4cc1b67c2165a367d9a3e141adf">fpx_path::is_rooted</a></div><div class="ttdeci">pure logical function is_rooted(filepath)</div><div class="ttdoc">Returns .true. if the path is rooted (starts with a separator) or is absolute. A rooted path begins w...</div><div class="ttdef"><b>Definition</b> <a href="path_8f90_source.html#l00151">path.f90:152</a></div></div>
+<div class="ttc" id="agroup__group__path_html_gae5c7c7a17e6ec9a4bdbf7762f34b1e70"><div class="ttname"><a href="group__group__path.html#gae5c7c7a17e6ec9a4bdbf7762f34b1e70">fpx_path::dirpath</a></div><div class="ttdeci">pure character(:) function, allocatable dirpath(filepath)</div><div class="ttdoc">Returns the directory part of a path (everything before the last separator).</div><div class="ttdef"><b>Definition</b> <a href="path_8f90_source.html#l00295">path.f90:296</a></div></div>
+<div class="ttc" id="agroup__group__path_html_gaee1434d13417f0b481ab61549867aba7"><div class="ttname"><a href="group__group__path.html#gaee1434d13417f0b481ab61549867aba7">fpx_path::cwd</a></div><div class="ttdeci">character(:) function, allocatable cwd()</div><div class="ttdoc">Returns the current working directory as a deferred-length character string. Returns empty string on ...</div><div class="ttdef"><b>Definition</b> <a href="path_8f90_source.html#l00393">path.f90:394</a></div></div>
 <div class="ttc" id="agroup__group__string_html_gaa2b8ec4e39395a3550a97ea0ee92e0a2"><div class="ttname"><a href="group__group__string.html#gaa2b8ec4e39395a3550a97ea0ee92e0a2">fpx_string::lowercase</a></div><div class="ttdeci">pure character(len_trim(str)) function, public lowercase(str)</div><div class="ttdoc">Convert string to lower case (respects contents of quotes).</div><div class="ttdef"><b>Definition</b> <a href="string_8f90_source.html#l00639">string.f90:640</a></div></div>
 <div class="ttc" id="ainterfacefpx__include_1_1read__unit_html"><div class="ttname"><a href="interfacefpx__include_1_1read__unit.html">fpx_include::read_unit</a></div><div class="ttdoc">Abstract interface for the main preprocessing routine (used for recursion) Allows handle_include to r...</div><div class="ttdef"><b>Definition</b> <a href="#l00089">include.f90:89</a></div></div>
 <div class="ttc" id="ainterfacefpx__logging_1_1render_html"><div class="ttname"><a href="interfacefpx__logging_1_1render.html">fpx_logging::render</a></div><div class="ttdoc">Interface to render diagnostic messages and labels.</div><div class="ttdef"><b>Definition</b> <a href="logging_8f90_source.html#l00185">logging.f90:185</a></div></div>
-<div class="ttc" id="ainterfacefpx__path_1_1join_html"><div class="ttname"><a href="interfacefpx__path_1_1join.html">fpx_path::join</a></div><div class="ttdoc">Generic interface for joining two path components Supports all combinations of character and string a...</div><div class="ttdef"><b>Definition</b> <a href="path_8f90_source.html#l00101">path.f90:101</a></div></div>
+<div class="ttc" id="ainterfacefpx__path_1_1join_html"><div class="ttname"><a href="interfacefpx__path_1_1join.html">fpx_path::join</a></div><div class="ttdoc">Generic interface for joining two path components Supports all combinations of character and string a...</div><div class="ttdef"><b>Definition</b> <a href="path_8f90_source.html#l00102">path.f90:102</a></div></div>
 <div class="ttc" id="ainterfacefpx__string_1_1index_html"><div class="ttname"><a href="interfacefpx__string_1_1index.html">fpx_string::index</a></div><div class="ttdoc">Index operator.</div><div class="ttdef"><b>Definition</b> <a href="string_8f90_source.html#l00178">string.f90:178</a></div></div>
 <div class="ttc" id="ainterfacefpx__string_1_1len_html"><div class="ttname"><a href="interfacefpx__string_1_1len.html">fpx_string::len</a></div><div class="ttdoc">Return the length of a string.</div><div class="ttdef"><b>Definition</b> <a href="string_8f90_source.html#l00133">string.f90:133</a></div></div>
 <div class="ttc" id="ainterfacefpx__string_1_1trim_html"><div class="ttname"><a href="interfacefpx__string_1_1trim.html">fpx_string::trim</a></div><div class="ttdoc">Return the trimmed string.</div><div class="ttdef"><b>Definition</b> <a href="string_8f90_source.html#l00149">string.f90:149</a></div></div>
