@@ -145,20 +145,38 @@ contains
     !!
     !! @b Remarks
     !! @ingroup group_for
-    subroutine handle_endfor(ctx, macros, token)
-        type(context), intent(in)                   :: ctx
-        type(macro), allocatable, intent(inout)     :: macros(:)
-        character(*), intent(in)                    :: token
+    subroutine handle_endfor(ctx, ounit, token)
+        type(context), intent(in)   :: ctx
+        integer, intent(in)         :: ounit
+        character(*), intent(in)    :: token
+        !private
+        integer :: i, j
+        character(:), allocatable :: rst
+        logical :: stitch
+        type(macro) :: m
+        
+        m = fmacros(depth)
+        if (allocated(fmacros(depth)%params)) deallocate(fmacros(depth)%params)
+        do i = 1, size(m%params)
+            fmacros(depth)%value = m%params(i)
+            do j = 1, size(bodies(depth)%lines)
+                rst = adjustl(expand_macros(bodies(depth)%lines(j)%chars, fmacros, stitch, .false., &
+                        ctx))
+                write(ounit, '(A)') rst
+            end do
+        end do
         
         depth = depth - 1
         if (depth < 0) then
             call printf(render(diagnostic_report(LEVEL_WARNING, &
-                    message='Unbalanced #for expression', &
+                    message='Unbalanced #for expression. Missing #for or #endfor directive.', &
                     source=ctx%path), &
                     trim(ctx%content)))
             return
         end if
         call remove(fmacros, depth + 1)
+        deallocate(fmacros(depth + 1)%params)
+        fmacros = fmacros(:depth)
     end subroutine
 
     subroutine add_to_loop(line)

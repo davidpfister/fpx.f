@@ -79,22 +79,6 @@ module fpx_include
 #else
     integer, parameter, private :: MAX_PATH_LEN = 4096
 #endif
-    !> Abstract interface for the main preprocessing routine (used for recursion)
-    !! Allows handle_include to recursively call the top-level preprocess_unit routine
-    !! without creating circular module dependencies.
-    !!
-    !! @b Remarks
-    !! @ingroup group_include
-    interface
-        subroutine read_unit(iunit, ounit, macros, from_include)
-            import macro
-            implicit none
-            integer, intent(in)                     :: iunit
-            integer, intent(in)                     :: ounit
-            type(macro), allocatable, intent(inout) :: macros(:)
-            logical, intent(in)                     :: from_include
-        end subroutine
-    end interface
 
 contains
 

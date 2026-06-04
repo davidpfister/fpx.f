@@ -82,7 +82,8 @@ module fpx_string
     !> Represents text as a sequence of ASCII code units.
     !!        The derived type wraps an allocatable character array.
     !!
-    !! <h2 class="groupheader">Examples</h2>
+    !! @section string_examples Examples
+    !!
     !! @code{.f90}
     !! type(string) :: s
     !! s = 'foo'

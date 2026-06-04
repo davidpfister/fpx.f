@@ -66,7 +66,8 @@ module fpx_macro
 
     public :: expand_macros, &
             expand_all, &
-            is_defined
+            is_defined, &
+            read_unit
 
     !> Derived type representing a single preprocessor macro
     !! Extends @link fpx_string::string string @endlink with macro-specific fields: replacement value, parameters,
@@ -161,6 +162,22 @@ module fpx_macro
         module procedure  :: size_item
     end interface
 
+    !> Abstract interface for the main preprocessing routine (used for recursion)
+    !! Allows handle_include to recursively call the top-level preprocess_unit routine
+    !! without creating circular module dependencies.
+    !!
+    !! @b Remarks
+    !! @ingroup group_include
+    interface
+        subroutine read_unit(iunit, ounit, macros, from_include)
+            import macro
+            implicit none
+            integer, intent(in)                     :: iunit
+            integer, intent(in)                     :: ounit
+            type(macro), allocatable, intent(inout) :: macros(:)
+            logical, intent(in)                     :: from_include
+        end subroutine
+    end interface
 contains
 
     !> Construct a new macro object

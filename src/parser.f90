@@ -441,7 +441,7 @@ contains
             else if (starts_with(lowercase(adjustl(trimmed_line(2:))), 'for')) then
                 call handle_for(ctx, macros, 'for')
             else if (starts_with(lowercase(adjustl(trimmed_line(2:))), 'endfor')) then
-                call handle_endfor(ctx, macros, 'endfor')
+                call handle_endfor(ctx, ounit, 'endfor')
             else if (starts_with(lowercase(adjustl(trimmed_line(2:))), 'pragma') .and. active) then
                 rst = ctx%content
             else
