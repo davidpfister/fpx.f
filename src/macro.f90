@@ -5,6 +5,7 @@
 !! This module implements a complete, standards-inspired macro system supporting:
 !! - Object-like and function-like macros
 !! - Variadic macros (`...` and `__VA_ARGS__`)
+!! - C++20/C23-style `__VA_OPT__` handling for optional variadic content
 !! - Parameter stringification (`#param`) and token pasting (`##`)
 !! - Built-in predefined macros: `__FILE__`, `__FILENAME__`, `__LINE__`, `__DATE__`, `__TIME__`, `__TIMESTAMP__`
 !! - Recursive expansion with circular dependency detection via digraph analysis
@@ -14,7 +15,12 @@
 !! The design allows safe, repeated expansion while preventing infinite recursion.
 !! All operations are container-agnostic using allocatable dynamic arrays.
 !!
-!! <h2 class="groupheader">Examples</h2>
+!! @par Expansion Model
+!! Macros are expanded recursively.
+!! Circular dependencies are detected through dependency graph analysis.
+!! Macro lookup is currently linear in the number of defined macros.
+!!
+!! @section macro_examples Examples
 !!
 !! 1. Define and use simple macros:
 !! @code{.f90}
@@ -61,10 +67,6 @@ module fpx_macro
     public :: expand_macros, &
             expand_all, &
             is_defined
-
-    !> @brief Default buffer size
-    !! @ingroup group_macro
-    integer, parameter :: BUFFER_SIZE = 256
 
     !> Derived type representing a single preprocessor macro
     !! Extends @link fpx_string::string string @endlink with macro-specific fields: replacement value, parameters,
@@ -501,7 +503,7 @@ contains
                                                 k = pos - 1
                                                 if (k <= 0) then
                                                     call printf(render(diagnostic_report(LEVEL_ERROR, &
-                                                            message='Synthax error', &
+                                                            message='Syntax error', &
                                                             label=label_type('No token before ##', pos, 2), &
                                                             source=trim(ctx%path)), &
                                                             temp, ctx%line))
@@ -520,7 +522,7 @@ contains
                                                 k = pos + 2
                                                 if (k > len(temp)) then
                                                     call printf(render(diagnostic_report(LEVEL_ERROR, &
-                                                            message='Synthax error', &
+                                                            message='Syntax error', &
                                                             label=label_type('No token after ##', pos, 2), &
                                                             source=trim(ctx%path)), &
                                                             temp, ctx%line))
@@ -684,7 +686,7 @@ contains
     end function
 
     !> Internal helper: grow dynamic macro array in chunks for efficiency
-    !! Adds a new macro to the allocatable array, growing in BUFFER_SIZE increments.
+    !! Adds a new macro to the allocatable array.
     !! Also detects direct self-references (A -> A) and marks both sides as cyclic.
     !!
     !! @b Remarks

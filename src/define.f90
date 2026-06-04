@@ -4,17 +4,19 @@
 !! This module implements the core logic for handling macro definition and removal
 !! during preprocessing in the fpx Fortran preprocessor.
 !! - Object-like macros: `#define NAME value`
-!! - Function-like macros: `#define NAME(arg1, arg2, ...) replacement`
+!! - Function-like macros: `#define NAME(arg1, arg2, ...)`
 !! - Variadic macros using `...` and automatic detection
 !! - Proper parameter parsing with whitespace handling
-!! - Macro redefinition (overwrites existing definition)
 !! - Safe `#undef` that removes a previously defined macro
-!! - Integration with global undef list (`global%undef`) to block redefinition
+!! - Integration with global undef list to block redefinition
 !! - Comprehensive verbose logging of all definition actions
+!!
+!! @note Existing macros are overwritten.
 !!
 !! The routines are designed to be robust against malformed input and provide
 !! clear diagnostics when `verbose = .true.`.
-!! <h2  class="groupheader">Examples</h2>
+!!
+!! @section define_examples Examples
 !!
 !! 1. Define simple object-like macros:
 !! @code{.f90}
@@ -93,10 +95,10 @@ contains
             name = trim(temp(:paren_start - 1))
 
             if (global%undef .contains. name) return
-            paren_end = index(temp, ')')
+            paren_end = index(temp, ')', back=.true.)
             if (paren_end == 0) then
                 call printf(render(diagnostic_report(LEVEL_ERROR, &
-                        message='Synthax error', &
+                        message='Syntax error', &
                         label=label_type('Missing closing parenthesis in macro definition', len_trim(ctx%content) + 1, 1), &
                         source=ctx%path), &
                         trim(ctx%content), ctx%line))
@@ -209,7 +211,6 @@ contains
         type(macro), allocatable, intent(inout)     :: macros(:)
         character(*), intent(in)                    :: token
         !private
-        type(macro), allocatable :: temp_macros(:)
         character(:), allocatable :: name
         integer :: i, n, pos
 

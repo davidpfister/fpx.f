@@ -9,7 +9,7 @@
 !! then falls back to the presence of OS-specific files. This makes it robust across
 !! native systems, containers, WSL, Cygwin, and cross-compilation environments.
 !!
-!! <h2 class="groupheader">Examples</h2>
+!! @section os_examples Examples
 !!
 !! 1. Basic OS detection:
 !! @code{.f90}

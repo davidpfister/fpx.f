@@ -29,7 +29,7 @@
 !!    |          ^^^^^ 'DEBUG' not defined
 !! ```
 !!
-!! @par Typical usage examples
+!! @section context_examples Examples
 !!
 !! 1. Creating context when reading a new file:
 !! @code{.f90}

@@ -13,7 +13,7 @@
 !! Designed to produce modern, readable, IDE-friendly output similar to rustc, clang, or cargo.
 !! When `nocolor = .true.` (or terminal does not support ANSI), falls back to plain text.
 !!
-!! <h2  class="groupheader">Examples</h2>
+!! @section logging_examples Examples
 !!
 !! 1. Simple colored message (used internally for verbose logging):
 !! @code{.f90}

@@ -14,7 +14,7 @@
 !! Used internally by @link fpx_macro fpx_macro@endlink to prevent infinite recursion when a macro expands
 !! (directly or indirectly) to itself (e.g., `#define A B`, `#define B A`).
 !!
-!! <h2  class="groupheader">Examples</h2>
+!! @section graph_examples Examples
 !!
 !! 1. Detect circular macro dependency:
 !! @code{.f90}

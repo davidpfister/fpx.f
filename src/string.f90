@@ -19,7 +19,8 @@
 !! @note All procedures are `pure` or `elemental` when possible for maximum performance
 !!       and usability in array contexts.
 !!
-!! <h2 class="groupheader">Examples</h2>
+!! @section string_examples Examples
+!!
 !! @par Basic Usage
 !! @code{.f90}
 !! type(string) :: s, t

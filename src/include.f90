@@ -18,20 +18,20 @@
 !! checks file existence, opens the file, and recursively invokes the main preprocessing
 !! engine on the included content using the same macro environment.
 !!
-!! <h2  class="groupheader">Search Order</h2>
-!!
+!! @note
 !! For `#include "file"`:
 !! 1. Directory of the parent source file
 !! 2. Directories specified by -I or -Y options (global%includedir)
 !! 3. Directories in INCLUDE environment variable
 !! 4. Current working directory
 !!
+!! @note
 !! For `#include <file>`:
 !! 1. Directories specified by -I or -Y options (global%includedir)
 !! 2. Directories in INCLUDE environment variable
 !! 3. Current working directory
 !!
-!! <h2  class="groupheader">Examples</h2>
+!! @section include_examples Examples
 !!
 !! 1. Include a local header from the same directory using quotes:
 !! @code{.f90}

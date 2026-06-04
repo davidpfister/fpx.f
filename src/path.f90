@@ -22,7 +22,7 @@
 !! @note All path-returning functions return allocatable deferred-length characters.
 !! @note The public generic `join` interface works with any combination of `character` and `string`.
 !!
-!! <h2 class="groupheader">Examples</h2>
+!! @section path_examples Examples
 !! @code{.f90}
 !! character(:), allocatable :: p1, p2, full
 !!

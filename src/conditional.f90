@@ -240,7 +240,7 @@ contains
 
         if (cond_depth == 0) then
             call printf(render(diagnostic_report(LEVEL_ERROR, &
-                    message='Synthax error', &
+                    message='Syntax error', &
                     label=label_type('#elif without matching #if', 1, len_trim(ctx%content)), &
                     source=trim(ctx%path)), &
                     ctx%content, ctx%line))
@@ -277,7 +277,7 @@ contains
 
         if (cond_depth == 0) then
             call printf(render(diagnostic_report(LEVEL_ERROR, &
-                    message='Synthax error', &
+                    message='Syntax error', &
                     label=label_type('#elifdef without matching #if', 1, len_trim(ctx%content)), &
                     source=trim(ctx%path)), &
                     ctx%content, ctx%line))
@@ -314,7 +314,7 @@ contains
 
         if (cond_depth == 0) then
             call printf(render(diagnostic_report(LEVEL_ERROR, &
-                    message='Synthax error', &
+                    message='Syntax error', &
                     label=label_type('#elifndef without matching #if', 1, len_trim(ctx%content)), &
                     source=trim(ctx%path)), &
                     ctx%content, ctx%line))
@@ -346,7 +346,7 @@ contains
 
         if (cond_depth == 0) then
             call printf(render(diagnostic_report(LEVEL_ERROR, &
-                    message='Synthax error', &
+                    message='Syntax error', &
                     label=label_type('#else without matching #if', 1, len_trim(ctx%content)), &
                     source=trim(ctx%path)), &
                     ctx%content, ctx%line))
@@ -373,7 +373,7 @@ contains
 
         if (cond_depth == 0) then
             call printf(render(diagnostic_report(LEVEL_ERROR, &
-                    message='Synthax error', &
+                    message='Syntax error', &
                     label=label_type('#endif without matching #if', 1, len_trim(ctx%content)), &
                     source=trim(ctx%path)), &
                     ctx%content, ctx%line))

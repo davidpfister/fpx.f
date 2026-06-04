@@ -14,7 +14,8 @@
 !! and modify the same configuration without passing arguments everywhere.
 !! This is safe in single-threaded use (typical for preprocessing) and allows easy
 !! customization from driver programs or interactive sessions.
-!! <h2  class="groupheader">Examples</h2>
+!!
+!! @section global_examples Examples
 !!
 !! 1. Add custom include paths before preprocessing:
 !! @code{.f90}
