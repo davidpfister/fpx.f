@@ -16,7 +16,7 @@
 !! The preprocessor is designed to be standards-conforming where possible while adding
 !! useful extensions (variadic macros, better diagnostics, include path handling).
 !!
-!! <h2 class="groupheader">Examples</h2>
+!! @section parser_examples Examples
 !!
 !! 1. Preprocess a file to stdout:
 !! @code{.f90}
@@ -62,6 +62,7 @@ module fpx_parser
     use fpx_global
     use fpx_context
     use fpx_line
+    use fpx_for
 
     implicit none; private
 
@@ -319,7 +320,11 @@ contains
                 else
                     if (reprocess) then
                         if (.not. in_comment .and. head(res) == '!') then
-                            write(ounit, '(A)') res
+                            if (is_in_forloop()) then
+                                call add_to_loop(res)
+                            else
+                                write(ounit, '(A)') res
+                            end if
                             res = process_line(tmp, ounit, name, iline, macros, stitch)
                         else
                             res = process_line(concat(res, tmp), ounit, name, iline, macros, stitch)
@@ -328,8 +333,12 @@ contains
                     else
                         res = trim(tmp)
                     end if
-                    if (global%interactive) write(*, '(/a)', advance='no') ' [out] '  ! Command line prompt
-                    write(ounit, '(A)') res
+                    if (is_in_forloop()) then
+                        call add_to_loop(res)
+                    else
+                        if (global%interactive) write(*, '(/a)', advance='no') ' [out] '  ! Command line prompt
+                        write(ounit, '(A)') res
+                    end if
                     res = ''
                 end if
             end if
@@ -338,7 +347,6 @@ contains
         if (cond_depth > 0) then
             call printf(render(diagnostic_report(LEVEL_ERROR, &
                     message='Unclosed conditional block at end of file', &
-                    label=label_type('Missing conditional statement #endif', 1, 1), &
                     source=name), &
                     trim(line), iline))
         else if (c_continue) then
@@ -430,6 +438,10 @@ contains
                 call handle_else(ctx)
             else if (starts_with(lowercase(adjustl(trimmed_line(2:))), 'endif')) then
                 call handle_endif(ctx)
+            else if (starts_with(lowercase(adjustl(trimmed_line(2:))), 'for')) then
+                call handle_for(ctx, macros, 'for')
+            else if (starts_with(lowercase(adjustl(trimmed_line(2:))), 'endfor')) then
+                call handle_endfor(ctx, macros, 'endfor')
             else if (starts_with(lowercase(adjustl(trimmed_line(2:))), 'pragma') .and. active) then
                 rst = ctx%content
             else

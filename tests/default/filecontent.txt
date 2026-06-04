@@ -6,6 +6,11 @@ C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\default\feature_test.f90
 C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\default\feature_test.f90.out
 C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\default\feature_test.ref
 C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\default\filecontent.txt
+C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\default\for1.F90
+C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\default\for1.F90.out
+C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\default\for2.F90
+C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\default\for3.F90
+C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\default\for4.F90
 C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\default\negative_test.f90
 C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\default\negative_test.f90.out
 C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\default\negative_test.ref
@@ -33,7 +38,6 @@ C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\default\bin\Debug\x64\Test.Fpx.
 C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\default\obj\Debug
 C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\default\obj\Debug\x64
 C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\default\obj\Debug\x64\BuildLog.htm
-C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\default\obj\Debug\x64\main.obj
 C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\default\obj\Debug\x64\Test.Fpx.Default.exe.intermediate.manifest
 C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\default\obj\Debug\x64\test_default.obj
 C:\Users\DavidPfister\GitHub\sandbox\fpx.f\tests\default\obj\Debug\x64\test_utils.mod
