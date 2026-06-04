@@ -202,5 +202,41 @@ TESTPROGRAM(test_arithmetic)
         EXPECT_TRUE(evaluate_expression('((1 ? 2 : 3))', macros, res))
         EXPECT_EQ(res, 2)
 
+        EXPECT_TRUE(evaluate_expression('2 ** 3', macros, res))
+        EXPECT_EQ(res, 8)
+
+        EXPECT_TRUE(evaluate_expression('2 ** 3 ** 2', macros, res))
+        EXPECT_EQ(res, 512)
+
+        EXPECT_TRUE(evaluate_expression('2 ** 2 ** 3', macros, res))
+        EXPECT_EQ(res, 256)
+
+        EXPECT_TRUE(evaluate_expression('(2 ** 3) ** 2', macros, res))
+        EXPECT_EQ(res, 64)
+
+        EXPECT_TRUE(evaluate_expression('2 ** (3 ** 2)', macros, res))
+        EXPECT_EQ(res, 512)
+
+        EXPECT_TRUE(evaluate_expression('-2 ** 2', macros, res))
+        EXPECT_EQ(res, -4)
+
+        EXPECT_TRUE(evaluate_expression('(-2) ** 2', macros, res))
+        EXPECT_EQ(res, 4)
+
+        EXPECT_TRUE(evaluate_expression('2 * 3 ** 2', macros, res))
+        EXPECT_EQ(res, 18)
+
+        EXPECT_TRUE(evaluate_expression('(2 * 3) ** 2', macros, res))
+        EXPECT_EQ(res, 36)
+
+        EXPECT_TRUE(evaluate_expression('2 ** 3 * 2', macros, res))
+        EXPECT_EQ(res, 16)
+
+        EXPECT_TRUE(evaluate_expression('2 * 2 ** 3', macros, res))
+        EXPECT_EQ(res, 16)
+
+        EXPECT_TRUE(evaluate_expression('2 ** 3 ** 2 ** 1', macros, res))
+        EXPECT_EQ(res, 512)
+
     END_TEST
 END_TESTPROGRAM
