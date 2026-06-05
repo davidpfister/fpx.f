@@ -116,7 +116,8 @@ console(main)
                                          '--implicit-conti      Activate implicit continuation line in macro expansion.', &
                                          '--exclude-comments    Exclude comments from macro expansion', &
                                          '--extra-macros        Support extra macros (__FILENAME__, __TIMESTAMP__).', &
-                                         '--no-macros           Deactivate macros expansion.'
+                                         '--no-macros           Deactivate macros expansion.', &
+                                         '--extra               Support all extra directives and macros (#for, __FILENAME__, __TIMESTAMP__)'
                     stop 0, quiet = .true.
                 case ('o', '-output')
                     outfile = args(i)
@@ -130,6 +131,9 @@ console(main)
                     global%extra_macros = .true.
                 case ('-no-macros')
                     global%expand_macros = .false.
+                case ('x', '-extra')
+                    global%support_forloop = .true.
+                    global%extra_macros = .true.
                 end select
             else
                 if (allocated(infile)) then

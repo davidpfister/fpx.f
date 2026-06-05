@@ -1,10 +1,11 @@
 #define NUMERICS [integer, real]
+#define CONCAT(a, b) a##b
 
 #for T in NUMERICS
 
-type(T) function zero_##T()
+type(T) function CONCAT(zero_,T)()
 
-    zero_##T = 0
+    CONCAT(zero_,T) = 0
 
 end function
 

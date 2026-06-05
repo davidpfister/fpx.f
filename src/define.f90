@@ -95,7 +95,7 @@ contains
             name = trim(temp(:paren_start - 1))
 
             if (global%undef .contains. name) return
-            paren_end = index(temp, ')', back=.true.)
+            paren_end = index(temp, ')')
             if (paren_end == 0) then
                 call printf(render(diagnostic_report(LEVEL_ERROR, &
                         message='Syntax error', &
@@ -128,7 +128,7 @@ contains
 
             if (.not. is_defined(name, macros, imacro)) then
                 call add(macros, name, val)
-                imacro = sizeof(macros)
+                imacro = size_of(macros)
             else
                 macros(imacro) = macro(name, val)
             end if
@@ -190,7 +190,7 @@ contains
             if (.not. allocated(macros)) allocate(macros(0))
             if (.not. is_defined(name, macros, imacro)) then
                 call add(macros, name, val)
-                imacro = sizeof(macros)
+                imacro = size_of(macros)
             else
                 macros(imacro) = macro(name, val)
             end if
@@ -214,7 +214,7 @@ contains
         character(:), allocatable :: name
         integer :: i, n, pos
 
-        n = sizeof(macros)
+        n = size_of(macros)
         pos = index(lowercase(ctx%content), token) + len(token)
         name = trim(adjustl(ctx%content(pos:)))
         do i = 1, n

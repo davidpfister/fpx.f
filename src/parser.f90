@@ -8,6 +8,7 @@
 !! - `#define`, `#undef`, object-like and function-like macros with variadic support
 !! - `#include` with proper path resolution and recursion guard
 !! - Conditional compilation: `#if`, `#ifdef`, `#ifndef`, `#elif`, `#else`, `#endif`
+!! - Non-standard `#for` directive
 !! - C-style `/* ... */` comments (nestable aware)
 !! - Macro expansion with argument substitution and stringification (`#`) / token-pasting (`##`)
 !! - Interactive REPL mode when reading from stdin
@@ -227,7 +228,7 @@ contains
         type(macro), allocatable :: macros(:)
 
         if (.not. allocated(global%macros)) allocate(global%macros(0))
-        allocate(macros(sizeof(global%macros)), source=global%macros)
+        allocate(macros(size_of(global%macros)), source=global%macros)
         if (.not. allocated(global%undef)) allocate(global%undef(0))
         if (.not. allocated(global%includedir)) allocate(global%includedir(0))
 
@@ -439,16 +440,16 @@ contains
             else if (starts_with(lowercase(adjustl(trimmed_line(2:))), 'endif')) then
                 call handle_endif(ctx)
             else if (starts_with(lowercase(adjustl(trimmed_line(2:))), 'for')) then
-                call handle_for(ctx, macros, 'for')
+                if (global%support_forloop) call handle_for(ctx, macros, 'for')
             else if (starts_with(lowercase(adjustl(trimmed_line(2:))), 'endfor')) then
-                call handle_endfor(ctx, ounit, 'endfor')
+                if (global%support_forloop) call handle_endfor(ctx, ounit, macros, 'endfor')
             else if (starts_with(lowercase(adjustl(trimmed_line(2:))), 'pragma') .and. active) then
                 rst = ctx%content
             else
                 return
             end if
         else if (active) then
-            if (.not. global%expand_macros) then
+            if (.not. global%expand_macros .or. is_in_forloop()) then
                 rst = trimmed_line
             else
                 rst = adjustl(expand_all(ctx, macros, stch, global%extra_macros, global%&

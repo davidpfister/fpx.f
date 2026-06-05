@@ -62,7 +62,7 @@ module fpx_macro
             insert, &
             clear, &
             remove, &
-            sizeof
+            size_of
 
     public :: expand_macros, &
             expand_all, &
@@ -158,7 +158,7 @@ module fpx_macro
     !!
     !! @b Remarks
     !! @ingroup group_macro
-    interface sizeof
+    interface size_of
         module procedure  :: size_item
     end interface
 
@@ -353,7 +353,7 @@ contains
             logical :: isopened, found
             character :: quote
             integer, allocatable :: indexes(:)
-            logical :: exists
+            logical :: exists, ok
 
             expanded = line
             if (size(macros) == 0) return
@@ -391,7 +391,8 @@ contains
                         c = c + n - 1
                         m_start = pos
                         start = pos + n
-                        if (size(macros(i)%params) > 0 .or. macros(i)%is_variadic) then
+                        ok = allocated(macros(i)%params); if (ok) ok = size(macros(i)%params) > 0
+                        if (ok .or. macros(i)%is_variadic) then
                             if (start <= len(expanded)) then
                                 if (expanded(start:start) == '(') then
                                     paren_level = 1
@@ -715,7 +716,7 @@ contains
         logical, allocatable :: isdef(:)
         integer :: i, j, n
 
-        n = merge(size(array), 0, allocated(array))
+        n = size_of(array)
 
         select rank (val)
         rank(0)
@@ -741,14 +742,14 @@ contains
                     isdef(j) = .true.
                 end if
             end do
-            n = merge(size(array), 0, allocated(array)); allocate(tmp(n + count(isdef)))
+            n = size_of(array); allocate(tmp(n + count(isdef)))
             tmp(1:n) = array
             tmp(n + 1:) = pack(val, isdef)
             call move_alloc(tmp, array)
             if (allocated(tmp)) deallocate(tmp)
         end select
 
-        do i = 1, size(array)
+        do i = 1, size_of(array)
             do j = n + 1, size(array)
                 if (i == j) cycle
                 if (array(i) == array(j)%value .and. array(i)%value == array(j)) then
@@ -822,7 +823,7 @@ contains
         !private
         integer :: n
 
-        n = sizeof(this)
+        n = size(this)
         if (key > 0 .and. key <= n) then
             res = this(key)
         end if
@@ -851,10 +852,10 @@ contains
     !> Return number of defined macros
     !!
     !! @b Remarks
-    integer function size_item(this) result(res)
-        type(macro), intent(inout), allocatable  :: this(:)
-
-        res = merge(size(this), 0, allocated(this))
+    pure integer function size_item(x) result(res)
+        class(*), dimension(..), intent(in), optional :: x
+        res = 0
+        if (present(x)) res = size(x)
     end function
 
     !> Remove macro at given index

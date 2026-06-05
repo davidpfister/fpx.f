@@ -1,0 +1,8 @@
+type(integer) function zero_integer()
+zero_integer = 0
+end function
+
+type(real) function zero_real()
+zero_real = 0
+end function
+

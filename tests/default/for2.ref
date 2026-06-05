@@ -1,0 +1,6 @@
+type(integer) :: x
+
+type(real) :: x
+
+type(complex) :: x
+

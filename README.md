@@ -48,6 +48,7 @@ This project aims at providing a *simple*, *embeddable*, *open-source* preproces
 - simple arithmetic and bitwise operations with `+`, `-`, `*`, `**`, `/`, `>`, `<`, `>=`, `=<`, `||`, `&&`, `|`, `^`, `&`, `!`, `?:` and `~`.
 - include files with `#include`
 - diagnostic messages with `#warning` and `#error`
+- For loop `#for`, `#endfor` (requires the flag --extra)
 - variadic macros with `__VA_ARGS__`, and `__VA_OPT__`, 
 - build-in macros as `__LINE__`, `__FILE__`, `__FILENAME__`, `__TIME__`, `__DATE__`, `__TIMESTAMP__`
 - stringification `#` and concatenation `##`
@@ -131,6 +132,12 @@ The following options are available:
 |-h, -?|Display this help.|
 |-o|Output file path with name and extension.|
 |-v|Display the version of the program.|
+|--no-color|Disable ANSI coloring.|
+|--implicit-conti|Activate implicit continuation line in macro expansion.|
+|--exclude-comments|Exclude comments from macro expansion.|
+|--extra-macros|Support extra macros (`__FILENAME__`, `__TIMESTAMP__`).|
+|--no-macros|Deactivate macros expansion.|
+|--extra|Support all extra directives and macros (#for, `__FILENAME__`, `__TIMESTAMP__`).|
 
 </center>
 

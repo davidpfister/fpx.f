@@ -1,0 +1,10 @@
+type(integer(4)) :: var_integer4
+
+type(integer(8)) :: var_integer8
+
+
+type(real(4)) :: var_real4
+
+type(real(8)) :: var_real8
+
+

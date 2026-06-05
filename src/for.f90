@@ -1,5 +1,73 @@
 !> @file
 !! @defgroup group_for For
+!! Fortran Preprocessor (fpx) – compile-time loop expansion support
+!!
+!! This module implements the non-standard `#for` / `#endfor` directive pair
+!! used by fpx to generate repeated source code from a list of values.
+!!
+!! Features:
+!! - Simple iteration over explicit lists:
+!!   `#for T in [integer, real, complex]`
+!! - Iteration over macro-expanded lists:
+!!   `#define NUMERICS [integer, real, complex]`
+!!   `#for T in NUMERICS`
+!! - Arbitrary nesting of `#for` blocks
+!! - Integration with the normal macro expansion engine
+!! - Deferred body collection until matching `#endfor`
+!! - Automatic cleanup of loop-local variables
+!!
+!! During parsing, loop bodies are stored internally and emitted only when
+!! the matching `#endfor` is encountered. Each iteration temporarily defines
+!! the loop variable as a macro whose value is substituted into the collected
+!! body before output.
+!!
+!! @section for_examples Examples
+!!
+!! 1. Basic iteration:
+!! @code{.f90}
+!!    #for T in [integer, real, complex]
+!!       type(T) :: value
+!!    #endfor
+!!
+!!    ! Expands to:
+!!    type(integer) :: value
+!!    type(real)    :: value
+!!    type(complex) :: value
+!! ...
+!! @endcode
+!!
+!! 2. Using a macro list:
+!! @code{.f90}
+!!    #define NUMERICS [integer, real, complex]
+!!
+!!    #for T in NUMERICS
+!!       type(T) :: value
+!!    #endfor
+!! ...
+!! @endcode
+!!
+!! 3. Nested loops:
+!! @code{.f90}
+!!    #for T in [integer, real]
+!!    #for R in [32,64]
+!!       type(T##R) :: value
+!!    #endfor
+!!    #endfor
+!! ...
+!! @endcode
+!!
+!! 4. Generic procedure generation:
+!! @code{.f90}
+!!    #define NUMERICS [integer, real, complex]
+!!
+!!    #for T in NUMERICS
+!!       module procedure add_/**/T
+!!    #endfor
+!! ...
+!! @endcode
+!!
+!! Loop variables behave like temporary macros and participate in normal
+!! macro expansion rules.
 module fpx_for
     use fpx_constants
     use fpx_logging
@@ -19,17 +87,36 @@ module fpx_for
         type(string), allocatable :: lines(:)
     end type
     
-    integer, public :: depth = 0
-    type(body), public :: bodies(MAX_FOR_DEPTH)
-    type(macro), allocatable, public :: fmacros(:)
+    integer :: depth = 0
+    type(body) :: bodies(MAX_FOR_DEPTH)
+    type(macro), allocatable :: fmacros(:)
 
 contains
 
-    !> Process a #for directive and register or update a macro
+    !> Process a `#for` directive and initialize a new loop context.
     !!
-    !! @param[in]    ctx     Context source line containing the #define
-    !! @param[inout] macros  Current macro table (updated in-place)
-    !! @param[in]    token   Usually 'DEFINE' – keyword matched in lowercase
+    !! Parses directives of the form:
+    !! @code
+    !!    #for variable in [item1, item2, ...]
+    !! ...
+    !! @endcode
+    !!
+    !! or
+    !!
+    !! @code
+    !!    #for variable in MACRO_NAME
+    !! ...
+    !! @endcode
+    !!
+    !! where `MACRO_NAME` expands to a bracketed list.
+    !!
+    !! A temporary macro representing the loop variable is created and the
+    !! iteration values are stored internally until the matching `#endfor`
+    !! is reached.
+    !!
+    !! @param[in]    ctx     Current parsing context
+    !! @param[inout] macros  Active macro table
+    !! @param[in]    token   Directive keyword (`for`)
     !!
     !! @b Remarks
     !! @ingroup group_for
@@ -110,7 +197,7 @@ contains
         if (.not. allocated(fmacros)) allocate(fmacros(0))
         if (.not. is_defined(name, fmacros, imacro)) then
             call add(fmacros, name, '')
-            imacro = sizeof(fmacros)
+            imacro = size_of(fmacros)
         else
             fmacros(imacro) = macro(name, '')
         end if
@@ -138,32 +225,53 @@ contains
         end do
     end subroutine
 
-    !> Process a #endfor directive and remove a macro from the table
-    !! @param[in]    ctx     Context source line containing the #endfor
-    !! @param[inout] macros  Current macro table (updated in-place)
-    !! @param[in]    token   Usually 'endfor' – keyword matched in lowercase
+    !> Finalize a loop and emit all expanded iterations.
+    !!
+    !! The collected loop body is expanded once for every value contained in
+    !! the loop variable parameter list. Nested loops are handled recursively
+    !! by forwarding generated lines to the enclosing loop body when present.
+    !!
+    !! When the outermost loop terminates, all temporary loop state is
+    !! released automatically.
+    !!
+    !! @param[in] ctx     Current parsing context
+    !! @param[in] ounit   Output unit
+    !! @param[in] macros  Active macro table
+    !! @param[in] token   Directive keyword (`endfor`)
     !!
     !! @b Remarks
     !! @ingroup group_for
-    subroutine handle_endfor(ctx, ounit, token)
+    subroutine handle_endfor(ctx, ounit, macros, token)
         type(context), intent(in)   :: ctx
         integer, intent(in)         :: ounit
         character(*), intent(in)    :: token
+        type(macro), intent(in)     :: macros(:)
         !private
         integer :: i, j
         character(:), allocatable :: rst
         logical :: stitch
-        type(macro) :: m
+        type(string), allocatable :: params(:)
         
-        m = fmacros(depth)
+        params = fmacros(depth)%params
         if (allocated(fmacros(depth)%params)) deallocate(fmacros(depth)%params)
-        do i = 1, size(m%params)
-            fmacros(depth)%value = m%params(i)
+        
+        do i = 1, size(params)
+            fmacros(depth)%value = params(i)
             do j = 1, size(bodies(depth)%lines)
-                rst = adjustl(expand_macros(bodies(depth)%lines(j)%chars, fmacros, stitch, .false., &
-                        ctx))
-                write(ounit, '(A)') rst
+                rst = adjustl(expand_macros(bodies(depth)%lines(j)%chars, [fmacros, macros], stitch, .false., ctx))
+                if (depth > 1) then
+                    if (.not. allocated(bodies(depth - 1)%lines)) allocate(bodies(depth - 1)%lines(0))
+                    bodies(depth - 1)%lines = [bodies(depth - 1)%lines, string(rst)]                       
+                else
+                    write(ounit, '(A)') rst
+                end if
             end do
+            if (depth > 1) then
+                if (.not. allocated(bodies(depth - 1)%lines)) allocate(bodies(depth - 1)%lines(0))
+                bodies(depth - 1)%lines = [bodies(depth - 1)%lines, string('')]                       
+            else
+                write(ounit, '(A)') ''
+            end if
         end do
         
         depth = depth - 1
@@ -174,11 +282,24 @@ contains
                     trim(ctx%content)))
             return
         end if
-        call remove(fmacros, depth + 1)
-        deallocate(fmacros(depth + 1)%params)
-        fmacros = fmacros(:depth)
+        
+        if (depth == 0) then
+            if (allocated(fmacros)) deallocate(fmacros)
+            do i = 1, MAX_FOR_DEPTH
+                if (allocated(bodies(i)%lines)) deallocate(bodies(i)%lines)
+            end do
+        end if
     end subroutine
 
+    !> Append a source line to the currently active loop body.
+    !!
+    !! Lines are stored verbatim and expanded only when the matching
+    !! `#endfor` directive is encountered.
+    !!
+    !! @param[in] line Source line to store
+    !!
+    !! @b Remarks
+    !! @ingroup group_for
     subroutine add_to_loop(line)
         character(*), intent(in) :: line
         
@@ -186,6 +307,13 @@ contains
         bodies(depth)%lines = [bodies(depth)%lines, string(line)]
     end subroutine
 
+    !> Query whether parsing is currently inside a `#for` block.
+    !!
+    !! @return `.true.` when one or more loop contexts are active,
+    !!         `.false.` otherwise.
+    !!
+    !! @b Remarks
+    !! @ingroup group_for
     logical function is_in_forloop() result(res)
         res = depth > 0
     end function
