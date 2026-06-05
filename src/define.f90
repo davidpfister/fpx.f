@@ -82,7 +82,7 @@ contains
         character(*), intent(in)                    :: token
         !private
         character(:), allocatable :: val, name, temp
-        integer :: pos, paren_start, paren_end, i, npar, imacro
+        integer :: pos, paren_start, paren_end, i, npar, imacro, level
 
         pos = index(lowercase(ctx%content), token) + len(token)
         temp = trim(adjustl(ctx%content(pos + 1:)))
@@ -95,7 +95,19 @@ contains
             name = trim(temp(:paren_start - 1))
 
             if (global%undef .contains. name) return
-            paren_end = index(temp, ')')
+            paren_end = 0; level = 0
+            do i = paren_start, len_trim(temp)
+                select case(temp(i:i))
+                case ('(')
+                    level = level + 1
+                case (')')
+                    level = level - 1
+                    if (level == 0) then
+                        paren_end = i
+                        exit
+                    end if
+                end select
+            end do
             if (paren_end == 0) then
                 call printf(render(diagnostic_report(LEVEL_ERROR, &
                         message='Syntax error', &

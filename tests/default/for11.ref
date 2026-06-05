@@ -2,13 +2,13 @@ type(integer) :: cpu_32
 
 type(integer) :: gpu_32
 
-integer, public :: i_integer32
+integer, public :: i_integer_32
 
 type(integer) :: cpu_64
 
 type(integer) :: gpu_64
 
-integer, public :: i_integer64
+integer, public :: i_integer_64
 
 type, public :: object_integer
 end type
@@ -17,13 +17,13 @@ type(real) :: cpu_32
 
 type(real) :: gpu_32
 
-integer, public :: i_real32
+integer, public :: i_real_32
 
 type(real) :: cpu_64
 
 type(real) :: gpu_64
 
-integer, public :: i_real64
+integer, public :: i_real_64
 
 type, public :: object_real
 end type
@@ -32,13 +32,13 @@ type(complex) :: cpu_32
 
 type(complex) :: gpu_32
 
-integer, public :: i_complex32
+integer, public :: i_complex_32
 
 type(complex) :: cpu_64
 
 type(complex) :: gpu_64
 
-integer, public :: i_complex64
+integer, public :: i_complex_64
 
 type, public :: object_complex
 end type
