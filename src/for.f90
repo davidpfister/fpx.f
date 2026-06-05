@@ -193,7 +193,7 @@ contains
             pos = pos + 1
         end do
         if (len_trim(temp) > 0) npar = npar + 1
-
+        
         if (.not. allocated(fmacros)) allocate(fmacros(0))
         if (.not. is_defined(name, fmacros, imacro)) then
             call add(fmacros, name, '')
@@ -252,28 +252,29 @@ contains
         logical :: stitch
         type(string), allocatable :: params(:)
         
-        params = fmacros(depth)%params
-        if (allocated(fmacros(depth)%params)) deallocate(fmacros(depth)%params)
+        if (depth <= size_of(fmacros)) then
+            params = fmacros(depth)%params
+            if (allocated(fmacros(depth)%params)) deallocate(fmacros(depth)%params)
         
-        do i = 1, size(params)
-            fmacros(depth)%value = params(i)
-            do j = 1, size(bodies(depth)%lines)
-                rst = adjustl(expand_macros(bodies(depth)%lines(j)%chars, [fmacros, macros], stitch, .false., ctx))
+            do i = 1, size(params)
+                fmacros(depth)%value = params(i)
+                do j = 1, size(bodies(depth)%lines)
+                    rst = adjustl(expand_macros(bodies(depth)%lines(j)%chars, [fmacros, macros], stitch, .false., ctx))
+                    if (depth > 1) then
+                        if (.not. allocated(bodies(depth - 1)%lines)) allocate(bodies(depth - 1)%lines(0))
+                        bodies(depth - 1)%lines = [bodies(depth - 1)%lines, string(rst)]                       
+                    else
+                        write(ounit, '(A)') rst
+                    end if
+                end do
                 if (depth > 1) then
                     if (.not. allocated(bodies(depth - 1)%lines)) allocate(bodies(depth - 1)%lines(0))
-                    bodies(depth - 1)%lines = [bodies(depth - 1)%lines, string(rst)]                       
+                    bodies(depth - 1)%lines = [bodies(depth - 1)%lines, string('')]                       
                 else
-                    write(ounit, '(A)') rst
+                    write(ounit, '(A)') ''
                 end if
             end do
-            if (depth > 1) then
-                if (.not. allocated(bodies(depth - 1)%lines)) allocate(bodies(depth - 1)%lines(0))
-                bodies(depth - 1)%lines = [bodies(depth - 1)%lines, string('')]                       
-            else
-                write(ounit, '(A)') ''
-            end if
-        end do
-        
+        end if
         depth = depth - 1
         if (depth < 0) then
             call printf(render(diagnostic_report(LEVEL_WARNING, &
