@@ -17,6 +17,7 @@ TESTPROGRAM(test_default)
 #endif
         call getfiles('', files)
         
+        global%support_forloop = .true.
         call add(global%macros, macro('__WINDOWS__'))
         call add(global%macros, macro('VALUE', '10'))
         call add(global%macros, macro('FEATURE_C'))

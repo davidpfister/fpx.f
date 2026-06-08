@@ -4,17 +4,19 @@
 !! This module implements the core logic for handling macro definition and removal
 !! during preprocessing in the fpx Fortran preprocessor.
 !! - Object-like macros: `#define NAME value`
-!! - Function-like macros: `#define NAME(arg1, arg2, ...) replacement`
+!! - Function-like macros: `#define NAME(arg1, arg2, ...)`
 !! - Variadic macros using `...` and automatic detection
 !! - Proper parameter parsing with whitespace handling
-!! - Macro redefinition (overwrites existing definition)
 !! - Safe `#undef` that removes a previously defined macro
-!! - Integration with global undef list (`global%undef`) to block redefinition
+!! - Integration with global undef list to block redefinition
 !! - Comprehensive verbose logging of all definition actions
+!!
+!! @note Existing macros are overwritten.
 !!
 !! The routines are designed to be robust against malformed input and provide
 !! clear diagnostics when `verbose = .true.`.
-!! <h2  class="groupheader">Examples</h2>
+!!
+!! @section define_examples Examples
 !!
 !! 1. Define simple object-like macros:
 !! @code{.f90}
@@ -80,7 +82,7 @@ contains
         character(*), intent(in)                    :: token
         !private
         character(:), allocatable :: val, name, temp
-        integer :: pos, paren_start, paren_end, i, npar, imacro
+        integer :: pos, paren_start, paren_end, i, npar, imacro, level
 
         pos = index(lowercase(ctx%content), token) + len(token)
         temp = trim(adjustl(ctx%content(pos + 1:)))
@@ -93,10 +95,22 @@ contains
             name = trim(temp(:paren_start - 1))
 
             if (global%undef .contains. name) return
-            paren_end = index(temp, ')')
+            paren_end = 0; level = 0
+            do i = paren_start, len_trim(temp)
+                select case(temp(i:i))
+                case ('(')
+                    level = level + 1
+                case (')')
+                    level = level - 1
+                    if (level == 0) then
+                        paren_end = i
+                        exit
+                    end if
+                end select
+            end do
             if (paren_end == 0) then
                 call printf(render(diagnostic_report(LEVEL_ERROR, &
-                        message='Synthax error', &
+                        message='Syntax error', &
                         label=label_type('Missing closing parenthesis in macro definition', len_trim(ctx%content) + 1, 1), &
                         source=ctx%path), &
                         trim(ctx%content), ctx%line))
@@ -126,7 +140,7 @@ contains
 
             if (.not. is_defined(name, macros, imacro)) then
                 call add(macros, name, val)
-                imacro = sizeof(macros)
+                imacro = size_of(macros)
             else
                 macros(imacro) = macro(name, val)
             end if
@@ -188,7 +202,7 @@ contains
             if (.not. allocated(macros)) allocate(macros(0))
             if (.not. is_defined(name, macros, imacro)) then
                 call add(macros, name, val)
-                imacro = sizeof(macros)
+                imacro = size_of(macros)
             else
                 macros(imacro) = macro(name, val)
             end if
@@ -209,11 +223,10 @@ contains
         type(macro), allocatable, intent(inout)     :: macros(:)
         character(*), intent(in)                    :: token
         !private
-        type(macro), allocatable :: temp_macros(:)
         character(:), allocatable :: name
         integer :: i, n, pos
 
-        n = sizeof(macros)
+        n = size_of(macros)
         pos = index(lowercase(ctx%content), token) + len(token)
         name = trim(adjustl(ctx%content(pos:)))
         do i = 1, n

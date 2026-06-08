@@ -398,11 +398,8 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 # Visual Fortran
-tests/info.sys
-sys.info
 *.fdz
 *.u2d
 tests/**/*.out
+tests/**/*.txt
 tests/cli/main.out.exe
-tests/output.txt
-test_object_type.mod

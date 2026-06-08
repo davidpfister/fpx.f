@@ -18,21 +18,21 @@ TESTPROGRAM(test_logging)
         EXPECT_STREQ(errmsg, 'error: Conditional nesting too deep'//nl//' --> '//__FILE__//':1:1-10'//nl//'  |'//nl//'1 | #if x > 0'//nl//'  | ^^^^^^^^^ '//nl//'  |')
     
         errmsg = render(diagnostic_report(LEVEL_ERROR, &
-                message = 'Synthax error', &
+                message = 'Syntax error', &
                 label = label_type('#elifdef without matching #if', 1, len_trim('#elifdef _DEBUG')), &
                 source = __FILE__), &
                 '#elifdef _DEBUG', 5)
                 
-        EXPECT_STREQ(errmsg, 'error: Synthax error'//nl//' --> '//__FILE__//':1:1-16'//nl//'  |'//nl//'5 | #elifdef _DEBUG'//nl//'  | ^^^^^^^^^^^^^^^ #elifdef without matching #if'//nl//'  |')
+        EXPECT_STREQ(errmsg, 'error: Syntax error'//nl//' --> '//__FILE__//':1:1-16'//nl//'  |'//nl//'5 | #elifdef _DEBUG'//nl//'  | ^^^^^^^^^^^^^^^ #elifdef without matching #if'//nl//'  |')
         
         !define
         errmsg = render(diagnostic_report(LEVEL_ERROR, &
-                message = 'Synthax error', &
+                message = 'Syntax error', &
                 label = label_type('Missing closing parenthesis in macro definition', len_trim('#define FOO(x, y') + 1, 1), &
                 source = __FILE__), &
                 '#define FOO(x, y', 12)
                 
-        EXPECT_STREQ(errmsg, 'error: Synthax error'//nl//'  --> '//__FILE__//':1:17-18'//nl//'   |'//nl//'12 | #define FOO(x, y'//nl//'   |                 ^ Missing closing parenthesis in macro definition'//nl//'   |')
+        EXPECT_STREQ(errmsg, 'error: Syntax error'//nl//'  --> '//__FILE__//':1:17-18'//nl//'   |'//nl//'12 | #define FOO(x, y'//nl//'   |                 ^ Missing closing parenthesis in macro definition'//nl//'   |')
         
         errmsg = render(diagnostic_report(LEVEL_ERROR, &
                     message = 'Reserved macro name', &
@@ -79,11 +79,11 @@ TESTPROGRAM(test_logging)
         EXPECT_STREQ(errmsg, 'error: Function-like macro issue'//nl//' --> '//__FILE__//':1:5-9'//nl//'  |'//nl//'1 | FOO(a, b)'//nl//'  |     ^^^^ Too few arguments for macro FOO'//nl//'  |')
         
         errmsg = render(diagnostic_report(LEVEL_ERROR, &
-                        message='Synthax error', &
+                        message='Syntax error', &
                         label=label_type('No token before ##', 1, 2), &
                         source=__FILE__), &
                         '## TEST', 3)
-        EXPECT_STREQ(errmsg, 'error: Synthax error'//nl//' --> '//__FILE__//':1:1-3'//nl//'  |'//nl//'3 | ## TEST'//nl//'  | ^^ No token before ##'//nl//'  |')
+        EXPECT_STREQ(errmsg, 'error: Syntax error'//nl//' --> '//__FILE__//':1:1-3'//nl//'  |'//nl//'3 | ## TEST'//nl//'  | ^^ No token before ##'//nl//'  |')
         
         errmsg = render(diagnostic_report(LEVEL_ERROR, &
                         message='Failed macro expansion', &

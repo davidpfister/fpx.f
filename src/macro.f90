@@ -5,6 +5,7 @@
 !! This module implements a complete, standards-inspired macro system supporting:
 !! - Object-like and function-like macros
 !! - Variadic macros (`...` and `__VA_ARGS__`)
+!! - C++20/C23-style `__VA_OPT__` handling for optional variadic content
 !! - Parameter stringification (`#param`) and token pasting (`##`)
 !! - Built-in predefined macros: `__FILE__`, `__FILENAME__`, `__LINE__`, `__DATE__`, `__TIME__`, `__TIMESTAMP__`
 !! - Recursive expansion with circular dependency detection via digraph analysis
@@ -14,7 +15,12 @@
 !! The design allows safe, repeated expansion while preventing infinite recursion.
 !! All operations are container-agnostic using allocatable dynamic arrays.
 !!
-!! <h2 class="groupheader">Examples</h2>
+!! @par Expansion Model
+!! Macros are expanded recursively.
+!! Circular dependencies are detected through dependency graph analysis.
+!! Macro lookup is currently linear in the number of defined macros.
+!!
+!! @section macro_examples Examples
 !!
 !! 1. Define and use simple macros:
 !! @code{.f90}
@@ -56,15 +62,12 @@ module fpx_macro
             insert, &
             clear, &
             remove, &
-            sizeof
+            size_of
 
     public :: expand_macros, &
             expand_all, &
-            is_defined
-
-    !> @brief Default buffer size
-    !! @ingroup group_macro
-    integer, parameter :: BUFFER_SIZE = 256
+            is_defined, &
+            read_unit
 
     !> Derived type representing a single preprocessor macro
     !! Extends @link fpx_string::string string @endlink with macro-specific fields: replacement value, parameters,
@@ -155,10 +158,26 @@ module fpx_macro
     !!
     !! @b Remarks
     !! @ingroup group_macro
-    interface sizeof
+    interface size_of
         module procedure  :: size_item
     end interface
 
+    !> Abstract interface for the main preprocessing routine (used for recursion)
+    !! Allows handle_include to recursively call the top-level preprocess_unit routine
+    !! without creating circular module dependencies.
+    !!
+    !! @b Remarks
+    !! @ingroup group_include
+    interface
+        subroutine read_unit(iunit, ounit, macros, from_include)
+            import macro
+            implicit none
+            integer, intent(in)                     :: iunit
+            integer, intent(in)                     :: ounit
+            type(macro), allocatable, intent(inout) :: macros(:)
+            logical, intent(in)                     :: from_include
+        end subroutine
+    end interface
 contains
 
     !> Construct a new macro object
@@ -334,7 +353,7 @@ contains
             logical :: isopened, found
             character :: quote
             integer, allocatable :: indexes(:)
-            logical :: exists
+            logical :: exists, ok
 
             expanded = line
             if (size(macros) == 0) return
@@ -372,7 +391,8 @@ contains
                         c = c + n - 1
                         m_start = pos
                         start = pos + n
-                        if (size(macros(i)%params) > 0 .or. macros(i)%is_variadic) then
+                        ok = allocated(macros(i)%params); if (ok) ok = size(macros(i)%params) > 0
+                        if (ok .or. macros(i)%is_variadic) then
                             if (start <= len(expanded)) then
                                 if (expanded(start:start) == '(') then
                                     paren_level = 1
@@ -501,7 +521,7 @@ contains
                                                 k = pos - 1
                                                 if (k <= 0) then
                                                     call printf(render(diagnostic_report(LEVEL_ERROR, &
-                                                            message='Synthax error', &
+                                                            message='Syntax error', &
                                                             label=label_type('No token before ##', pos, 2), &
                                                             source=trim(ctx%path)), &
                                                             temp, ctx%line))
@@ -520,7 +540,7 @@ contains
                                                 k = pos + 2
                                                 if (k > len(temp)) then
                                                     call printf(render(diagnostic_report(LEVEL_ERROR, &
-                                                            message='Synthax error', &
+                                                            message='Syntax error', &
                                                             label=label_type('No token after ##', pos, 2), &
                                                             source=trim(ctx%path)), &
                                                             temp, ctx%line))
@@ -684,7 +704,7 @@ contains
     end function
 
     !> Internal helper: grow dynamic macro array in chunks for efficiency
-    !! Adds a new macro to the allocatable array, growing in BUFFER_SIZE increments.
+    !! Adds a new macro to the allocatable array.
     !! Also detects direct self-references (A -> A) and marks both sides as cyclic.
     !!
     !! @b Remarks
@@ -696,7 +716,7 @@ contains
         logical, allocatable :: isdef(:)
         integer :: i, j, n
 
-        n = merge(size(array), 0, allocated(array))
+        n = size_of(array)
 
         select rank (val)
         rank(0)
@@ -722,14 +742,14 @@ contains
                     isdef(j) = .true.
                 end if
             end do
-            n = merge(size(array), 0, allocated(array)); allocate(tmp(n + count(isdef)))
+            n = size_of(array); allocate(tmp(n + count(isdef)))
             tmp(1:n) = array
             tmp(n + 1:) = pack(val, isdef)
             call move_alloc(tmp, array)
             if (allocated(tmp)) deallocate(tmp)
         end select
 
-        do i = 1, size(array)
+        do i = 1, size_of(array)
             do j = n + 1, size(array)
                 if (i == j) cycle
                 if (array(i) == array(j)%value .and. array(i)%value == array(j)) then
@@ -803,7 +823,7 @@ contains
         !private
         integer :: n
 
-        n = sizeof(this)
+        n = size(this)
         if (key > 0 .and. key <= n) then
             res = this(key)
         end if
@@ -832,10 +852,10 @@ contains
     !> Return number of defined macros
     !!
     !! @b Remarks
-    integer function size_item(this) result(res)
-        type(macro), intent(inout), allocatable  :: this(:)
-
-        res = merge(size(this), 0, allocated(this))
+    pure integer function size_item(x) result(res)
+        class(*), dimension(..), intent(in), optional :: x
+        res = 0
+        if (present(x)) res = size(x)
     end function
 
     !> Remove macro at given index

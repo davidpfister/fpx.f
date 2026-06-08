@@ -1,0 +1,15 @@
+function add_integer(a,b) result(c)
+integer :: a,b,c
+c = a+b
+end function
+
+function add_real(a,b) result(c)
+real :: a,b,c
+c = a+b
+end function
+
+function add_complex(a,b) result(c)
+complex :: a,b,c
+c = a+b
+end function
+

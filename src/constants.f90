@@ -18,6 +18,10 @@ module fpx_constants
     !! @ingroup group_constants
     integer, parameter, public :: MAX_COND_DEPTH = 50
 
+    !> @brief Maximum nesting depth for loops statements, set to 50 to prevent overly complex logic
+    !! @ingroup group_constants
+    integer, parameter, public :: MAX_FOR_DEPTH = 50
+
     !> @brief Maximum number of tokens per line, set to 100 for efficient tokenization
     !! @ingroup group_constants
     integer, parameter, public :: MAX_TOKENS = 100

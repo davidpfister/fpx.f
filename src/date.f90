@@ -16,7 +16,8 @@
 !! - Minimal memory footprint using small integer kinds (`int8`, `int16`)
 !!
 !! Used internally by `fpx_macro` during `__DATE__`, `__TIME__`, and `__TIMESTAMP__` expansion.
-!! <h2  class="groupheader">Examples</h2>
+!!
+!! @section date_examples Examples
 !!
 !! 1. Expand standard predefined macros (as done internally):
 !! @code{.f90}

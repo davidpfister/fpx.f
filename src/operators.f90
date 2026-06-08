@@ -35,10 +35,10 @@
 !!    parse_relational        ? parse_shifting ( ('<' | '>' | '<=' | '>=') parse_shifting )*
 !!    parse_shifting          ? parse_additive ( ('<<' | '>>') parse_additive )*
 !!    parse_additive          ? parse_multiplicative ( ('+' | '-') parse_multiplicative )*
-!!    parse_multiplicative    ? parse_power ( ('*' | '/' | '%') parse_power )*
-!!    parse_power             ? parse_unary ( '**' parse_unary )*          (right-associative)
+!!    parse_multiplicative    ? parse_power ( ('*' | '/' | '%') parse_unary )*
 !!    parse_unary             ? ('!' | '-' | '+' | '~') parse_unary
-!!                             | parse_atom
+!!                             | parse_power
+!!    parse_power             ? parse_unary ( '**' parse_unary )*          (right-associative)
 !!    parse_atom              ? number
 !!                             | identifier                              (macro expansion)
 !!                             | 'defined' ( identifier ) | 'defined' identifier
@@ -212,7 +212,7 @@ contains
             ! Expect ':'
             if (pos > ntokens .or. tokens(pos)%value /= ':') then
                 call printf(render(diagnostic_report(LEVEL_ERROR, &
-                        message='Synthax error', &
+                        message='Syntax error', &
                         label=label_type('Expected ":" in conditional expression', 1, len(expr)), &
                         source=trim(ctx%path)), &
                         expr, ctx%line))
@@ -561,19 +561,19 @@ contains
         !private
         integer :: left, right
 
-        left = parse_power(expr, tokens, ntokens, pos, macros, ctx)
+        left = parse_unary(expr, tokens, ntokens, pos, macros, ctx)
         do while (pos <= ntokens .and. (tokens(pos)%value == '*' .or. tokens(pos)%value == '/' .or. tokens(pos)%value == '%'))
             if (tokens(pos)%value == '*') then
                 pos = pos + 1
-                right = parse_power(expr, tokens, ntokens, pos, macros, ctx)
+                right = parse_unary(expr, tokens, ntokens, pos, macros, ctx)
                 val = left * right
             else if (tokens(pos)%value == '/') then
                 pos = pos + 1
-                right = parse_power(expr, tokens, ntokens, pos, macros, ctx)
+                right = parse_unary(expr, tokens, ntokens, pos, macros, ctx)
                 val = left / right
             else
                 pos = pos + 1
-                right = parse_power(expr, tokens, ntokens, pos, macros, ctx)
+                right = parse_unary(expr, tokens, ntokens, pos, macros, ctx)
                 val = modulo(left, right)
             end if
             left = val
@@ -602,14 +602,15 @@ contains
         !private
         integer :: left, right
 
-        left = parse_unary(expr, tokens, ntokens, pos, macros, ctx)
-        do while (pos <= ntokens .and. (tokens(pos)%value == '**'))
+        left = parse_atom(expr, tokens, ntokens, pos, macros, ctx)
+        if (pos <= ntokens .and. tokens(pos)%value == '**') then
             pos = pos + 1
-            right = parse_unary(expr, tokens, ntokens, pos, macros, ctx)
-            val = left**right
-            left = val
-        end do
-        val = left
+            ! recurse at same precedence level
+            right = parse_power(expr, tokens, ntokens, pos, macros, ctx)
+            val = left ** right
+        else
+            val = left
+        end if
     end function
 
     !> Parses unary operators (`!`, `-`, `+`, `~`).
@@ -644,7 +645,7 @@ contains
             pos = pos + 1
             val = not(parse_unary(expr, tokens, ntokens, pos, macros, ctx))
         else
-            val = parse_atom(expr, tokens, ntokens, pos, macros, ctx)
+            val = parse_power(expr, tokens, ntokens, pos, macros, ctx)
         end if
     end function
 
@@ -673,7 +674,7 @@ contains
 
         if (pos > ntokens) then
             call printf(render(diagnostic_report(LEVEL_ERROR, &
-                    message='Synthax error', &
+                    message='Syntax error', &
                     label=label_type('Unexpected end of expression', pos, 1), &
                     source=trim(ctx%path)), &
                     expr, ctx%line))
@@ -697,7 +698,7 @@ contains
             val = parse_expression(expr, tokens, ntokens, pos, macros, ctx)
             if (pos > ntokens .or. tokens(pos)%value /= ')') then
                 call printf(render(diagnostic_report(LEVEL_ERROR, &
-                        message='Synthax error', &
+                        message='Syntax error', &
                         label=label_type('Missing closing parenthesis in expression', len(expr), 1), &
                         source=trim(ctx%path)), &
                         expr, ctx%line))

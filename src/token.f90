@@ -17,7 +17,7 @@
 !! - Clear separation between lexical scanning and semantic interpretation
 !! - Easy extensibility for future operators or functions
 !!
-!! @par Examples
+!! @section token_examples Examples
 !!
 !! 1. Manual token creation (mostly for testing/debugging):
 !! @code{.f90}

@@ -1,0 +1,7 @@
+type(integer) :: x
+
+type(integer) :: value_1
+type(integer) :: value_2
+
+type(real) :: value_1
+type(real) :: value_2

@@ -4,7 +4,7 @@
 !! This module implements the core logic for handling messages (either as
 !! warning or errors).
 !!
-!! <h2  class="groupheader">Examples</h2>
+!! @section diagnostics_examples Examples
 !!
 !! 1. Break preprocessing on error:
 !! @code{.f90}
