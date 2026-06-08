@@ -109,15 +109,14 @@ console(main)
                                          '-D<macro>=<val>       Define a <macro> with <val> as its value.', &
                                          '-U<macro>             Undefine <macro>', &
                                          '-I<dir>               Add <dir> to the end of the global include paths.', &
-                                         '-h, -?                Display help messages', &
-                                         '-o                    Output file path with name and extension.', &
-                                         '-v                    Display the version of the program.', &
+                                         '-h, -?, --help        Display help messages', &
+                                         '-o, --output          Output file path with name and extension.', &
+                                         '-v, --version         Display the version of the program.', &
                                          '--no-color            Disable ANSI coloring.', &
                                          '--implicit-conti      Activate implicit continuation line in macro expansion.', &
                                          '--exclude-comments    Exclude comments from macro expansion', &
-                                         '--extra-macros        Support extra macros (__FILENAME__, __TIMESTAMP__).', &
                                          '--no-macros           Deactivate macros expansion.', &
-                                         '--extra               Support all extra directives and macros (#for, __FILENAME__, __TIMESTAMP__)'
+                                         '--std                 Enforce standard compliance.'
                     stop 0, quiet = .true.
                 case ('o', '-output')
                     outfile = args(i)
@@ -127,13 +126,11 @@ console(main)
                     global%implicit_continuation = .true.
                 case ('-exclude-comments')
                     global%exlude_comments = .true.
-                case ('-extra-macros')
-                    global%extra_macros = .true.
                 case ('-no-macros')
                     global%expand_macros = .false.
-                case ('x', '-extra')
-                    global%support_forloop = .true.
-                    global%extra_macros = .true.
+                case ('-std')
+                    global%support_forloop = .false.
+                    global%extra_macros = .false.
                 end select
             else
                 if (allocated(infile)) then
