@@ -7,7 +7,7 @@
 !! - Variadic macros (`...` and `__VA_ARGS__`)
 !! - C++20/C23-style `__VA_OPT__` handling for optional variadic content
 !! - Parameter stringification (`#param`) and token pasting (`##`)
-!! - Built-in predefined macros: `__FILE__`, `__FILENAME__`, `__LINE__`, `__DATE__`, `__TIME__`, `__TIMESTAMP__`
+!! - Built-in predefined macros: `__FILE__`, `__FILENAME__`, `__LINE__`, `__DATE__`, `__TIME__`, `__TIMESTAMP__, `__FUNC__`
 !! - Recursive expansion with circular dependency detection via digraph analysis
 !! - Dynamic macro table of `macro` objects with efficient addition, lookup, removal
 !! - Full support for nested macro calls and proper argument handling
@@ -203,7 +203,7 @@ contains
     !! First performs normal macro expansion via expand_macros(), then substitutes
     !! standard predefined tokens with current file/line/date information.
     !! @param[in]  ctx  Context
-    !! @param[in]  macros   Current macro table
+    !! @param[inout]  macros   Current macro table
     !! @param[out] stitch   Set to .true.true. if result ends with '&' (Fortran continuation)
     !! @param[in]  has_extra   Has extra macros (non-standard) like __FILENAME__ and __TIMESTAMP__
     !! @param[in]  implicit_conti If .true., implicit continuation is permitted
@@ -212,17 +212,24 @@ contains
     !! @b Remarks
     !! @ingroup group_macro
     function expand_all(ctx, macros, stitch, has_extra, implicit_conti) result(expanded)
-        type(context), intent(in)           :: ctx
-        type(macro), intent(in)             :: macros(:)
-        logical, intent(out)                :: stitch
-        logical, intent(in)                 :: has_extra
-        logical, intent(in)                 :: implicit_conti
+        type(context), intent(in)               :: ctx
+        type(macro), allocatable, intent(inout) :: macros(:)
+        logical, intent(out)                    :: stitch
+        logical, intent(in)                     :: has_extra
+        logical, intent(in)                     :: implicit_conti
         character(:), allocatable :: expanded
         !private
-        integer :: pos, start, sep, dot
+        integer :: pos, start, sep, dot, imacro
         type(datetime) :: date
+                
+        if (has_extra) then           
+            if (.not. is_defined('__FUNC__', macros, imacro)) then
+                call add(macros, '__FUNC__', '')
+            end if
+        end if
 
         expanded = expand_macros(ctx%content, macros, stitch, implicit_conti, ctx)
+        
         date = now()
 
         ! Substitute __FILE__ (relative path to working directory)
@@ -307,7 +314,7 @@ contains
     !! - Proper handling of nested parentheses and quoted strings
     !!
     !! @param[in]  line  Line to be expanded
-    !! @param[in]  macros Current macro table
+    !! @param[inout]  macros Current macro table
     !! @param[out] stitch .true. if final line ends with '&'
     !! @param[in]  implicit_conti If .true., implicit continuation is permitted
     !! @param[in]  ctx  Context
@@ -316,12 +323,12 @@ contains
     !! @b Remarks
     !! @ingroup group_macro
     function expand_macros(line, macros, stitch, implicit_conti, ctx) result(expanded)
-        character(*), intent(in)    :: line
-        type(macro), intent(in)     :: macros(:)
-        logical, intent(out)        :: stitch
-        logical, intent(in)         :: implicit_conti
-        type(context), intent(in)   :: ctx
-        character(:), allocatable   :: expanded
+        character(*), intent(in)                :: line
+        type(macro), allocatable, intent(inout) :: macros(:)
+        logical, intent(out)                    :: stitch
+        logical, intent(in)                     :: implicit_conti
+        type(context), intent(in)               :: ctx
+        character(:), allocatable               :: expanded
         !private
         integer :: imacro, paren_level
         type(digraph) :: graph
@@ -340,10 +347,10 @@ contains
     contains
         !> @private
         recursive function expand_macros_internal(line, imacro, macros) result(expanded)
-            character(*), intent(in)    :: line
-            integer, intent(in)         :: imacro
-            type(macro), intent(in)     :: macros(:)
-            character(:), allocatable   :: expanded
+            character(*), intent(in)                :: line
+            integer, intent(in)                     :: imacro
+            type(macro), allocatable, intent(inout) :: macros(:)
+            character(:), allocatable :: expanded
             !private
             character(:), allocatable :: args_str, temp, va_args
             character(:), allocatable :: token1, token2, prefix, suffix
@@ -353,11 +360,11 @@ contains
             logical :: isopened, found
             character :: quote
             integer, allocatable :: indexes(:)
-            logical :: exists, ok
+            logical :: exists, ok, hasfunc
 
             expanded = line
             if (size(macros) == 0) return
-            isopened = .false.
+            isopened = .false.; hasfunc = .false.
 
             do i = 1, size(macros)
                 n = len_trim(macros(i)); if (n == 0) cycle
@@ -375,6 +382,11 @@ contains
                     if (isopened) cycle
                     if (c + n - 1 > len_trim(expanded)) exit
 
+                    if (.not. hasfunc) then
+                        call update_func_macro(expanded, macros)
+                        hasfunc = .true.
+                    end if
+                    
                     found = .false.
                     if (expanded(c:c + n - 1) == macros(i)) then
                         found = .true.
@@ -891,4 +903,227 @@ contains
             deallocate(this); allocate(this(0))
         end if
     end subroutine
+    
+    !> Update the special predefined macro __FUNC__
+    !!
+    !! Examines the current source line and detects whether it introduces
+    !! a Fortran procedure definition (`function` or `subroutine`).
+    !! When a procedure declaration is found, the macro `__FUNC__` is
+    !! created or updated with the procedure name.
+    !!
+    !! When an `end function`, `endfunction`, `end subroutine`, or
+    !! `endsubroutine` statement is encountered, the macro value is
+    !! cleared.
+    !!
+    !! Detection is token based and therefore supports arbitrary valid
+    !! Fortran declaration prefixes such as:
+    !! - `recursive function foo()`
+    !! - `pure elemental function bar()`
+    !! - `type(string) function baz() result(res)`
+    !! - `module subroutine solve()`
+    !!
+    !! @param[in]    line    Current source line after continuation handling
+    !! @param[inout] macros  Current macro table (updated in-place)
+    !!
+    !! @b Remarks
+    !! @ingroup group_macro
+    subroutine update_func_macro(line, macros)
+        character(*), intent(in)                :: line
+        type(macro), allocatable, intent(inout) :: macros(:)
+        !private
+        character(:), allocatable :: txt
+        character(:), allocatable :: procname
+        logical :: leaving
+        integer :: imacro
+        
+        if (.not. is_defined('__FUNC__', macros, imacro)) return
+
+        txt = lowercase(adjustl(trim(line)))
+        procname = extract_proc_name(txt, leaving)
+
+        if (len_trim(procname) > 0) then
+            macros(imacro)%value = procname
+            return
+        end if
+
+        ! Leaving a procedure
+        if (starts_with(txt, 'end function')    .or. &
+            starts_with(txt, 'endfunction')     .or. &
+            starts_with(txt, 'end subroutine')  .or. &
+            starts_with(txt, 'endsubroutine')) then
+
+            if (.not. is_defined('__FUNC__', macros, imacro)) then
+                call add(macros, '__FUNC__', '')
+            else
+                macros(imacro)%value = ''
+            end if
+        end if
+    end subroutine
+
+
+    !> Extract the procedure name from a Fortran procedure declaration
+    !!
+    !! Searches a source line for a standalone `function` or `subroutine`
+    !! token and returns the identifier immediately following it.
+    !!
+    !! The parser is intentionally independent of declaration prefixes,
+    !! allowing valid declarations such as:
+    !! @code{.f90}
+    !!    function foo()
+    !!    recursive function foo()
+    !!    pure elemental function foo()
+    !!    type(string) function foo() result(res)
+    !!    module subroutine solve()
+    !! @endcode
+    !!
+    !! End statements (`end function`, `endfunction`,
+    !! `end subroutine`, `endsubroutine`) are ignored and return
+    !! an unallocated result.
+    !!
+    !! @param[in] txt Source line to analyze
+    !! @return    Extracted procedure name, unallocated if no procedure
+    !!            declaration is found
+    !!
+    !! @b Remarks
+    !! @ingroup group_macro
+    function extract_proc_name(txt, leaving) result(name)
+        character(*), intent(in)    :: txt
+        logical, intent(out)        :: leaving
+        character(:), allocatable :: name
+        !private
+        integer :: pos, istart, iend
+        character(:), allocatable :: tmp
+
+        name = ''
+        tmp = lowercase(adjustl(trim(txt)))
+
+        ! Ignore END FUNCTION / END SUBROUTINE
+        if (index(tmp, 'end function') > 0) then
+            leaving = .true.
+            return
+        elseif (index(tmp, 'endfunction')  > 0) then
+            leaving = .true.
+            return
+        elseif (index(tmp, 'end subroutine') > 0) then
+            leaving = .true.
+            return
+        elseif (index(tmp, 'endsubroutine')  > 0) then
+            leaving = .true.
+            return
+        end if
+
+        ! Search FUNCTION token
+        pos = find_token(tmp, 'function')
+
+        if (pos > 0) then
+            istart = pos + len('function')
+        else
+            pos = find_token(tmp, 'subroutine')
+            if (pos == 0) return
+            istart = pos + len('subroutine')
+        end if
+
+        ! Skip whitespace
+        do while (istart <= len(tmp))
+            if (tmp(istart:istart) /= ' ') exit
+            istart = istart + 1
+        end do
+
+        if (istart > len(tmp)) return
+
+        iend = istart
+
+        do while (iend <= len(tmp))
+            select case(tmp(iend:iend))
+            case('a':'z','A':'Z','0':'9','_')
+                iend = iend + 1
+            case default
+                exit
+            end select
+        end do
+
+        name = tmp(istart:iend-1)
+    contains
+        !> Locate a standalone token within a source line
+        !! Searches for a token delimited by non-identifier characters.
+        !! The token must not appear as part of a larger identifier.
+        !!
+        !! Examples:
+        !! @code{.f90}
+        !!    function foo()      ! match "function"
+        !!    subroutine bar()    ! match "subroutine"
+        !!    myfunction()        ! no match
+        !!    subroutine_name     ! no match
+        !! @endcode
+        !!
+        !! @param[in] line  Source line to search
+        !! @param[in] token Token to locate
+        !! @return Position of the first valid token occurrence,
+        !!         or zero if not found
+        !!
+        !! @b Remarks
+        !! @ingroup group_macro
+        integer function find_token(line, token) result(pos)
+            character(*), intent(in) :: line
+            character(*), intent(in) :: token
+            !private
+            integer :: i, ltok, lline
+            logical :: left_ok, right_ok
+
+            pos = 0
+            lline = len_trim(line); ltok  = len_trim(token)
+
+            if (ltok == 0 .or. lline < ltok) return
+
+            do i = 1, lline - ltok + 1
+                if (lowercase(line(i:i+ltok-1)) /= lowercase(token)) cycle
+
+                ! Check left boundary
+                if (i == 1) then
+                    left_ok = .true.
+                else
+                    left_ok = .not. is_ident(line(i-1:i-1))
+                end if
+
+                ! Check right boundary
+                if (i + ltok - 1 == lline) then
+                    right_ok = .true.
+                else
+                    right_ok = .not. is_ident(line(i+ltok:i+ltok))
+                end if
+
+                if (left_ok .and. right_ok) then
+                    pos = i
+                    return
+                end if
+            end do
+        end function
+        
+        !> Determine whether a character is a valid identifier character
+        !!
+        !! Returns `.true.` for characters that may appear in a Fortran
+        !! identifier:
+        !! - letters (`A-Z`, `a-z`)
+        !! - digits (`0-9`)
+        !! - underscore (`_`)
+        !!
+        !! Used internally by token matching routines to verify identifier
+        !! boundaries.
+        !!
+        !! @param[in] ch Character to test
+        !! @return `.true.` if the character is a valid identifier character
+        !!
+        !! @b Remarks
+        !! @ingroup group_macro
+        logical function is_ident(ch)
+            character(1), intent(in) :: ch
+
+            select case (ch)
+            case ('a':'z', 'A':'Z', '0':'9', '_')
+                is_ident = .true.
+            case default
+                is_ident = .false.
+            end select
+        end function
+    end function
 end module

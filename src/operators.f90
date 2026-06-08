@@ -91,16 +91,16 @@ contains
     !! Returns .true. if evaluation succeeded and the result is non-zero.
     !!
     !! @param[in] expr   Expression string to evaluate
-    !! @param[in] macros Array of defined macros for substitution and `defined()` checks
+    !! @param[inout] macros Array of defined macros for substitution and `defined()` checks
     !! @param[out] val   (optional) integer result of the evaluation
     !! @return .true. if the expression evaluated successfully to non-zero, .false. otherwise
     !!
     !! @b Remarks
     !! @ingroup group_operators
     logical function evaluate_expression_default(expr, macros, val) result(res)
-        character(*), intent(in)        :: expr
-        type(macro), intent(in)         :: macros(:)
-        integer, intent(out), optional  :: val
+        character(*), intent(in)                :: expr
+        type(macro), allocatable, intent(inout) :: macros(:)
+        integer, intent(out), optional          :: val
         !private
         type(context) :: ctx
 
@@ -114,7 +114,7 @@ contains
     !! Returns .true. if evaluation succeeded and the result is non-zero.
     !!
     !! @param[in] expr   Expression string to evaluate
-    !! @param[in] macros Array of defined macros for substitution and `defined()` checks
+    !! @param[inout] macros Array of defined macros for substitution and `defined()` checks
     !! @param[in] ctx Context
     !! @param[out] val   (optional) integer result of the evaluation
     !! @return .true. if the expression evaluated successfully to non-zero, .false. otherwise
@@ -122,10 +122,10 @@ contains
     !! @b Remarks
     !! @ingroup group_operators
     logical function evaluate_expression_with_context(expr, macros, ctx, val) result(res)
-        character(*), intent(in)        :: expr
-        type(macro), intent(in)         :: macros(:)
-        type(context), intent(in)       :: ctx
-        integer, intent(out), optional  :: val
+        character(*), intent(in)                :: expr
+        type(macro), allocatable, intent(inout) :: macros(:)
+        type(context), intent(in)               :: ctx
+        integer, intent(out), optional          :: val
         !private
         type(token), allocatable :: tokens(:)
         integer :: ntokens, pos, result
@@ -162,19 +162,19 @@ contains
     !! @param[in] tokens    Array of tokens to parse
     !! @param[in] ntokens   Number of valid tokens in the array
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
-    !! @param[in] macros    Defined macros for expansion and `defined()` checks
+    !! @param[inout] macros    Defined macros for expansion and `defined()` checks
     !! @param[in] ctx Context
     !! @return Integer value of the parsed expression
     !!
     !! @b Remarks
     !! @ingroup group_operators
     recursive integer function parse_expression(expr, tokens, ntokens, pos, macros, ctx) result(val)
-        character(*), intent(in)    :: expr
-        type(token), intent(in)     :: tokens(:)
-        integer, intent(in)         :: ntokens
-        integer, intent(inout)      :: pos
-        type(macro), intent(in)     :: macros(:)
-        type(context), intent(in)   :: ctx
+        character(*), intent(in)                :: expr
+        type(token), intent(in)                 :: tokens(:)
+        integer, intent(in)                     :: ntokens
+        integer, intent(inout)                  :: pos
+        type(macro), allocatable, intent(inout) :: macros(:)
+        type(context), intent(in)               :: ctx
 
         val = parse_conditional(expr, tokens, ntokens, pos, macros, ctx)
     end function
@@ -184,19 +184,19 @@ contains
     !! @param[in] tokens    Array of tokens to parse
     !! @param[in] ntokens   Number of valid tokens in the array
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
-    !! @param[in] macros    Defined macros for expansion and `defined()` checks
+    !! @param[inout] macros    Defined macros for expansion and `defined()` checks
     !! @param[in] ctx Context
     !! @return Integer value of the parsed expression
     !!
     !! @b Remarks
     !! @ingroup group_operators
     recursive integer function parse_conditional(expr, tokens, ntokens, pos, macros, ctx) result(val)
-        character(*), intent(in)    :: expr
-        type(token), intent(in)     :: tokens(:)
-        integer, intent(in)         :: ntokens
-        integer, intent(inout)      :: pos
-        type(macro), intent(in)     :: macros(:)
-        type(context), intent(in)   :: ctx
+        character(*), intent(in)                :: expr
+        type(token), intent(in)                 :: tokens(:)
+        integer, intent(in)                     :: ntokens
+        integer, intent(inout)                  :: pos
+        type(macro), allocatable, intent(inout) :: macros(:)
+        type(context), intent(in)               :: ctx
         !private
         integer :: condition, true_val, false_val
 
@@ -238,19 +238,19 @@ contains
     !! @param[in] tokens    Array of tokens to parse
     !! @param[in] ntokens   Number of valid tokens in the array
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
-    !! @param[in] macros    Defined macros for expansion and `defined()` checks
+    !! @param[inout] macros    Defined macros for expansion and `defined()` checks
     !! @param[in] ctx Context
     !! @return Integer value of the parsed expression
     !!
     !! @b Remarks
     !! @ingroup group_operators
     recursive integer function parse_or(expr, tokens, ntokens, pos, macros, ctx) result(val)
-        character(*), intent(in)    :: expr
-        type(token), intent(in)     :: tokens(:)
-        integer, intent(in)         :: ntokens
-        integer, intent(inout)      :: pos
-        type(macro), intent(in)     :: macros(:)
-        type(context), intent(in)   :: ctx
+        character(*), intent(in)                :: expr
+        type(token), intent(in)                 :: tokens(:)
+        integer, intent(in)                     :: ntokens
+        integer, intent(inout)                  :: pos
+        type(macro), allocatable, intent(inout) :: macros(:)
+        type(context), intent(in)               :: ctx
         !private
         integer :: left
 
@@ -268,19 +268,19 @@ contains
     !! @param[in] tokens    Array of tokens to parse
     !! @param[in] ntokens   Number of valid tokens in the array
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
-    !! @param[in] macros    Defined macros for expansion and `defined()` checks
+    !! @param[inout] macros    Defined macros for expansion and `defined()` checks
     !! @param[in] ctx Context
     !! @return Integer value of the parsed expression
     !!
     !! @b Remarks
     !! @ingroup group_operators
     recursive integer function parse_and(expr, tokens, ntokens, pos, macros, ctx) result(val)
-        character(*), intent(in)    :: expr
-        type(token), intent(in)     :: tokens(:)
-        integer, intent(in)         :: ntokens
-        integer, intent(inout)      :: pos
-        type(macro), intent(in)     :: macros(:)
-        type(context), intent(in)   :: ctx
+        character(*), intent(in)                :: expr
+        type(token), intent(in)                 :: tokens(:)
+        integer, intent(in)                     :: ntokens
+        integer, intent(inout)                  :: pos
+        type(macro), allocatable, intent(inout) :: macros(:)
+        type(context), intent(in)               :: ctx
         !private
         integer :: left
 
@@ -298,19 +298,19 @@ contains
     !! @param[in] tokens    Array of tokens to parse
     !! @param[in] ntokens   Number of valid tokens in the array
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
-    !! @param[in] macros    Defined macros for expansion and `defined()` checks
+    !! @param[inout] macros    Defined macros for expansion and `defined()` checks
     !! @param[in] ctx Context
     !! @return Integer value of the parsed expression
     !!
     !! @b Remarks
     !! @ingroup group_operators
     recursive integer function parse_bitwise_or(expr, tokens, ntokens, pos, macros, ctx) result(val)
-        character(*), intent(in)    :: expr
-        type(token), intent(in)     :: tokens(:)
-        integer, intent(in)         :: ntokens
-        integer, intent(inout)      :: pos
-        type(macro), intent(in)     :: macros(:)
-        type(context), intent(in)   :: ctx
+        character(*), intent(in)                :: expr
+        type(token), intent(in)                 :: tokens(:)
+        integer, intent(in)                     :: ntokens
+        integer, intent(inout)                  :: pos
+        type(macro), allocatable, intent(inout) :: macros(:)
+        type(context), intent(in)               :: ctx
         !private
         integer :: left
 
@@ -328,19 +328,19 @@ contains
     !! @param[in] tokens    Array of tokens to parse
     !! @param[in] ntokens   Number of valid tokens in the array
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
-    !! @param[in] macros    Defined macros for expansion and `defined()` checks
+    !! @param[inout] macros    Defined macros for expansion and `defined()` checks
     !! @param[in] ctx Context
     !! @return Integer value of the parsed expression
     !!
     !! @b Remarks
     !! @ingroup group_operators
     recursive integer function parse_bitwise_xor(expr, tokens, ntokens, pos, macros, ctx) result(val)
-        character(*), intent(in)    :: expr
-        type(token), intent(in)     :: tokens(:)
-        integer, intent(in)         :: ntokens
-        integer, intent(inout)      :: pos
-        type(macro), intent(in)     :: macros(:)
-        type(context), intent(in)   :: ctx
+        character(*), intent(in)                :: expr
+        type(token), intent(in)                 :: tokens(:)
+        integer, intent(in)                     :: ntokens
+        integer, intent(inout)                  :: pos
+        type(macro), allocatable, intent(inout) :: macros(:)
+        type(context), intent(in)               :: ctx
         !private
         integer :: left
 
@@ -358,19 +358,19 @@ contains
     !! @param[in] tokens    Array of tokens to parse
     !! @param[in] ntokens   Number of valid tokens in the array
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
-    !! @param[in] macros    Defined macros for expansion and `defined()` checks
+    !! @param[inout] macros    Defined macros for expansion and `defined()` checks
     !! @param[in] ctx Context
     !! @return Integer value of the parsed expression
     !!
     !! @b Remarks
     !! @ingroup group_operators
     recursive integer function parse_bitwise_and(expr, tokens, ntokens, pos, macros, ctx) result(val)
-        character(*), intent(in)    :: expr
-        type(token), intent(in)     :: tokens(:)
-        integer, intent(in)         :: ntokens
-        integer, intent(inout)      :: pos
-        type(macro), intent(in)     :: macros(:)
-        type(context), intent(in)   :: ctx
+        character(*), intent(in)                :: expr
+        type(token), intent(in)                 :: tokens(:)
+        integer, intent(in)                     :: ntokens
+        integer, intent(inout)                  :: pos
+        type(macro), allocatable, intent(inout) :: macros(:)
+        type(context), intent(in)               :: ctx
         !private
         integer :: left
 
@@ -388,19 +388,19 @@ contains
     !! @param[in] tokens    Array of tokens to parse
     !! @param[in] ntokens   Number of valid tokens in the array
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
-    !! @param[in] macros    Defined macros for expansion and `defined()` checks
+    !! @param[inout] macros    Defined macros for expansion and `defined()` checks
     !! @param[in] ctx Context
     !! @return Integer value of the parsed expression
     !!
     !! @b Remarks
     !! @ingroup group_operators
     recursive integer function parse_equality(expr, tokens, ntokens, pos, macros, ctx) result(val)
-        character(*), intent(in)    :: expr
-        type(token), intent(in)     :: tokens(:)
-        integer, intent(in)         :: ntokens
-        integer, intent(inout)      :: pos
-        type(macro), intent(in)     :: macros(:)
-        type(context), intent(in)   :: ctx
+        character(*), intent(in)                :: expr
+        type(token), intent(in)                 :: tokens(:)
+        integer, intent(in)                     :: ntokens
+        integer, intent(inout)                  :: pos
+        type(macro), allocatable, intent(inout) :: macros(:)
+        type(context), intent(in)               :: ctx
         !private
         integer :: left, right
 
@@ -425,19 +425,19 @@ contains
     !! @param[in] tokens    Array of tokens to parse
     !! @param[in] ntokens   Number of valid tokens in the array
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
-    !! @param[in] macros    Defined macros for expansion and `defined()` checks
+    !! @param[inout] macros    Defined macros for expansion and `defined()` checks
     !! @param[in] ctx Context
     !! @return Integer value of the parsed expression
     !!
     !! @b Remarks
     !! @ingroup group_operators
     recursive integer function parse_relational(expr, tokens, ntokens, pos, macros, ctx) result(val)
-        character(*), intent(in)    :: expr
-        type(token), intent(in)     :: tokens(:)
-        integer, intent(in)         :: ntokens
-        integer, intent(inout)      :: pos
-        type(macro), intent(in)     :: macros(:)
-        type(context), intent(in)   :: ctx
+        character(*), intent(in)                :: expr
+        type(token), intent(in)                 :: tokens(:)
+        integer, intent(in)                     :: ntokens
+        integer, intent(inout)                  :: pos
+        type(macro), allocatable, intent(inout) :: macros(:)
+        type(context), intent(in)               :: ctx
         !private
         integer :: left, right
 
@@ -471,19 +471,19 @@ contains
     !! @param[in] tokens    Array of tokens to parse
     !! @param[in] ntokens   Number of valid tokens in the array
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
-    !! @param[in] macros    Defined macros for expansion and `defined()` checks
+    !! @param[inout] macros    Defined macros for expansion and `defined()` checks
     !! @param[in] ctx Context
     !! @return Integer value of the parsed expression
     !!
     !! @b Remarks
     !! @ingroup group_operators
     recursive integer function parse_shifting(expr, tokens, ntokens, pos, macros, ctx) result(val)
-        character(*), intent(in)    :: expr
-        type(token), intent(in)     :: tokens(:)
-        integer, intent(in)         :: ntokens
-        integer, intent(inout)      :: pos
-        type(macro), intent(in)     :: macros(:)
-        type(context), intent(in)   :: ctx
+        character(*), intent(in)                :: expr
+        type(token), intent(in)                 :: tokens(:)
+        integer, intent(in)                     :: ntokens
+        integer, intent(inout)                  :: pos
+        type(macro), allocatable, intent(inout) :: macros(:)
+        type(context), intent(in)               :: ctx
         !private
         integer :: left, right
 
@@ -508,19 +508,19 @@ contains
     !! @param[in] tokens    Array of tokens to parse
     !! @param[in] ntokens   Number of valid tokens in the array
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
-    !! @param[in] macros    Defined macros for expansion and `defined()` checks
+    !! @param[inout] macros    Defined macros for expansion and `defined()` checks
     !! @param[in] ctx Context
     !! @return Integer value of the parsed expression
     !!
     !! @b Remarks
     !! @ingroup group_operators
     recursive integer function parse_additive(expr, tokens, ntokens, pos, macros, ctx) result(val)
-        character(*), intent(in)    :: expr
-        type(token), intent(in)     :: tokens(:)
-        integer, intent(in)         :: ntokens
-        integer, intent(inout)      :: pos
-        type(macro), intent(in)     :: macros(:)
-        type(context), intent(in)   :: ctx
+        character(*), intent(in)                :: expr
+        type(token), intent(in)                 :: tokens(:)
+        integer, intent(in)                     :: ntokens
+        integer, intent(inout)                  :: pos
+        type(macro), allocatable, intent(inout) :: macros(:)
+        type(context), intent(in)               :: ctx
         !private
         integer :: left, right
 
@@ -545,19 +545,19 @@ contains
     !! @param[in] tokens    Array of tokens to parse
     !! @param[in] ntokens   Number of valid tokens in the array
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
-    !! @param[in] macros    Defined macros for expansion and `defined()` checks
+    !! @param[inout] macros    Defined macros for expansion and `defined()` checks
     !! @param[in] ctx    Context
     !! @return Integer value of the parsed expression
     !!
     !! @b Remarks
     !! @ingroup group_operators
     recursive integer function parse_multiplicative(expr, tokens, ntokens, pos, macros, ctx) result(val)
-        character(*), intent(in)    :: expr
-        type(token), intent(in)     :: tokens(:)
-        integer, intent(in)         :: ntokens
-        integer, intent(inout)      :: pos
-        type(macro), intent(in)     :: macros(:)
-        type(context), intent(in)   :: ctx
+        character(*), intent(in)                :: expr
+        type(token), intent(in)                 :: tokens(:)
+        integer, intent(in)                     :: ntokens
+        integer, intent(inout)                  :: pos
+        type(macro), allocatable, intent(inout) :: macros(:)
+        type(context), intent(in)               :: ctx
         !private
         integer :: left, right
 
@@ -586,19 +586,19 @@ contains
     !! @param[in] tokens    Array of tokens to parse
     !! @param[in] ntokens   Number of valid tokens in the array
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
-    !! @param[in] macros    Defined macros for expansion and `defined()` checks
+    !! @param[inout] macros    Defined macros for expansion and `defined()` checks
     !! @param[in] ctx    Context
     !! @return Integer value of the parsed expression
     !!
     !! @b Remarks
     !! @ingroup group_operators
     recursive integer function parse_power(expr, tokens, ntokens, pos, macros, ctx) result(val)
-        character(*), intent(in)    :: expr
-        type(token), intent(in)     :: tokens(:)
-        integer, intent(in)         :: ntokens
-        integer, intent(inout)      :: pos
-        type(macro), intent(in)     :: macros(:)
-        type(context), intent(in)   :: ctx
+        character(*), intent(in)                :: expr
+        type(token), intent(in)                 :: tokens(:)
+        integer, intent(in)                     :: ntokens
+        integer, intent(inout)                  :: pos
+        type(macro), allocatable, intent(inout) :: macros(:)
+        type(context), intent(in)               :: ctx
         !private
         integer :: left, right
 
@@ -618,19 +618,19 @@ contains
     !! @param[in] tokens    Array of tokens to parse
     !! @param[in] ntokens   Number of valid tokens in the array
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
-    !! @param[in] macros    Defined macros for expansion and `defined()` checks
+    !! @param[inout] macros    Defined macros for expansion and `defined()` checks
     !! @param[in] ctx    Context
     !! @return Integer value of the parsed expression
     !!
     !! @b Remarks
     !! @ingroup group_operators
     recursive integer function parse_unary(expr, tokens, ntokens, pos, macros, ctx) result(val)
-        character(*), intent(in)    :: expr
-        type(token), intent(in)     :: tokens(:)
-        integer, intent(in)         :: ntokens
-        integer, intent(inout)      :: pos
-        type(macro), intent(in)     :: macros(:)
-        type(context), intent(in)   :: ctx
+        character(*), intent(in)                :: expr
+        type(token), intent(in)                 :: tokens(:)
+        integer, intent(in)                     :: ntokens
+        integer, intent(inout)                  :: pos
+        type(macro), allocatable, intent(inout) :: macros(:)
+        type(context), intent(in)               :: ctx
 
         if (pos <= ntokens .and. tokens(pos)%value == '!') then
             pos = pos + 1
@@ -654,19 +654,19 @@ contains
     !! @param[in] tokens    Array of tokens to parse
     !! @param[in] ntokens   Number of valid tokens in the array
     !! @param[inout] pos    Current parsing position (updated as tokens are consumed)
-    !! @param[in] macros    Defined macros for expansion and `defined()` checks
+    !! @param[inout] macros    Defined macros for expansion and `defined()` checks
     !! @param[in] ctx    Context
     !! @return Integer value of the parsed expression
     !!
     !! @b Remarks
     !! @ingroup group_operators
     recursive integer function parse_atom(expr, tokens, ntokens, pos, macros, ctx) result(val)
-        character(*), intent(in)    :: expr
-        type(token), intent(in)     :: tokens(:)
-        integer, intent(in)         :: ntokens
-        integer, intent(inout)      :: pos
-        type(macro), intent(in)     :: macros(:)
-        type(context), intent(in)   :: ctx
+        character(*), intent(in)                :: expr
+        type(token), intent(in)                 :: tokens(:)
+        integer, intent(in)                     :: ntokens
+        integer, intent(inout)                  :: pos
+        type(macro), allocatable, intent(inout) :: macros(:)
+        type(context), intent(in)               :: ctx
         !private
         integer :: i
         character(:), allocatable :: expanded

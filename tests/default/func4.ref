@@ -1,0 +1,5 @@
+print *, "this is my beautiful function test"
+
+function foo()
+    print *, foo
+end function
