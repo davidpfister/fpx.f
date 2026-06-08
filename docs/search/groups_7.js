@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['parser_0',['Parser',['../group__group__parser.html',1,'']]],
-  ['path_1',['Path',['../group__group__path.html',1,'']]]
+  ['operators_0',['Operators',['../group__group__operators.html',1,'']]],
+  ['os_1',['OS',['../group__group__os.html',1,'']]]
 ];

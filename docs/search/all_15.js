@@ -17,7 +17,7 @@ var searchData=
   ['like_20macro_20invocation_14',['2 Function-like macro invocation',['../macro.html#autotoc_md109',1,'']]],
   ['limits_15',['9 Translation limits',['../specifications.html#autotoc_md96',1,'']]],
   ['line_16',['Line',['../group__group__line.html',1,'']]],
-  ['line_17',['line',['../index.html#autotoc_md9',1,'Command line'],['../structfpx__logging_1_1label__type.html#af312c583393b652a1ca07b5c7d240408',1,'fpx_logging::label_type::line'],['../parser_8f90.html#af43cbf7bc81e5b97b88ea3d30c50a1b0',1,'fpx_parser::line']]],
+  ['line_17',['line',['../index.html#autotoc_md9',1,'Command line'],['../structfpx__logging_1_1label__type.html#af312c583393b652a1ca07b5c7d240408',1,'fpx_logging::label_type::line']]],
   ['line_20breaks_20and_20continuations_20in_20macro_20invocations_20fixed_20form_18',['2.1.3 Line breaks and continuations in macro invocations (fixed-form)',['../macro.html#autotoc_md113',1,'']]],
   ['line_20breaks_20and_20continuations_20in_20macro_20invocations_20free_20form_19',['2.1.2 Line breaks and continuations in macro invocations (free-form)',['../macro.html#autotoc_md112',1,'']]],
   ['line_20cli_20',['Using fpx from the Command Line (CLI)',['../usage.html#autotoc_md123',1,'']]],
@@ -26,10 +26,8 @@ var searchData=
   ['line_20processing_23',['8 INCLUDE line processing',['../specifications.html#autotoc_md95',1,'']]],
   ['line_2ef90_24',['line.f90',['../line_8f90.html',1,'']]],
   ['line_5fbreak_25',['line_break',['../structfpx__global_1_1global__settings.html#a0077fa550303be52a94634c64dd15715',1,'fpx_global::global_settings']]],
-  ['line_5ftoken_26',['line_token',['../structfpx__logging_1_1line__token.html',1,'fpx_logging']]],
-  ['lines_27',['2.1 Lines',['../specifications.html#autotoc_md47',1,'']]],
-  ['list_5fsizes_28',['list_sizes',['../structfpx__graph_1_1digraph.html#a70d3f7a9d885d4f1d5fd5a07a08ab156',1,'fpx_graph::digraph']]],
-  ['logging_29',['Logging',['../group__group__logging.html',1,'']]],
-  ['logging_2ef90_30',['logging.f90',['../logging_8f90.html',1,'']]],
-  ['lowercase_31',['lowercase',['../group__group__string.html#gaa2b8ec4e39395a3550a97ea0ee92e0a2',1,'fpx_string']]]
+  ['lines_26',['2.1 Lines',['../specifications.html#autotoc_md47',1,'']]],
+  ['logging_27',['Logging',['../group__group__logging.html',1,'']]],
+  ['logging_2ef90_28',['logging.f90',['../logging_8f90.html',1,'']]],
+  ['lowercase_29',['lowercase',['../group__group__string.html#gaa2b8ec4e39395a3550a97ea0ee92e0a2',1,'fpx_string']]]
 ];

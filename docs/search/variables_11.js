@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['undef_0',['undef',['../structfpx__global_1_1global__settings.html#ad9026b64059afc75e29d30195bf91959',1,'fpx_global::global_settings']]]
+  ['year_0',['year',['../structfpx__date_1_1datetime.html#ab31da52ea429141ab33e05070392e360',1,'fpx_date::datetime']]]
 ];

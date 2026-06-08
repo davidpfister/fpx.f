@@ -123,15 +123,17 @@ $(function(){initNavTree('group__group__define.html','',''); });
 <div class="textblock"><p>Processing of define and undef preprocessor directives This module implements the core logic for handling macro definition and removal during preprocessing in the fpx Fortran preprocessor. </p>
 <ul>
 <li>Object-like macros: <span class="tt">#define NAME value</span></li>
-<li>Function-like macros: <span class="tt">#define NAME(arg1, arg2, ...) replacement</span></li>
+<li>Function-like macros: <span class="tt">#define NAME(arg1, arg2, ...)</span></li>
 <li>Variadic macros using <span class="tt">...</span> and automatic detection</li>
 <li>Proper parameter parsing with whitespace handling</li>
-<li>Macro redefinition (overwrites existing definition)</li>
 <li>Safe <span class="tt">#undef</span> that removes a previously defined macro</li>
-<li>Integration with global undef list (<span class="tt">globalundef</span>) to block redefinition</li>
+<li>Integration with global undef list to block redefinition</li>
 <li>Comprehensive verbose logging of all definition actions</li>
 </ul>
-<p>The routines are designed to be robust against malformed input and provide clear diagnostics when <span class="tt">verbose = .true.</span>. </p><h2 class="groupheader">Examples</h2>
+<dl class="section note"><dt>Note</dt><dd>Existing macros are overwritten.</dd></dl>
+<p>The routines are designed to be robust against malformed input and provide clear diagnostics when <span class="tt">verbose = .true.</span>.</p>
+<h1 class="doxsection"><a class="anchor" id="define_examples"></a>
+Examples</h1>
 <ol type="1">
 <li>Define simple object-like macros: <div class="fragment"><div class="line"><span class="preprocessor">#define PI 3.141592653589793</span></div>
 <div class="line"><span class="preprocessor"></span><span class="preprocessor">#define DEBUG 1</span></div>
@@ -191,7 +193,7 @@ $(function(){initNavTree('group__group__define.html','',''); });
 </dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="define_8f90_source.html#l00077">77</a> of file <a class="el" href="define_8f90_source.html">define.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="define_8f90_source.html#l00079">79</a> of file <a class="el" href="define_8f90_source.html">define.f90</a>.</p>
 
 </div>
 </div>
@@ -230,7 +232,7 @@ $(function(){initNavTree('group__group__define.html','',''); });
 </dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="define_8f90_source.html#l00207">207</a> of file <a class="el" href="define_8f90_source.html">define.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="define_8f90_source.html#l00221">221</a> of file <a class="el" href="define_8f90_source.html">define.f90</a>.</p>
 
 </div>
 </div>

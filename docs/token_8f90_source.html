@@ -131,7 +131,7 @@ $(function(){initNavTree('token_8f90_source.html','',''); });
 <div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="comment">!! - Clear separation between lexical scanning and semantic interpretation</span></div>
 <div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="comment">!! - Easy extensibility for future operators or functions</span></div>
 <div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span><span class="comment">!!</span></div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="comment">!! @par Examples</span></div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="comment">!! @section token_examples Examples</span></div>
 <div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="comment">!!</span></div>
 <div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="comment">!! 1. Manual token creation (mostly for testing/debugging):</span></div>
 <div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="comment">!! @code{.f90}</span></div>
@@ -385,16 +385,16 @@ $(function(){initNavTree('token_8f90_source.html','',''); });
 <div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span>                    i = pos</div>
 <div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span><span class="keywordflow">                end if</span></div>
 <div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span>                in_word = .false.</div>
-<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span>            <span class="keywordflow">else</span> <span class="keywordflow">if</span> (<a class="code hl_function" href="group__group__token.html#ga71d1e45d8c41bfce77c30e62890b45b1">is_typeless</a>(temp(i:), pos)) <span class="keywordflow">then</span></div>
+<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span>            <span class="keywordflow">else</span> <span class="keywordflow">if</span> (is_typeless(temp(i:), pos)) <span class="keywordflow">then</span></div>
 <div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span>                pos = i + pos</div>
 <div class="line"><a id="l00273" name="l00273"></a><span class="lineno">  273</span>                tokens(ntokens)%value = <a class="code hl_interface" href="interfacefpx__string_1_1trim.html">trim</a>(adjustl(temp(i:pos - 1)))</div>
 <div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span>                tokens(ntokens)%type = number</div>
 <div class="line"><a id="l00275" name="l00275"></a><span class="lineno">  275</span>                tokens(ntokens)%start = i</div>
 <div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span>                i = pos</div>
 <div class="line"><a id="l00277" name="l00277"></a><span class="lineno">  277</span>                in_word = .false.</div>
-<div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span>            <span class="keywordflow">else</span> <span class="keywordflow">if</span> (<a class="code hl_function" href="group__group__token.html#gac084a1079e51d0099b772eaba8eaa0e5">is_digit</a>(temp(i:i))) <span class="keywordflow">then</span></div>
+<div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span>            <span class="keywordflow">else</span> <span class="keywordflow">if</span> (is_digit(temp(i:i))) <span class="keywordflow">then</span></div>
 <div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span>                pos = i</div>
-<div class="line"><a id="l00280" name="l00280"></a><span class="lineno">  280</span>                <span class="keywordflow">do</span> <span class="keywordflow">while</span> (pos &lt;= len_expr .and. <a class="code hl_function" href="group__group__token.html#gac084a1079e51d0099b772eaba8eaa0e5">is_digit</a>(temp(pos:pos)))</div>
+<div class="line"><a id="l00280" name="l00280"></a><span class="lineno">  280</span>                <span class="keywordflow">do</span> <span class="keywordflow">while</span> (pos &lt;= len_expr .and. is_digit(temp(pos:pos)))</div>
 <div class="line"><a id="l00281" name="l00281"></a><span class="lineno">  281</span>                    pos = pos + 1</div>
 <div class="line"><a id="l00282" name="l00282"></a><span class="lineno">  282</span><span class="keywordflow">                end do</span></div>
 <div class="line"><a id="l00283" name="l00283"></a><span class="lineno">  283</span>                tokens(ntokens)%value = <a class="code hl_interface" href="interfacefpx__string_1_1trim.html">trim</a>(adjustl(temp(i:pos - 1)))</div>
@@ -424,12 +424,10 @@ $(function(){initNavTree('token_8f90_source.html','',''); });
 <div class="line"><a id="l00306" name="l00306"></a><span class="lineno">  306</span><span class="comment">    !!</span></div>
 <div class="line"><a id="l00307" name="l00307"></a><span class="lineno">  307</span><span class="comment">    !! @b Remarks</span></div>
 <div class="line"><a id="l00308" name="l00308"></a><span class="lineno">  308</span><span class="comment">    !! @ingroup group_token</span></div>
-<div class="foldopen" id="foldopen00309" data-start="" data-end="">
-<div class="line"><a id="l00309" name="l00309"></a><span class="lineno"><a class="line" href="group__group__token.html#gac084a1079e51d0099b772eaba8eaa0e5">  309</a></span>    <span class="keywordtype">logical</span> <span class="keywordtype">elemental</span> function <a class="code hl_function" href="group__group__token.html#gac084a1079e51d0099b772eaba8eaa0e5">is_digit</a>(ch) result(res)</div>
+<div class="line"><a id="l00309" name="l00309"></a><span class="lineno">  309</span>    <span class="keywordtype">logical</span> <span class="keywordtype">elemental</span> function is_digit(ch) result(res)</div>
 <div class="line"><a id="l00310" name="l00310"></a><span class="lineno">  310</span>        <span class="keywordtype">character(*)</span>, <span class="keywordtype">intent(in)</span> :: ch</div>
 <div class="line"><a id="l00311" name="l00311"></a><span class="lineno">  311</span> </div>
 <div class="line"><a id="l00312" name="l00312"></a><span class="lineno">  312</span>        res = verify(ch, <span class="stringliteral">&#39;0123456789&#39;</span>) == 0</div>
-</div>
 <div class="line"><a id="l00313" name="l00313"></a><span class="lineno">  313</span>    <span class="keyword">end function</span></div>
 <div class="line"><a id="l00314" name="l00314"></a><span class="lineno">  314</span><span class="comment"></span> </div>
 <div class="line"><a id="l00315" name="l00315"></a><span class="lineno">  315</span><span class="comment">    !&gt; Detects whether a string starts a typeless constant (hex, octal, binary).</span></div>
@@ -440,8 +438,7 @@ $(function(){initNavTree('token_8f90_source.html','',''); });
 <div class="line"><a id="l00320" name="l00320"></a><span class="lineno">  320</span><span class="comment">    !!</span></div>
 <div class="line"><a id="l00321" name="l00321"></a><span class="lineno">  321</span><span class="comment">    !! @b Remarks</span></div>
 <div class="line"><a id="l00322" name="l00322"></a><span class="lineno">  322</span><span class="comment">    !! @ingroup group_token</span></div>
-<div class="foldopen" id="foldopen00323" data-start="" data-end="">
-<div class="line"><a id="l00323" name="l00323"></a><span class="lineno"><a class="line" href="group__group__token.html#ga71d1e45d8c41bfce77c30e62890b45b1">  323</a></span>    <span class="keyword">logical </span><span class="keyword">function </span><a class="code hl_function" href="group__group__token.html#ga71d1e45d8c41bfce77c30e62890b45b1">is_typeless</a>(str, pos) <span class="keyword">result</span>(res)</div>
+<div class="line"><a id="l00323" name="l00323"></a><span class="lineno">  323</span>    <span class="keyword">logical </span><span class="keyword">function </span>is_typeless(str, pos) <span class="keyword">result</span>(res)</div>
 <div class="line"><a id="l00324" name="l00324"></a><span class="lineno">  324</span>        <span class="keywordtype">character(*)</span>, <span class="keywordtype">intent(in)</span>    :: str</div>
 <div class="line"><a id="l00325" name="l00325"></a><span class="lineno">  325</span>        <span class="keywordtype">integer</span>, <span class="keywordtype">intent(out)</span>        :: pos</div>
 <div class="line"><a id="l00326" name="l00326"></a><span class="lineno">  326</span>        <span class="comment">!private</span></div>
@@ -456,12 +453,10 @@ $(function(){initNavTree('token_8f90_source.html','',''); });
 <div class="line"><a id="l00335" name="l00335"></a><span class="lineno">  335</span><span class="keywordflow">        end do</span></div>
 <div class="line"><a id="l00336" name="l00336"></a><span class="lineno">  336</span>        <span class="keywordflow">if</span> (pos &gt; 0) i = <a class="code hl_interface" href="interfacefpx__token_1_1strtol.html">strtol</a>(str(:pos - 1), base, success=res)</div>
 <div class="line"><a id="l00337" name="l00337"></a><span class="lineno">  337</span>        <span class="keywordflow">if</span> (base == 10) res = .false.</div>
-</div>
 <div class="line"><a id="l00338" name="l00338"></a><span class="lineno">  338</span>    <span class="keyword">end function</span></div>
 <div class="line"><a id="l00339" name="l00339"></a><span class="lineno">  339</span><span class="comment"></span> </div>
 <div class="line"><a id="l00340" name="l00340"></a><span class="lineno">  340</span><span class="comment">    !&gt; Implementation of strtol function</span></div>
-<div class="foldopen" id="foldopen00341" data-start="" data-end="">
-<div class="line"><a id="l00341" name="l00341"></a><span class="lineno"><a class="line" href="token_8f90.html#a68a2cfae8524d9c984a187fc53ed0bc7">  341</a></span>    <span class="keyword">integer </span><span class="keyword">function </span>strtol_default(str, success) <span class="keyword">result</span>(val)</div>
+<div class="line"><a id="l00341" name="l00341"></a><span class="lineno">  341</span>    <span class="keyword">integer </span><span class="keyword">function </span>strtol_default(str, success) <span class="keyword">result</span>(val)</div>
 <div class="line"><a id="l00342" name="l00342"></a><span class="lineno">  342</span>        <span class="keywordtype">character(*)</span>, <span class="keywordtype">intent(in)</span>        :: str</div>
 <div class="line"><a id="l00343" name="l00343"></a><span class="lineno">  343</span>        <span class="keywordtype">logical</span>, <span class="keywordtype">intent(out)</span>, <span class="keywordtype">optional</span>  :: success</div>
 <div class="line"><a id="l00344" name="l00344"></a><span class="lineno">  344</span>        <span class="comment">!private</span></div>
@@ -469,12 +464,10 @@ $(function(){initNavTree('token_8f90_source.html','',''); });
 <div class="line"><a id="l00346" name="l00346"></a><span class="lineno">  346</span> </div>
 <div class="line"><a id="l00347" name="l00347"></a><span class="lineno">  347</span>        base = 0</div>
 <div class="line"><a id="l00348" name="l00348"></a><span class="lineno">  348</span>        val = strtol_with_base(str, base, success)</div>
-</div>
 <div class="line"><a id="l00349" name="l00349"></a><span class="lineno">  349</span>    <span class="keyword">end function</span></div>
 <div class="line"><a id="l00350" name="l00350"></a><span class="lineno">  350</span><span class="comment"></span> </div>
 <div class="line"><a id="l00351" name="l00351"></a><span class="lineno">  351</span><span class="comment">    !&gt; Implementation of strtol function with a base argument.</span></div>
-<div class="foldopen" id="foldopen00352" data-start="" data-end="">
-<div class="line"><a id="l00352" name="l00352"></a><span class="lineno"><a class="line" href="token_8f90.html#ad0dd1094737cc50176db3497f06a431c">  352</a></span>    <span class="keyword">integer </span><span class="keyword">function </span>strtol_with_base(str, base, success) <span class="keyword">result</span>(val)</div>
+<div class="line"><a id="l00352" name="l00352"></a><span class="lineno">  352</span>    <span class="keyword">integer </span><span class="keyword">function </span>strtol_with_base(str, base, success) <span class="keyword">result</span>(val)</div>
 <div class="line"><a id="l00353" name="l00353"></a><span class="lineno">  353</span>        <span class="keywordtype">character(*)</span>, <span class="keywordtype">intent(in)</span>        :: str</div>
 <div class="line"><a id="l00354" name="l00354"></a><span class="lineno">  354</span>        <span class="keywordtype">integer</span>, <span class="keywordtype">intent(inout)</span>          :: base</div>
 <div class="line"><a id="l00355" name="l00355"></a><span class="lineno">  355</span>        <span class="keywordtype">logical</span>, <span class="keywordtype">intent(out)</span>, <span class="keywordtype">optional</span>  :: success</div>
@@ -559,18 +552,15 @@ $(function(){initNavTree('token_8f90_source.html','',''); });
 <div class="line"><a id="l00434" name="l00434"></a><span class="lineno">  434</span> </div>
 <div class="line"><a id="l00435" name="l00435"></a><span class="lineno">  435</span>        <span class="comment">! Set success flag if provided</span></div>
 <div class="line"><a id="l00436" name="l00436"></a><span class="lineno">  436</span>        <span class="keywordflow">if</span> (<span class="keyword">present</span>(success)) success = is_valid</div>
-</div>
 <div class="line"><a id="l00437" name="l00437"></a><span class="lineno">  437</span>    <span class="keyword">end function</span></div>
 <div class="line"><a id="l00438" name="l00438"></a><span class="lineno">  438</span><span class="keyword">end module</span></div>
-<div class="ttc" id="agroup__group__constants_html_ga7b898dec94b3f045e17d927b192d313d"><div class="ttname"><a href="group__group__constants.html#ga7b898dec94b3f045e17d927b192d313d">fpx_constants::max_tokens</a></div><div class="ttdeci">integer, parameter, public max_tokens</div><div class="ttdoc">Maximum number of tokens per line, set to 100 for efficient tokenization.</div><div class="ttdef"><b>Definition</b> <a href="constants_8f90_source.html#l00023">constants.f90:23</a></div></div>
-<div class="ttc" id="agroup__group__string_html_gae5571ae03556ef6798087ca88b1ffd26"><div class="ttname"><a href="group__group__string.html#gae5571ae03556ef6798087ca88b1ffd26">fpx_string::starts_with</a></div><div class="ttdeci">logical function, public starts_with(str, arg1, idx)</div><div class="ttdoc">Checks if a string starts with a given prefix Returns .true. if the string str (after trimming leadin...</div><div class="ttdef"><b>Definition</b> <a href="string_8f90_source.html#l00497">string.f90:498</a></div></div>
+<div class="ttc" id="agroup__group__constants_html_ga7b898dec94b3f045e17d927b192d313d"><div class="ttname"><a href="group__group__constants.html#ga7b898dec94b3f045e17d927b192d313d">fpx_constants::max_tokens</a></div><div class="ttdeci">integer, parameter, public max_tokens</div><div class="ttdoc">Maximum number of tokens per line, set to 100 for efficient tokenization.</div><div class="ttdef"><b>Definition</b> <a href="constants_8f90_source.html#l00027">constants.f90:27</a></div></div>
+<div class="ttc" id="agroup__group__string_html_gae5571ae03556ef6798087ca88b1ffd26"><div class="ttname"><a href="group__group__string.html#gae5571ae03556ef6798087ca88b1ffd26">fpx_string::starts_with</a></div><div class="ttdeci">logical function, public starts_with(str, arg1, idx)</div><div class="ttdoc">Checks if a string starts with a given prefix Returns .true. if the string str (after trimming leadin...</div><div class="ttdef"><b>Definition</b> <a href="string_8f90_source.html#l00499">string.f90:500</a></div></div>
 <div class="ttc" id="agroup__group__token_html_ga4b585815a66c5b370c752e1f82e3ec11"><div class="ttname"><a href="group__group__token.html#ga4b585815a66c5b370c752e1f82e3ec11">fpx_token::tokens_enum</a></div><div class="ttdeci">integer, parameter, public tokens_enum</div><div class="ttdoc">Kind parameter for token type enumeration. Values are (unknown, number, operation,...</div><div class="ttdef"><b>Definition</b> <a href="#l00087">token.f90:87</a></div></div>
 <div class="ttc" id="agroup__group__token_html_ga5f1606ef019abe57f86da59fcfc6a79b"><div class="ttname"><a href="group__group__token.html#ga5f1606ef019abe57f86da59fcfc6a79b">fpx_token::tokenize</a></div><div class="ttdeci">subroutine, public tokenize(expr, tokens, ntokens)</div><div class="ttdoc">Tokenizes a preprocessor expression into an array of token structures. Handles whitespace,...</div><div class="ttdef"><b>Definition</b> <a href="#l00161">token.f90:162</a></div></div>
-<div class="ttc" id="agroup__group__token_html_ga71d1e45d8c41bfce77c30e62890b45b1"><div class="ttname"><a href="group__group__token.html#ga71d1e45d8c41bfce77c30e62890b45b1">fpx_token::is_typeless</a></div><div class="ttdeci">logical function is_typeless(str, pos)</div><div class="ttdoc">Detects whether a string starts a typeless constant (hex, octal, binary). Used to avoid treating them...</div><div class="ttdef"><b>Definition</b> <a href="#l00323">token.f90:324</a></div></div>
-<div class="ttc" id="agroup__group__token_html_gac084a1079e51d0099b772eaba8eaa0e5"><div class="ttname"><a href="group__group__token.html#gac084a1079e51d0099b772eaba8eaa0e5">fpx_token::is_digit</a></div><div class="ttdeci">logical elemental function is_digit(ch)</div><div class="ttdoc">Tests whether a single character is a decimal digit (&#39;0&#39;-&#39;9&#39;).</div><div class="ttdef"><b>Definition</b> <a href="#l00309">token.f90:310</a></div></div>
 <div class="ttc" id="ainterfacefpx__logging_1_1render_html"><div class="ttname"><a href="interfacefpx__logging_1_1render.html">fpx_logging::render</a></div><div class="ttdoc">Interface to render diagnostic messages and labels.</div><div class="ttdef"><b>Definition</b> <a href="logging_8f90_source.html#l00185">logging.f90:185</a></div></div>
-<div class="ttc" id="ainterfacefpx__string_1_1len__trim_html"><div class="ttname"><a href="interfacefpx__string_1_1len__trim.html">fpx_string::len_trim</a></div><div class="ttdoc">Return the trimmed length of a string.</div><div class="ttdef"><b>Definition</b> <a href="string_8f90_source.html#l00141">string.f90:141</a></div></div>
-<div class="ttc" id="ainterfacefpx__string_1_1trim_html"><div class="ttname"><a href="interfacefpx__string_1_1trim.html">fpx_string::trim</a></div><div class="ttdoc">Return the trimmed string.</div><div class="ttdef"><b>Definition</b> <a href="string_8f90_source.html#l00149">string.f90:149</a></div></div>
+<div class="ttc" id="ainterfacefpx__string_1_1len__trim_html"><div class="ttname"><a href="interfacefpx__string_1_1len__trim.html">fpx_string::len_trim</a></div><div class="ttdoc">Return the trimmed length of a string.</div><div class="ttdef"><b>Definition</b> <a href="string_8f90_source.html#l00143">string.f90:143</a></div></div>
+<div class="ttc" id="ainterfacefpx__string_1_1trim_html"><div class="ttname"><a href="interfacefpx__string_1_1trim.html">fpx_string::trim</a></div><div class="ttdoc">Return the trimmed string.</div><div class="ttdef"><b>Definition</b> <a href="string_8f90_source.html#l00151">string.f90:151</a></div></div>
 <div class="ttc" id="ainterfacefpx__token_1_1strtol_html"><div class="ttname"><a href="interfacefpx__token_1_1strtol.html">fpx_token::strtol</a></div><div class="ttdoc">Converts a string to integer.</div><div class="ttdef"><b>Definition</b> <a href="#l00142">token.f90:142</a></div></div>
 <div class="ttc" id="astructfpx__logging_1_1diagnostic__report_html"><div class="ttname"><a href="structfpx__logging_1_1diagnostic__report.html">fpx_logging::diagnostic_report</a></div><div class="ttdoc">Definition of diagnostic message.</div><div class="ttdef"><b>Definition</b> <a href="logging_8f90_source.html#l00269">logging.f90:269</a></div></div>
 <div class="ttc" id="astructfpx__logging_1_1label__type_html"><div class="ttname"><a href="structfpx__logging_1_1label__type.html">fpx_logging::label_type</a></div><div class="ttdoc">Represents text as a sequence of ASCII code units. The derived type wraps an allocatable character ar...</div><div class="ttdef"><b>Definition</b> <a href="logging_8f90_source.html#l00246">logging.f90:246</a></div></div>

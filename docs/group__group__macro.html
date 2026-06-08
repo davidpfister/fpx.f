@@ -124,14 +124,17 @@ $(function(){initNavTree('group__group__macro.html','',''); });
 <p>This module implements a complete, standards-inspired macro system supporting:</p><ul>
 <li>Object-like and function-like macros</li>
 <li>Variadic macros (<span class="tt">...</span> and <span class="tt">__VA_ARGS__</span>)</li>
+<li>C++20/C23-style <span class="tt">__VA_OPT__</span> handling for optional variadic content</li>
 <li>Parameter stringification (<span class="tt">#param</span>) and token pasting (<span class="tt">##</span>)</li>
-<li>Built-in predefined macros: <span class="tt">__FILE__</span>, <span class="tt">__FILENAME__</span>, <span class="tt">__LINE__</span>, <span class="tt">__DATE__</span>, <span class="tt">__TIME__</span>, <span class="tt">__TIMESTAMP__</span></li>
-<li>Recursive expansion with circular dependency detection via digraph analysis</li>
-<li>Dynamic macro table of <span class="tt">macro</span> objects with efficient addition, lookup, removal</li>
+<li>Built-in predefined macros: <span class="tt">__FILE__</span>, <span class="tt">__FILENAME__</span>, <span class="tt">__LINE__</span>, <span class="tt">__DATE__</span>, <span class="tt">__TIME__</span>, <span class="tt">__TIMESTAMP__, </span>__FUNC__<span class="tt"></span></li>
+<li><span class="tt">Recursive expansion with circular dependency detection via digraph analysis</span></li>
+<li><span class="tt">Dynamic macro table of </span>macro` objects with efficient addition, lookup, removal</li>
 <li>Full support for nested macro calls and proper argument handling</li>
 </ul>
 <p>The design allows safe, repeated expansion while preventing infinite recursion. All operations are container-agnostic using allocatable dynamic arrays.</p>
-<h2 class="groupheader">Examples</h2>
+<dl class="section user"><dt>Expansion Model</dt><dd>Macros are expanded recursively. Circular dependencies are detected through dependency graph analysis. Macro lookup is currently linear in the number of defined macros.</dd></dl>
+<h1 class="doxsection"><a class="anchor" id="macro_examples"></a>
+Examples</h1>
 <ol type="1">
 <li>Define and use simple macros: <div class="fragment"><div class="line"><span class="keywordtype">type</span>(macro), <span class="keywordtype">allocatable</span> :: macros(:)</div>
 <div class="line"><span class="keyword">call </span>add(macros, macro(<span class="stringliteral">&#39;PI&#39;</span>, <span class="stringliteral">&#39;3.1415926535&#39;</span>))</div>
@@ -163,36 +166,9 @@ Data Types</h2></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Insert more macro to a dynamic table.  <a href="interfacefpx__macro_1_1insert.html#details">More...</a><br /></td></tr>
 <tr class="memitem:remove" id="r_remove"><td class="memItemLeft">interface &#160;</td><td class="memItemRight"><a class="el" href="interfacefpx__macro_1_1remove.html">remove</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove a macro at given index.  <a href="interfacefpx__macro_1_1remove.html#details">More...</a><br /></td></tr>
-<tr class="memitem:sizeof" id="r_sizeof"><td class="memItemLeft">interface &#160;</td><td class="memItemRight"><a class="el" href="interfacefpx__macro_1_1sizeof.html">sizeof</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return current number of stored macros.  <a href="interfacefpx__macro_1_1sizeof.html#details">More...</a><br /></td></tr>
+<tr class="memitem:size_5Fof" id="r_size_5Fof"><td class="memItemLeft">interface &#160;</td><td class="memItemRight"><a class="el" href="interfacefpx__macro_1_1size__of.html">size_of</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return current number of stored macros.  <a href="interfacefpx__macro_1_1size__of.html#details">More...</a><br /></td></tr>
 </table>
-<a name="doc-var-members" id="doc-var-members"></a><h2 id="header-doc-var-members" class="groupheader">Variables</h2>
-<a id="ga23244cd1e6b3d8a76c5fd6f971bcddf8" name="ga23244cd1e6b3d8a76c5fd6f971bcddf8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga23244cd1e6b3d8a76c5fd6f971bcddf8">&#9670;&#160;</a></span>buffer_size</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">integer, parameter buffer_size = 256</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Default buffer size. </p>
-
-<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00067">67</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
-
-</div>
-</div>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Methods</h2>
 <a id="ga24a427812ae7752128afd5298198b2c7" name="ga24a427812ae7752128afd5298198b2c7"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga24a427812ae7752128afd5298198b2c7">&#9670;&#160;</a></span>expand_all()</h2>
@@ -208,7 +184,7 @@ Data Types</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">type(<a class="el" href="structfpx__macro_1_1macro.html">macro</a>), dimension(:), intent(in)</td>          <td class="paramname"><span class="paramname"><em>macros</em></span>, </td>
+          <td class="paramtype">type(<a class="el" href="structfpx__macro_1_1macro.html">macro</a>), dimension(:), intent(inout), allocatable</td>          <td class="paramname"><span class="paramname"><em>macros</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -232,7 +208,7 @@ Data Types</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">ctx</td><td>Context </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">macros</td><td>Current macro table </td></tr>
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">macros</td><td>Current macro table </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">stitch</td><td>Set to .true.true. if result ends with '&amp;' (Fortran continuation) </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">has_extra</td><td>Has extra macros (non-standard) like <b>FILENAME</b> and <b>TIMESTAMP</b> </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">implicit_conti</td><td>If .true., implicit continuation is permitted </td></tr>
@@ -242,7 +218,7 @@ Data Types</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>Expanded line with all macros and predefined tokens replaced</dd></dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00195">195</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00214">214</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
 
 </div>
 </div>
@@ -260,7 +236,7 @@ Data Types</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">type(<a class="el" href="structfpx__macro_1_1macro.html">macro</a>), dimension(:), intent(in)</td>          <td class="paramname"><span class="paramname"><em>macros</em></span>, </td>
+          <td class="paramtype">type(<a class="el" href="structfpx__macro_1_1macro.html">macro</a>), dimension(:), intent(inout), allocatable</td>          <td class="paramname"><span class="paramname"><em>macros</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -292,7 +268,7 @@ Data Types</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">line</td><td>Line to be expanded </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">macros</td><td>Current macro table </td></tr>
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">macros</td><td>Current macro table </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">stitch</td><td>.true. if final line ends with '&amp;' </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">implicit_conti</td><td>If .true., implicit continuation is permitted </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">ctx</td><td>Context </td></tr>
@@ -302,7 +278,7 @@ Data Types</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>Line with user-defined macros expanded (predefined tokens untouched)</dd></dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00299">299</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00325">325</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
 
 </div>
 </div>
@@ -342,37 +318,7 @@ Data Types</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>.true. if macro is defined</dd></dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00627">627</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
-
-</div>
-</div>
-<a id="ga610e027f53ef57bfa2ea2da1e97212d5" name="ga610e027f53ef57bfa2ea2da1e97212d5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga610e027f53ef57bfa2ea2da1e97212d5">&#9670;&#160;</a></span>tostring()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">character(:) function, allocatable tostring </td>
-          <td>(</td>
-          <td class="paramtype">class(*), intent(in)</td>          <td class="paramname"><span class="paramname"><em>any</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Generic conversion of polymorphic value to string Used internally during macro argument stringification and debugging. Supports integers, reals, logicals, characters, and complex. </p>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00650">650</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00659">659</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
 
 </div>
 </div>

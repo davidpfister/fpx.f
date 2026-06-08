@@ -140,7 +140,7 @@ $(function(){initNavTree('interfacefpx__operators_1_1evaluate__expression.html',
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">type(<a class="el" href="structfpx__macro_1_1macro.html">macro</a>), dimension(:), intent(in)</td>          <td class="paramname"><span class="paramname"><em>macros</em></span>, </td>
+          <td class="paramtype">type(<a class="el" href="structfpx__macro_1_1macro.html">macro</a>), dimension(:), intent(inout), allocatable</td>          <td class="paramname"><span class="paramname"><em>macros</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -154,7 +154,7 @@ $(function(){initNavTree('interfacefpx__operators_1_1evaluate__expression.html',
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">expr</td><td>Expression string to evaluate </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">macros</td><td>Array of defined macros for substitution and <span class="tt">defined()</span> checks </td></tr>
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">macros</td><td>Array of defined macros for substitution and <span class="tt">defined()</span> checks </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">val</td><td>(optional) integer result of the evaluation </td></tr>
   </table>
   </dd>
@@ -180,7 +180,7 @@ $(function(){initNavTree('interfacefpx__operators_1_1evaluate__expression.html',
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">type(<a class="el" href="structfpx__macro_1_1macro.html">macro</a>), dimension(:), intent(in)</td>          <td class="paramname"><span class="paramname"><em>macros</em></span>, </td>
+          <td class="paramtype">type(<a class="el" href="structfpx__macro_1_1macro.html">macro</a>), dimension(:), intent(inout), allocatable</td>          <td class="paramname"><span class="paramname"><em>macros</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -199,7 +199,7 @@ $(function(){initNavTree('interfacefpx__operators_1_1evaluate__expression.html',
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">expr</td><td>Expression string to evaluate </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">macros</td><td>Array of defined macros for substitution and <span class="tt">defined()</span> checks </td></tr>
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">macros</td><td>Array of defined macros for substitution and <span class="tt">defined()</span> checks </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">ctx</td><td>Context </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">val</td><td>(optional) integer result of the evaluation </td></tr>
   </table>

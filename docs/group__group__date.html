@@ -134,7 +134,9 @@ $(function(){initNavTree('group__group__date.html','',''); });
 <li>Elemental and pure functions where possible for performance</li>
 <li>Minimal memory footprint using small integer kinds (<span class="tt">int8</span>, <span class="tt">int16</span>)</li>
 </ul>
-<p>Used internally by <span class="tt">fpx_macro</span> during <span class="tt">__DATE__</span>, <span class="tt">__TIME__</span>, and <span class="tt">__TIMESTAMP__</span> expansion. </p><h2 class="groupheader">Examples</h2>
+<p>Used internally by <span class="tt">fpx_macro</span> during <span class="tt">__DATE__</span>, <span class="tt">__TIME__</span>, and <span class="tt">__TIMESTAMP__</span> expansion.</p>
+<h1 class="doxsection"><a class="anchor" id="date_examples"></a>
+Examples</h1>
 <ol type="1">
 <li>Expand standard predefined macros (as done internally): <div class="fragment"><div class="line"><span class="keywordtype">type</span>(datetime) :: dt</div>
 <div class="line">dt = now()</div>
@@ -161,103 +163,6 @@ Data Types</h2></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compact representation of date and time Stores all components in minimal integer kinds to reduce memory usage. All fields are public for easy access.  <a href="structfpx__date_1_1datetime.html#details">More...</a><br /></td></tr>
 </table>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Methods</h2>
-<a id="ga4de0ceb9153f219031ab01eae7281fe0" name="ga4de0ceb9153f219031ab01eae7281fe0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga4de0ceb9153f219031ab01eae7281fe0">&#9670;&#160;</a></span>datetime_parse()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">elemental subroutine datetime_parse </td>
-          <td>(</td>
-          <td class="paramtype">class(<a class="el" href="structfpx__date_1_1datetime.html">datetime</a>), intent(inout)</td>          <td class="paramname"><span class="paramname"><em>this</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">character(*), intent(in)</td>          <td class="paramname"><span class="paramname"><em>string</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">character(*), intent(in), optional</td>          <td class="paramname"><span class="paramname"><em>fmt</em></span>&#160;)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Parse date/time from string using common formats. </p>
-<p>Supports ISO, US, and abbreviated month formats. On error, defaults to Unix epoch (1970-01-01 00:00:00) Perform conversion to ISO string</p><ul>
-<li>d: Represents the day of the month as a number from 1 through 31.</li>
-<li>dd: Represents the day of the month as a number from 01 through 31.</li>
-<li>ddd: Represents the abbreviated name of the day (Mon, Tues, Wed, etc).</li>
-<li>dddd: Represents the full name of the day (Monday, Tuesday, etc).</li>
-<li>h: 12-hour clock hour (e.g. 4).</li>
-<li>hh: 12-hour clock, with a leading 0 (e.g. 06)</li>
-<li>H: 24-hour clock hour (e.g. 15)</li>
-<li>HH: 24-hour clock hour, with a leading 0 (e.g. 22)</li>
-<li>m: Minutes</li>
-<li>mm: Minutes with a leading zero</li>
-<li>M: Month number(eg.3)</li>
-<li>MM: Month number with leading zero(eg.04)</li>
-<li>MMM: Abbreviated Month Name (e.g. Dec)</li>
-<li>MMMM: Full month name (e.g. December)</li>
-<li>s: Seconds</li>
-<li>ss: Seconds with leading zero</li>
-<li>t: Abbreviated AM / PM (e.g. A or P)</li>
-<li>tt: AM / PM (e.g. AM or PM</li>
-<li>y: Year, no leading zero (e.g. 2015 would be 15)</li>
-<li>yy: Year, leading zero (e.g. 2015 would be 015)</li>
-<li>yyy: Year, (e.g. 2015)</li>
-<li>yyyy: Year, (e.g. 2015)</li>
-</ul>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="date_8f90_source.html#l00242">242</a> of file <a class="el" href="date_8f90_source.html">date.f90</a>.</p>
-
-</div>
-</div>
-<a id="ga9c65680e37af0105e0669beb5a944b99" name="ga9c65680e37af0105e0669beb5a944b99"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga9c65680e37af0105e0669beb5a944b99">&#9670;&#160;</a></span>datetime_to_string()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">character(:) function, allocatable datetime_to_string </td>
-          <td>(</td>
-          <td class="paramtype">class(<a class="el" href="structfpx__date_1_1datetime.html">datetime</a>), intent(in)</td>          <td class="paramname"><span class="paramname"><em>this</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">character(*), intent(in), optional</td>          <td class="paramname"><span class="paramname"><em>fmt</em></span>&#160;)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Format datetime as string using flexible format codes Supports many common patterns including those required for <span class="tt">__DATE__</span> and <span class="tt">__TIMESTAMP__</span>. Default format: 'yyyy-MM-ddTHH:mm:ss'. </p>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="date_8f90_source.html#l00356">356</a> of file <a class="el" href="date_8f90_source.html">date.f90</a>.</p>
-
-</div>
-</div>
 <a id="ga018dde25548b5156908383c9020ac683" name="ga018dde25548b5156908383c9020ac683"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga018dde25548b5156908383c9020ac683">&#9670;&#160;</a></span>now()</h2>
 
@@ -274,46 +179,7 @@ Data Types</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>the datetime object corresponding to the current time</dd></dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="date_8f90_source.html#l00163">163</a> of file <a class="el" href="date_8f90_source.html">date.f90</a>.</p>
-
-</div>
-</div>
-<a id="ga54f4b5882439c5288837a178e1d580cb" name="ga54f4b5882439c5288837a178e1d580cb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga54f4b5882439c5288837a178e1d580cb">&#9670;&#160;</a></span>weekday()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">pure elemental integer function weekday </td>
-          <td>(</td>
-          <td class="paramtype">class(<a class="el" href="structfpx__date_1_1datetime.html">datetime</a>), intent(in)</td>          <td class="paramname"><span class="paramname"><em>this</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Returns the day of the week calculated using Zeller's congruence. Returned value is an integer scalar in the range [0-6], such that: </p>
-<ul>
-<li>0: Sunday</li>
-<li>1: Monday</li>
-<li>2: Tuesday</li>
-<li>3: Wednesday</li>
-<li>4: Thursday</li>
-<li>5: Friday</li>
-<li>6: Saturday</li>
-</ul>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="date_8f90_source.html#l00191">191</a> of file <a class="el" href="date_8f90_source.html">date.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="date_8f90_source.html#l00164">164</a> of file <a class="el" href="date_8f90_source.html">date.f90</a>.</p>
 
 </div>
 </div>

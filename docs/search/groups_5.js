@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['macro_0',['Macro',['../group__group__macro.html',1,'']]]
+  ['line_0',['Line',['../group__group__line.html',1,'']]],
+  ['logging_1',['Logging',['../group__group__logging.html',1,'']]]
 ];

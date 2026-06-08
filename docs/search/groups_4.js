@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['line_0',['Line',['../group__group__line.html',1,'']]],
-  ['logging_1',['Logging',['../group__group__logging.html',1,'']]]
+  ['include_0',['Include',['../group__group__include.html',1,'']]]
 ];

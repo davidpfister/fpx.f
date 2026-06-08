@@ -143,6 +143,7 @@ About the Project</h2>
 <li>simple arithmetic and bitwise operations with <span class="tt">+</span>, <span class="tt">-</span>, <span class="tt">*</span>, <span class="tt">**</span>, <span class="tt">/</span>, <span class="tt">&gt;</span>, <span class="tt">&lt;</span>, <span class="tt">&gt;=</span>, <span class="tt">=&lt;</span>, <span class="tt">||</span>, <span class="tt">&amp;&amp;</span>, <span class="tt">|</span>, <span class="tt">^</span>, <span class="tt">&amp;</span>, <span class="tt">!</span>, <span class="tt">?:</span> and <span class="tt">~</span>.</li>
 <li>include files with <span class="tt">#include</span></li>
 <li>diagnostic messages with <span class="tt">#warning</span> and <span class="tt">#error</span></li>
+<li>For loop <span class="tt">#for</span>, <span class="tt">#endfor</span></li>
 <li>variadic macros with <span class="tt">__VA_ARGS__</span>, and <span class="tt">__VA_OPT__</span>,</li>
 <li>build-in macros as <span class="tt">__LINE__</span>, <span class="tt">__FILE__</span>, <span class="tt">__FILENAME__</span>, <span class="tt">__TIME__</span>, <span class="tt">__DATE__</span>, <span class="tt">__TIMESTAMP__</span></li>
 <li>stringification <span class="tt">#</span> and concatenation <span class="tt">##</span></li>
@@ -210,6 +211,18 @@ Command line</h3>
 <td class="markdownTableBodyLeft">-o  </td><td class="markdownTableBodyLeft">Output file path with name and extension.  </td></tr>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyLeft">-v  </td><td class="markdownTableBodyLeft">Display the version of the program.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyLeft">&ndash;no-color  </td><td class="markdownTableBodyLeft">Disable ANSI coloring.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyLeft">&ndash;implicit-conti  </td><td class="markdownTableBodyLeft">Activate implicit continuation line in macro expansion.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyLeft">&ndash;exclude-comments  </td><td class="markdownTableBodyLeft">Exclude comments from macro expansion.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyLeft">&ndash;extra-macros  </td><td class="markdownTableBodyLeft">Support extra macros (<span class="tt">__FILENAME__</span>, <span class="tt">__TIMESTAMP__</span>).  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyLeft">&ndash;no-macros  </td><td class="markdownTableBodyLeft">Deactivate macros expansion.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyLeft">&ndash;std  </td><td class="markdownTableBodyLeft">Enforce standard compliance.  </td></tr>
 </table>
 </center><center></center><p>Using the file preprocessor could not be easier. The function simply takes as arguments the input and output file paths.</p>
 <h3 class="doxsection"><a class="anchor" id="autotoc_md10"></a>
@@ -219,7 +232,7 @@ Embedded</h3>
 <div class="line">    </div>
 <div class="line">    <span class="keyword">call </span><a class="code hl_interface" href="interfacefpx__parser_1_1preprocess.html">preprocess</a>(<span class="stringliteral">&#39;tests/input.in&#39;</span>, <span class="stringliteral">&#39;tests/output.out&#39;</span>)</div>
 <div class="line"><span class="keyword">end program</span></div>
-<div class="ttc" id="ainterfacefpx__parser_1_1preprocess_html"><div class="ttname"><a href="interfacefpx__parser_1_1preprocess.html">fpx_parser::preprocess</a></div><div class="ttdoc">Generic interface to start preprocessing from various sources/sinks.</div><div class="ttdef"><b>Definition</b> <a href="parser_8f90_source.html#l00081">parser.f90:81</a></div></div>
+<div class="ttc" id="ainterfacefpx__parser_1_1preprocess_html"><div class="ttname"><a href="interfacefpx__parser_1_1preprocess.html">fpx_parser::preprocess</a></div><div class="ttdoc">Generic interface to start preprocessing from various sources/sinks.</div><div class="ttdef"><b>Definition</b> <a href="parser_8f90_source.html#l00083">parser.f90:83</a></div></div>
 </div><!-- fragment --><p><em>For more examples, please refer to the <a href="https://davidpfister.github.io/fpx.f/index.html">Documentation</a></em></p>
 <h2 class="doxsection"><a class="anchor" id="autotoc_md11"></a>
 Contributing</h2>

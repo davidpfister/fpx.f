@@ -128,7 +128,9 @@ $(function(){initNavTree('group__group__global.html','',''); });
 <li><span class="tt">expand_macros</span> : Master switch to enable/disable macro expansion (default: .true.)</li>
 <li><span class="tt">exclude_comments</span> : When .true., strip C-style /*...*/ and Fortran ! comments from output</li>
 </ul>
-<p>The design uses a single public variable <span class="tt">global</span> so that all fpx modules can access and modify the same configuration without passing arguments everywhere. This is safe in single-threaded use (typical for preprocessing) and allows easy customization from driver programs or interactive sessions. </p><h2 class="groupheader">Examples</h2>
+<p>The design uses a single public variable <span class="tt">global</span> so that all fpx modules can access and modify the same configuration without passing arguments everywhere. This is safe in single-threaded use (typical for preprocessing) and allows easy customization from driver programs or interactive sessions.</p>
+<h1 class="doxsection"><a class="anchor" id="global_examples"></a>
+Examples</h1>
 <ol type="1">
 <li>Add custom include paths before preprocessing: <div class="fragment"><div class="line">global%includedir = [ <span class="stringliteral">&#39;./include&#39;</span>, <span class="stringliteral">&#39;/usr/local/include/fortran&#39;</span>, <span class="stringliteral">&#39;../common&#39;</span> ]</div>
 <div class="line"><span class="keyword">call </span>preprocess(<span class="stringliteral">&#39;main.F90&#39;</span>, <span class="stringliteral">&#39;main.f90&#39;</span>)</div>
@@ -171,7 +173,7 @@ Data Types</h2></td></tr>
 
 <p>The single global instance used throughout fpx Initialized automatically with sensible defaults values. </p>
 
-<p class="definition">Definition at line <a class="el" href="global_8f90_source.html#l00092">92</a> of file <a class="el" href="global_8f90_source.html">global.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="global_8f90_source.html#l00094">94</a> of file <a class="el" href="global_8f90_source.html">global.f90</a>.</p>
 
 </div>
 </div>

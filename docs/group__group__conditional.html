@@ -221,7 +221,7 @@ Data Types</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">type(<a class="el" href="structfpx__macro_1_1macro.html">macro</a>), dimension(:), intent(in)</td>          <td class="paramname"><span class="paramname"><em>macros</em></span>, </td>
+          <td class="paramtype">type(<a class="el" href="structfpx__macro_1_1macro.html">macro</a>), dimension(:), intent(inout), allocatable</td>          <td class="paramname"><span class="paramname"><em>macros</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -235,7 +235,7 @@ Data Types</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">ctx</td><td>Context source line containing the directive </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">macros</td><td>Current macro table </td></tr>
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">macros</td><td>Current macro table </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">token</td><td>Usually 'elif'</td></tr>
   </table>
   </dd>
@@ -394,7 +394,7 @@ Data Types</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">type(<a class="el" href="structfpx__macro_1_1macro.html">macro</a>), dimension(:), intent(in)</td>          <td class="paramname"><span class="paramname"><em>macros</em></span>, </td>
+          <td class="paramtype">type(<a class="el" href="structfpx__macro_1_1macro.html">macro</a>), dimension(:), intent(inout), allocatable</td>          <td class="paramname"><span class="paramname"><em>macros</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -408,7 +408,7 @@ Data Types</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">ctx</td><td>Context source line containing the directive </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">macros</td><td>Current macro table </td></tr>
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">macros</td><td>Current macro table </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">token</td><td>Usually 'if'</td></tr>
   </table>
   </dd>

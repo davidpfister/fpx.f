@@ -129,23 +129,10 @@ Data Types</h2></td></tr>
 <tr class="memitem:strtol" id="r_strtol"><td class="memItemLeft">interface &#160;</td><td class="memItemRight"><a class="el" href="interfacefpx__token_1_1strtol.html">strtol</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts a string to integer.  <a href="interfacefpx__token_1_1strtol.html#details">More...</a><br /></td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 id="header-enum-members" class="groupheader"><a id="enum-members" name="enum-members"></a>
-Enumerations</h2></td></tr>
-<tr class="memitem:ga06fc87d81c62e9abb8790b6e5713c55b" id="r_ga06fc87d81c62e9abb8790b6e5713c55b"><td class="memItemLeft">enum &#160;</td><td class="memItemRight"></td></tr>
-<tr class="memdesc:ga06fc87d81c62e9abb8790b6e5713c55b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Token kinds used in expression parsing. Enumeration defining the possible types of tokens recognized by the tokenizer.  <a href="group__group__token.html#ga06fc87d81c62e9abb8790b6e5713c55b">More...</a><br /></td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
 Functions/Subroutines</h2></td></tr>
 <tr class="memitem:ga5f1606ef019abe57f86da59fcfc6a79b" id="r_ga5f1606ef019abe57f86da59fcfc6a79b"><td class="memItemLeft">subroutine, public&#160;</td><td class="memItemRight"><a class="el" href="group__group__token.html#ga5f1606ef019abe57f86da59fcfc6a79b">tokenize</a> (expr, tokens, ntokens)</td></tr>
 <tr class="memdesc:ga5f1606ef019abe57f86da59fcfc6a79b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Tokenizes a preprocessor expression into an array of token structures. Handles whitespace, multi-character operators (<span class="tt">&amp;&amp;</span>, <span class="tt">||</span>, <span class="tt">==</span>, etc.), the <span class="tt">defined</span> operator (with or without parentheses), numbers in various bases, identifiers, and parentheses.  <br /></td></tr>
-<tr class="memitem:gac084a1079e51d0099b772eaba8eaa0e5" id="r_gac084a1079e51d0099b772eaba8eaa0e5"><td class="memItemLeft">logical elemental function&#160;</td><td class="memItemRight"><a class="el" href="group__group__token.html#gac084a1079e51d0099b772eaba8eaa0e5">is_digit</a> (ch)</td></tr>
-<tr class="memdesc:gac084a1079e51d0099b772eaba8eaa0e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Tests whether a single character is a decimal digit ('0'-'9').  <br /></td></tr>
-<tr class="memitem:ga71d1e45d8c41bfce77c30e62890b45b1" id="r_ga71d1e45d8c41bfce77c30e62890b45b1"><td class="memItemLeft">logical function&#160;</td><td class="memItemRight"><a class="el" href="group__group__token.html#ga71d1e45d8c41bfce77c30e62890b45b1">is_typeless</a> (str, pos)</td></tr>
-<tr class="memdesc:ga71d1e45d8c41bfce77c30e62890b45b1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Detects whether a string starts a typeless constant (hex, octal, binary). Used to avoid treating them as identifiers during tokenization.  <br /></td></tr>
-<tr class="memitem:a68a2cfae8524d9c984a187fc53ed0bc7" id="r_a68a2cfae8524d9c984a187fc53ed0bc7"><td class="memItemLeft">integer function&#160;</td><td class="memItemRight"><a class="el" href="#a68a2cfae8524d9c984a187fc53ed0bc7">strtol_default</a> (str, success)</td></tr>
-<tr class="memdesc:a68a2cfae8524d9c984a187fc53ed0bc7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Implementation of strtol function.  <br /></td></tr>
-<tr class="memitem:ad0dd1094737cc50176db3497f06a431c" id="r_ad0dd1094737cc50176db3497f06a431c"><td class="memItemLeft">integer function&#160;</td><td class="memItemRight"><a class="el" href="#ad0dd1094737cc50176db3497f06a431c">strtol_with_base</a> (str, base, success)</td></tr>
-<tr class="memdesc:ad0dd1094737cc50176db3497f06a431c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Implementation of strtol function with a base argument.  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-var-members" class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>

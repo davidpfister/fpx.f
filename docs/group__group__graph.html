@@ -129,7 +129,8 @@ $(function(){initNavTree('group__group__graph.html','',''); });
 <li>No dynamic memory fragmentation â€“ ideal for frequent creation/destruction during preprocessing</li>
 </ul>
 <p>Used internally by <a class="el" href="">fpx_macro</a> to prevent infinite recursion when a macro expands (directly or indirectly) to itself (e.g., <span class="tt">#define A B</span>, <span class="tt">#define B A</span>).</p>
-<h2 class="groupheader">Examples</h2>
+<h1 class="doxsection"><a class="anchor" id="graph_examples"></a>
+Examples</h1>
 <ol type="1">
 <li>Detect circular macro dependency: <div class="fragment"><div class="line"><span class="keywordtype">type</span>(digraph) :: g</div>
 <div class="line"><span class="keywordtype">logical</span>       :: cycle</div>
@@ -158,50 +159,6 @@ Data Types</h2></td></tr>
 <tr class="memitem:digraph" id="r_digraph"><td class="memItemLeft">interface &#160;</td><td class="memItemRight"><a class="el" href="structfpx__graph_1_1digraph.html">digraph</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Directed graph with fixed vertex count and efficient cycle detection Stores edges in a dense adjacency matrix slice per vertex. Only the actually used portion of each row is tracked via <span class="tt">list_sizes</span>.  <a href="structfpx__graph_1_1digraph.html#details">More...</a><br /></td></tr>
 </table>
-<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Methods</h2>
-<a id="ga41b8c3cc9c5098e140a23a11bc213e83" name="ga41b8c3cc9c5098e140a23a11bc213e83"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga41b8c3cc9c5098e140a23a11bc213e83">&#9670;&#160;</a></span>dfs_recursive()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">recursive logical function dfs_recursive </td>
-          <td>(</td>
-          <td class="paramtype">class(<a class="el" href="structfpx__graph_1_1digraph.html">digraph</a>), intent(in)</td>          <td class="paramname"><span class="paramname"><em>this</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">integer, intent(in)</td>          <td class="paramname"><span class="paramname"><em>vertex</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">logical, dimension(:), intent(inout)</td>          <td class="paramname"><span class="paramname"><em>visited</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">logical, dimension(:), intent(inout)</td>          <td class="paramname"><span class="paramname"><em>recursion_stack</em></span>&#160;)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Internal recursive DFS worker for cycle detection. </p>
-
-<p class="definition">Definition at line <a class="el" href="graph_8f90_source.html#l00168">168</a> of file <a class="el" href="graph_8f90_source.html">graph.f90</a>.</p>
-
-</div>
-</div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <div id="page-nav" class="page-nav-panel">

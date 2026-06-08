@@ -6,6 +6,7 @@ var files =
     [ "date.f90", "date_8f90.html", null ],
     [ "define.f90", "define_8f90.html", null ],
     [ "diagnostics.f90", "diagnostics_8f90.html", null ],
+    [ "for.f90", "for_8f90.html", null ],
     [ "global.f90", "global_8f90.html", null ],
     [ "graph.f90", "graph_8f90.html", null ],
     [ "include.f90", "include_8f90.html", null ],

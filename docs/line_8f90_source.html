@@ -134,7 +134,7 @@ $(function(){initNavTree('line_8f90_source.html','',''); });
 <div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="comment">!! filename) is updated immediately. This affects all subsequent diagnostics,</span></div>
 <div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="comment">!! `__LINE__`, `__FILE__`, and `__FILENAME__` macros.</span></div>
 <div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="comment">!!</span></div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="comment">!! &lt;h2  class=&quot;groupheader&quot;&gt;Examples&lt;/h2&gt;</span></div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="comment">!! @section line_examples Examples</span></div>
 <div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="comment">!!</span></div>
 <div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="comment">!! 1. Basic line number reset:</span></div>
 <div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="comment">!! @code{.f90}</span></div>
@@ -195,7 +195,7 @@ $(function(){initNavTree('line_8f90_source.html','',''); });
 <div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span> </div>
 <div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>        <span class="keywordflow">if</span> (len_trim(temp) == 0) <span class="keywordflow">then</span></div>
 <div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>            <span class="keyword">call </span>printf(<a class="code hl_interface" href="interfacefpx__logging_1_1render.html">render</a>(<a class="code hl_interface" href="structfpx__logging_1_1diagnostic__report.html">diagnostic_report</a>(level_warning, &amp;</div>
-<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>                    message=<span class="stringliteral">&#39;Synthax error&#39;</span>, &amp;</div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>                    message=<span class="stringliteral">&#39;Syntax error&#39;</span>, &amp;</div>
 <div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>                    label=<a class="code hl_interface" href="structfpx__logging_1_1label__type.html">label_type</a>(<span class="stringliteral">&#39;#line directive with no arguments&#39;</span>, index(token, lowercase(ctx%content)) + len(token) + 1, 1)&amp;</div>
 <div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>                            , &amp;</div>
 <div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>                    source=ctx%path), &amp;</div>
@@ -218,7 +218,7 @@ $(function(){initNavTree('line_8f90_source.html','',''); });
 <div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>        <span class="keyword">read</span>(num_str, *, iostat=iostat) new_line</div>
 <div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>        <span class="keywordflow">if</span> (iostat /= 0 .or. new_line &lt; 1) <span class="keywordflow">then</span></div>
 <div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>            <span class="keyword">call </span>printf(<a class="code hl_interface" href="interfacefpx__logging_1_1render.html">render</a>(<a class="code hl_interface" href="structfpx__logging_1_1diagnostic__report.html">diagnostic_report</a>(level_warning, &amp;</div>
-<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>                    message=<span class="stringliteral">&#39;Synthax error&#39;</span>, &amp;</div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>                    message=<span class="stringliteral">&#39;Syntax error&#39;</span>, &amp;</div>
 <div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>                    label=<a class="code hl_interface" href="structfpx__logging_1_1label__type.html">label_type</a>(<span class="stringliteral">&#39;Invalid line number in #line directive&#39;</span>, index(token, lowercase(ctx%content)) + len(token) + &amp;</div>
 <div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>                            1, len(num_str)), &amp;</div>
 <div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>                    source=ctx%path), &amp;</div>

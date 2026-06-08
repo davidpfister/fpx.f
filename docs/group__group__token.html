@@ -133,7 +133,8 @@ $(function(){initNavTree('group__group__token.html','',''); });
 <li>Easy extensibility for future operators or functions</li>
 </ul>
 </dd></dl>
-<dl class="section user"><dt>Examples</dt><dd></dd></dl>
+<h1 class="doxsection"><a class="anchor" id="token_examples"></a>
+Examples</h1>
 <ol type="1">
 <li>Manual token creation (mostly for testing/debugging): <div class="fragment"><div class="line"><span class="keywordtype">use </span>fpx_token</div>
 <div class="line"> </div>
@@ -169,11 +170,6 @@ $(function(){initNavTree('group__group__token.html','',''); });
 Data Types</h2></td></tr>
 <tr class="memitem:token" id="r_token"><td class="memItemLeft">type &#160;</td><td class="memItemRight"><a class="el" href="structfpx__token_1_1token.html">token</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Represents a single token in a parsed expression. Holds the string value of the token and its classified type.  <a href="structfpx__token_1_1token.html#details">More...</a><br /></td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 id="header-enum-members" class="groupheader"><a id="enum-members" name="enum-members"></a>
-Enumerations</h2></td></tr>
-<tr class="memitem:ga06fc87d81c62e9abb8790b6e5713c55b" id="r_ga06fc87d81c62e9abb8790b6e5713c55b"><td class="memItemLeft">enum &#160;</td><td class="memItemRight"></td></tr>
-<tr class="memdesc:ga06fc87d81c62e9abb8790b6e5713c55b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Token kinds used in expression parsing. Enumeration defining the possible types of tokens recognized by the tokenizer.  <a href="#ga06fc87d81c62e9abb8790b6e5713c55b">More...</a><br /></td></tr>
 </table>
 <a name="doc-var-members" id="doc-var-members"></a><h2 id="header-doc-var-members" class="groupheader">Variables</h2>
 <a id="ga4b585815a66c5b370c752e1f82e3ec11" name="ga4b585815a66c5b370c752e1f82e3ec11"></a>
@@ -195,85 +191,6 @@ Enumerations</h2></td></tr>
 </div>
 </div>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Methods</h2>
-<a id="gac084a1079e51d0099b772eaba8eaa0e5" name="gac084a1079e51d0099b772eaba8eaa0e5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gac084a1079e51d0099b772eaba8eaa0e5">&#9670;&#160;</a></span>is_digit()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">logical elemental function is_digit </td>
-          <td>(</td>
-          <td class="paramtype">character(*), intent(in)</td>          <td class="paramname"><span class="paramname"><em>ch</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Tests whether a single character is a decimal digit ('0'-'9'). </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">ch</td><td>Character to test </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>.true. if ch is a digit</dd></dl>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00309">309</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
-
-</div>
-</div>
-<a id="ga71d1e45d8c41bfce77c30e62890b45b1" name="ga71d1e45d8c41bfce77c30e62890b45b1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga71d1e45d8c41bfce77c30e62890b45b1">&#9670;&#160;</a></span>is_typeless()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">logical function is_typeless </td>
-          <td>(</td>
-          <td class="paramtype">character(*), intent(in)</td>          <td class="paramname"><span class="paramname"><em>str</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">integer, intent(out)</td>          <td class="paramname"><span class="paramname"><em>pos</em></span>&#160;)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Detects whether a string starts a typeless constant (hex, octal, binary). Used to avoid treating them as identifiers during tokenization. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">str</td><td>Input string starting at current position </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">pos</td><td>Length of the typeless constant (0 if not typeless) </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>.true. if the prefix is a valid typeless constant in non-base-10</dd></dl>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="token_8f90_source.html#l00323">323</a> of file <a class="el" href="token_8f90_source.html">token.f90</a>.</p>
-
-</div>
-</div>
 <a id="ga5f1606ef019abe57f86da59fcfc6a79b" name="ga5f1606ef019abe57f86da59fcfc6a79b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga5f1606ef019abe57f86da59fcfc6a79b">&#9670;&#160;</a></span>tokenize()</h2>
 

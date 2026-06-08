@@ -133,19 +133,22 @@ $(function(){initNavTree('group__group__include.html','',''); });
 <li>Seamless integration via the abstract <span class="tt">preprocess</span> procedure pointer</li>
 </ul>
 <p>The routine correctly strips quotes or angle brackets, performs path resolution, checks file existence, opens the file, and recursively invokes the main preprocessing engine on the included content using the same macro environment.</p>
-<h2 class="groupheader">Search Order</h2>
-<p>For <span class="tt">#include "file"</span>:</p><ol type="1">
+<dl class="section note"><dt>Note</dt><dd>For <span class="tt">#include "file"</span>:<ol type="1">
 <li>Directory of the parent source file</li>
 <li>Directories specified by -I or -Y options (globalincludedir)</li>
 <li>Directories in INCLUDE environment variable</li>
 <li>Current working directory</li>
 </ol>
-<p>For <span class="tt">#include &lt;file&gt;</span>:</p><ol type="1">
+</dd>
+<dd>
+For <span class="tt">#include &lt;file&gt;</span>:<ol type="1">
 <li>Directories specified by -I or -Y options (globalincludedir)</li>
 <li>Directories in INCLUDE environment variable</li>
 <li>Current working directory</li>
 </ol>
-<h2 class="groupheader">Examples</h2>
+</dd></dl>
+<h1 class="doxsection"><a class="anchor" id="include_examples"></a>
+Examples</h1>
 <ol type="1">
 <li>Include a local header from the same directory using quotes: <div class="fragment"><div class="line"><span class="preprocessor">#include </span></div>
 <div class="line"><span class="preprocessor"></span><span class="comment">!&gt; fpx will look for ./config.h relative to the current source file first</span></div>
@@ -164,38 +167,10 @@ $(function(){initNavTree('group__group__include.html','',''); });
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Data Types</h2></td></tr>
-<tr class="memitem:read_5Funit" id="r_read_5Funit"><td class="memItemLeft">interface &#160;</td><td class="memItemRight"><a class="el" href="interfacefpx__include_1_1read__unit.html">read_unit</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Abstract interface for the main preprocessing routine (used for recursion) Allows handle_include to recursively call the top-level preprocess_unit routine without creating circular module dependencies.  <a href="interfacefpx__include_1_1read__unit.html#details">More...</a><br /></td></tr>
+<tr class="memitem:read_5Funit" id="r_read_5Funit"><td class="memItemLeft">interface &#160;</td><td class="memItemRight"><a class="el" href="interfacefpx__macro_1_1read__unit.html">read_unit</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Abstract interface for the main preprocessing routine (used for recursion) Allows handle_include to recursively call the top-level preprocess_unit routine without creating circular module dependencies.  <a href="interfacefpx__macro_1_1read__unit.html#details">More...</a><br /></td></tr>
 </table>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Methods</h2>
-<a id="gab85fc44adeb3b7f5e98cbd402427585f" name="gab85fc44adeb3b7f5e98cbd402427585f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gab85fc44adeb3b7f5e98cbd402427585f">&#9670;&#160;</a></span>get_system_paths()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">character(:) function, dimension(:), allocatable get_system_paths</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Get system include paths from PATH environment variable Returns an array of directory paths found in PATH. </p>
-<dl class="section return"><dt>Returns</dt><dd>Array of path strings, empty if PATH not set</dd></dl>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="include_8f90_source.html#l00255">255</a> of file <a class="el" href="include_8f90_source.html">include.f90</a>.</p>
-
-</div>
-</div>
 <a id="gaa2164306cb7e02304b8f602a63658787" name="gaa2164306cb7e02304b8f602a63658787"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#gaa2164306cb7e02304b8f602a63658787">&#9670;&#160;</a></span>handle_include()</h2>
 
@@ -215,7 +190,7 @@ Data Types</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">procedure(<a class="el" href="interfacefpx__include_1_1read__unit.html">read_unit</a>)</td>          <td class="paramname"><span class="paramname"><em>preprocess</em></span>, </td>
+          <td class="paramtype">procedure(<a class="el" href="interfacefpx__macro_1_1read__unit.html">read_unit</a>)</td>          <td class="paramname"><span class="paramname"><em>preprocess</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -247,7 +222,7 @@ Data Types</h2></td></tr>
 </dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="include_8f90_source.html#l00116">116</a> of file <a class="el" href="include_8f90_source.html">include.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="include_8f90_source.html#l00100">100</a> of file <a class="el" href="include_8f90_source.html">include.f90</a>.</p>
 
 </div>
 </div>
