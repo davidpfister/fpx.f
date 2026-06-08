@@ -1,0 +1,9 @@
+function outer() result(res)
+    print *, outer
+contains
+
+    subroutine inner()
+        print *, inner
+    end subroutine
+
+end function

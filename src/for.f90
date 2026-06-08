@@ -236,7 +236,7 @@ contains
     !!
     !! @param[in] ctx     Current parsing context
     !! @param[in] ounit   Output unit
-    !! @param[in] macros  Active macro table
+    !! @param[inout] macros  Active macro table
     !! @param[in] token   Directive keyword (`endfor`)
     !!
     !! @b Remarks
@@ -251,6 +251,7 @@ contains
         character(:), allocatable :: rst, tmp
         logical :: stitch
         type(string), allocatable :: params(:)
+        type(macro), allocatable :: ms(:)
         
         tmp = ''
         if (depth <= size_of(fmacros)) then
@@ -260,13 +261,15 @@ contains
             do i = 1, size(params)
                 fmacros(depth)%value = params(i)
                 do j = 1, size(bodies(depth)%lines)
-                    rst = adjustl(expand_macros(bodies(depth)%lines(j)%chars, [fmacros, macros], stitch, .false., ctx))
+                    ms = [fmacros, macros]
+                    rst = adjustl(expand_macros(bodies(depth)%lines(j)%chars, ms, stitch, .false., ctx))
                     if (depth > 1) then
                         if (.not. allocated(bodies(depth - 1)%lines)) allocate(bodies(depth - 1)%lines(0))
                         bodies(depth - 1)%lines = [bodies(depth - 1)%lines, string(rst)]                       
                     else
                         do
-                            tmp = adjustl(expand_macros(rst, [fmacros, macros], stitch, .false., ctx))
+                            ms = [fmacros, macros]
+                            tmp = adjustl(expand_macros(rst, ms, stitch, .false., ctx))
                             if (tmp == rst) exit
                             rst = tmp
                         end do

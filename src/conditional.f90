@@ -124,15 +124,15 @@ contains
     !! Evaluates the expression after #if using `evaluate_expression()` and pushes
     !! a new state onto the conditional stack.
     !! @param[in] ctx       Context source line containing the directive
-    !! @param[in] macros    Current macro table
+    !! @param[inout] macros    Current macro table
     !! @param[in] token     Usually 'if'
     !!
     !! @b Remarks
     !! @ingroup group_conditional
     subroutine handle_if(ctx, macros, token)
-        type(context), intent(in)   :: ctx
-        type(macro), intent(in)     :: macros(:)
-        character(*), intent(in)    :: token
+        type(context), intent(in)               :: ctx
+        type(macro), allocatable, intent(inout) :: macros(:)
+        character(*), intent(in)                :: token
         !private
         character(:), allocatable :: expr
         logical :: result, parent_active
@@ -224,14 +224,14 @@ contains
     !> Process #elif – alternative branch after #if/#elif
     !! Only activates if no previous branch in the group was taken.
     !! @param[in] ctx       Context source line containing the directive
-    !! @param[in] macros    Current macro table
+    !! @param[inout] macros    Current macro table
     !! @param[in] token     Usually 'elif'
     !!
     !! @b Remarks
     !! @ingroup group_conditional
     subroutine handle_elif(ctx, macros, token)
         type(context), intent(in)   :: ctx
-        type(macro), intent(in)     :: macros(:)
+        type(macro), allocatable, intent(inout)     :: macros(:)
         character(*), intent(in)    :: token
         !private
         character(:), allocatable :: expr

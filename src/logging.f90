@@ -730,18 +730,27 @@ contains
         end if
     end function
 
-    !> Conditional pritn of the error/warning message.
+    !> Conditional print of the error/warning message.
     !! @param[in] str Input string.
     !! @param[in] fmt (optional) print format.
-    subroutine printf(str, fmt)
-        character(*), intent(in) :: str
-        character(*), intent(in), optional :: fmt
+    subroutine printf(str, fmt, unit)
+        character(*), intent(in)            :: str
+        character(*), intent(in), optional  :: fmt
+        integer, intent(in), optional       :: unit
 
         if (verbose) then
             if (present(fmt)) then
-                print fmt, str
+                if (present(unit)) then
+                    write(*, fmt) str
+                else
+                    write(unit, fmt) str
+                end if
             else
-                print '(A)', str
+                if (present(unit)) then
+                    write(*, '(A)') str
+                else
+                    write(unit, '(A)') str
+                end if
             end if
         end if
     end subroutine
