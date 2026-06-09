@@ -1,5 +1,9 @@
 var NAVTREEINDEX1 =
 {
+"specifications.html#autotoc_md48":[1,4,1,1,1],
+"specifications.html#autotoc_md49":[1,4,1,1,2],
+"specifications.html#autotoc_md50":[1,4,1,1,3],
+"specifications.html#autotoc_md51":[1,4,1,1,4],
 "specifications.html#autotoc_md52":[1,4,1,2],
 "specifications.html#autotoc_md53":[1,4,1,2,0],
 "specifications.html#autotoc_md54":[1,4,1,2,0,0],
@@ -60,7 +64,6 @@ var NAVTREEINDEX1 =
 "structfpx__graph_1_1digraph.html#a7a5d26bc74b8ed21492654c3dc826638":[2,8,0,1],
 "structfpx__logging_1_1label__type.html":[2,11,1],
 "structfpx__macro_1_1macro.html":[2,12,0],
-"structfpx__macro_1_1macro.html#af24a4b1ccd5dda62d86947a164d6dc06":[2,12,0,0],
 "structfpx__string_1_1string.html":[2,17,0],
 "structfpx__string_1_1string.html#a4a3c3898b4d385097118507fa6fedf74":[2,17,0,0],
 "structfpx__string_1_1string.html#a4a3c3898b4d385097118507fa6fedf74":[2,17,0,1],

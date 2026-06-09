@@ -125,19 +125,19 @@ The following options are available:
 
 |Option|Definition|
 |:--|:--| 
-|-D\<macro>|Define a \<macro> with no value.| 
-|-D\<macro>=\<val>|Define a \<macro> with \<val> as its value.| 
-|-U\<macro>|Undefine \<macro>'|
-|-I\<dir>|Add \<dir> to the end of the global include paths.| 
-|-h, -?|Display this help.|
-|-o|Output file path with name and extension.|
-|-v|Display the version of the program.|
-|--no-color|Disable ANSI coloring.|
-|--implicit-conti|Activate implicit continuation line in macro expansion.|
-|--exclude-comments|Exclude comments from macro expansion.|
-|--extra-macros|Support extra macros (`__FILENAME__`, `__TIMESTAMP__`).|
-|--no-macros|Deactivate macros expansion.|
-|--std|Enforce standard compliance.|
+|`-D<macro>`|Define a \<macro> with no value.| 
+|`-D<macro>=<val>`|Define a \<macro> with \<val> as its value.| 
+|`-U<macro>`|Undefine \<macro>'|
+|`-I<dir>`|Add \<dir> to the end of the global include paths.| 
+|`-h`, `--help`, `-?`|Display this help.|
+|`-o`, `--output`|Output file path with name and extension.|
+|`-v`, `--version`|Display the version of the program.|
+|`--no-color`|Disable ANSI coloring.|
+|`--implicit-conti`|Activate implicit continuation line in macro expansion.|
+|`--exclude-comments`|Exclude comments from macro expansion.|
+|`--extra-macros`|Support extra macros (`__FILENAME__`, `__TIMESTAMP__`, and `__FUNC__`).|
+|`--no-macros`|Deactivate macros expansion.|
+|`--std`|Enforce [standard](https://davidpfister.github.io/fpx.f/j3.html) compliance.|
 
 </center>
 

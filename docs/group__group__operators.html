@@ -141,7 +141,7 @@ $(function(){initNavTree('group__group__operators.html','',''); });
 <p class="startli">The parser is fully re-entrant and has no global state.</p>
 <p class="startli">Public interface:</p><ul>
 <li><a class="el" href="interfacefpx__operators_1_1evaluate__expression.html">evaluate_expression </a>: high-level function that tokenizes and evaluates in one call</li>
-<li><a class="el" href="">parse_expression </a>: low-level entry point for already-tokenized input</li>
+<li><a class="el" href="#gafd20ae82cdc3834e353f2e45521f6258">parse_expression </a>: low-level entry point for already-tokenized input</li>
 </ul>
 <p class="startli">This design guarantees correct operator precedence without the need for an explicit abstract syntax tree or stack-based shunting-yard algorithm, while remaining easy to read, maintain, and extend. </p>
 </li>
@@ -149,9 +149,70 @@ $(function(){initNavTree('group__group__operators.html','',''); });
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Data Types</h2></td></tr>
+<tr class="memitem:evaluate_5Fexpression" id="r_evaluate_5Fexpression"><td class="memItemLeft">interface &#160;</td><td class="memItemRight"><a class="el" href="interfacefpx__operators_1_1evaluate__expression.html">evaluate_expression</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Evaluates a preprocessor-style expression with macro substitution. Tokenizes the input expression, expands macros where appropriate, parses it according to operator precedence, and computes the integer result. Returns .true. if evaluation succeeded and the result is non-zero.  <a href="interfacefpx__operators_1_1evaluate__expression.html#details">More...</a><br /></td></tr>
 <tr class="memitem:strtol" id="r_strtol"><td class="memItemLeft">interface &#160;</td><td class="memItemRight"><a class="el" href="interfacefpx__token_1_1strtol.html">strtol</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts a string to integer.  <a href="interfacefpx__token_1_1strtol.html#details">More...</a><br /></td></tr>
 </table>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Methods</h2>
+<a id="gafd20ae82cdc3834e353f2e45521f6258" name="gafd20ae82cdc3834e353f2e45521f6258"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gafd20ae82cdc3834e353f2e45521f6258">&#9670;&#160;</a></span>parse_expression()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">recursive integer function, public parse_expression </td>
+          <td>(</td>
+          <td class="paramtype">character(*), intent(in)</td>          <td class="paramname"><span class="paramname"><em>expr</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">type(<a class="el" href="structfpx__token_1_1token.html">token</a>), dimension(:), intent(in)</td>          <td class="paramname"><span class="paramname"><em>tokens</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">integer, intent(in)</td>          <td class="paramname"><span class="paramname"><em>ntokens</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">integer, intent(inout)</td>          <td class="paramname"><span class="paramname"><em>pos</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">type(<a class="el" href="structfpx__macro_1_1macro.html">macro</a>), dimension(:), intent(inout), allocatable</td>          <td class="paramname"><span class="paramname"><em>macros</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">type(<a class="el" href="structfpx__context_1_1context.html">context</a>), intent(in)</td>          <td class="paramname"><span class="paramname"><em>ctx</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Parses a sequence of tokens starting at position <span class="tt">pos</span> as a full expression. Entry point for the recursive descent parser. Delegates to parse_or(). </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">expr</td><td>Expression to be processed </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">tokens</td><td>Array of tokens to parse </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">ntokens</td><td>Number of valid tokens in the array </td></tr>
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">pos</td><td>Current parsing position (updated as tokens are consumed) </td></tr>
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">macros</td><td>Defined macros for expansion and <span class="tt">defined()</span> checks </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">ctx</td><td>Context </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Integer value of the parsed expression</dd></dl>
+<p><b>Remarks</b> </p>
+
+<p class="definition">Definition at line <a class="el" href="operators_8f90_source.html#l00195">195</a> of file <a class="el" href="operators_8f90_source.html">operators.f90</a>.</p>
+
+</div>
+</div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <div id="page-nav" class="page-nav-panel">

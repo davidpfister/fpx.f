@@ -116,12 +116,35 @@ $(function(){initNavTree('interfacefpx__operators_1_1evaluate__expression.html',
 </div>
 
 <div class="header">
-  <div class="headertitle"><div class="title">evaluate_expression</div></div>
+  <div class="headertitle"><div class="title">evaluate_expression<div class="ingroups"><a class="el" href="group__group__operators.html">Operators</a></div></div></div>
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Definition</h2>
-<div class="textblock">
-<p class="definition">Definition at line <a class="el" href="operators_8f90_source.html#l00081">81</a> of file <a class="el" href="operators_8f90_source.html">operators.f90</a>.</p>
+<div class="textblock"><p>Evaluates a preprocessor-style expression with macro substitution. Tokenizes the input expression, expands macros where appropriate, parses it according to operator precedence, and computes the integer result. Returns .true. if evaluation succeeded and the result is non-zero. </p>
+<h3>evaluate(character(*), type(macros)(:), integer)</h3>
+<pre class="fragment">logical function evaluate(expr, macros, val) </pre><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">expr</td><td>Expression string to evaluate </td></tr>
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">macros</td><td>Array of defined macros for substitution and <span class="tt">defined()</span> checks </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">val</td><td>(optional) integer result of the evaluation </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>.true. if the expression evaluated successfully to non-zero, .false. otherwise</dd></dl>
+<h3>evaluate(character(*), type(macros)(:), type(context), integer)</h3>
+<pre class="fragment">logical function evaluate(expr, macros, ctx, val) </pre><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">expr</td><td>Expression string to evaluate </td></tr>
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">macros</td><td>Array of defined macros for substitution and <span class="tt">defined()</span> checks </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">ctx</td><td>Current context </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">val</td><td>(optional) integer result of the evaluation </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>.true. if the expression evaluated successfully to non-zero, .false. otherwise</dd></dl>
+<p><b>Remarks</b> </p>
+
+<p class="definition">Definition at line <a class="el" href="operators_8f90_source.html#l00105">105</a> of file <a class="el" href="operators_8f90_source.html">operators.f90</a>.</p>
 </div><hr/>The documentation for this interface was generated from the following file:<ul>
 <li><a class="el" href="operators_8f90_source.html">operators.f90</a></li>
 </ul>
@@ -162,7 +185,7 @@ $(function(){initNavTree('interfacefpx__operators_1_1evaluate__expression.html',
 <dl class="section return"><dt>Returns</dt><dd>.true. if the expression evaluated successfully to non-zero, .false. otherwise</dd></dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="operators_8f90_source.html#l00100">100</a> of file <a class="el" href="operators_8f90_source.html">operators.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="operators_8f90_source.html#l00124">124</a> of file <a class="el" href="operators_8f90_source.html">operators.f90</a>.</p>
 
 </div>
 </div>
@@ -208,7 +231,7 @@ $(function(){initNavTree('interfacefpx__operators_1_1evaluate__expression.html',
 <dl class="section return"><dt>Returns</dt><dd>.true. if the expression evaluated successfully to non-zero, .false. otherwise</dd></dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="operators_8f90_source.html#l00124">124</a> of file <a class="el" href="operators_8f90_source.html">operators.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="operators_8f90_source.html#l00148">148</a> of file <a class="el" href="operators_8f90_source.html">operators.f90</a>.</p>
 
 </div>
 </div>

@@ -123,22 +123,24 @@ $(function(){initNavTree('structfpx__string_1_1string.html','','structfpx__strin
 <p>Inherited by <a class="el" href="structfpx__macro_1_1macro.html">macro</a>.</p>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Definition</h2>
 <div class="textblock"><p>Represents text as a sequence of ASCII code units. The derived type wraps an allocatable character array. </p>
-<h1 class="doxsection"><a class="anchor" id="string_examples"></a>
+<h1 class="doxsection"><a class="anchor" id="string_type_examples"></a>
 Examples</h1>
 <div class="fragment"><div class="line"><span class="keywordtype">type</span>(string) :: s</div>
 <div class="line">s = <span class="stringliteral">&#39;foo&#39;</span></div>
-</div><!-- fragment --><h2 class="groupheader">Constructors</h2>
+</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="string_type_constructor"></a>
+Constructors</h1>
 <p>Initializes a new instance of the string class </p><h3>string(character(:))</h3>
-<pre class="fragment">type(string) function string(character(:) chars) </pre><dl class="params"><dt>Parameters</dt><dd>
+<pre class="fragment">type(string) function string(chars) </pre><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname"><a class="el" href="#a4b784a6a2638175406a6cbaab07608fd" title="Variable length character array.">chars</a></td><td></td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname"><a class="el" href="#a4b784a6a2638175406a6cbaab07608fd" title="Variable length character array.">chars</a></td><td>character(:)</td></tr>
   </table>
   </dd>
 </dl>
 <p><b>Examples</b> </p><div class="fragment"><div class="line"><span class="keywordtype">type</span>(string) :: s</div>
 <div class="line">s = string(<span class="stringliteral">&#39;foo&#39;</span>)</div>
 </div><!-- fragment --> <dl class="section return"><dt>Returns</dt><dd>The constructed string object.</dd></dl>
-<h2 class="groupheader">Remarks</h2>
+<h1 class="doxsection"><a class="anchor" id="string_type_remarks"></a>
+Remarks</h1>
 <p>The string implementation proposed here is kept at the bare minimum of what is required by the library. There are many other implementations that can be found. </p>
 
 <p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00112">112</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>

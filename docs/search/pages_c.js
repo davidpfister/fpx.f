@@ -22,11 +22,12 @@ var searchData=
   ['conjoining_19',['3. FPP Phase 1: Line conjoining',['../requirements.html#autotoc_md37',1,'']]],
   ['cons_20option_20o_3a_20',['CONS OPTION O:',['../macro.html#autotoc_md106',1,'']]],
   ['cons_20option_20r_3a_21',['CONS OPTION R:',['../macro.html#autotoc_md104',1,'']]],
-  ['continuations_20in_20macro_20invocations_20fixed_20form_22',['2.1.3 Line breaks and continuations in macro invocations (fixed-form)',['../macro.html#autotoc_md113',1,'']]],
-  ['continuations_20in_20macro_20invocations_20free_20form_23',['2.1.2 Line breaks and continuations in macro invocations (free-form)',['../macro.html#autotoc_md112',1,'']]],
-  ['contributing_24',['Contributing',['../index.html#autotoc_md11',1,'']]],
-  ['control_20–_20predefined_20macros_20include_20paths_20etc_25',['Full control – predefined macros, include paths, etc.',['../usage.html#autotoc_md129',1,'']]],
-  ['controlling_20expressions_26',['5.1 Operators allowed in controlling expressions',['../specifications.html#autotoc_md88',1,'']]],
-  ['cpp_27',['4.1 Comparison to macro identification and expansion in CPP',['../specifications.html#autotoc_md84',1,'']]],
-  ['cpp_28',['cpp',['../integration.html#autotoc_md22',1,'']]]
+  ['constructors_22',['Constructors',['../structfpx__string_1_1string.html#string_type_constructor',1,'']]],
+  ['continuations_20in_20macro_20invocations_20fixed_20form_23',['2.1.3 Line breaks and continuations in macro invocations (fixed-form)',['../macro.html#autotoc_md113',1,'']]],
+  ['continuations_20in_20macro_20invocations_20free_20form_24',['2.1.2 Line breaks and continuations in macro invocations (free-form)',['../macro.html#autotoc_md112',1,'']]],
+  ['contributing_25',['Contributing',['../index.html#autotoc_md11',1,'']]],
+  ['control_20–_20predefined_20macros_20include_20paths_20etc_26',['Full control – predefined macros, include paths, etc.',['../usage.html#autotoc_md129',1,'']]],
+  ['controlling_20expressions_27',['5.1 Operators allowed in controlling expressions',['../specifications.html#autotoc_md88',1,'']]],
+  ['cpp_28',['4.1 Comparison to macro identification and expansion in CPP',['../specifications.html#autotoc_md84',1,'']]],
+  ['cpp_29',['cpp',['../integration.html#autotoc_md22',1,'']]]
 ];

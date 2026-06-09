@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['uppercase_0',['uppercase',['../group__group__string.html#gad80a98c0e57973f8899bc0f432e26f85',1,'fpx_string']]]
+  ['writechk_0',['writechk',['../group__group__string.html#gaaaad8624e7dc4b2c05338a5be8d3f906',1,'fpx_string']]]
 ];

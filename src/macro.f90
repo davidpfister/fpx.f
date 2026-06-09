@@ -7,7 +7,7 @@
 !! - Variadic macros (`...` and `__VA_ARGS__`)
 !! - C++20/C23-style `__VA_OPT__` handling for optional variadic content
 !! - Parameter stringification (`#param`) and token pasting (`##`)
-!! - Built-in predefined macros: `__FILE__`, `__FILENAME__`, `__LINE__`, `__DATE__`, `__TIME__`, `__TIMESTAMP__, `__FUNC__`
+!! - Built-in predefined macros: `__FILE__`, `__FILENAME__`, `__LINE__`, `__DATE__`, `__TIME__`, `__TIMESTAMP__`, `__FUNC__`
 !! - Recursive expansion with circular dependency detection via digraph analysis
 !! - Dynamic macro table of `macro` objects with efficient addition, lookup, removal
 !! - Full support for nested macro calls and proper argument handling

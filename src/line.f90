@@ -1,7 +1,6 @@
 !> @file
 !! @defgroup group_line Line
 !! Standard `#line` directive support for the fpx Fortran preprocessor
-!!
 !! This module implements full support for the ISO C99/C11 `#line` directive,
 !! which is also widely used in Fortran preprocessors.
 !!

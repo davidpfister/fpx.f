@@ -75,6 +75,7 @@ var NAVTREEINDEX0 =
 "group__group__macro.html#ga45a27625c418ce241e9f30d103eaca18":[2,12,8],
 "group__group__macro.html#gad3bf37972bc247f25f116979e55ba74f":[2,12,9],
 "group__group__operators.html":[2,14],
+"group__group__operators.html#gafd20ae82cdc3834e353f2e45521f6258":[2,14,2],
 "group__group__os.html":[2,13],
 "group__group__os.html#ga078acd1c2a938a3ad3b1244a4f30348a":[2,13,8],
 "group__group__os.html#ga191e286694119bd0e2bdb78baa20e1be":[2,13,5],
@@ -148,6 +149,9 @@ var NAVTREEINDEX0 =
 "interfacefpx__macro_1_1remove.html#a068e7d980a27b70532c743e01ff01b0c":[2,12,5,0],
 "interfacefpx__macro_1_1size__of.html":[2,12,6],
 "interfacefpx__macro_1_1size__of.html#af17d4172c874b18f0da7b70b150a4c2b":[2,12,6,0],
+"interfacefpx__operators_1_1evaluate__expression.html":[2,14,0],
+"interfacefpx__operators_1_1evaluate__expression.html#a8d262b1b47bd6d7683ee124c06acd0ec":[2,14,0,1],
+"interfacefpx__operators_1_1evaluate__expression.html#ad442aac01e27547dea68ce9e07fb351d":[2,14,0,0],
 "interfacefpx__parser_1_1preprocess.html":[2,15,0],
 "interfacefpx__parser_1_1preprocess.html#a4320a015ed673ba1501c2db89944866d":[2,15,0,1],
 "interfacefpx__parser_1_1preprocess.html#a708ab65963252431cb7c45849cbc81c5":[2,15,0,3],
@@ -174,7 +178,7 @@ var NAVTREEINDEX0 =
 "interfacefpx__string_1_1operator_07_8contains_8_08.html#a5a7725093fba9d2c024ab4fad37e278c":[2,17,5,0],
 "interfacefpx__string_1_1trim.html":[2,17,3],
 "interfacefpx__string_1_1trim.html#a43dc2858966a82313eb97b95a4c8fdf1":[2,17,3,0],
-"interfacefpx__token_1_1strtol.html":[2,14,0],
+"interfacefpx__token_1_1strtol.html":[2,14,1],
 "introduction.html":[1,0],
 "introduction.html#autotoc_md23":[1,0,0],
 "introduction.html#autotoc_md24":[1,0,0,0],
@@ -245,9 +249,5 @@ var NAVTREEINDEX0 =
 "specifications.html":[1,4,1],
 "specifications.html#autotoc_md45":[1,4,1,0],
 "specifications.html#autotoc_md46":[1,4,1,1],
-"specifications.html#autotoc_md47":[1,4,1,1,0],
-"specifications.html#autotoc_md48":[1,4,1,1,1],
-"specifications.html#autotoc_md49":[1,4,1,1,2],
-"specifications.html#autotoc_md50":[1,4,1,1,3],
-"specifications.html#autotoc_md51":[1,4,1,1,4]
+"specifications.html#autotoc_md47":[1,4,1,1,0]
 };

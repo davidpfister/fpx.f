@@ -121,7 +121,7 @@ $(function(){initNavTree('macro_8f90_source.html','',''); });
 <div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="comment">!! - Variadic macros (`...` and `__VA_ARGS__`)</span></div>
 <div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="comment">!! - C++20/C23-style `__VA_OPT__` handling for optional variadic content</span></div>
 <div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="comment">!! - Parameter stringification (`#param`) and token pasting (`##`)</span></div>
-<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="comment">!! - Built-in predefined macros: `__FILE__`, `__FILENAME__`, `__LINE__`, `__DATE__`, `__TIME__`, `__TIMESTAMP__, `__FUNC__`</span></div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="comment">!! - Built-in predefined macros: `__FILE__`, `__FILENAME__`, `__LINE__`, `__DATE__`, `__TIME__`, `__TIMESTAMP__`, `__FUNC__`</span></div>
 <div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="comment">!! - Recursive expansion with circular dependency detection via digraph analysis</span></div>
 <div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="comment">!! - Dynamic macro table of `macro` objects with efficient addition, lookup, removal</span></div>
 <div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="comment">!! - Full support for nested macro calls and proper argument handling</span></div>
@@ -314,8 +314,7 @@ $(function(){initNavTree('macro_8f90_source.html','',''); });
 <div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span><span class="comment">    !! @param[in] name Mandatory macro name</span></div>
 <div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span><span class="comment">    !! @param[in] val  Optional replacement text (default: empty)</span></div>
 <div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span><span class="comment">    !! @return Initialized macro object</span></div>
-<div class="foldopen" id="foldopen00187" data-start="" data-end="">
-<div class="line"><a id="l00187" name="l00187"></a><span class="lineno"><a class="line" href="structfpx__macro_1_1macro.html#af24a4b1ccd5dda62d86947a164d6dc06">  187</a></span>    <span class="keywordtype">type</span>(<a class="code hl_interface" href="structfpx__macro_1_1macro.html">macro</a>) function macro_new(name, val) result(that)</div>
+<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span>    <span class="keywordtype">type</span>(macro) function macro_new(name, val) result(that)</div>
 <div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>        <span class="keywordtype">character(*)</span>, <span class="keywordtype">intent(in)</span>            :: name</div>
 <div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span>        <span class="keywordtype">character(*)</span>, <span class="keywordtype">intent(in)</span>, <span class="keywordtype">optional</span>  :: val</div>
 <div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span> </div>
@@ -328,7 +327,6 @@ $(function(){initNavTree('macro_8f90_source.html','',''); });
 <div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span>        <span class="keyword">allocate</span>(that%params(0))</div>
 <div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span>        that%is_variadic = .false.</div>
 <div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span>        that%is_cyclic = that == that%value</div>
-</div>
 <div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span>    <span class="keyword">end function</span></div>
 <div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span><span class="comment"></span> </div>
 <div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span><span class="comment">    !&gt; Fully expand a line including predefined macros (__FILE__, __LINE__, etc.)</span></div>

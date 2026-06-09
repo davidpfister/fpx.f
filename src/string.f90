@@ -82,19 +82,19 @@ module fpx_string
     !> Represents text as a sequence of ASCII code units.
     !!        The derived type wraps an allocatable character array.
     !!
-    !! @section string_examples Examples
+    !! @section string_type_examples Examples
     !!
     !! @code{.f90}
     !! type(string) :: s
     !! s = 'foo'
     !! @endcode
     !!
-    !! <h2 class="groupheader">Constructors</h2>
+    !! @section string_type_constructor Constructors
     !! Initializes a new instance of the string class
     !! <h3>string(character(:))</h3>
-    !! @verbatim type(string) function string(character(:) chars) @endverbatim
+    !! @verbatim type(string) function string(chars) @endverbatim
     !!
-    !! @param[in] chars
+    !! @param[in] chars character(:)
     !!
     !! @b Examples
     !! @code{.f90}
@@ -103,7 +103,7 @@ module fpx_string
     !! @endcode
     !! @return The constructed string object.
     !!
-    !! <h2 class="groupheader">Remarks</h2>
+    !! @section string_type_remarks Remarks
     !! The string implementation proposed here is kept at the bare
     !! minimum of what is required by the library. There are many
     !! other implementations that can be found.

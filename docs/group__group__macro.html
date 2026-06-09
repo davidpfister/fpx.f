@@ -126,9 +126,9 @@ $(function(){initNavTree('group__group__macro.html','',''); });
 <li>Variadic macros (<span class="tt">...</span> and <span class="tt">__VA_ARGS__</span>)</li>
 <li>C++20/C23-style <span class="tt">__VA_OPT__</span> handling for optional variadic content</li>
 <li>Parameter stringification (<span class="tt">#param</span>) and token pasting (<span class="tt">##</span>)</li>
-<li>Built-in predefined macros: <span class="tt">__FILE__</span>, <span class="tt">__FILENAME__</span>, <span class="tt">__LINE__</span>, <span class="tt">__DATE__</span>, <span class="tt">__TIME__</span>, <span class="tt">__TIMESTAMP__, </span>__FUNC__<span class="tt"></span></li>
-<li><span class="tt">Recursive expansion with circular dependency detection via digraph analysis</span></li>
-<li><span class="tt">Dynamic macro table of </span>macro` objects with efficient addition, lookup, removal</li>
+<li>Built-in predefined macros: <span class="tt">__FILE__</span>, <span class="tt">__FILENAME__</span>, <span class="tt">__LINE__</span>, <span class="tt">__DATE__</span>, <span class="tt">__TIME__</span>, <span class="tt">__TIMESTAMP__</span>, <span class="tt">__FUNC__</span></li>
+<li>Recursive expansion with circular dependency detection via digraph analysis</li>
+<li>Dynamic macro table of <span class="tt">macro</span> objects with efficient addition, lookup, removal</li>
 <li>Full support for nested macro calls and proper argument handling</li>
 </ul>
 <p>The design allows safe, repeated expansion while preventing infinite recursion. All operations are container-agnostic using allocatable dynamic arrays.</p>

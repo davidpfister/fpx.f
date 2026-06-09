@@ -58,8 +58,7 @@
 !!
 !!    Public interface:
 !!    - @link fpx_operators::evaluate_expression evaluate_expression @endlink: high-level function that tokenizes and evaluates in
-!! one
-!! call
+!! one call
 !!    - @link fpx_operators::parse_expression parse_expression @endlink: low-level entry point for already-tokenized input
 !!
 !!    This design guarantees correct operator precedence without the need for an explicit
@@ -76,8 +75,33 @@ module fpx_operators
 
     implicit none; private
 
-    public :: evaluate_expression
+    public :: evaluate_expression. &
+        parse_expression
 
+    !> Evaluates a preprocessor-style expression with macro substitution.
+    !! Tokenizes the input expression, expands macros where appropriate,
+    !! parses it according to operator precedence, and computes the integer result.
+    !! Returns .true. if evaluation succeeded and the result is non-zero.
+    !!
+    !! <h3>evaluate(character(*), type(macros)(:), integer)</h3>
+    !! @verbatim logical function evaluate(expr, macros, val) @endverbatim
+    !!
+    !! @param[in] expr   Expression string to evaluate
+    !! @param[inout] macros Array of defined macros for substitution and `defined()` checks
+    !! @param[out] val   (optional) integer result of the evaluation
+    !! @return .true. if the expression evaluated successfully to non-zero, .false. otherwise
+    !!
+    !! <h3>evaluate(character(*), type(macros)(:), type(context), integer)</h3>
+    !! @verbatim logical function evaluate(expr, macros, ctx, val) @endverbatim
+    !!
+    !! @param[in] expr   Expression string to evaluate
+    !! @param[inout] macros Array of defined macros for substitution and `defined()` checks
+    !! @param[in] ctx Current context
+    !! @param[out] val   (optional) integer result of the evaluation
+    !! @return .true. if the expression evaluated successfully to non-zero, .false. otherwise
+    !!
+    !! @b Remarks
+    !! @ingroup group_operators
     interface evaluate_expression
         module procedure :: evaluate_expression_default
         module procedure :: evaluate_expression_with_context

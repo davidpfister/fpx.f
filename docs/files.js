@@ -13,7 +13,7 @@ var files =
     [ "line.f90", "line_8f90.html", null ],
     [ "logging.f90", "logging_8f90.html", "logging_8f90" ],
     [ "macro.f90", "macro_8f90.html", null ],
-    [ "operators.f90", "operators_8f90.html", "operators_8f90" ],
+    [ "operators.f90", "operators_8f90.html", null ],
     [ "os.f90", "os_8f90.html", null ],
     [ "parser.f90", "parser_8f90.html", null ],
     [ "path.f90", "path_8f90.html", null ],

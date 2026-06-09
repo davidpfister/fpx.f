@@ -5,9 +5,10 @@ var searchData=
   ['recognized_20in_20define_20directives_2',['4.2 Tokens recognized in define directives',['../requirements.html#autotoc_md40',1,'']]],
   ['recursion_20prevention_3',['4 Rescanning and Recursion Prevention',['../macro.html#autotoc_md121',1,'']]],
   ['reduced_20need_20persistent_20use_201990s_4',['Fortran 90/95: Reduced Need, Persistent Use (1990s)',['../introduction.html#autotoc_md26',1,'']]],
-  ['requirements_5',['Requirements',['../index.html#autotoc_md3',1,'']]],
-  ['requirements_6',['Fortran preprocessor requirements',['../requirements.html',1,'j3']]],
-  ['rescanning_20and_20recursion_20prevention_7',['4 Rescanning and Recursion Prevention',['../macro.html#autotoc_md121',1,'']]],
-  ['reuse_8',['Macro Definitions for Code Reuse',['../introduction.html#autotoc_md33',1,'']]],
-  ['rise_20of_20external_20preprocessors_201980s_9',['Rise of External Preprocessors (1980s)',['../introduction.html#autotoc_md25',1,'']]]
+  ['remarks_5',['Remarks',['../structfpx__string_1_1string.html#string_type_remarks',1,'']]],
+  ['requirements_6',['Requirements',['../index.html#autotoc_md3',1,'']]],
+  ['requirements_7',['Fortran preprocessor requirements',['../requirements.html',1,'j3']]],
+  ['rescanning_20and_20recursion_20prevention_8',['4 Rescanning and Recursion Prevention',['../macro.html#autotoc_md121',1,'']]],
+  ['reuse_9',['Macro Definitions for Code Reuse',['../introduction.html#autotoc_md33',1,'']]],
+  ['rise_20of_20external_20preprocessors_201980s_10',['Rise of External Preprocessors (1980s)',['../introduction.html#autotoc_md25',1,'']]]
 ];

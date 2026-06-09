@@ -1,8 +1,6 @@
 ﻿var group__group__macro =
 [
-    [ "macro", "structfpx__macro_1_1macro.html", [
-      [ "macro_new", "structfpx__macro_1_1macro.html#af24a4b1ccd5dda62d86947a164d6dc06", null ]
-    ] ],
+    [ "macro", "structfpx__macro_1_1macro.html", null ],
     [ "add", "interfacefpx__macro_1_1add.html", [
       [ "add_item", "interfacefpx__macro_1_1add.html#a327058e5ebbad2faec91dccb2be2fc4c", null ],
       [ "add_item_from_name", "interfacefpx__macro_1_1add.html#a3f4c719b92a7dfa4d6647905fd660b71", null ],

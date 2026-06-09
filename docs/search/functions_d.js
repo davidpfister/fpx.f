@@ -1,10 +1,4 @@
 var searchData=
 [
-  ['parse_0',['parse',['../structfpx__date_1_1datetime.html#a58beb4858dc26b5282bc7ada19ef5be6',1,'fpx_date::datetime']]],
-  ['preprocess_5ffile_1',['preprocess_file',['../interfacefpx__parser_1_1preprocess.html#ab89d17f91b95e7cc0531ae8d2971dab2',1,'fpx_parser::preprocess']]],
-  ['preprocess_5ffile_5fto_5funit_2',['preprocess_file_to_unit',['../interfacefpx__parser_1_1preprocess.html#a4320a015ed673ba1501c2db89944866d',1,'fpx_parser::preprocess']]],
-  ['preprocess_5funit_5fto_5ffile_3',['preprocess_unit_to_file',['../interfacefpx__parser_1_1preprocess.html#aba9728c940a6c1d17e784608e3a53ea4',1,'fpx_parser::preprocess']]],
-  ['preprocess_5funit_5fto_5funit_4',['preprocess_unit_to_unit',['../interfacefpx__parser_1_1preprocess.html#a708ab65963252431cb7c45849cbc81c5',1,'fpx_parser::preprocess']]],
-  ['previous_5',['previous',['../group__group__string.html#gad5ed5d996518e663bf692512469bd632',1,'fpx_string']]],
-  ['printf_6',['printf',['../logging_8f90.html#a7cdffd50478be878dd6f99948bee303e',1,'fpx_logging']]]
+  ['remove_5fitem_0',['remove_item',['../interfacefpx__macro_1_1remove.html#a068e7d980a27b70532c743e01ff01b0c',1,'fpx_macro::remove']]]
 ];
