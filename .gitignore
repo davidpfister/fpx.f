@@ -403,3 +403,4 @@ FodyWeavers.xsd
 tests/**/*.out
 tests/**/*.txt
 tests/cli/main.out.exe
+test_object_type.mod
