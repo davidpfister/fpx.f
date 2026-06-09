@@ -135,14 +135,14 @@ $(function(){initNavTree('group__group__include.html','',''); });
 <p>The routine correctly strips quotes or angle brackets, performs path resolution, checks file existence, opens the file, and recursively invokes the main preprocessing engine on the included content using the same macro environment.</p>
 <dl class="section note"><dt>Note</dt><dd>For <span class="tt">#include "file"</span>:<ol type="1">
 <li>Directory of the parent source file</li>
-<li>Directories specified by -I or -Y options (globalincludedir)</li>
+<li>Directories specified by the -I option (<span class="tt">globalincludedir</span>)</li>
 <li>Directories in INCLUDE environment variable</li>
 <li>Current working directory</li>
 </ol>
 </dd>
 <dd>
 For <span class="tt">#include &lt;file&gt;</span>:<ol type="1">
-<li>Directories specified by -I or -Y options (globalincludedir)</li>
+<li>Directories specified by the -I option (<span class="tt">globalincludedir</span>)</li>
 <li>Directories in INCLUDE environment variable</li>
 <li>Current working directory</li>
 </ol>
@@ -216,7 +216,7 @@ Data Types</h2></td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">ounit</td><td>Output unit where preprocessed content is written </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">preprocess</td><td>Procedure pointer to the main line-by-line preprocessor </td></tr>
     <tr><td class="paramdir">[in,out]</td><td class="paramname">macros</td><td>Current macro table (shared across recursion levels) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">token</td><td>Usually 'INCLUDE' – the directive keyword</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">token</td><td>Usually 'include' – the directive keyword</td></tr>
   </table>
   </dd>
 </dl>

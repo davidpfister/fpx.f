@@ -135,13 +135,13 @@ $(function(){initNavTree('include_8f90_source.html','',''); });
 <div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="comment">!! @note</span></div>
 <div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="comment">!! For `#include &quot;file&quot;`:</span></div>
 <div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="comment">!! 1. Directory of the parent source file</span></div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="comment">!! 2. Directories specified by -I or -Y options (global%includedir)</span></div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="comment">!! 2. Directories specified by the -I option (`global%includedir`)</span></div>
 <div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="comment">!! 3. Directories in INCLUDE environment variable</span></div>
 <div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="comment">!! 4. Current working directory</span></div>
 <div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="comment">!!</span></div>
 <div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="comment">!! @note</span></div>
 <div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="comment">!! For `#include &lt;file&gt;`:</span></div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="comment">!! 1. Directories specified by -I or -Y options (global%includedir)</span></div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="comment">!! 1. Directories specified by the -I option (`global%includedir`)</span></div>
 <div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span><span class="comment">!! 2. Directories in INCLUDE environment variable</span></div>
 <div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span><span class="comment">!! 3. Current working directory</span></div>
 <div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span><span class="comment">!!</span></div>
@@ -207,7 +207,7 @@ $(function(){initNavTree('include_8f90_source.html','',''); });
 <div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span><span class="comment">    !! @param[in] ounit        Output unit where preprocessed content is written</span></div>
 <div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span><span class="comment">    !! @param[in] preprocess   Procedure pointer to the main line-by-line preprocessor</span></div>
 <div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span><span class="comment">    !! @param[inout] macros    Current macro table (shared across recursion levels)</span></div>
-<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span><span class="comment">    !! @param[in] token        Usually &#39;INCLUDE&#39; – the directive keyword</span></div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span><span class="comment">    !! @param[in] token        Usually &#39;include&#39; – the directive keyword</span></div>
 <div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span><span class="comment">    !!</span></div>
 <div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span><span class="comment">    !! @b Remarks</span></div>
 <div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span><span class="comment">    !! @ingroup group_include</span></div>

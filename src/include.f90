@@ -21,13 +21,13 @@
 !! @note
 !! For `#include "file"`:
 !! 1. Directory of the parent source file
-!! 2. Directories specified by -I or -Y options (global%includedir)
+!! 2. Directories specified by the -I option (`global%includedir`)
 !! 3. Directories in INCLUDE environment variable
 !! 4. Current working directory
 !!
 !! @note
 !! For `#include <file>`:
-!! 1. Directories specified by -I or -Y options (global%includedir)
+!! 1. Directories specified by the -I option (`global%includedir`)
 !! 2. Directories in INCLUDE environment variable
 !! 3. Current working directory
 !!
@@ -93,7 +93,7 @@ contains
     !! @param[in] ounit        Output unit where preprocessed content is written
     !! @param[in] preprocess   Procedure pointer to the main line-by-line preprocessor
     !! @param[inout] macros    Current macro table (shared across recursion levels)
-    !! @param[in] token        Usually 'INCLUDE' – the directive keyword
+    !! @param[in] token        Usually 'include' – the directive keyword
     !!
     !! @b Remarks
     !! @ingroup group_include
