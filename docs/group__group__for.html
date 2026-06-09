@@ -151,17 +151,19 @@ Examples</h1>
 <div class="line">   <span class="preprocessor">#endfor</span></div>
 
 </div><!-- fragment --></li>
-<li>Nested loops: <div class="fragment"><div class="line">   <span class="preprocessor">#for T in [integer, real]</span></div>
+<li>Nested loops: <div class="fragment"><div class="line">   <span class="preprocessor">#define CONCAT(a,b) a##b</span></div>
+<div class="line"><span class="preprocessor"></span>   <span class="preprocessor">#for T in [integer, real]</span></div>
 <div class="line"><span class="preprocessor"></span>   <span class="preprocessor">#for R in [32,64]</span></div>
-<div class="line"><span class="preprocessor"></span>      <span class="keywordtype">type</span>(T##R) :: value</div>
+<div class="line"><span class="preprocessor"></span>      <span class="keywordtype">type</span>(CONCAT(T,R)) :: value</div>
 <div class="line">   <span class="preprocessor">#endfor</span></div>
 <div class="line"><span class="preprocessor"></span>   <span class="preprocessor">#endfor</span></div>
 
 </div><!-- fragment --></li>
-<li>Generic procedure generation: <div class="fragment"><div class="line">   <span class="preprocessor">#define NUMERICS [integer, real, complex]</span></div>
+<li>Generic procedure generation: <div class="fragment"><div class="line">   <span class="preprocessor">#define CONCAT(a,b) a##b</span></div>
+<div class="line"><span class="preprocessor"></span>   <span class="preprocessor">#define NUMERICS [integer, real, complex]</span></div>
 <div class="line"><span class="preprocessor"></span> </div>
 <div class="line">   <span class="preprocessor">#for T in NUMERICS</span></div>
-<div class="line"><span class="preprocessor"></span>      <span class="keyword">module procedure</span> add_/**/t</div>
+<div class="line"><span class="preprocessor"></span>      <span class="keyword">module procedure</span> concat(add_,t)</div>
 <div class="line">   <span class="preprocessor">#endfor</span></div>
 
 </div><!-- fragment --></li>
@@ -193,7 +195,7 @@ Examples</h1>
 </dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="for_8f90_source.html#l00313">313</a> of file <a class="el" href="for_8f90_source.html">for.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="for_8f90_source.html#l00315">315</a> of file <a class="el" href="for_8f90_source.html">for.f90</a>.</p>
 
 </div>
 </div>
@@ -240,7 +242,7 @@ Examples</h1>
 </dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="for_8f90_source.html#l00244">244</a> of file <a class="el" href="for_8f90_source.html">for.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="for_8f90_source.html#l00246">246</a> of file <a class="el" href="for_8f90_source.html">for.f90</a>.</p>
 
 </div>
 </div>
@@ -286,7 +288,7 @@ Examples</h1>
 </dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="for_8f90_source.html#l00123">123</a> of file <a class="el" href="for_8f90_source.html">for.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="for_8f90_source.html#l00125">125</a> of file <a class="el" href="for_8f90_source.html">for.f90</a>.</p>
 
 </div>
 </div>
@@ -306,7 +308,7 @@ Examples</h1>
 <dl class="section return"><dt>Returns</dt><dd><span class="tt">.true.</span> when one or more loop contexts are active, <span class="tt">.false.</span> otherwise.</dd></dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="for_8f90_source.html#l00327">327</a> of file <a class="el" href="for_8f90_source.html">for.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="for_8f90_source.html#l00329">329</a> of file <a class="el" href="for_8f90_source.html">for.f90</a>.</p>
 
 </div>
 </div>

@@ -48,9 +48,10 @@
 !!
 !! 3. Nested loops:
 !! @code{.f90}
+!!    #define CONCAT(a,b) a##b
 !!    #for T in [integer, real]
 !!    #for R in [32,64]
-!!       type(T##R) :: value
+!!       type(CONCAT(T,R)) :: value
 !!    #endfor
 !!    #endfor
 !! ...
@@ -58,10 +59,11 @@
 !!
 !! 4. Generic procedure generation:
 !! @code{.f90}
+!!    #define CONCAT(a,b) a##b
 !!    #define NUMERICS [integer, real, complex]
 !!
 !!    #for T in NUMERICS
-!!       module procedure add_/**/T
+!!       module procedure CONCAT(add_,T)
 !!    #endfor
 !! ...
 !! @endcode
