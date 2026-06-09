@@ -75,7 +75,7 @@ module fpx_operators
 
     implicit none; private
 
-    public :: evaluate_expression. &
+    public :: evaluate_expression, &
         parse_expression
 
     !> Evaluates a preprocessor-style expression with macro substitution.

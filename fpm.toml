@@ -1,5 +1,5 @@
 name = "fpx"
-version = "1.0.0"
+version = "1.2.0"
 maintainer = "David Pfister"
 author = "David Pfister"
 description = "preprocessing app"
