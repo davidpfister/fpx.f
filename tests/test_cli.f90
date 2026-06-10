@@ -3,9 +3,10 @@ TESTPROGRAM(test_cli)
     TEST('cli')
         use test_utils
         use fpx_path
+        use fpx_string, only: starts_with
 
         character(256), allocatable :: lines(:)
-        integer :: exitstat, cmdstat
+        integer :: exitstat, cmdstat, i, iline
 #ifdef _FPM
 #ifdef _WIN32
         character(*), parameter :: fpmcmd   = 'fpm run --runner > tests\output.txt'
@@ -35,10 +36,16 @@ TESTPROGRAM(test_cli)
 #endif
         call execute_command_line(fpmcmd)
         call getlines(outpath, lines, keepall = .false., delete = .true.)
+        do i = 1, size(lines)
+            if (starts_with(lines(i), 'build')) then
+                iline = i
+                exit
+            end if
+        end do
 #ifdef _FPM
-        call execute_command_line(trim(lines(1))//fpxcmd, exitstat = exitstat, cmdstat = cmdstat)
+        call execute_command_line(trim(lines(iline))//fpxcmd, exitstat = exitstat, cmdstat = cmdstat)
 #else
-        call execute_command_line(join('..', trim(lines(size(lines)-1))//fpxcmd), exitstat = exitstat, cmdstat = cmdstat)
+        call execute_command_line(join('..', trim(lines(iline))//fpxcmd), exitstat = exitstat, cmdstat = cmdstat)
 #endif
         EXPECT_EQ(exitstat, 0)
         EXPECT_EQ(cmdstat, 0)
