@@ -657,9 +657,9 @@ contains
     !! @b Remarks
     !! @ingroup group_macro
     logical function is_defined(name, macros, idx) result(res)
-        character(*), intent(in)    :: name
-        type(macro), intent(in)   :: macros(:)
-        integer, intent(inout), optional :: idx
+        character(*), intent(in)            :: name
+        type(macro), intent(in)             :: macros(:)
+        integer, intent(inout), optional    :: idx
         !private
         integer :: i
 
@@ -989,7 +989,7 @@ contains
     function extract_proc_name(txt, leaving) result(name)
         character(*), intent(in)    :: txt
         logical, intent(out)        :: leaving
-        character(:), allocatable :: name
+        character(:), allocatable   :: name
         !private
         integer :: pos, istart, iend
         character(:), allocatable :: tmp

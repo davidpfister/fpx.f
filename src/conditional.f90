@@ -230,9 +230,9 @@ contains
     !! @b Remarks
     !! @ingroup group_conditional
     subroutine handle_elif(ctx, macros, token)
-        type(context), intent(in)   :: ctx
-        type(macro), allocatable, intent(inout)     :: macros(:)
-        character(*), intent(in)    :: token
+        type(context), intent(in)               :: ctx
+        type(macro), allocatable, intent(inout) :: macros(:)
+        character(*), intent(in)                :: token
         !private
         character(:), allocatable :: expr
         logical :: result, parent_active

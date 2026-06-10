@@ -226,7 +226,10 @@ contains
 
         ! First parse condition at higher precedence
         condition = parse_or(expr, tokens, ntokens, pos, macros, ctx)
-
+        if (pos > ntokens) then
+            val = condition
+            return
+        end if
         ! Check for '?'
         if (pos <= ntokens .and. tokens(pos)%value == '?') then
             pos = pos + 1
@@ -279,6 +282,10 @@ contains
         integer :: left
 
         left = parse_and(expr, tokens, ntokens, pos, macros, ctx)
+        if (pos > ntokens) then
+            val = left
+            return
+        end if
         do while (pos <= ntokens .and. tokens(pos)%value == '||')
             pos = pos + 1
             val = merge(1, 0, left /= 0 .or. parse_and(expr, tokens, ntokens, pos, macros, ctx) /= 0)
@@ -309,6 +316,10 @@ contains
         integer :: left
 
         left = parse_bitwise_or(expr, tokens, ntokens, pos, macros, ctx)
+        if (pos > ntokens) then
+            val = left
+            return
+        end if
         do while (pos <= ntokens .and. tokens(pos)%value == '&&')
             pos = pos + 1
             val = merge(1, 0, left /= 0 .and. parse_bitwise_or(expr, tokens, ntokens, pos, macros, ctx) /= 0)
@@ -339,6 +350,10 @@ contains
         integer :: left
 
         left = parse_bitwise_xor(expr, tokens, ntokens, pos, macros, ctx)
+        if (pos > ntokens) then
+            val = left
+            return
+        end if
         do while (pos <= ntokens .and. tokens(pos)%value == '|')
             pos = pos + 1
             val = parse_bitwise_xor(expr, tokens, ntokens, pos, macros, ctx)
@@ -369,6 +384,10 @@ contains
         integer :: left
 
         left = parse_bitwise_and(expr, tokens, ntokens, pos, macros, ctx)
+        if (pos > ntokens) then
+            val = left
+            return
+        end if
         do while (pos <= ntokens .and. tokens(pos)%value == '^')
             pos = pos + 1
             val = parse_bitwise_and(expr, tokens, ntokens, pos, macros, ctx)
@@ -399,6 +418,10 @@ contains
         integer :: left
 
         left = parse_equality(expr, tokens, ntokens, pos, macros, ctx)
+        if (pos > ntokens) then
+            val = left
+            return
+        end if
         do while (pos <= ntokens .and. tokens(pos)%value == '&')
             pos = pos + 1
             val = parse_equality(expr, tokens, ntokens, pos, macros, ctx)
@@ -429,6 +452,10 @@ contains
         integer :: left, right
 
         left = parse_relational(expr, tokens, ntokens, pos, macros, ctx)
+        if (pos > ntokens) then
+            val = left
+            return
+        end if
         do while (pos <= ntokens .and. (tokens(pos)%value == '==' .or. tokens(pos)%value == '!='))
             if (tokens(pos)%value == '==') then
                 pos = pos + 1
@@ -466,6 +493,10 @@ contains
         integer :: left, right
 
         left = parse_shifting(expr, tokens, ntokens, pos, macros, ctx)
+        if (pos > ntokens) then
+            val = left
+            return
+        end if
         do while (pos <= ntokens .and. (tokens(pos)%value == '<' .or. tokens(pos)%value == '>' .or. &
                 tokens(pos)%value == '<=' .or. tokens(pos)%value == '>='))
             if (tokens(pos)%value == '<') then
@@ -512,6 +543,10 @@ contains
         integer :: left, right
 
         left = parse_additive(expr, tokens, ntokens, pos, macros, ctx)
+        if (pos > ntokens) then
+            val = left
+            return
+        end if
         do while (pos <= ntokens .and. (tokens(pos)%value == '<<' .or. tokens(pos)%value == '>>'))
             if (tokens(pos)%value == '<<') then
                 pos = pos + 1
@@ -549,6 +584,10 @@ contains
         integer :: left, right
 
         left = parse_multiplicative(expr, tokens, ntokens, pos, macros, ctx)
+        if (pos > ntokens) then
+            val = left
+            return
+        end if
         do while (pos <= ntokens .and. (tokens(pos)%value == '+' .or. tokens(pos)%value == '-'))
             if (tokens(pos)%value == '+') then
                 pos = pos + 1
@@ -586,6 +625,10 @@ contains
         integer :: left, right
 
         left = parse_unary(expr, tokens, ntokens, pos, macros, ctx)
+        if (pos > ntokens) then
+            val = left
+            return
+        end if
         do while (pos <= ntokens .and. (tokens(pos)%value == '*' .or. tokens(pos)%value == '/' .or. tokens(pos)%value == '%'))
             if (tokens(pos)%value == '*') then
                 pos = pos + 1
@@ -627,6 +670,10 @@ contains
         integer :: left, right
 
         left = parse_atom(expr, tokens, ntokens, pos, macros, ctx)
+        if (pos > ntokens) then
+            val = left
+            return
+        end if
         if (pos <= ntokens .and. tokens(pos)%value == '**') then
             pos = pos + 1
             ! recurse at same precedence level
