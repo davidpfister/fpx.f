@@ -741,7 +741,7 @@ contains
             end do
             if (.not. isdef(1)) then
                 allocate(tmp(n + 1))
-                tmp(1:n) = array
+                if (n > 0) tmp(1:n) = array
                 tmp(n + 1) = val
                 call move_alloc(tmp, array)
                 if (allocated(tmp)) deallocate(tmp)
@@ -755,7 +755,7 @@ contains
                 end if
             end do
             n = size_of(array); allocate(tmp(n + count(isdef)))
-            tmp(1:n) = array
+            if (n > 0) tmp(1:n) = array
             tmp(n + 1:) = pack(val, isdef)
             call move_alloc(tmp, array)
             if (allocated(tmp)) deallocate(tmp)
