@@ -86,10 +86,12 @@ module fpx_for
             add_to_loop
 
     type :: body
+        integer :: nlines = 0
         type(string), allocatable :: lines(:)
     end type
     
     integer :: depth = 0
+    integer, parameter :: BODY_BUFFER = 50
     type(body) :: bodies(MAX_FOR_DEPTH)
     type(macro), allocatable :: fmacros(:)
 
@@ -139,7 +141,7 @@ contains
                     ctx%content, ctx%line))
             return
         end if
-
+                
         pos = index(lowercase(ctx%content), token) + len(token)
         temp = trim(adjustl(ctx%content(pos + 1:)))
 
@@ -204,6 +206,7 @@ contains
             fmacros(imacro) = macro(name, '')
         end if
 
+        fmacros(imacro)%active = .false.
         fmacros(imacro)%is_variadic = .false.
         if (allocated(fmacros(imacro)%params)) deallocate(fmacros(imacro)%params)
         allocate(fmacros(imacro)%params(npar))
@@ -243,11 +246,12 @@ contains
     !!
     !! @b Remarks
     !! @ingroup group_for
-    subroutine handle_endfor(ctx, ounit, macros, token)
-        type(context), intent(in)   :: ctx
-        integer, intent(in)         :: ounit
-        character(*), intent(in)    :: token
-        type(macro), intent(in)     :: macros(:)
+    subroutine handle_endfor(ctx, ounit, preprocess, macros, token)
+        type(context), intent(inout)    :: ctx
+        integer, intent(in)             :: ounit
+        procedure(preprocess_line)      :: preprocess
+        character(*), intent(in)        :: token
+        type(macro), intent(in)         :: macros(:)
         !private
         integer :: i, j
         character(:), allocatable :: rst, tmp
@@ -256,37 +260,55 @@ contains
         type(macro), allocatable :: ms(:)
         
         tmp = ''
-        if (depth <= size_of(fmacros)) then
-            params = fmacros(depth)%params
-            if (allocated(fmacros(depth)%params)) deallocate(fmacros(depth)%params)
+        depth = depth - 1
         
-            do i = 1, size(params)
-                fmacros(depth)%value = params(i)
-                do j = 1, size(bodies(depth)%lines)
-                    ms = [fmacros, macros]
-                    rst = adjustl(expand_macros(bodies(depth)%lines(j)%chars, ms, stitch, .false., ctx))
-                    if (depth > 1) then
-                        if (.not. allocated(bodies(depth - 1)%lines)) allocate(bodies(depth - 1)%lines(0))
-                        bodies(depth - 1)%lines = [bodies(depth - 1)%lines, string(rst)]                       
+        if (depth + 1 <= size_of(fmacros)) then
+            params = fmacros(depth + 1)%params
+            if (allocated(fmacros(depth + 1)%params)) deallocate(fmacros(depth + 1)%params)
+        
+            do i = 1, size_of(params)
+                fmacros(depth + 1)%value = params(i)
+                fmacros(depth + 1)%active = .true.
+                ms = [fmacros(depth + 1), macros]
+                !do j = 1, bodies(depth + 1)%nlines
+                do j = 1, bodies(depth + 1)%nlines !size_of(bodies(depth + 1)%lines)
+                    if (head(bodies(depth + 1)%lines(j)%chars) == '#') then
+                        if (len(bodies(depth + 1)%lines(j)%chars) == 1) then
+                            return
+                        else
+                            rst = adjustl(expand_macros(bodies(depth + 1)%lines(j)%chars, ms, stitch, global%implicit_continuation, ctx))
+                            tmp = preprocess(rst, ounit, ctx%path, ctx%line, ms, stitch)
+                        end if
+                    else
+                        rst = adjustl(expand_macros(bodies(depth + 1)%lines(j)%chars, ms, stitch, global%implicit_continuation, ctx))
+                        tmp = preprocess(rst, ounit, ctx%path, ctx%line, ms, stitch)
+                    end if
+                    
+                    if (depth > 0) then
+                        if (len_trim(tmp) > 0) then
+                            call addline(bodies(depth), string(tmp))
+                        end if
                     else
                         do
-                            ms = [fmacros, macros]
-                            tmp = adjustl(expand_macros(rst, ms, stitch, .false., ctx))
                             if (tmp == rst) exit
+                            tmp = preprocess(rst, ounit, ctx%path, ctx%line, ms, stitch)
                             rst = tmp
                         end do
                         write(ounit, '(A)') rst
                     end if
                 end do
-                if (depth > 1) then
-                    if (.not. allocated(bodies(depth - 1)%lines)) allocate(bodies(depth - 1)%lines(0))
-                    bodies(depth - 1)%lines = [bodies(depth - 1)%lines, string('')]                       
+                if (depth > 0) then
+                    call addline(bodies(depth), string(''))                     
                 else
                     write(ounit, '(A)') ''
                 end if
             end do
+            bodies(depth + 1)%nlines = 0
+            if (allocated(bodies(depth + 1)%lines)) deallocate(bodies(depth + 1)%lines)
         end if
-        depth = depth - 1
+        
+        if (allocated(params)) deallocate(params)
+        if (allocated(ms)) deallocate(ms)
         if (depth < 0) then
             call printf(render(diagnostic_report(LEVEL_WARNING, &
                     message='Unbalanced #for expression. Missing #for or #endfor directive.', &
@@ -315,8 +337,7 @@ contains
     subroutine add_to_loop(line)
         character(*), intent(in) :: line
         
-        if (.not. allocated(bodies(depth)%lines)) allocate(bodies(depth)%lines(0))
-        bodies(depth)%lines = [bodies(depth)%lines, string(line)]
+        call addline(bodies(depth), string(line))
     end subroutine
 
     !> Query whether parsing is currently inside a `#for` block.
@@ -329,4 +350,27 @@ contains
     logical function is_in_forloop() result(res)
         res = depth > 0
     end function
+    
+    subroutine addline(b, line)
+        type(body), intent(inout)       :: b
+        type(string), intent(in)        :: line
+        !private
+        type(string), allocatable :: tmp(:)
+        integer :: n
+        
+        if (.not. allocated(b%lines)) then
+            allocate(b%lines(0))
+            b%nlines = 0
+        end if
+        b%nlines = b%nlines + 1
+        n = size(b%lines)
+        if (b%nlines <= n) then
+            b%lines(b%nlines) = line
+        else
+            allocate(tmp(n + BODY_BUFFER))
+            tmp(1:n) = b%lines(1:n)
+            tmp(n + 1) = line
+            call move_alloc(from=tmp, to=b%lines) 
+        end if
+    end subroutine
 end module
