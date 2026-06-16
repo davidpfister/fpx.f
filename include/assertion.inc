@@ -54,16 +54,16 @@ end do;
 # define REPORT_FAILURE(expected, actual, fmt) \
 nfailures = nfailures + 1; \
 call cpu_time(toc_assert); \
-write(output_unit,'(A, " (", I3, ") : error:")', advance='no') testname, __LINE__; \
+write(output_unit,'(A, " (", I0, ") : error:")', advance='no') testname, __LINE__; \
 call flush(output_unit);write(output_unit,*) ''; \
 print fmt, '   Actual: ', actual; \
 print fmt, ' Expected: ', expected; \
-write(*,'(A, A, ". ", A, " line ", I3, " (", E10.3, " ms)")', advance='no') ANSI_FAILED, testcase, testname, __LINE__, toc_assert - tic_assert;\
+write(*,'(A, A, ". ", A, " line ", I0, " (", E10.3, " ms)")', advance='no') ANSI_FAILED, testcase, testname, __LINE__, toc_assert - tic_assert;\
 call flush(output_unit);write(output_unit,*) '';
 # define REPORT_SUCCESS \
 nsuccess = nsuccess + 1; \
 call cpu_time(toc_assert); \
-write(output_unit,'(A, A, ". ", A, " line ", I3, " (", E10.3, " ms)")', advance='no') ANSI_OK, testcase, testname, __LINE__, toc_assert - tic_assert;\
+write(output_unit,'(A, A, ". ", A, " line ", I0, " (", E10.3, " ms)")', advance='no') ANSI_OK, testcase, testname, __LINE__, toc_assert - tic_assert;\
 call flush(output_unit);write(output_unit,*) '';
 # define TESTPROGRAM(name)\
 PROGRAMNAME(name) \
@@ -101,7 +101,7 @@ allocate(tic_case, toc_case); \
 call cpu_time(tic_case); \
 end if; \
 call cpu_time(tic_assert) ; \
-write(output_unit,'("[ RUN      ] ", A, ". ", A, " at line ", I3)', advance='no') testcase, testname, __LINE__ ; \
+write(output_unit,'("[ RUN      ] ", A, ". ", A, " at line ", I0)', advance='no') testcase, testname, __LINE__ ; \
 call flush(output_unit);write(output_unit,*) '';
 # define END_BLOCK(expected, actual, fatal, fmt) \
 REPORT_SUCCESS \
@@ -112,28 +112,28 @@ end if ; \
 end block;
 # define END_TEST \
 call cpu_time(toc_case); \
-write(output_unit,'("[----------] Ran ", I3, " tests from ", A)', advance='no') nsuccess + nfailures, testcase; \
+write(output_unit,'("[----------] Ran ", I0, " tests from ", A)', advance='no') nsuccess + nfailures, testcase; \
 call flush(output_unit);write(output_unit,*) ''; \
 if(nfailures > 0) then; \
 nfailures_all = nfailures_all + nfailures; \
-write(output_unit,'(A, I3, " tests from ", A, " (", E10.3, " ms total)")', advance='no') ANSI_FAILED, nfailures, testcase, toc_case - tic_case; \
+write(output_unit,'(A, I0, " tests from ", A, " (", E10.3, " ms total)")', advance='no') ANSI_FAILED, nfailures, testcase, toc_case - tic_case; \
 else; \
 nsuccess_all = nsuccess_all + nsuccess; \
-write(output_unit,'(A, I3, " tests from ", A, " (", E10.3, " ms total)")', advance='no') ANSI_PASSED, nsuccess, testcase, toc_case - tic_case; \
+write(output_unit,'(A, I0, " tests from ", A, " (", E10.3, " ms total)")', advance='no') ANSI_PASSED, nsuccess, testcase, toc_case - tic_case; \
 end if; \
 call flush(output_unit);write(output_unit,*) ''; \
 end block; \
 nsuccess = 0; nfailures = 0; \
 end block;
 # define END_TESTPROGRAM \
-write(output_unit,'("[==========] Ran ", I3, " tests from ", A)', advance='no') nsuccess_all + nfailures_all, __FILE__; \
+write(output_unit,'("[==========] Ran ", I0, " tests from ", A)', advance='no') nsuccess_all + nfailures_all, __FILE__; \
 call flush(output_unit);write(output_unit,*) ''; \
 if(nfailures_all > 0) then; \
-write(output_unit,'(A, I3, " tests from ", A)', advance='no') ANSI_FAILED, nfailures_all, __FILE__; \
+write(output_unit,'(A, I0, " tests from ", A)', advance='no') ANSI_FAILED, nfailures_all, __FILE__; \
 call flush(output_unit);write(output_unit,*) ''; \
 stop 1; \
 else; \
-write(output_unit,'(A, I3, " tests from ", A)', advance='no') ANSI_PASSED, nsuccess_all, __FILE__; \
+write(output_unit,'(A, I0, " tests from ", A)', advance='no') ANSI_PASSED, nsuccess_all, __FILE__; \
 call flush(output_unit);write(output_unit,*) ''; \
 end if; \
 end program

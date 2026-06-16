@@ -27,14 +27,14 @@
 !!    type(macro), allocatable :: macros(:)
 !!    call add(macros, macro('PI', '3.1415926535'))
 !!    call add(macros, macro('MSG(x)', 'print *, ″Hello ″, x'))
-!!    print *, expand_all(context('area = PI * r**2', 10, './circle.F90', 'circle'), macros, stitch, .false., .false.)
+!!    print *, expand_all(context('area = PI * r**2', 10, './circle.F90', 'circle'), macros, stitch, .false., .false., .true.)
 !!    !> prints: area = 3.1415926535 * r**2
 !! @endcode
 !!
 !! 2. Variadic macro with stringification and pasting:
 !! @code{.f90}
 !!    call add(macros, macro('DEBUG_PRINT(...)', 'print *, ″DEBUG[″, __FILE__, ″:″, __LINE__, ″]: ″, __VA_ARGS__'))
-!!    print *, expand_all(context('DEBUG_PRINT(″value =″, x)', 42, 'test.F90', 'text'), macros, stitch, .false., false)
+!!    print *, expand_all(context('DEBUG_PRINT(″value =″, x)', 42, 'test.F90', 'text'), macros, stitch, .false., .false., .true.)
 !!    !> prints: print *, 'DEBUG[', 'test.F90', ':', 42, ']: ', 'value =', x
 !! @endcode
 !!
@@ -67,7 +67,8 @@ module fpx_macro
     public :: expand_macros, &
             expand_all, &
             is_defined, &
-            read_unit
+            read_unit, &
+            preprocess_line
 
     !> Derived type representing a single preprocessor macro
     !! Extends @link fpx_string::string string @endlink with macro-specific fields: replacement value, parameters,
@@ -99,6 +100,7 @@ module fpx_macro
         type(string), allocatable :: params(:)  !< List of parameter for function like macros
         logical :: is_variadic  !< Indicate whether the macro is variadic or not.
         logical :: is_cyclic    !< Indicates whether the macro has cyclic dependencies or not.
+        logical :: active = .true.
     end type
 
     !> @brief Constructor interface for macro type
@@ -170,13 +172,25 @@ module fpx_macro
     !! @ingroup group_include
     interface
         subroutine read_unit(iunit, ounit, macros, from_include)
-            import macro
-            implicit none
+            import macro; implicit none
             integer, intent(in)                     :: iunit
             integer, intent(in)                     :: ounit
             type(macro), allocatable, intent(inout) :: macros(:)
             logical, intent(in)                     :: from_include
         end subroutine
+    end interface
+
+    interface
+        recursive function preprocess_line(current_line, ounit, filepath, linenum, macros, stch) result(rst)
+            import macro; implicit none
+            character(*), intent(in)                :: current_line
+            integer, intent(in)                     :: ounit
+            character(*), intent(inout)             :: filepath
+            integer, intent(inout)                  :: linenum
+            type(macro), allocatable, intent(inout) :: macros(:)
+            logical, intent(out)                    :: stch
+            character(:), allocatable               :: rst
+        end function
     end interface
 contains
 
@@ -197,6 +211,7 @@ contains
         allocate(that%params(0))
         that%is_variadic = .false.
         that%is_cyclic = that == that%value
+        that%active = .true.
     end function
 
     !> Fully expand a line including predefined macros (__FILE__, __LINE__, etc.)
@@ -211,25 +226,26 @@ contains
     !!
     !! @b Remarks
     !! @ingroup group_macro
-    function expand_all(ctx, macros, stitch, has_extra, implicit_conti) result(expanded)
+    function expand_all(ctx, macros, stitch, has_extra, implicit_conti, dollar_insert) result(expanded)
         type(context), intent(in)               :: ctx
         type(macro), allocatable, intent(inout) :: macros(:)
         logical, intent(out)                    :: stitch
         logical, intent(in)                     :: has_extra
         logical, intent(in)                     :: implicit_conti
+        logical, intent(in)                     :: dollar_insert
         character(:), allocatable :: expanded
         !private
         integer :: pos, start, sep, dot, imacro
         type(datetime) :: date
-                
-        if (has_extra) then           
+
+        if (has_extra) then
             if (.not. is_defined('__FUNC__', macros, imacro)) then
                 call add(macros, '__FUNC__', '')
             end if
         end if
 
-        expanded = expand_macros(ctx%content, macros, stitch, implicit_conti, ctx)
-        
+        expanded = expand_macros(ctx%content, macros, stitch, implicit_conti, dollar_insert, ctx)
+
         date = now()
 
         ! Substitute __FILE__ (relative path to working directory)
@@ -317,16 +333,18 @@ contains
     !! @param[inout]  macros Current macro table
     !! @param[out] stitch .true. if final line ends with '&'
     !! @param[in]  implicit_conti If .true., implicit continuation is permitted
+    !! @param[in]  dollar_insert If .true., ${} macro substitution is supported
     !! @param[in]  ctx  Context
     !! @return Line with user-defined macros expanded (predefined tokens untouched)
     !!
     !! @b Remarks
     !! @ingroup group_macro
-    function expand_macros(line, macros, stitch, implicit_conti, ctx) result(expanded)
+    function expand_macros(line, macros, stitch, implicit_conti, dollar_insert, ctx) result(expanded)
         character(*), intent(in)                :: line
         type(macro), allocatable, intent(inout) :: macros(:)
         logical, intent(out)                    :: stitch
         logical, intent(in)                     :: implicit_conti
+        logical, intent(in)                     :: dollar_insert
         type(context), intent(in)               :: ctx
         character(:), allocatable               :: expanded
         !private
@@ -386,7 +404,38 @@ contains
                         call update_func_macro(expanded, macros)
                         hasfunc = .true.
                     end if
-                    
+
+                    ! Placeholder expansion: ${NAME}
+                    if (dollar_insert) then
+                        if (expanded(c:c) == '$') then
+                            if (c < len_trim(expanded)) then
+                                if (expanded(c + 1:c + 1) == '{') then
+                                    j = c + 2
+                                    do while (j <= len_trim(expanded))
+                                        if (expanded(j:j) == '}') exit
+                                        j = j + 1
+                                    end do
+
+                                    if (j <= len_trim(expanded)) then
+                                        token1 = trim(expanded(c + 2:j - 1))
+                                        if (is_defined(token1, macros, idx=k)) then
+                                            temp = macros(k)%value
+                                            if (len(temp) == 0 .and. .not. macros(k)%active) then
+                                                c = j
+                                            else
+                                                expanded = expanded(:c - 1) // temp // expanded(j + 1:)
+                                                if (len(temp) /= 0) then
+                                                    c = c + len_trim(temp) - 1
+                                                end if
+                                            end if
+                                            cycle
+                                        end if
+                                    end if
+                                end if
+                            end if
+                        end if
+                    end if
+
                     found = .false.
                     if (expanded(c:c + n - 1) == macros(i)) then
                         found = .true.
@@ -432,7 +481,7 @@ contains
                                             call printf(render(diagnostic_report(LEVEL_ERROR, &
                                                     message='Variadic macro issue', &
                                                     label=label_type('Too few arguments for macro ' // macros(i), start, m_end - &
-                                                            start), &
+                                                    start), &
                                                     source=trim(ctx%path)), &
                                                     expanded, ctx%line))
                                             cycle
@@ -446,7 +495,7 @@ contains
                                         call printf(render(diagnostic_report(LEVEL_ERROR, &
                                                 message='Function-like macro issue', &
                                                 label=label_type('Incorrect number of arguments for macro ' // macros(i), start, &
-                                                        m_end - start), &
+                                                m_end - start), &
                                                 source=trim(ctx%path)), &
                                                 expanded, ctx%line))
                                         cycle
@@ -616,7 +665,7 @@ contains
                                         call printf(render(diagnostic_report(LEVEL_ERROR, &
                                                 message='Failed macro expansion', &
                                                 label=label_type('Circular macro detected', index(temp, macros(i)), len(macros(i)))&
-                                                        , &
+                                                , &
                                                 source=trim(ctx%path)), &
                                                 temp, ctx%line))
                                         cycle
@@ -903,7 +952,7 @@ contains
             deallocate(this); allocate(this(0))
         end if
     end subroutine
-    
+
     !> Update the special predefined macro __FUNC__
     !!
     !! Examines the current source line and detects whether it introduces
@@ -935,7 +984,7 @@ contains
         character(:), allocatable :: procname
         logical :: leaving
         integer :: imacro
-        
+
         if (.not. is_defined('__FUNC__', macros, imacro)) return
 
         txt = lowercase(adjustl(trim(line)))
@@ -947,10 +996,10 @@ contains
         end if
 
         ! Leaving a procedure
-        if (starts_with(txt, 'end function')    .or. &
-            starts_with(txt, 'endfunction')     .or. &
-            starts_with(txt, 'end subroutine')  .or. &
-            starts_with(txt, 'endsubroutine')) then
+        if (starts_with(txt, 'end function') .or. &
+                starts_with(txt, 'endfunction') .or. &
+                starts_with(txt, 'end subroutine') .or. &
+                starts_with(txt, 'endsubroutine')) then
 
             if (.not. is_defined('__FUNC__', macros, imacro)) then
                 call add(macros, '__FUNC__', '')
@@ -959,7 +1008,6 @@ contains
             end if
         end if
     end subroutine
-
 
     !> Extract the procedure name from a Fortran procedure declaration
     !!
@@ -1001,13 +1049,13 @@ contains
         if (index(tmp, 'end function') > 0) then
             leaving = .true.
             return
-        elseif (index(tmp, 'endfunction')  > 0) then
+        elseif (index(tmp, 'endfunction') > 0) then
             leaving = .true.
             return
         elseif (index(tmp, 'end subroutine') > 0) then
             leaving = .true.
             return
-        elseif (index(tmp, 'endsubroutine')  > 0) then
+        elseif (index(tmp, 'endsubroutine') > 0) then
             leaving = .true.
             return
         end if
@@ -1034,15 +1082,15 @@ contains
         iend = istart
 
         do while (iend <= len(tmp))
-            select case(tmp(iend:iend))
-            case('a':'z','A':'Z','0':'9','_')
+            select case (tmp(iend:iend))
+            case ('a':'z', 'A':'Z', '0':'9', '_')
                 iend = iend + 1
             case default
                 exit
             end select
         end do
 
-        name = tmp(istart:iend-1)
+        name = tmp(istart:iend - 1)
     contains
         !> Locate a standalone token within a source line
         !! Searches for a token delimited by non-identifier characters.
@@ -1071,25 +1119,25 @@ contains
             logical :: left_ok, right_ok
 
             pos = 0
-            lline = len_trim(line); ltok  = len_trim(token)
+            lline = len_trim(line); ltok = len_trim(token)
 
             if (ltok == 0 .or. lline < ltok) return
 
             do i = 1, lline - ltok + 1
-                if (lowercase(line(i:i+ltok-1)) /= lowercase(token)) cycle
+                if (lowercase(line(i:i + ltok - 1)) /= lowercase(token)) cycle
 
                 ! Check left boundary
                 if (i == 1) then
                     left_ok = .true.
                 else
-                    left_ok = .not. is_ident(line(i-1:i-1))
+                    left_ok = .not. is_ident(line(i - 1:i - 1))
                 end if
 
                 ! Check right boundary
                 if (i + ltok - 1 == lline) then
                     right_ok = .true.
                 else
-                    right_ok = .not. is_ident(line(i+ltok:i+ltok))
+                    right_ok = .not. is_ident(line(i + ltok:i + ltok))
                 end if
 
                 if (left_ok .and. right_ok) then
@@ -1098,7 +1146,7 @@ contains
                 end if
             end do
         end function
-        
+
         !> Determine whether a character is a valid identifier character
         !!
         !! Returns `.true.` for characters that may appear in a Fortran

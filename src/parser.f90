@@ -13,6 +13,7 @@
 !! - Macro expansion with argument substitution and stringification (`#`) / token-pasting (`##`)
 !! - Interactive REPL mode when reading from stdin
 !! - Multiple entry points for file-to-file, unit-to-unit, etc.
+!! - Support ${x} for substituting macro name
 !!
 !! The preprocessor is designed to be standards-conforming where possible while adding
 !! useful extensions (variadic macros, better diagnostics, include path handling).
@@ -50,7 +51,7 @@
 !! @endcode
 module fpx_parser
     use, intrinsic :: iso_fortran_env, only: stdout => output_unit, iostat_end, stdin => input_unit
-    use, intrinsic :: iso_c_binding, only: c_char, c_size_t, c_ptr, c_null_ptr, c_associated
+    use, intrinsic :: iso_c_binding, only: c_char, c_size_t, c_ptr, c_null_ptr, c_associated, c_funloc
     use fpx_constants
     use fpx_string
     use fpx_logging
@@ -118,6 +119,7 @@ contains
         character(len=1, kind=c_char) :: buf(256)
 
         open(newunit=iunit, file=filepath, status='old', action='read', iostat=ierr)
+
         if (ierr /= 0) then
             call printf(render(diagnostic_report(LEVEL_ERROR, &
                     message='Error opening input file: ' // trim(filepath), &
@@ -315,7 +317,7 @@ contains
                     f_continue = .not. in_comment .and. tail(tmp) == '&'
                 end if
 
-                if (f_continue .or. stitch) then
+                if ((.not. global%disable_continuation) .and. (f_continue .or. stitch)) then
                     reprocess = .true.
                     res = concat(res, tmp)
                 else
@@ -334,6 +336,7 @@ contains
                     else
                         res = trim(tmp)
                     end if
+
                     if (is_in_forloop()) then
                         call add_to_loop(res)
                     else
@@ -386,7 +389,7 @@ contains
         !private
         character(:), allocatable :: trimmed_line
         logical :: active
-        logical, save :: l_in_comment = .false.
+        logical, save :: l_in_comment = .false., l_in_loop = .false.
         integer :: idx, comment_start, comment_end, n
         type(context) :: ctx
 
@@ -411,6 +414,15 @@ contains
         if (head(trimmed_line) == '#') then
             if (len(trimmed_line) == 1) then
                 return  !null directive
+            else if (starts_with(lowercase(adjustl(trimmed_line(2:))), 'for')) then
+                l_in_loop = .true.
+                if (global%support_forloop) call handle_for(ctx, macros, 'for')
+            else if (starts_with(lowercase(adjustl(trimmed_line(2:))), 'endfor')) then
+                l_in_loop = .false.
+                if (global%support_forloop) call handle_endfor(ctx, ounit, c_funloc(process_line), macros, 'endfor')
+                l_in_loop = is_in_forloop()
+            else if (l_in_loop) then
+                rst = trimmed_line
             else if (starts_with(lowercase(adjustl(trimmed_line(2:))), 'define') .and. active) then
                 call handle_define(ctx, macros, 'define')
             else if (starts_with(lowercase(adjustl(trimmed_line(2:))), 'undef') .and. active) then
@@ -439,10 +451,6 @@ contains
                 call handle_else(ctx)
             else if (starts_with(lowercase(adjustl(trimmed_line(2:))), 'endif')) then
                 call handle_endif(ctx)
-            else if (starts_with(lowercase(adjustl(trimmed_line(2:))), 'for')) then
-                if (global%support_forloop) call handle_for(ctx, macros, 'for')
-            else if (starts_with(lowercase(adjustl(trimmed_line(2:))), 'endfor')) then
-                if (global%support_forloop) call handle_endfor(ctx, ounit, macros, 'endfor')
             else if (starts_with(lowercase(adjustl(trimmed_line(2:))), 'pragma') .and. active) then
                 rst = ctx%content
             else
@@ -452,8 +460,8 @@ contains
             if (.not. global%expand_macros .or. is_in_forloop()) then
                 rst = trimmed_line
             else
-                rst = adjustl(expand_all(ctx, macros, stch, global%extra_macros, global%&
-                        implicit_continuation))
+                rst = adjustl(expand_all(ctx, macros, stch, global%extra_macros, global%implicit_continuation, &
+                        global%implicit_continuation))
             end if
         end if
     end function

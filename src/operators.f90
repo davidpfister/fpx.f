@@ -76,7 +76,7 @@ module fpx_operators
     implicit none; private
 
     public :: evaluate_expression, &
-        parse_expression
+            parse_expression
 
     !> Evaluates a preprocessor-style expression with macro substitution.
     !! Tokenizes the input expression, expands macros where appropriate,
@@ -678,7 +678,7 @@ contains
             pos = pos + 1
             ! recurse at same precedence level
             right = parse_power(expr, tokens, ntokens, pos, macros, ctx)
-            val = left ** right
+            val = left**right
         else
             val = left
         end if
@@ -758,7 +758,8 @@ contains
             pos = pos + 1
         else if (tokens(pos)%type == 2) then
             if (is_defined(tokens(pos)%value, macros)) then
-                expanded = expand_macros(tokens(pos)%value, macros, stitch, global%implicit_continuation, ctx)
+                expanded = expand_macros(tokens(pos)%value, macros, stitch, global%implicit_continuation, &
+                        global%support_dollar_insert, ctx)
                 if (.not. evaluate_expression(expanded, macros, ctx, val)) val = 0
             else
                 val = 0

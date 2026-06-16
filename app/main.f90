@@ -107,15 +107,17 @@ console(main)
                                          '                             -----------------------', &
                                          '-D<macro>             Define a <macro> with no value.', &
                                          '-D<macro>=<val>       Define a <macro> with <val> as its value.', &
-                                         '-U<macro>             Undefine <macro>', &
+                                         '-U<macro>             Undefine <macro>.', &
                                          '-I<dir>               Add <dir> to the end of the global include paths.', &
-                                         '-h, -?, --help        Display help messages', &
+                                         '-h, -?, --help        Display help messages.', &
                                          '-o, --output          Output file path with name and extension.', &
                                          '-v, --version         Display the version of the program.', &
                                          '--no-color            Disable ANSI coloring.', &
                                          '--implicit-conti      Activate implicit continuation line in macro expansion.', &
-                                         '--exclude-comments    Exclude comments from macro expansion', &
+                                         '--no-exlicit-conti    Deactivate explicit continuation line in macro expansion using & symbol.', &
+                                         '--exclude-comments    Exclude comments from macro expansion.', &
                                          '--no-macros           Deactivate macros expansion.', &
+                                         '--no-$                Deactivate ${} substitution in macro expansion.', &
                                          '--std                 Enforce standard compliance.'
                     stop 0, quiet = .true.
                 case ('o', '-output')
@@ -128,9 +130,16 @@ console(main)
                     global%exlude_comments = .true.
                 case ('-no-macros')
                     global%expand_macros = .false.
+                case ('-no-$')
+                    global%support_dollar_insert = .false.
+                case ('-no-exlicit-conti')
+                    global%disable_continuation = .true.
                 case ('-std')
                     global%support_forloop = .false.
                     global%extra_macros = .false.
+                    global%support_dollar_insert = .false.
+                    global%implicit_continuation = .false.
+                    global%disable_continuation = .false.
                 end select
             else
                 if (allocated(infile)) then

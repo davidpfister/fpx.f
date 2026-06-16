@@ -18,6 +18,8 @@ TESTPROGRAM(test_default)
         call getfiles('', files)
         
         global%support_forloop = .true.
+        global%disable_continuation = .true.
+        
         call add(global%macros, macro('__WINDOWS__'))
         call add(global%macros, macro('VALUE', '10'))
         call add(global%macros, macro('FEATURE_C'))

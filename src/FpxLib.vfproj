@@ -18,7 +18,7 @@
 			<Tool Name="VFManifestTool" SuppressStartupBanner="true"/>
 		</Configuration>
 		<Configuration Name="Debug|x64" UseCompiler="ifortCompiler" OutputDirectory="bin\$(ConfigurationName)\$(PlatformName)" IntermediateDirectory="obj\$(ConfigurationName)\$(PlatformName)" ConfigurationType="typeStaticLibrary">
-			<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" Preprocess="preprocessYes" AdditionalIncludeDirectories="..\include" WarnInterfaces="true" Traceback="true" BoundsCheck="true" StackFrameCheck="true" RuntimeLibrary="rtMultiThreadedDebugDLL"/>
+			<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" HeapArrays="0" Preprocess="preprocessYes" AdditionalIncludeDirectories="..\include" WarnInterfaces="true" Traceback="true" BoundsCheck="true" StackFrameCheck="true" RuntimeLibrary="rtMultiThreadedDebugDLL"/>
 			<Tool Name="VFLinkerTool" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" GenerateDebugInformation="true"/>
 			<Tool Name="VFLibrarianTool"/>
 			<Tool Name="VFResourceCompilerTool"/>
@@ -55,24 +55,22 @@
 		</Configuration>
 	</Configurations>
 	<Files>
-		<File RelativePath=".\conditional.f90">
-		</File>
+		<File RelativePath=".\conditional.f90"/>
 		<File RelativePath=".\constants.f90"/>
 		<File RelativePath=".\context.f90"/>
 		<File RelativePath=".\date.f90"/>
 		<File RelativePath=".\define.f90"/>
 		<File RelativePath=".\diagnostics.f90"/>
-		<File RelativePath=".\for.f90"/>
 		<File RelativePath=".\global.f90"/>
 		<File RelativePath=".\graph.f90"/>
 		<File RelativePath=".\include.f90"/>
 		<File RelativePath=".\line.f90"/>
 		<File RelativePath=".\logging.f90"/>
+		<File RelativePath=".\loop.f90"/>
 		<File RelativePath=".\macro.f90"/>
 		<File RelativePath=".\operators.f90"/>
 		<File RelativePath=".\os.f90"/>
-		<File RelativePath=".\parser.f90">
-		</File>
+		<File RelativePath=".\parser.f90"/>
 		<File RelativePath=".\path.f90"/>
 		<File RelativePath=".\string.f90"/>
 		<File RelativePath=".\token.f90"/>

@@ -81,7 +81,7 @@ contains
             call printf(render(diagnostic_report(LEVEL_WARNING, &
                     message='Syntax error', &
                     label=label_type('#line directive with no arguments', index(token, lowercase(ctx%content)) + len(token) + 1, 1)&
-                            , &
+                    , &
                     source=ctx%path), &
                     trim(ctx%content), ctx%line))
             return
@@ -104,7 +104,7 @@ contains
             call printf(render(diagnostic_report(LEVEL_WARNING, &
                     message='Syntax error', &
                     label=label_type('Invalid line number in #line directive', index(token, lowercase(ctx%content)) + len(token) + &
-                            1, len(num_str)), &
+                    1, len(num_str)), &
                     source=ctx%path), &
                     trim(ctx%content), ctx%line))
         end if

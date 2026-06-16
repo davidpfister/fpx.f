@@ -129,7 +129,7 @@ contains
             call printf(render(diagnostic_report(LEVEL_ERROR, &
                     message='Malformed #include directive', &
                     label=label_type('Filepath should either be delimited by "<...>" or "..."', index(ctx%content, include_file), &
-                            len(include_file)), &
+                    len(include_file)), &
                     source=trim(ctx%path)), &
                     ctx%content, ctx%line))
             return
@@ -146,7 +146,7 @@ contains
                     call printf(render(diagnostic_report(LEVEL_ERROR, &
                             message='File not found', &
                             label=label_type('Cannot find include file ' // trim(include_file), index(ctx%content, include_file), &
-                                    len(include_file)), &
+                            len(include_file)), &
                             source=trim(ctx%path)), &
                             ctx%content, ctx%line))
                     return
@@ -207,7 +207,7 @@ contains
                 call printf(render(diagnostic_report(LEVEL_ERROR, &
                         message='File not found', &
                         label=label_type('Cannot find include file ' // trim(include_file), index(ctx%content, include_file), len(&
-                                include_file)), &
+                        include_file)), &
                         source=trim(ctx%path)), &
                         ctx%content, ctx%line))
                 return
@@ -220,7 +220,7 @@ contains
             call printf(render(diagnostic_report(LEVEL_ERROR, &
                     message='File not found', &
                     label=label_type('Cannot open include file ' // trim(include_file), index(ctx%content, include_file), len(&
-                            include_file)), &
+                    include_file)), &
                     source=trim(ctx%path)), &
                     ctx%content, ctx%line))
             return
