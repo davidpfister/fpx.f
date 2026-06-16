@@ -97,7 +97,7 @@ contains
             if (global%undef .contains. name) return
             paren_end = 0; level = 0
             do i = paren_start, len_trim(temp)
-                select case(temp(i:i))
+                select case (temp(i:i))
                 case ('(')
                     level = level + 1
                 case (')')

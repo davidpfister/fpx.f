@@ -8,8 +8,8 @@
         "name": "(gdb) Fortran",
         "type": "cppdbg",
         "request": "launch",
-        "program": "${workspaceFolder}/build/gfortran_7327CF06837CA81D/test/test.exe",
-        "args": [], // Possible input args for a.out
+        "program": "${workspaceFolder}/build/gfortran_8E71B93CC8EA85D0/app/fpx.exe",
+        "args": ["C:\\Users\\DavidPfister\\GitHub\\sandbox\\fpx.f\\tests\\default\\stdlib_lapack_solve_ldl.F90"], // Possible input args for a.out
         "stopAtEntry": false,
         "cwd": "${workspaceFolder}",
         "environment": [],

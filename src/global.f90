@@ -85,7 +85,9 @@ module fpx_global
         logical, public                     :: line_break = .false.  !< Boolean controlling line break with double backslash.
         logical, public                     :: extra_macros = .true.  !< Boolean controlling extra non-standard macro definitions: __FILENAME__, __TIMESTAMP__ (.true. by default)).
         logical, public                     :: interactive = .false.  !< Boolean controlling whether the program is used in interactive mode (REPL) or not.
-        logical, public                     :: support_forloop = .true. !< Boolean controlling whether the program supports #for directives (.true. by default).
+        logical, public                     :: support_forloop = .true.  !< Boolean controlling whether the program supports #for directives (.true. by default).
+        logical, public                     :: disable_continuation = .false.  !< Boolean controlling whether the program supports explicit line continuation with &amp; (.false. by default).
+        logical, public                     :: support_dollar_insert = .true.  !< Boolean controlling whether the program supports ${} substitution (.true. by default).
     end type
 
     !> @brief The single global instance used throughout fpx

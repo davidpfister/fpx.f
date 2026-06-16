@@ -134,9 +134,11 @@ The following options are available:
 |`-v`, `--version`|Display the version of the program.|
 |`--no-color`|Disable ANSI coloring.|
 |`--implicit-conti`|Activate implicit continuation line in macro expansion.|
+|`--no-exlicit-conti`|Deactivate explicit continuation line in macro expansion using &amp; symbol|
 |`--exclude-comments`|Exclude comments from macro expansion.|
 |`--extra-macros`|Support extra macros (`__FILENAME__`, `__TIMESTAMP__`, and `__FUNC__`).|
 |`--no-macros`|Deactivate macros expansion.|
+|`--no-$`|Deactivate ${} substitution in macro expansion.|
 |`--std`|Enforce [standard](https://davidpfister.github.io/fpx.f/j3.html) compliance.|
 
 </center>
