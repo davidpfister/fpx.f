@@ -22,7 +22,7 @@
     [ "size_of", "interfacefpx__macro_1_1size__of.html", [
       [ "size_item", "interfacefpx__macro_1_1size__of.html#af17d4172c874b18f0da7b70b150a4c2b", null ]
     ] ],
-    [ "expand_all", "group__group__macro.html#ga24a427812ae7752128afd5298198b2c7", null ],
-    [ "expand_macros", "group__group__macro.html#ga45a27625c418ce241e9f30d103eaca18", null ],
+    [ "expand_all", "group__group__macro.html#gab51fdaa32665f1141e292d2330a48dbc", null ],
+    [ "expand_macros", "group__group__macro.html#ga28c2658615e83c6ca921d93a3dbee370", null ],
     [ "is_defined", "group__group__macro.html#gad3bf37972bc247f25f116979e55ba74f", null ]
 ];

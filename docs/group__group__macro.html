@@ -139,11 +139,11 @@ Examples</h1>
 <li>Define and use simple macros: <div class="fragment"><div class="line"><span class="keywordtype">type</span>(macro), <span class="keywordtype">allocatable</span> :: macros(:)</div>
 <div class="line"><span class="keyword">call </span>add(macros, macro(<span class="stringliteral">&#39;PI&#39;</span>, <span class="stringliteral">&#39;3.1415926535&#39;</span>))</div>
 <div class="line"><span class="keyword">call </span>add(macros, macro(<span class="stringliteral">&#39;MSG(x)&#39;</span>, <span class="stringliteral">&#39;print *, ″Hello ″, x&#39;</span>))</div>
-<div class="line">print *, expand_all(context(<span class="stringliteral">&#39;area = PI * r**2&#39;</span>, 10, <span class="stringliteral">&#39;./circle.F90&#39;</span>, <span class="stringliteral">&#39;circle&#39;</span>), macros, stitch, .false., .false.)<span class="comment"></span></div>
+<div class="line">print *, expand_all(context(<span class="stringliteral">&#39;area = PI * r**2&#39;</span>, 10, <span class="stringliteral">&#39;./circle.F90&#39;</span>, <span class="stringliteral">&#39;circle&#39;</span>), macros, stitch, .false., .false., .true.)<span class="comment"></span></div>
 <div class="line"><span class="comment">!&gt; prints: area = 3.1415926535 * r**2</span></div>
 </div><!-- fragment --></li>
 <li>Variadic macro with stringification and pasting: <div class="fragment"><div class="line"><span class="keyword">call </span>add(macros, macro(<span class="stringliteral">&#39;DEBUG_PRINT(...)&#39;</span>, <span class="stringliteral">&#39;print *, ″DEBUG[″, __FILE__, ″:″, __LINE__, ″]: ″, __VA_ARGS__&#39;</span>))</div>
-<div class="line">print *, expand_all(context(<span class="stringliteral">&#39;DEBUG_PRINT(″value =″, x)&#39;</span>, 42, <span class="stringliteral">&#39;test.F90&#39;</span>, <span class="stringliteral">&#39;text&#39;</span>), macros, stitch, .false., false)<span class="comment"></span></div>
+<div class="line">print *, expand_all(context(<span class="stringliteral">&#39;DEBUG_PRINT(″value =″, x)&#39;</span>, 42, <span class="stringliteral">&#39;test.F90&#39;</span>, <span class="stringliteral">&#39;text&#39;</span>), macros, stitch, .false., .false., .true.)<span class="comment"></span></div>
 <div class="line"><span class="comment">!&gt; prints: print *, &#39;DEBUG[&#39;, &#39;test.F90&#39;, &#39;:&#39;, 42, &#39;]: &#39;, &#39;value =&#39;, x</span></div>
 </div><!-- fragment --></li>
 <li>Token pasting with ##: <div class="fragment"><div class="line"><span class="keyword">call </span>add(macros, macro(<span class="stringliteral">&#39;MAKE_VAR(name,num)&#39;</span>, <span class="stringliteral">&#39;var_name_##num&#39;</span>))</div>
@@ -170,8 +170,8 @@ Data Types</h2></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return current number of stored macros.  <a href="interfacefpx__macro_1_1size__of.html#details">More...</a><br /></td></tr>
 </table>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Methods</h2>
-<a id="ga24a427812ae7752128afd5298198b2c7" name="ga24a427812ae7752128afd5298198b2c7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga24a427812ae7752128afd5298198b2c7">&#9670;&#160;</a></span>expand_all()</h2>
+<a id="gab51fdaa32665f1141e292d2330a48dbc" name="gab51fdaa32665f1141e292d2330a48dbc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gab51fdaa32665f1141e292d2330a48dbc">&#9670;&#160;</a></span>expand_all()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -199,7 +199,12 @@ Data Types</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">logical, intent(in)</td>          <td class="paramname"><span class="paramname"><em>implicit_conti</em></span>&#160;)</td>
+          <td class="paramtype">logical, intent(in)</td>          <td class="paramname"><span class="paramname"><em>implicit_conti</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">logical, intent(in)</td>          <td class="paramname"><span class="paramname"><em>dollar_insert</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -212,18 +217,19 @@ Data Types</h2></td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">stitch</td><td>Set to .true.true. if result ends with '&amp;' (Fortran continuation) </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">has_extra</td><td>Has extra macros (non-standard) like <b>FILENAME</b> and <b>TIMESTAMP</b> </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">implicit_conti</td><td>If .true., implicit continuation is permitted </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">dollar_insert</td><td>If .true., the syntax ${} is supported for macro insertion </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Expanded line with all macros and predefined tokens replaced</dd></dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00214">214</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00230">230</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
 
 </div>
 </div>
-<a id="ga45a27625c418ce241e9f30d103eaca18" name="ga45a27625c418ce241e9f30d103eaca18"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga45a27625c418ce241e9f30d103eaca18">&#9670;&#160;</a></span>expand_macros()</h2>
+<a id="ga28c2658615e83c6ca921d93a3dbee370" name="ga28c2658615e83c6ca921d93a3dbee370"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga28c2658615e83c6ca921d93a3dbee370">&#9670;&#160;</a></span>expand_macros()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -251,6 +257,11 @@ Data Types</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">logical, intent(in)</td>          <td class="paramname"><span class="paramname"><em>dollar_insert</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
           <td class="paramtype">type(<a class="el" href="structfpx__context_1_1context.html">context</a>), intent(in)</td>          <td class="paramname"><span class="paramname"><em>ctx</em></span>&#160;)</td>
         </tr>
       </table>
@@ -271,6 +282,7 @@ Data Types</h2></td></tr>
     <tr><td class="paramdir">[in,out]</td><td class="paramname">macros</td><td>Current macro table </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">stitch</td><td>.true. if final line ends with '&amp;' </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">implicit_conti</td><td>If .true., implicit continuation is permitted </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">dollar_insert</td><td>If .true., ${} macro substitution is supported </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">ctx</td><td>Context </td></tr>
   </table>
   </dd>
@@ -278,7 +290,7 @@ Data Types</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>Line with user-defined macros expanded (predefined tokens untouched)</dd></dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00325">325</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00343">343</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
 
 </div>
 </div>
@@ -318,7 +330,7 @@ Data Types</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>.true. if macro is defined</dd></dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00659">659</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00709">709</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
 
 </div>
 </div>

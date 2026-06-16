@@ -222,6 +222,7 @@ contains
     !! @param[out] stitch   Set to .true.true. if result ends with '&' (Fortran continuation)
     !! @param[in]  has_extra   Has extra macros (non-standard) like __FILENAME__ and __TIMESTAMP__
     !! @param[in]  implicit_conti If .true., implicit continuation is permitted
+    !! @param[in]  dollar_insert If .true., the syntax ${} is supported for macro insertion
     !! @return Expanded line with all macros and predefined tokens replaced
     !!
     !! @b Remarks

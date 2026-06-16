@@ -25,8 +25,9 @@ var searchData=
   ['directives_20accepted_20by_20the_20preprocessor_22',['4.1 Directives accepted by the preprocessor',['../requirements.html#autotoc_md39',1,'']]],
   ['dirname_23',['dirname',['../group__group__path.html#ga877a2e8a80f597511da1c306a49523da',1,'fpx_path']]],
   ['dirpath_24',['dirpath',['../group__group__path.html#gae5c7c7a17e6ec9a4bdbf7762f34b1e70',1,'fpx_path']]],
-  ['divergences_20from_20c_25',['Divergences from C',['../specifications.html#autotoc_md97',1,'Appendix A: Divergences from C'],['../macro.html#autotoc_md122',1,'Appendix A: Divergences from C']]],
-  ['documentation_26',['Documentation',['../pages.html',1,'']]],
-  ['during_20argument_20substitution_27',['2.2.1 Macro expansion during argument substitution',['../macro.html#autotoc_md116',1,'']]],
-  ['during_20macro_20expansion_28',['4.5 Fortran awareness during macro expansion',['../requirements.html#autotoc_md43',1,'']]]
+  ['disable_5fcontinuation_25',['disable_continuation',['../structfpx__global_1_1global__settings.html#a8a6abae5e497f893ca063e2a4c225848',1,'fpx_global::global_settings']]],
+  ['divergences_20from_20c_26',['Divergences from C',['../specifications.html#autotoc_md97',1,'Appendix A: Divergences from C'],['../macro.html#autotoc_md122',1,'Appendix A: Divergences from C']]],
+  ['documentation_27',['Documentation',['../pages.html',1,'']]],
+  ['during_20argument_20substitution_28',['2.2.1 Macro expansion during argument substitution',['../macro.html#autotoc_md116',1,'']]],
+  ['during_20macro_20expansion_29',['4.5 Fortran awareness during macro expansion',['../requirements.html#autotoc_md43',1,'']]]
 ];

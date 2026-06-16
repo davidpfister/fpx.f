@@ -36,7 +36,8 @@ var searchData=
   ['sub_33',['sub',['../structfpx__logging_1_1diagnostic__report.html#a7621335e448217b1bfed8d995feaf56b',1,'fpx_logging::diagnostic_report']]],
   ['substitution_34',['2.2.1 Macro expansion during argument substitution',['../macro.html#autotoc_md116',1,'']]],
   ['substitution_20and_20expansion_35',['2.2 Argument substitution and expansion',['../macro.html#autotoc_md115',1,'']]],
-  ['support_5fforloop_36',['support_forloop',['../structfpx__global_1_1global__settings.html#acb624f222f5fd6ac2c5720d4cab250ab',1,'fpx_global::global_settings']]],
-  ['systems_37',['Portability Across Systems',['../introduction.html#autotoc_md31',1,'']]],
-  ['systems_20and_20external_20tools_38',['Interfacing with Build Systems and External Tools',['../introduction.html#autotoc_md34',1,'']]]
+  ['support_5fdollar_5finsert_36',['support_dollar_insert',['../structfpx__global_1_1global__settings.html#a1b70e4f57a170bde67fc741654d2127e',1,'fpx_global::global_settings']]],
+  ['support_5fforloop_37',['support_forloop',['../structfpx__global_1_1global__settings.html#acb624f222f5fd6ac2c5720d4cab250ab',1,'fpx_global::global_settings']]],
+  ['systems_38',['Portability Across Systems',['../introduction.html#autotoc_md31',1,'']]],
+  ['systems_20and_20external_20tools_39',['Interfacing with Build Systems and External Tools',['../introduction.html#autotoc_md34',1,'']]]
 ];

@@ -242,6 +242,7 @@ contains
     !!
     !! @param[in] ctx     Current parsing context
     !! @param[in] ounit   Output unit
+    !! @param[in] p   preprocessor function pointer
     !! @param[inout] macros  Active macro table
     !! @param[in] token   Directive keyword (`endfor`)
     !!

@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <meta name="author" content="SXS Collaboration">
     <meta name="generator" content="Doxygen 1.16.1"/>
-  <title>fpx.f: clear</title>
+  <title>fpx.f: loop.f90</title>
   <link href="tabs.css" rel="stylesheet" type="text/css"/>
   <script type="text/javascript" src="jquery.js"></script>
   <script type="text/javascript" src="dynsections.js"></script>
@@ -90,7 +90,7 @@ $(function() {
   </div>
 </div>
 <script type="text/javascript">
-$(function(){initNavTree('interfacefpx__macro_1_1clear.html','','interfacefpx__macro_1_1clear-members'); });
+$(function(){initNavTree('loop_8f90.html','',''); });
 </script>
 <div id="container">
 <div id="doc-content">
@@ -116,40 +116,23 @@ $(function(){initNavTree('interfacefpx__macro_1_1clear.html','','interfacefpx__m
 </div>
 
 <div class="header">
-  <div class="headertitle"><div class="title">clear<div class="ingroups"><a class="el" href="group__group__macro.html">Macro</a></div></div></div>
+  <div class="headertitle"><div class="title">loop.f90</div></div>
 </div><!--header-->
 <div class="contents">
-<a name="details" id="details"></a><h2 id="header-details" class="groupheader">Definition</h2>
-<div class="textblock"><p>Remove all macros from a table. </p>
-<p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00131">131</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
-</div><hr/>The documentation for this interface was generated from the following file:<ul>
-<li><a class="el" href="macro_8f90_source.html">macro.f90</a></li>
-</ul>
-<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Methods</h2>
-<a id="a4f994e57053fe61253d895c1e91a56ce" name="a4f994e57053fe61253d895c1e91a56ce"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4f994e57053fe61253d895c1e91a56ce">&#9670;&#160;</a></span>clear_item()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">subroutine clear_item </td>
-          <td>(</td>
-          <td class="paramtype">type(<a class="el" href="structfpx__macro_1_1macro.html">macro</a>), dimension(:), intent(inout), allocatable</td>          <td class="paramname"><span class="paramname"><em>this</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Remove all macros from table. </p>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00871">871</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
-
-</div>
-</div>
+<p><a href="loop_8f90_source.html">Go to the source code of this file.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
+Functions/Subroutines</h2></td></tr>
+<tr class="memitem:ga47e3b44ecd5caf03d47d9d131ef5a9ce" id="r_ga47e3b44ecd5caf03d47d9d131ef5a9ce"><td class="memItemLeft">subroutine, public&#160;</td><td class="memItemRight"><a class="el" href="group__group__for.html#ga47e3b44ecd5caf03d47d9d131ef5a9ce">handle_for</a> (ctx, macros, token)</td></tr>
+<tr class="memdesc:ga47e3b44ecd5caf03d47d9d131ef5a9ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Process a <span class="tt">#for</span> directive and initialize a new loop context.  <br /></td></tr>
+<tr class="memitem:gaadc593eef44e3b6aaf4e76e2b0bc2d29" id="r_gaadc593eef44e3b6aaf4e76e2b0bc2d29"><td class="memItemLeft">subroutine, public&#160;</td><td class="memItemRight"><a class="el" href="group__group__for.html#gaadc593eef44e3b6aaf4e76e2b0bc2d29">handle_endfor</a> (ctx, ounit, p, macros, token)</td></tr>
+<tr class="memdesc:gaadc593eef44e3b6aaf4e76e2b0bc2d29"><td class="mdescLeft">&#160;</td><td class="mdescRight">Finalize a loop and emit all expanded iterations.  <br /></td></tr>
+<tr class="memitem:ga6079af1c12adf54ac2f0bccc9701e16a" id="r_ga6079af1c12adf54ac2f0bccc9701e16a"><td class="memItemLeft">subroutine, public&#160;</td><td class="memItemRight"><a class="el" href="group__group__for.html#ga6079af1c12adf54ac2f0bccc9701e16a">add_to_loop</a> (line)</td></tr>
+<tr class="memdesc:ga6079af1c12adf54ac2f0bccc9701e16a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Append a source line to the currently active loop body.  <br /></td></tr>
+<tr class="memitem:gada7f67ccf476be063a6b02c3e0ca49cb" id="r_gada7f67ccf476be063a6b02c3e0ca49cb"><td class="memItemLeft">logical function, public&#160;</td><td class="memItemRight"><a class="el" href="group__group__for.html#gada7f67ccf476be063a6b02c3e0ca49cb">is_in_forloop</a> ()</td></tr>
+<tr class="memdesc:gada7f67ccf476be063a6b02c3e0ca49cb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Query whether parsing is currently inside a <span class="tt">#for</span> block.  <br /></td></tr>
+</table>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <div id="page-nav" class="page-nav-panel">

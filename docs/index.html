@@ -216,11 +216,15 @@ Command line</h3>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyLeft"><span class="tt">--implicit-conti</span>  </td><td class="markdownTableBodyLeft">Activate implicit continuation line in macro expansion.  </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyLeft"><span class="tt">--exclude-comments</span>  </td><td class="markdownTableBodyLeft">Exclude comments from macro expansion.  </td></tr>
+<td class="markdownTableBodyLeft"><span class="tt">--no-exlicit-conti</span>  </td><td class="markdownTableBodyLeft">Deactivate explicit continuation line in macro expansion using &amp; symbol  </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyLeft"><span class="tt">--extra-macros</span>  </td><td class="markdownTableBodyLeft">Support extra macros (<span class="tt">__FILENAME__</span>, <span class="tt">__TIMESTAMP__</span>, and <span class="tt">__FUNC__</span>).  </td></tr>
+<td class="markdownTableBodyLeft"><span class="tt">--exclude-comments</span>  </td><td class="markdownTableBodyLeft">Exclude comments from macro expansion.  </td></tr>
 <tr class="markdownTableRowEven">
+<td class="markdownTableBodyLeft"><span class="tt">--extra-macros</span>  </td><td class="markdownTableBodyLeft">Support extra macros (<span class="tt">__FILENAME__</span>, <span class="tt">__TIMESTAMP__</span>, and <span class="tt">__FUNC__</span>).  </td></tr>
+<tr class="markdownTableRowOdd">
 <td class="markdownTableBodyLeft"><span class="tt">--no-macros</span>  </td><td class="markdownTableBodyLeft">Deactivate macros expansion.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyLeft"><span class="tt">--no-$</span>  </td><td class="markdownTableBodyLeft">Deactivate ${} substitution in macro expansion.  </td></tr>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyLeft"><span class="tt">--std</span>  </td><td class="markdownTableBodyLeft">Enforce <a href="https://davidpfister.github.io/fpx.f/j3.html">standard</a> compliance.  </td></tr>
 </table>
@@ -232,7 +236,7 @@ Embedded</h3>
 <div class="line">    </div>
 <div class="line">    <span class="keyword">call </span><a class="code hl_interface" href="interfacefpx__parser_1_1preprocess.html">preprocess</a>(<span class="stringliteral">&#39;tests/input.in&#39;</span>, <span class="stringliteral">&#39;tests/output.out&#39;</span>)</div>
 <div class="line"><span class="keyword">end program</span></div>
-<div class="ttc" id="ainterfacefpx__parser_1_1preprocess_html"><div class="ttname"><a href="interfacefpx__parser_1_1preprocess.html">fpx_parser::preprocess</a></div><div class="ttdoc">Generic interface to start preprocessing from various sources/sinks.</div><div class="ttdef"><b>Definition</b> <a href="parser_8f90_source.html#l00083">parser.f90:83</a></div></div>
+<div class="ttc" id="ainterfacefpx__parser_1_1preprocess_html"><div class="ttname"><a href="interfacefpx__parser_1_1preprocess.html">fpx_parser::preprocess</a></div><div class="ttdoc">Generic interface to start preprocessing from various sources/sinks.</div><div class="ttdef"><b>Definition</b> <a href="parser_8f90_source.html#l00084">parser.f90:84</a></div></div>
 </div><!-- fragment --><p><em>For more examples, please refer to the <a href="https://davidpfister.github.io/fpx.f/index.html">Documentation</a></em></p>
 <h2 class="doxsection"><a class="anchor" id="autotoc_md11"></a>
 Contributing</h2>

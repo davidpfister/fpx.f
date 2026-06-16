@@ -129,7 +129,7 @@ $(function(){initNavTree('structfpx__global_1_1global__settings.html','','struct
 <div class="line"><span class="keyword">call </span>add(<a class="code hl_variable" href="group__group__global.html#ga8b8524880886f61f8c961589cffa7640">global</a>%macros, macro(<span class="stringliteral">&#39;__LFORTRAN_MAJOR__&#39;</span>))</div>
 <div class="line"><span class="keyword">call </span>add(<a class="code hl_variable" href="group__group__global.html#ga8b8524880886f61f8c961589cffa7640">global</a>%macros, macro(<span class="stringliteral">&#39;__LFORTRAN_MINOR__&#39;</span>))</div>
 <div class="line"><span class="keyword">call </span>add(<a class="code hl_variable" href="group__group__global.html#ga8b8524880886f61f8c961589cffa7640">global</a>%macros, macro(<span class="stringliteral">&#39;__LFORTRAN_PATCHLEVEL__&#39;</span>))</div>
-<div class="ttc" id="agroup__group__global_html_ga8b8524880886f61f8c961589cffa7640"><div class="ttname"><a href="group__group__global.html#ga8b8524880886f61f8c961589cffa7640">fpx_global::global</a></div><div class="ttdeci">type(global_settings), public global</div><div class="ttdoc">The single global instance used throughout fpx Initialized automatically with sensible defaults value...</div><div class="ttdef"><b>Definition</b> <a href="global_8f90_source.html#l00094">global.f90:94</a></div></div>
+<div class="ttc" id="agroup__group__global_html_ga8b8524880886f61f8c961589cffa7640"><div class="ttname"><a href="group__group__global.html#ga8b8524880886f61f8c961589cffa7640">fpx_global::global</a></div><div class="ttdeci">type(global_settings), public global</div><div class="ttdoc">The single global instance used throughout fpx Initialized automatically with sensible defaults value...</div><div class="ttdef"><b>Definition</b> <a href="global_8f90_source.html#l00096">global.f90:96</a></div></div>
 </div><!-- fragment --> <h2 class="groupheader">Remarks</h2>
 <dl class="section user"><dt></dt><dd>The global settings are accessed through the global variable <a class="el" href="group__group__global.html#ga8b8524880886f61f8c961589cffa7640" title="global">global</a> </dd></dl>
 
@@ -160,6 +160,10 @@ Variables</h2></td></tr>
 <tr class="memdesc:a91d389343c1633fc6dcbef5f5140f0ae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Boolean controlling whether the program is used in interactive mode (REPL) or not.  <br /></td></tr>
 <tr class="memitem:acb624f222f5fd6ac2c5720d4cab250ab" id="r_acb624f222f5fd6ac2c5720d4cab250ab"><td class="memItemLeft">logical, public&#160;</td><td class="memItemRight"><a class="el" href="#acb624f222f5fd6ac2c5720d4cab250ab">support_forloop</a> = .true.</td></tr>
 <tr class="memdesc:acb624f222f5fd6ac2c5720d4cab250ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Boolean controlling whether the program supports for directives (.true. by default).  <br /></td></tr>
+<tr class="memitem:a8a6abae5e497f893ca063e2a4c225848" id="r_a8a6abae5e497f893ca063e2a4c225848"><td class="memItemLeft">logical, public&#160;</td><td class="memItemRight"><a class="el" href="#a8a6abae5e497f893ca063e2a4c225848">disable_continuation</a> = .false.</td></tr>
+<tr class="memdesc:a8a6abae5e497f893ca063e2a4c225848"><td class="mdescLeft">&#160;</td><td class="mdescRight">Boolean controlling whether the program supports explicit line continuation with &amp; (.false. by default).  <br /></td></tr>
+<tr class="memitem:a1b70e4f57a170bde67fc741654d2127e" id="r_a1b70e4f57a170bde67fc741654d2127e"><td class="memItemLeft">logical, public&#160;</td><td class="memItemRight"><a class="el" href="#a1b70e4f57a170bde67fc741654d2127e">support_dollar_insert</a> = .true.</td></tr>
+<tr class="memdesc:a1b70e4f57a170bde67fc741654d2127e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Boolean controlling whether the program supports ${} substitution (.true. by default).  <br /></td></tr>
 </table>
 </div><!-- contents -->
 </div><!-- doc-content -->

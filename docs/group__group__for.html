@@ -195,12 +195,12 @@ Examples</h1>
 </dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="for_8f90_source.html#l00315">315</a> of file <a class="el" href="for_8f90_source.html">for.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="loop_8f90_source.html#l00346">346</a> of file <a class="el" href="loop_8f90_source.html">loop.f90</a>.</p>
 
 </div>
 </div>
-<a id="ga17974f262aea014aa6d3be2645e0060d" name="ga17974f262aea014aa6d3be2645e0060d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga17974f262aea014aa6d3be2645e0060d">&#9670;&#160;</a></span>handle_endfor()</h2>
+<a id="gaadc593eef44e3b6aaf4e76e2b0bc2d29" name="gaadc593eef44e3b6aaf4e76e2b0bc2d29"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaadc593eef44e3b6aaf4e76e2b0bc2d29">&#9670;&#160;</a></span>handle_endfor()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -208,12 +208,17 @@ Examples</h1>
         <tr>
           <td class="memname">subroutine, public handle_endfor </td>
           <td>(</td>
-          <td class="paramtype">type(<a class="el" href="structfpx__context_1_1context.html">context</a>), intent(in)</td>          <td class="paramname"><span class="paramname"><em>ctx</em></span>, </td>
+          <td class="paramtype">type(<a class="el" href="structfpx__context_1_1context.html">context</a>), intent(inout)</td>          <td class="paramname"><span class="paramname"><em>ctx</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">integer, intent(in)</td>          <td class="paramname"><span class="paramname"><em>ounit</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">type(c_funptr), intent(in)</td>          <td class="paramname"><span class="paramname"><em>p</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -235,6 +240,7 @@ Examples</h1>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">ctx</td><td>Current parsing context </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">ounit</td><td>Output unit </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">p</td><td>preprocessor function pointer </td></tr>
     <tr><td class="paramdir">[in,out]</td><td class="paramname">macros</td><td>Active macro table </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">token</td><td>Directive keyword (<span class="tt">endfor</span>)</td></tr>
   </table>
@@ -242,7 +248,7 @@ Examples</h1>
 </dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="for_8f90_source.html#l00246">246</a> of file <a class="el" href="for_8f90_source.html">for.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="loop_8f90_source.html#l00251">251</a> of file <a class="el" href="loop_8f90_source.html">loop.f90</a>.</p>
 
 </div>
 </div>
@@ -288,7 +294,7 @@ Examples</h1>
 </dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="for_8f90_source.html#l00125">125</a> of file <a class="el" href="for_8f90_source.html">for.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="loop_8f90_source.html#l00128">128</a> of file <a class="el" href="loop_8f90_source.html">loop.f90</a>.</p>
 
 </div>
 </div>
@@ -308,7 +314,7 @@ Examples</h1>
 <dl class="section return"><dt>Returns</dt><dd><span class="tt">.true.</span> when one or more loop contexts are active, <span class="tt">.false.</span> otherwise.</dd></dl>
 <p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="for_8f90_source.html#l00329">329</a> of file <a class="el" href="for_8f90_source.html">for.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="loop_8f90_source.html#l00359">359</a> of file <a class="el" href="loop_8f90_source.html">loop.f90</a>.</p>
 
 </div>
 </div>

@@ -29,5 +29,6 @@ var searchData=
   ['lines_26',['2.1 Lines',['../specifications.html#autotoc_md47',1,'']]],
   ['logging_27',['Logging',['../group__group__logging.html',1,'']]],
   ['logging_2ef90_28',['logging.f90',['../logging_8f90.html',1,'']]],
-  ['lowercase_29',['lowercase',['../group__group__string.html#gaa2b8ec4e39395a3550a97ea0ee92e0a2',1,'fpx_string']]]
+  ['loop_2ef90_29',['loop.f90',['../loop_8f90.html',1,'']]],
+  ['lowercase_30',['lowercase',['../group__group__string.html#gaa2b8ec4e39395a3550a97ea0ee92e0a2',1,'fpx_string']]]
 ];
