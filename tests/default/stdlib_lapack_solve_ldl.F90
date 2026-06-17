@@ -7,7 +7,7 @@ submodule(stdlib_lapack_solve) stdlib_lapack_solve_ldl
 
   contains
 #for ik in LINALG_INT_KINDS
-#define it integer(${ik})
+#define it integer(ik)
 #define ii 
 
      pure module subroutine stdlib${ii}_ssysv( uplo, n, nrhs, a, lda, ipiv, b, ldb, work,lwork, info )
@@ -165,13 +165,13 @@ submodule(stdlib_lapack_solve) stdlib_lapack_solve_ldl
      end subroutine stdlib${ii}_dsysv
 
 #for rk in REAL_KINDS
-#define rt real(${rk})
-#if ${rk} == sp
+#define rt real(rk)
+#if rk == sp
 #define ri s
 #else
 #define ri r
 #endif
-#if ${rk} != sp && ${rk} != dp
+#if rk != sp && rk != dp
      pure module subroutine stdlib${ii}_${ri}sysv( uplo, n, nrhs, a, lda, ipiv, b, ldb, work,lwork, info )
      !! DSYSV: computes the solution to a real system of linear equations
      !! A * X = B,
@@ -407,13 +407,13 @@ submodule(stdlib_lapack_solve) stdlib_lapack_solve_ldl
      end subroutine stdlib${ii}_zsysv
 
 #for ck in COMPLEX_KINDS
-#define ct complex(${ck})
-#if ${ck} == sp
+#define ct complex(ck)
+#if ck == sp
 #define ci c
 #else
 #define ci z
 #endif
-#if ${ck} != sp && ${ck} != dp
+#if ck != sp && ck != dp
      pure module subroutine stdlib${ii}_${ci}sysv( uplo, n, nrhs, a, lda, ipiv, b, ldb, work,lwork, info )
      !! ZSYSV: computes the solution to a complex system of linear equations
      !! A * X = B,
@@ -687,13 +687,13 @@ submodule(stdlib_lapack_solve) stdlib_lapack_solve_ldl
      end subroutine stdlib${ii}_dsysvx
 
 #for rk in REAL_KINDS
-#define rt real(${rk})
-#if ${rk} == sp
+#define rt real(rk)
+#if rk == sp
 #define ri s
 #else
 #define ri r
 #endif
-#if ${rk} != sp && ${rk} != dp
+#if rk != sp && rk != dp
      module subroutine stdlib${ii}_${ri}sysvx( fact, uplo, n, nrhs, a, lda, af, ldaf, ipiv, b,ldb, x, ldx, rcond, &
      !! DSYSVX: uses the diagonal pivoting factorization to compute the
      !! solution to a real system of linear equations A * X = B,
@@ -986,13 +986,13 @@ submodule(stdlib_lapack_solve) stdlib_lapack_solve_ldl
      end subroutine stdlib${ii}_zsysvx
 
 #for ck in COMPLEX_KINDS
-#define ct complex(${ck})
-#if ${ck} == sp
+#define ct complex(ck)
+#if ck == sp
 #define ci c
 #else
 #define ci z
 #endif
-#if ${ck} != sp && ${ck} != dp
+#if ck != sp && ck != dp
      module subroutine stdlib${ii}_${ci}sysvx( fact, uplo, n, nrhs, a, lda, af, ldaf, ipiv, b,ldb, x, ldx, rcond, &
      !! ZSYSVX: uses the diagonal pivoting factorization to compute the
      !! solution to a complex system of linear equations A * X = B,
@@ -1245,13 +1245,13 @@ submodule(stdlib_lapack_solve) stdlib_lapack_solve_ldl
      end subroutine stdlib${ii}_dsysv_rk
 
 #for rk in REAL_KINDS
-#define rt real(${rk})
-#if ${rk} == sp
+#define rt real(rk)
+#if rk == sp
 #define ri s
 #else
 #define ri r
 #endif
-#if ${rk} != sp && ${rk} != dp
+#if rk != sp && rk != dp
      pure module subroutine stdlib${ii}_${ri}sysv_rk( uplo, n, nrhs, a, lda, e, ipiv, b, ldb,work, lwork, info )
      !! DSYSV_RK: computes the solution to a real system of linear
      !! equations A * X = B, where A is an N-by-N symmetric matrix
@@ -1483,13 +1483,13 @@ submodule(stdlib_lapack_solve) stdlib_lapack_solve_ldl
      end subroutine stdlib${ii}_zsysv_rk
 
 #for ck in COMPLEX_KINDS
-#define ct complex(${ck})
-#if ${ck} == sp
+#define ct complex(ck)
+#if ck == sp
 #define ci c
 #else
 #define ci z
 #endif
-#if ${ck} != sp && ${ck} != dp
+#if ck != sp && ck != dp
      pure module subroutine stdlib${ii}_${ci}sysv_rk( uplo, n, nrhs, a, lda, e, ipiv, b, ldb, work,lwork, info )
      !! ZSYSV_RK: computes the solution to a complex system of linear
      !! equations A * X = B, where A is an N-by-N symmetric matrix
@@ -1726,13 +1726,13 @@ submodule(stdlib_lapack_solve) stdlib_lapack_solve_ldl
      end subroutine stdlib${ii}_dsysv_rook
 
 #for rk in REAL_KINDS
-#define rt real(${rk})
-#if ${rk} == sp
+#define rt real(rk)
+#if rk == sp
 #define ri s
 #else
 #define ri r
 #endif
-#if ${rk} != sp && ${rk} != dp
+#if rk != sp && rk != dp
      pure module subroutine stdlib${ii}_${ri}sysv_rook( uplo, n, nrhs, a, lda, ipiv, b, ldb, work,lwork, info )
      !! DSYSV_ROOK: computes the solution to a real system of linear
      !! equations
@@ -1971,13 +1971,13 @@ submodule(stdlib_lapack_solve) stdlib_lapack_solve_ldl
      end subroutine stdlib${ii}_zsysv_rook
 
 #for ck in COMPLEX_KINDS
-#define ct complex(${ck})
-#if ${ck} == sp
+#define ct complex(ck)
+#if ck == sp
 #define ci c
 #else
 #define ci z
 #endif
-#if ${ck} != sp && ${ck} != dp
+#if ck != sp && ck != dp
      pure module subroutine stdlib${ii}_${ci}sysv_rook( uplo, n, nrhs, a, lda, ipiv, b, ldb, work,lwork, info )
      !! ZSYSV_ROOK: computes the solution to a complex system of linear
      !! equations
@@ -2214,13 +2214,13 @@ submodule(stdlib_lapack_solve) stdlib_lapack_solve_ldl
      end subroutine stdlib${ii}_zhesv
 
 #for ck in COMPLEX_KINDS
-#define ct complex(${ck})
-#if ${ck} == sp
+#define ct complex(ck)
+#if ck == sp
 #define ci c
 #else
 #define ci z
 #endif
-#if ${ck} != sp && ${ck} != dp
+#if ck != sp && ck != dp
      pure module subroutine stdlib${ii}_${ci}hesv( uplo, n, nrhs, a, lda, ipiv, b, ldb, work,lwork, info )
      !! ZHESV: computes the solution to a complex system of linear equations
      !! A * X = B,
@@ -2494,13 +2494,13 @@ submodule(stdlib_lapack_solve) stdlib_lapack_solve_ldl
      end subroutine stdlib${ii}_zhesvx
 
 #for ck in COMPLEX_KINDS
-#define ct complex(${ck})
-#if ${ck} == sp
+#define ct complex(ck)
+#if ck == sp
 #define ci c
 #else
 #define ci z
 #endif
-#if ${ck} != sp && ${ck} != dp
+#if ck != sp && ck != dp
      module subroutine stdlib${ii}_${ci}hesvx( fact, uplo, n, nrhs, a, lda, af, ldaf, ipiv, b,ldb, x, ldx, rcond, &
      !! ZHESVX: uses the diagonal pivoting factorization to compute the
      !! solution to a complex system of linear equations A * X = B,
@@ -2752,13 +2752,13 @@ submodule(stdlib_lapack_solve) stdlib_lapack_solve_ldl
      end subroutine stdlib${ii}_zhesv_rk
 
 #for ck in COMPLEX_KINDS
-#define ct complex(${ck})
-#if ${ck} == sp
+#define ct complex(ck)
+#if ck == sp
 #define ci c
 #else
 #define ci z
 #endif
-#if ${ck} != sp && ${ck} != dp
+#if ck != sp && ck != dp
      pure module subroutine stdlib${ii}_${ci}hesv_rk( uplo, n, nrhs, a, lda, e, ipiv, b, ldb, work,lwork, info )
      !! ZHESV_RK: computes the solution to a complex system of linear
      !! equations A * X = B, where A is an N-by-N Hermitian matrix
@@ -2995,13 +2995,13 @@ submodule(stdlib_lapack_solve) stdlib_lapack_solve_ldl
      end subroutine stdlib${ii}_zhesv_rook
 
 #for ck in COMPLEX_KINDS
-#define ct complex(${ck})
-#if ${ck} == sp
+#define ct complex(ck)
+#if ck == sp
 #define ci c
 #else
 #define ci z
 #endif
-#if ${ck} != sp && ${ck} != dp
+#if ck != sp && ck != dp
      pure module subroutine stdlib${ii}_${ci}hesv_rook( uplo, n, nrhs, a, lda, ipiv, b, ldb, work,lwork, info )
      !! ZHESV_ROOK: computes the solution to a complex system of linear equations
      !! A * X = B,
@@ -3184,13 +3184,13 @@ submodule(stdlib_lapack_solve) stdlib_lapack_solve_ldl
      end subroutine stdlib${ii}_dspsv
 
 #for rk in REAL_KINDS
-#define rt real(${rk})
-#if ${rk} == sp
+#define rt real(rk)
+#if rk == sp
 #define ri s
 #else
 #define ri r
 #endif
-#if ${rk} != sp && ${rk} != dp
+#if rk != sp && rk != dp
      pure module subroutine stdlib${ii}_${ri}spsv( uplo, n, nrhs, ap, ipiv, b, ldb, info )
      !! DSPSV: computes the solution to a real system of linear equations
      !! A * X = B,
@@ -3345,13 +3345,13 @@ submodule(stdlib_lapack_solve) stdlib_lapack_solve_ldl
      end subroutine stdlib${ii}_zspsv
 
 #for ck in COMPLEX_KINDS
-#define ct complex(${ck})
-#if ${ck} == sp
+#define ct complex(ck)
+#if ck == sp
 #define ci c
 #else
 #define ci z
 #endif
-#if ${ck} != sp && ${ck} != dp
+#if ck != sp && ck != dp
      pure module subroutine stdlib${ii}_${ci}spsv( uplo, n, nrhs, ap, ipiv, b, ldb, info )
      !! ZSPSV: computes the solution to a complex system of linear equations
      !! A * X = B,
@@ -3560,13 +3560,13 @@ submodule(stdlib_lapack_solve) stdlib_lapack_solve_ldl
      end subroutine stdlib${ii}_dspsvx
 
 #for rk in REAL_KINDS
-#define rt real(${rk})
-#if ${rk} == sp
+#define rt real(rk)
+#if rk == sp
 #define ri s
 #else
 #define ri r
 #endif
-#if ${rk} != sp && ${rk} != dp
+#if rk != sp && rk != dp
      module subroutine stdlib${ii}_${ri}spsvx( fact, uplo, n, nrhs, ap, afp, ipiv, b, ldb, x,ldx, rcond, ferr, &
      !! DSPSVX: uses the diagonal pivoting factorization A = U*D*U**T or
      !! A = L*D*L**T to compute the solution to a real system of linear
@@ -3802,13 +3802,13 @@ submodule(stdlib_lapack_solve) stdlib_lapack_solve_ldl
      end subroutine stdlib${ii}_zspsvx
 
 #for ck in COMPLEX_KINDS
-#define ct complex(${ck})
-#if ${ck} == sp
+#define ct complex(ck)
+#if ck == sp
 #define ci c
 #else
 #define ci z
 #endif
-#if ${ck} != sp && ${ck} != dp
+#if ck != sp && ck != dp
      module subroutine stdlib${ii}_${ci}spsvx( fact, uplo, n, nrhs, ap, afp, ipiv, b, ldb, x,ldx, rcond, ferr, &
      !! ZSPSVX: uses the diagonal pivoting factorization A = U*D*U**T or
      !! A = L*D*L**T to compute the solution to a complex system of linear
@@ -3990,13 +3990,13 @@ submodule(stdlib_lapack_solve) stdlib_lapack_solve_ldl
      end subroutine stdlib${ii}_zhpsv
 
 #for ck in COMPLEX_KINDS
-#define ct complex(${ck})
-#if ${ck} == sp
+#define ct complex(ck)
+#if ck == sp
 #define ci c
 #else
 #define ci z
 #endif
-#if ${ck} != sp && ${ck} != dp
+#if ck != sp && ck != dp
      pure module subroutine stdlib${ii}_${ci}hpsv( uplo, n, nrhs, ap, ipiv, b, ldb, info )
      !! ZHPSV: computes the solution to a complex system of linear equations
      !! A * X = B,
@@ -4205,13 +4205,13 @@ submodule(stdlib_lapack_solve) stdlib_lapack_solve_ldl
      end subroutine stdlib${ii}_zhpsvx
 
 #for ck in COMPLEX_KINDS
-#define ct complex(${ck})
-#if ${ck} == sp
+#define ct complex(ck)
+#if ck == sp
 #define ci c
 #else
 #define ci z
 #endif
-#if ${ck} != sp && ${ck} != dp
+#if ck != sp && ck != dp
      module subroutine stdlib${ii}_${ci}hpsvx( fact, uplo, n, nrhs, ap, afp, ipiv, b, ldb, x,ldx, rcond, ferr, &
      !! ZHPSVX: uses the diagonal pivoting factorization A = U*D*U**H or
      !! A = L*D*L**H to compute the solution to a complex system of linear
@@ -4435,13 +4435,13 @@ submodule(stdlib_lapack_solve) stdlib_lapack_solve_ldl
      end subroutine stdlib${ii}_dsysv_aa
 
 #for rk in REAL_KINDS
-#define rt real(${rk})
-#if ${rk} == sp
+#define rt real(rk)
+#if rk == sp
 #define ri s
 #else
 #define ri r
 #endif
-#if ${rk} != sp && ${rk} != dp
+#if rk != sp && rk != dp
      pure module subroutine stdlib${ii}_${ri}sysv_aa( uplo, n, nrhs, a, lda, ipiv, b, ldb, work,lwork, info )
      !! DSYSV computes the solution to a real system of linear equations
      !! A * X = B,
@@ -4659,13 +4659,13 @@ submodule(stdlib_lapack_solve) stdlib_lapack_solve_ldl
      end subroutine stdlib${ii}_zsysv_aa
 
 #for ck in COMPLEX_KINDS
-#define ct complex(${ck})
-#if ${ck} == sp
+#define ct complex(ck)
+#if ck == sp
 #define ci c
 #else
 #define ci z
 #endif
-#if ${ck} != sp && ${ck} != dp
+#if ck != sp && ck != dp
      pure module subroutine stdlib${ii}_${ci}sysv_aa( uplo, n, nrhs, a, lda, ipiv, b, ldb, work,lwork, info )
      !! ZSYSV computes the solution to a complex system of linear equations
      !! A * X = B,
@@ -4883,13 +4883,13 @@ submodule(stdlib_lapack_solve) stdlib_lapack_solve_ldl
      end subroutine stdlib${ii}_zhesv_aa
 
 #for ck in COMPLEX_KINDS
-#define ct complex(${ck})
-#if ${ck} == sp
+#define ct complex(ck)
+#if ck == sp
 #define ci c
 #else
 #define ci z
 #endif
-#if ${ck} != sp && ${ck} != dp
+#if ck != sp && ck != dp
      pure module subroutine stdlib${ii}_${ci}hesv_aa( uplo, n, nrhs, a, lda, ipiv, b, ldb, work,lwork, info )
      !! ZHESV_AA: computes the solution to a complex system of linear equations
      !! A * X = B,
