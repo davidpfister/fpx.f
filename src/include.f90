@@ -1,6 +1,6 @@
 !> @file
 !! @defgroup group_include Include
-!! Include file handling and resolution for the fpx Fortran preprocessor
+!! Include file handling and resolution for the FPX Fortran preprocessor
 !!
 !! This module implements robust and standard-compliant processing of `#include` directives
 !! with full support for:
@@ -8,7 +8,7 @@
 !! - Proper search order: quotes search source dir first, angle brackets skip source dir
 !! - Relative paths resolved against the directory of the parent source file
 !! - Search in user-defined include directories (`global%includedir`)
-!! - Search in system PATH environment variable directories
+!! - Search in system INCLUDE environment variable directories
 !! - Fallback to current working directory
 !! - Proper error reporting with file name and line number context
 !! - Recursion safety through integration with the main preprocessor loop
@@ -31,6 +31,11 @@
 !! 2. Directories in INCLUDE environment variable
 !! 3. Current working directory
 !!
+!! @note
+!! Nested includes are supported. Relative paths inside included
+!! files are resolved relative to the directory containing the
+!! including file.
+!!
 !! @section include_examples Examples
 !!
 !! 1. Include a local header from the same directory using quotes:
@@ -42,7 +47,7 @@
 !! 2. Include a system header using angle brackets:
 !! @code{.f90}
 !!    #include <stdlib.h>
-!!    !> fpx will skip the source directory and search -I paths, then PATH
+!!    !> fpx will skip the source directory and search -I paths, then INCLUDE
 !! @endcode
 !!
 !! 3. Using from the driver program (adding include paths):
@@ -85,8 +90,8 @@ contains
     !> Process a #include directive encountered during preprocessing
     !! Resolves the include file name (quoted or angle-bracketed), searches for the file
     !! using standard C preprocessor rules:
-    !! - Quoted includes search: parent directory, -I paths, PATH, cwd
-    !! - Angle bracket includes search: -I paths, PATH, cwd (skips parent directory)
+    !! - Quoted includes search: parent directory, -I paths, INCLUDE, cwd
+    !! - Angle bracket includes search: -I paths, INCLUDE, cwd (skips parent directory)
     !! Opens the file and recursively preprocesses its contents into the output unit.
     !!
     !! @param[in] ctx          Context line containing the #include directive
@@ -104,11 +109,10 @@ contains
         type(macro), allocatable, intent(inout) :: macros(:)
         character(*), intent(in)                :: token
         !private
+        type(string), allocatable, save :: include_stack(:)
         character(:), allocatable :: include_file
         character(:), allocatable :: dir, ifile
-        character(:), allocatable :: sys_paths(:)
-        integer :: i, iunit, ierr, pos
-        integer :: include_type
+        integer :: i, iunit, ierr, pos, include_type, closing
         logical :: exists
 
         ! Extract the directory of the parent file
@@ -120,10 +124,30 @@ contains
         ! Determine include type and extract filename
         if (include_file(1:1) == '"') then
             include_type = INCLUDE_TYPE_LOCAL
-            include_file = include_file(2:index(include_file(2:), '"'))
+            closing = index(include_file(2:), '"')
+            if (closing == 0) then
+                call printf(render(diagnostic_report(LEVEL_ERROR, &
+                        message='Malformed #include directive', &
+                        label=label_type('Missing closing quotation mark', &
+                        index(ctx%content,'"'),1), &
+                        source=trim(ctx%path)), &
+                        ctx%content, ctx%line))
+                return
+            end if
+            include_file = include_file(2:closing)
         else if (include_file(1:1) == '<') then
             include_type = INCLUDE_TYPE_SYSTEM
-            include_file = include_file(2:index(include_file(2:), '>'))
+            closing = index(include_file(2:), '>')
+            if (closing == 0) then
+                call printf(render(diagnostic_report(LEVEL_ERROR, &
+                        message='Malformed #include directive', &
+                        label=label_type('Missing closing quotation mark', &
+                        index(ctx%content,'"'),1), &
+                        source=trim(ctx%path)), &
+                        ctx%content, ctx%line))
+                return
+            end if
+            include_file = include_file(2:closing)
         else
             ! Malformed include directive
             call printf(render(diagnostic_report(LEVEL_ERROR, &
@@ -142,21 +166,18 @@ contains
             if (exists) then
                 include_file = ifile
             else
-                if (verbose) then
-                    call printf(render(diagnostic_report(LEVEL_ERROR, &
-                            message='File not found', &
-                            label=label_type('Cannot find include file ' // trim(include_file), index(ctx%content, include_file), &
-                            len(include_file)), &
-                            source=trim(ctx%path)), &
-                            ctx%content, ctx%line))
-                    return
-                end if
+                call printf(render(diagnostic_report(LEVEL_ERROR, &
+                        message='File not found', &
+                        label=label_type('Cannot find include file ' // trim(include_file), index(ctx%content, include_file), &
+                        len(include_file)), &
+                        source=trim(ctx%path)), &
+                        ctx%content, ctx%line))
+                return
             end if
         else
             ! Relative path - search according to include type
             exists = .false.
             ! For quoted includes (#include "file"), search parent directory first
-            ifile = join(dir, include_file)
             if (include_type == INCLUDE_TYPE_LOCAL) then
                 ifile = join(dir, include_file)
                 inquire(file=ifile, exist=exists)
@@ -214,6 +235,19 @@ contains
             end if
         end if
 
+        if (.not. allocated(include_stack)) allocate(include_stack(0))
+
+        if (include_stack .contains. include_file) then
+            call printf(render(diagnostic_report(LEVEL_ERROR, &
+                    message='Recursive include detected', &
+                    label=label_type('File already included in current include chain', &
+                                    index(ctx%content, trim(include_file)), &
+                                    len_trim(include_file)), &
+                    source=trim(ctx%path)), &
+                    ctx%content, ctx%line))
+            return
+        end if
+
         ! Open and preprocess the include file
         open(newunit=iunit, file=include_file, status='old', action='read', iostat=ierr)
         if (ierr /= 0) then
@@ -226,13 +260,20 @@ contains
             return
         end if
 
+        include_stack = [include_stack, string(include_file)]
+
         call preprocess(iunit, ounit, macros, .true.)
         close(iunit)
+        if (size(include_stack) > 1) then
+            include_stack = include_stack(:size(include_stack)-1)
+        else
+            deallocate(include_stack)
+        end if
     end subroutine
 
-    !> Get system include paths from PATH environment variable
-    !! Returns an array of directory paths found in PATH
-    !! @return Array of path strings, empty if PATH not set
+    !> Get system include paths from INCLUDE environment variable
+    !! Returns an array of directory paths found in INCLUDE
+    !! @return Array of path strings, empty if INCLUDE not set
     !!
     !! @b Remarks
     !! @ingroup group_include
@@ -249,13 +290,13 @@ contains
         path_sep = ':'  ! Unix/Linux/Mac path separator
 #endif
 
-        ! Get PATH environment variable length
+        ! Get INCLUDE environment variable length
         call get_environment_variable('INCLUDE', length=lpath)
         if (lpath <= 0) then
             allocate(character(len=0) :: paths(0)); return
         end if
 
-        ! Allocate and retrieve PATH value
+        ! Allocate and retrieve INCLUDE value
         allocate(character(len=lpath) :: path_env)
         call get_environment_variable('INCLUDE', value=path_env)
 
