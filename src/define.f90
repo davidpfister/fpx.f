@@ -1,54 +1,108 @@
 !> @file
 !! @defgroup group_define Define
-!! Processing of #define and #undef preprocessor directives
-!! This module implements the core logic for handling macro definition and removal
-!! during preprocessing in the fpx Fortran preprocessor.
-!! - Object-like macros: `#define NAME value`
-!! - Function-like macros: `#define NAME(arg1, arg2, ...)`
-!! - Variadic macros using `...` and automatic detection
-!! - Proper parameter parsing with whitespace handling
-!! - Safe `#undef` that removes a previously defined macro
-!! - Integration with global undef list to block redefinition
-!! - Comprehensive verbose logging of all definition actions
+!! Macro definition and removal directives for the FPX preprocessor.
 !!
-!! @note Existing macros are overwritten.
+!! This module implements the `#define` and `#undef` directives used to create,
+!! update, and remove preprocessor macros during source preprocessing.
 !!
-!! The routines are designed to be robust against malformed input and provide
-!! clear diagnostics when `verbose = .true.`.
+!! Supported macro forms include:
+!!
+!! - Object-like macros:
+!!   `#define NAME value`
+!!
+!! - Function-like macros:
+!!   `#define NAME(arg1,arg2,...) replacement`
+!!
+!! - Variadic macros:
+!!   `#define LOG(level, ...) ...`
+!!
+!! - Empty definitions:
+!!   `#define FEATURE`
+!!
+!! - Macro redefinition:
+!!   Existing definitions are replaced by the most recent one.
+!!
+!! The parser correctly identifies matching parentheses in function-like macro
+!! signatures, allowing nested parentheses inside parameter lists. Whitespace
+!! surrounding parameters is ignored, and variadic arguments are detected
+!! automatically through the `...` notation.
+!!
+!! The module also implements `#undef`, allowing previously defined symbols
+!! to be removed from the active macro table. Symbols listed in
+!! `global%undef` are protected from redefinition and silently ignored.
+!!
+!! All syntax errors are reported through the diagnostic framework, providing
+!! source locations and explanatory messages.
+!!
+!! @note
+!! Macro definitions are local to the current preprocessing context unless
+!! explicitly propagated by the caller.
 !!
 !! @section define_examples Examples
 !!
-!! 1. Define simple object-like macros:
+!! 1. Object-like macros:
 !! @code{.f90}
-!!    #define PI 3.141592653589793
-!!    #define DEBUG 1
-!!    #define MAX_SIZE 1024
-!!    ...
+!!    #define PI        3.141592653589793
+!!    #define DEBUG     1
+!!    #define VERSION   "1.2.0"
+!! ...
 !! @endcode
 !!
-!! 2. Define function-like and variadic macros:
+!! 2. Empty definitions:
 !! @code{.f90}
-!!    #define SQR(x) ((x)*(x))
-!!    #define LOG_MSG(level, ...)  print *, '[LOG:', level, ']', __VA_ARGS__
-!!    #define CONCAT(a,b) a ## _ ## b
-!!    ...
+!!    #define USE_MPI
+!!
+!!    #ifdef USE_MPI
+!!       !...
+!!    #endif
+!! ...
 !! @endcode
 !!
-!! 3. Undefine a macro:
+!! 3. Function-like macros:
+!! @code{.f90}
+!!    #define SQR(x)        ((x)*(x))
+!!    #define MIN(a,b)      ((a)<(b)?(a):(b))
+!!    #define CONCAT(a,b)   a ## b
+!! ...
+!! @endcode
+!!
+!! 4. Variadic macros:
+!! @code{.f90}
+!!    #define LOG(level, ...) &
+!!        print *, "[", level, "]", __VA_ARGS__
+!! @endcode
+!!
+!! 5. Removing a definition:
 !! @code{.f90}
 !!    #undef DEBUG
-!!    !> Subsequent #ifdef DEBUG will be false
+!!
+!!    #ifdef DEBUG
+!!       ! This block is skipped
+!!    #endif
+!! ...
 !! @endcode
 !!
-!! 4. Using from a driver program:
+!! 6. Redefinition:
 !! @code{.f90}
-!!    use fpx_global
-!!    use fpx_logging, only: verbose
+!!    #define SIZE 128
+!!    #define SIZE 256
 !!
-!!    verbose = .true.
-!!    call preprocess('input.F90')   ! Will show all macro definitions/undefs
-!!    ...
+!!    integer :: buf(SIZE)   ! expands to 256
+!! ...
 !! @endcode
+!!
+!! 7. Reserved names:
+!! @code{.f90}
+!!    #define defined(x) 1
+!! ...
+!! @endcode
+!!
+!! produces a diagnostic because `defined` is reserved for conditional
+!! expressions.
+!!
+!! @see fpx_macro
+!! @see fpx_global
+!! @see fpx_context
 module fpx_define
     use fpx_constants
     use fpx_logging
@@ -64,17 +118,33 @@ module fpx_define
 
 contains
 
-    !> Process a #define directive and register or update a macro
-    !! Parses the line after `#define`, distinguishes between object-like and
-    !! function-like forms, handles variadic `...`, extracts parameters correctly,
-    !! and stores the macro in the active macro table. Existing macros are
-    !! overwritten. Respects `global%undef` list – macros listed there are ignored.
+    !> Process a `#define` directive.
     !!
-    !! @param[in]    ctx     Context source line containing the #define
-    !! @param[inout] macros  Current macro table (updated in-place)
-    !! @param[in]    token   Usually 'DEFINE' – keyword matched in lowercase
+    !! Parses the directive contained in the supplied context and updates the
+    !! active macro table accordingly.
     !!
-    !! @b Remarks
+    !! The routine automatically distinguishes between:
+    !!
+    !! - object-like macros,
+    !! - function-like macros,
+    !! - variadic macros using `...`,
+    !! - empty definitions.
+    !!
+    !! Function-like signatures are parsed using matching-parenthesis tracking,
+    !! ensuring that the closing parenthesis corresponding to the opening `(`
+    !! is located correctly even in the presence of nested parentheses.
+    !!
+    !! Existing definitions are overwritten. Symbols listed in
+    !! `global%undef` are ignored. Attempts to define the reserved identifier
+    !! `defined` generate an error diagnostic.
+    !!
+    !! @param[in]    ctx
+    !!   Source context containing the complete `#define` directive.
+    !! @param[inout] macros
+    !!   Active macro table updated in place.
+    !! @param[in]    token
+    !!   Directive keyword, typically `"define"`.
+    !!
     !! @ingroup group_define
     subroutine handle_define(ctx, macros, token)
         type(context), intent(in)                   :: ctx
@@ -209,14 +279,19 @@ contains
         end if
     end subroutine
 
-    !> Process a #undef directive and remove a macro from the table
-    !! Finds the named macro in the current table and removes it.
-    !! Issues a warning if the macro was not previously defined.
-    !! @param[in]    ctx     Context source line containing the #undef
-    !! @param[inout] macros  Current macro table (updated in-place)
-    !! @param[in]    token   Usually 'UNDEF' – keyword matched in lowercase
+    !> Process a `#undef` directive.
     !!
-    !! @b Remarks
+    !! Removes the specified macro from the active macro table.
+    !! If the requested symbol is not currently defined, a warning
+    !! diagnostic is emitted.
+    !!
+    !! @param[in]    ctx
+    !!   Source context containing the complete `#undef` directive.
+    !! @param[inout] macros
+    !!   Active macro table updated in place.
+    !! @param[in]    token
+    !!   Directive keyword, typically `"undef"`.
+    !!
     !! @ingroup group_define
     subroutine handle_undef(ctx, macros, token)
         type(context), intent(in)                   :: ctx

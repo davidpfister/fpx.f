@@ -1,54 +1,132 @@
 !> @file
 !! @defgroup group_global Global
-!! Central global configuration and shared state for the fpx Fortran preprocessor
-!! This module defines a single global instance `global` of type `global_settings`
-!! that holds all persistent, user-configurable state used across the entire preprocessing session.
+!! Global configuration and shared runtime state for the FPX preprocessor.
 !!
-!! - `macros(:)`         : Dynamic table of all defined macros (object-like and function-like)
-!! - `undef(:)`          : List of symbols explicitly undefined via `#undef`
-!! - `includedir(:)`     : User-specified include search directories for `#include <...>`
-!! - `expand_macros`     : Master switch to enable/disable macro expansion (default: .true.)
-!! - `exclude_comments`  : When .true., strip C-style /*...*/ and Fortran ! comments from output
+!! This module defines the central configuration object used throughout the
+!! entire preprocessing session. A single public instance,
+!! @link fpx_global::global global @endlink, stores all persistent settings controlling the behavior of
+!! the preprocessor.
 !!
-!! The design uses a single public variable `global` so that all fpx modules can access
-!! and modify the same configuration without passing arguments everywhere.
-!! This is safe in single-threaded use (typical for preprocessing) and allows easy
-!! customization from driver programs or interactive sessions.
+!! The global configuration provides:
+!!
+!! - User-defined macro definitions.
+!! - Symbols explicitly excluded via `#undef`.
+!! - Additional include search directories.
+!! - Feature switches controlling optional extensions.
+!! - Behavioural settings affecting parsing and expansion.
+!! - Runtime flags used by interactive preprocessing sessions.
+!!
+!! All FPX components access the same global state, avoiding the need to pass
+!! configuration objects through every procedure call.
+!!
+!! The design assumes the traditional single-threaded preprocessing model.
+!! If multiple preprocessing jobs are executed concurrently, each instance
+!! should maintain its own independent configuration object.
+!!
+!! @section global_features Supported configuration options
+!!
+!! The following settings are available:
+!!
+!! - `macros(:)`
+!!   Collection of predefined macros available before preprocessing begins.
+!!
+!! - `undef(:)`
+!!   Symbols protected from future redefinition through `#define`.
+!!
+!! - `includedir(:)`
+!!   Additional directories searched by `#include`.
+!!
+!! - `expand_macros`
+!!   Enables or disables macro expansion globally.
+!!
+!! - `exclude_comments`
+!!   Controls whether comments are preserved in the generated output.
+!!
+!! - `implicit_continuation`
+!!   Enables implicit continuation during macro expansion.
+!!
+!! - `line_break`
+!!   Interprets a double backslash (`\\`) as an explicit line break.
+!!
+!! - `extra_macros`
+!!   Enables non-standard predefined macros such as:
+!!   - `__FILE__`
+!!   - `__LINE__`
+!!   - `__FUNC__`
+!!   - `__TIMESTAMP__`
+!!
+!! - `interactive`
+!!   Enables REPL-style interactive preprocessing.
+!!
+!! - `support_forloop`
+!!   Enables support for the non-standard `#for` / `#endfor` directives.
+!!
+!! - `disable_continuation`
+!!   Disables explicit Fortran continuation handling using trailing `&`.
+!!
+!! - `support_dollar_insert`
+!!   Enables `${NAME}` placeholder substitution during macro expansion.
+!!
+!! @note
+!! All settings can be modified at any time before invoking
+!! `preprocess(...)`.
 !!
 !! @section global_examples Examples
 !!
-!! 1. Add custom include paths before preprocessing:
+!! 1. Add custom include paths:
 !! @code{.f90}
+!!    use fpx_global
 !!
-!!    global%includedir = [ './include', '/usr/local/include/fortran', '../common' ]
-!!    call preprocess('main.F90', 'main.f90')
-!!    !#include <file.h> will search these directories
+!!    global%includedir = [ &
+!!        string('./include'), &
+!!        string('../common'), &
+!!        string('/usr/local/include/fpx') ]
+!!
+!!    call preprocess('main.F90')
+!! ...
 !! @endcode
 !!
-!! 2. Predefine common macros (e.g. for conditional compilation):
+!! 2. Predefine macros:
 !! @code{.f90}
+!!    use fpx_global
+!!    use fpx_macro
 !!
-!!    call add(global%macros, macro('DEBUG', '1'))
-!!    call add(global%macros, macro('MPI_VERSION', '3'))
-!!    call add(global%macros, macro('USE_OPENMP', '1'))
+!!    call add(global%macros, macro('DEBUG','1'))
+!!    call add(global%macros, macro('MPI_VERSION','4'))
 !!
-!!    call preprocess('src/app.F90')
-!!    !> Code can now use #ifdef DEBUG, #if MPI_VERSION >= 3, etc.
+!!    call preprocess('solver.F90')
+!! ...
 !! @endcode
 !!
-!! 3. Disable macro expansion temporarily (pass-through mode):
+!! 3. Disable macro expansion:
 !! @code{.f90}
-!!    global%expand_macros = .false.   ! Only handle #include and conditionals
-!!    call preprocess('raw_source.F90', 'clean.F90')
-!!    ...
+!!    global%expand_macros = .false.
+!!
+!!    call preprocess('input.F90', 'output.F90')
+!! ...
 !! @endcode
 !!
-!! 4. Strip all comments from final output:
+!! 4. Enable FPX extensions:
 !! @code{.f90}
-!!    global%exclude_comments = .true.
-!!    call preprocess('messy.F90', 'clean_no_comments.f90')
-!!    ...
+!!    global%support_forloop      = .true.
+!!    global%support_dollar_insert = .true.
+!!    global%extra_macros         = .true.
+!!
+!!    call preprocess('templates.F90')
+!! ...
 !! @endcode
+!!
+!! 5. Start an interactive preprocessing session:
+!! @code
+!!    global%interactive = .true.
+!!
+!!    call preprocess(stdin, stdout)
+!! ...
+!! @endcode
+!!
+!! @see fpx_macro
+!! @see fpx_parser
+!! @see fpx_include
 module fpx_global
     use fpx_constants
     use fpx_string
@@ -56,42 +134,59 @@ module fpx_global
 
     implicit none; private
 
-    !> Global preprocessor configuration and shared runtime state
-    !! All components of fpx read from and write to this single instance.
-    !! Users can safely modify its public components at any time.
-    !! <h2  class="groupheader">Examples</h2>
+    !> Global preprocessor configuration and shared runtime state.
+    !!
+    !! This type encapsulates all user-configurable options controlling the
+    !! behaviour of the FPX preprocessor.
+    !!
+    !! A single public instance, @ref global, is provided and used throughout
+    !! the library. Applications may modify its components before starting
+    !! preprocessing to customize parsing rules, enable extensions, or
+    !! predefine symbols.
+    !!
+    !! @section global_type_examples Examples
+    !!
     !! @code{.f90}
     !!    use fpx_global
+    !!    use fpx_macro
     !!
     !!    call add(global%macros, macro('__LFORTRAN__','1'))
-    !!    call add(global%macros, macro('__VERSION__'))
-    !!    call add(global%macros, macro('__LFORTRAN_MAJOR__'))
-    !!    call add(global%macros, macro('__LFORTRAN_MINOR__'))
-    !!    call add(global%macros, macro('__LFORTRAN_PATCHLEVEL__'))
+    !!    global%extra_macros = .true.
+    !!    global%support_forloop = .true.
+    !! ...
     !! @endcode
-    !! <h2  class="groupheader">Remarks</h2>
-    !! @par
-    !! The global settings are accessed through the global variable
-    !! @ref global
+    !!
+    !! @section global_type_remarks Remarks
+    !!
+    !! - The settings remain active for the duration of the preprocessing session.
+    !! - Components may be modified at any time before calling `preprocess`.
+    !! - The global instance is intended for single-threaded use.
+    !!
     !! @ingroup group_global
     type, public :: global_settings
         private
-        type(macro), allocatable, public    :: macros(:)        !< List of global macros
-        type(string), allocatable, public   :: undef(:)         !< List of undefined macros
-        type(string), allocatable, public   :: includedir(:)    !< List of include directories
-        logical, public                     :: expand_macros = .true.   !< Boolean controlling the macro expansion. The macros are expanded by default.
-        logical, public                     :: exlude_comments = .false.    !< Boolean controlling the inclusion/exclusion of comments. The comments are kept by default.
-        logical, public                     :: implicit_continuation = .false.  !< Boolean controlling implicit continuation line.
-        logical, public                     :: line_break = .false.  !< Boolean controlling line break with double backslash.
-        logical, public                     :: extra_macros = .true.  !< Boolean controlling extra non-standard macro definitions: __FILENAME__, __TIMESTAMP__ (.true. by default)).
-        logical, public                     :: interactive = .false.  !< Boolean controlling whether the program is used in interactive mode (REPL) or not.
-        logical, public                     :: support_forloop = .true.  !< Boolean controlling whether the program supports #for directives (.true. by default).
-        logical, public                     :: disable_continuation = .false.  !< Boolean controlling whether the program supports explicit line continuation with &amp; (.false. by default).
-        logical, public                     :: support_dollar_insert = .true.  !< Boolean controlling whether the program supports ${} substitution (.true. by default).
+        type(macro), allocatable, public    :: macros(:)        !< Predefined macros available before preprocessing begins.
+        type(string), allocatable, public   :: undef(:)         !< Symbols protected from future redefinition.
+        type(string), allocatable, public   :: includedir(:)    !< Additional directories searched by `#include`.
+        logical, public                     :: expand_macros = .true.   !< Enable global macro expansion.
+        logical, public                     :: exclude_comments = .false.    !< Preserve comments in the generated output.
+        logical, public                     :: implicit_continuation = .false.  !< Enable implicit continuation during macro expansion.
+        logical, public                     :: line_break = .false.  !< Treat `\\` as an explicit output line break.
+        logical, public                     :: extra_macros = .true.  !< Enable non-standard predefined macros such as `__FILE__`, `__LINE__`, `__FUNC__`, and `__TIMESTAMP__`.
+        logical, public                     :: interactive = .false.  !< Enable interactive REPL mode.
+        logical, public                     :: support_forloop = .true.  !< Enable support for `#for` and `#endfor`.
+        logical, public                     :: disable_continuation = .false.  !< Disable explicit continuation using trailing `&`.
+        logical, public                     :: support_dollar_insert = .true.  !< Enable `${NAME}` placeholder substitution.
     end type
 
-    !> @brief The single global instance used throughout fpx
-    !! Initialized automatically with sensible defaults values.
+    !> Global preprocessor configuration instance.
+    !!
+    !! This singleton is automatically initialized with sensible default
+    !! values and is shared by all FPX modules during preprocessing.
+    !!
+    !! Applications typically customize this object before invoking
+    !! `preprocess(...)`.
+    !!
     !! @ingroup group_global
     type(global_settings), public :: global
 

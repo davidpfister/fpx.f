@@ -1,48 +1,70 @@
 !> @file
 !! @defgroup group_date Date
-!! Lightweight, high-performance date/time handling for the fpx preprocessor
-!! This module provides a compact `datetime` type and essential operations
-!! used primarily for expanding the standard predefined macros.
-!! - `__DATE__` -> e.g. 'Aug-12-2025'
-!! - `__TIME__` -> e.g. '14:35:27'
-!! - `__TIMESTAMP__` -> e.g. 'Tue 12-Aug-2025 14:35:27'
+!! Lightweight date and time utilities used by the FPX preprocessor.
 !!
-!! Features:
-!! - `now()` returns current local date/time using `date_and_time()`
-!! - Flexible string formatting via `to_string(fmt)`
-!! - Parsing from common string formats (ISO, US, RFC-like)
-!! - Day-of-week calculation via Zeller's congruence
-!! - Elemental and pure functions where possible for performance
-!! - Minimal memory footprint using small integer kinds (`int8`, `int16`)
+!! This module provides a compact `datetime` type together with a small set
+!! of date/time operations required by FPX. Its primary purpose is to support
+!! expansion of the predefined macros:
 !!
-!! Used internally by `fpx_macro` during `__DATE__`, `__TIME__`, and `__TIMESTAMP__` expansion.
+!! - `__DATE__`
+!! - `__TIME__`
+!! - `__TIMESTAMP__`
+!!
+!! Rather than providing a complete calendaring framework, this module focuses
+!! on the functionality required by preprocessing tasks:
+!!
+!! - Retrieval of the current local date and time using `date_and_time()`
+!! - Construction of datetime objects from numeric components or strings
+!! - Parsing of commonly encountered date/time representations
+!! - Flexible formatting through `to_string(fmt)`
+!! - Day-of-week computation using Zeller's congruence
+!!
+!! The implementation deliberately remains lightweight and dependency-free.
+!! It is not intended to replace dedicated date/time libraries, but instead
+!! provides exactly the capabilities required by FPX while remaining portable
+!! across standard-conforming Fortran compilers.
 !!
 !! @section date_examples Examples
 !!
-!! 1. Expand standard predefined macros (as done internally):
+!! 1. Expanding predefined macros:
 !! @code{.f90}
 !!    type(datetime) :: dt
+!!
 !!    dt = now()
-!!    print *, '__DATE__      >> ', dt%to_string('MMM-dd-yyyy')      ! __DATE__      >> 'Aug-12-2025'
-!!    print *, '__TIME__      >> ', dt%to_string('HH:mm:ss')          ! '__TIME__      >> 14:35:27'
-!!    print *, '__TIMESTAMP__ >> ', dt%to_string('ddd-MMM-yyyy HH:mm:ss') ! '__TIMESTAMP__ >> Tue 12-Aug-2025 14:35:27'
-!!    ...
+!!
+!!    print *, '__DATE__      -> ', dt%to_string('MMM-dd-yyyy')
+!!    print *, '__TIME__      -> ', dt%to_string('HH:mm:ss')
+!!    print *, '__TIMESTAMP__ -> ', dt%to_string('ddd-MMM-yyyy HH:mm:ss')
+!! ...
 !! @endcode
 !!
-!! 2. Parse date from string:
+!! 2. Constructing a datetime from a string:
 !! @code{.f90}
 !!    type(datetime) :: build_time
+!!
 !!    build_time = datetime('2025-08-12 09:30:00')
-!!    print *, 'build on: ', build_time%to_string('ddd-MMM-yyyy')
-!!    ...
+!!
+!!    print *, build_time%to_string('ddd-MMM-yyyy')
+!! ...
 !! @endcode
 !!
-!! 3. Get current time for logging:
+!! 3. Constructing a datetime from components:
+!! @code{.f90}
+!!    type(datetime) :: epoch
+!!
+!!    epoch = datetime(1970, 1, 1)
+!!
+!!    print *, epoch%to_string()
+!! ...
+!! @endcode
+!!
+!! 4. Timestamping preprocessing operations:
 !! @code{.f90}
 !!    type(datetime) :: dt
+!!
 !!    dt = now()
 !!    print *, 'Preprocessing started at ', dt%to_string('HH:mm:ss')
-!!    ...
+!! ...
 !! @endcode
 module fpx_date
     use, intrinsic :: iso_fortran_env, only: i1 => int8, i2 => int16
@@ -60,42 +82,64 @@ module fpx_date
     !!    print *, 'build on: ', bt%to_string('ddd-MMM-yyyy')
     !!    ...
     !! @endcode
-    !! <h2  class="groupheader">Remarks</h2>
-    !! The date implementation proposed here is kept at the bare
-    !! minimum of what is required by the library. There are many
-    !! other implementations that can be found.
-    !! <h2  class="groupheader">Constructors</h2>
-    !! Initializes a new instance of the @ref datetime class
-    !! <h3>datetime(character(*),  character(*))</h3>
-    !! @verbatim type(datetime) function datetime(character(*) string, (optional) character(*) fmt) @endverbatim
+    !! @section datetime_type_remarks Remarks
+    !! This type intentionally provides only the functionality required by fpx.
+    !! It is designed to be compact, portable, and efficient rather than serving
+    !! as a comprehensive date/time framework.
     !!
-    !! @param[in] string date as string
-    !! @param[in] fmt (optional) date format
+    !! @section datetime_type_constructors Constructors
+    !! Initializes a new instance of the @ref datetime class. 
+    !! Two constructor forms are available:
+    !!
+    !! - Construction from numeric components
+    !! - Construction from a character representation
+    !!
+    !! @b Constructor
+    !! @code{.f90} 
+    !! type(datetime) function datetime(character(*) string, (optional) character(*) fmt) 
+    !! @endcode
+    !!
+    !! @param[in] string 
+    !!   date as string
+    !! @param[in] fmt 
+    !!   (optional) date format
     !!
     !! @b Examples
     !! @code{.f90}
     !! type(datetime) :: d
     !! d = datetime('2025-08-12 09:30:00')
+    !! ...
     !! @endcode
-    !! <h3>datetime(integer, integer, integer, integer, integer, integer, integer)</h3>
-    !! @verbatim type(datetime) function datetime((optional) integer year, (optional) integer month, ...) @endverbatim
     !!
-    !! @param[in] year (optional)
-    !! @param[in] month (optional)
-    !! @param[in] day (optional)
-    !! @param[in] hour (optional)
-    !! @param[in] minute (optional)
-    !! @param[in] second (optional)
-    !! @param[in] millisecond (optional)
+    !! @b Constructor
+    !! @code{.f90} 
+    !! type(datetime) function datetime((optional) integer year, (optional) integer month, ...) 
+    !! @endcode
+    !!
+    !! @param[in] year 
+    !!   (optional)
+    !! @param[in] month 
+    !!   (optional)
+    !! @param[in] day 
+    !!   (optional)
+    !! @param[in] hour 
+    !!   (optional)
+    !! @param[in] minute 
+    !!   (optional)
+    !! @param[in] second 
+    !!   (optional)
+    !! @param[in] millisecond 
+    !!   (optional)
     !!
     !! @b Examples
     !! @code{.f90}
     !! type(datetime) :: d
     !! d = datetime(1970, 1, 1)
+    !! ...
     !! @endcode
+    !! 
     !! @return The constructed datetime object.
     !!
-    !! <h2  class="groupheader">Remarks</h2>
     !! @ingroup group_date
     type, public :: datetime
         private

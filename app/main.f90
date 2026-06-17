@@ -127,7 +127,7 @@ console(main)
                 case ('-implicit-conti')
                     global%implicit_continuation = .true.
                 case ('-exclude-comments')
-                    global%exlude_comments = .true.
+                    global%exclude_comments = .true.
                 case ('-no-macros')
                     global%expand_macros = .false.
                 case ('-no-$')

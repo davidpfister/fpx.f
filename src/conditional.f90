@@ -1,60 +1,127 @@
 !> @file
-!! @defgroup group_conditional Conditional
-!! Full-featured conditional compilation (`#if` / `#ifdef` / `#else` / `#endif`) for the fpx preprocessor
-!! This module implements standard-conforming conditional compilation.
-!! - `#if` with arbitrary constant expressions (using `evaluate_expression`)
-!! - `#ifdef` / `#ifndef` and `#elifdef` / `#elifndef` for testing macro existence
-!! - `#elif` chains (multiple alternative branches)
-!! - `#else` as final fallback
-!! - Proper nesting up to `MAX_COND_DEPTH` levels
-!! - Correct "first-match" semantics - once a branch is taken, later `#elif`/`#else` are skipped
-!! - Integration with macro expansion via `is_defined()` and expression evaluator
+!! @defgroup group_conditional Conditional Compilation
+!! Conditional compilation support for the FPX preprocessor.
 !!
-!! The state is maintained in a global stack (`cond_stack`) with `cond_depth` tracking nesting.
-!! The function `is_active()` is used throughout the preprocessor to decide whether a line
-!! should be emitted or skipped.
+!! This module implements the complete conditional compilation machinery used
+!! by FPX. It provides functionality equivalent to the traditional C
+!! preprocessor directives while also introducing a few convenience extensions.
 !!
-!! <h2  class="groupheader">Examples</h2>
+!! Supported directives include:
 !!
-!! 1. Classic include guard pattern:
+!! - `#if` / `#elif`
+!!   Evaluate arbitrary constant expressions using
+!!   `evaluate_expression()`.
+!!
+!! - `#ifdef` / `#ifndef`
+!!   Test whether a macro has been defined.
+!!
+!! - `#elifdef` / `#elifndef`
+!!   FPX extensions combining `#elif` semantics with macro existence tests.
+!!
+!! - `#else`
+!!   Select the fallback branch when no previous branch in the same
+!!   conditional group has been activated.
+!!
+!! - `#endif`
+!!   Terminate the current conditional block.
+!!
+!! Nested conditional blocks are supported up to
+!! `MAX_COND_DEPTH` levels.
+!!
+!! The implementation follows the standard "first-match" semantics:
+!! once a branch of a conditional group evaluates to true,
+!! all remaining `#elif`, `#elifdef`, `#elifndef`, and `#else`
+!! directives belonging to the same group are ignored.
+!!
+!! Internally, the module maintains a stack of conditional states
+!! (`cond_stack`) together with the current nesting depth
+!! (`cond_depth`). The helper function `is_active()` determines
+!! whether the current source line belongs to an active branch and
+!! therefore should be processed by the remainder of the preprocessor.
+!!
+!! @section conditional_design Design
+!!
+!! Each active conditional nesting level stores two pieces of state:
+!!
+!! - `active`
+!!   Indicates whether the current branch should emit code.
+!!
+!! - `has_met`
+!!   Indicates whether a previous branch within the same
+!!   `#if`/`#elif`/`#else` group has already been selected.
+!!
+!! This design allows efficient evaluation of deeply nested
+!! conditionals while preserving correct first-match semantics.
+!!
+!! @section conditional_examples Examples
+!!
+!! 1. Include guard pattern:
+!!
 !! @code{.f90}
-!!  #ifndef MY_HEADER_H
-!!  #define MY_HEADER_H
+!! #ifndef MY_HEADER_H
+!! #define MY_HEADER_H
 !!
-!!  ! ... header content ...
+!!   ! Header contents
 !!
-!!  #endif
-!!  ...
+!! #endif
+!! ...
 !! @endcode
 !!
-!! 2. Feature selection with #if and #elif:
+!! 2. Feature selection using expression evaluation:
+!!
 !! @code{.f90}
-!!  #if DEBUG >= 2
-!!     print *, 'Extra verbose debugging enabled'
-!!  #elif DEBUG == 1
-!!     print *, 'Standard debugging'
-!!  #else
-!!     ! Silent mode
-!!  #endif
-!!  !..
+!! #if DEBUG >= 2
+!!   print *, 'Verbose debugging'
+!! #elif DEBUG == 1
+!!   print *, 'Standard debugging'
+!! #else
+!!   ! Silent mode
+!! #endif
+!! ...
 !! @endcode
 !!
-!! 3. Cross-platform code selection:
+!! 3. Platform-dependent compilation:
+!!
 !! @code{.f90}
-!!  #ifdef _OPENMP
-!!     use omp_lib
-!!  #else
-!!     integer, parameter :: omp_get_thread_num = 0
-!!  #endif
-!!  ...
+!! #ifdef _OPENMP
+!!   use omp_lib
+!! #else
+!!   integer, parameter :: omp_get_thread_num = 0
+!! #endif
+!! ...
 !! @endcode
 !!
-!! 4. Complex expression in #if (requires `evaluate_expression` support):
+!! 4. Conditional compilation using macro existence:
+!!
 !! @code{.f90}
-!!  #if defined(USE_MPI) && (MPI_VERSION >= 3)
-!!     use mpi_f08
-!!  #endif
-!!  ...
+!! #if defined(USE_MPI) && (MPI_VERSION >= 3)
+!!   use mpi_f08
+!! #endif
+!! ...
+!! @endcode
+!!
+!! 5. Using the FPX extension `#elifdef`:
+!!
+!! @code{.f90}
+!! #ifdef USE_CUDA
+!!   call gpu_backend()
+!! #elifdef USE_OPENMP
+!!   call omp_backend()
+!! #else
+!!   call serial_backend()
+!! #endif
+!! ...
+!! @endcode
+!!
+!! 6. Nested conditionals:
+!!
+!! @code{.f90}
+!! #ifdef DEBUG
+!!   #if DEBUG > 1
+!!     print *, 'Extra diagnostics'
+!!   #endif
+!! #endif
+!! ...
 !! @endcode
 module fpx_conditional
     use fpx_constants
@@ -76,22 +143,28 @@ module fpx_conditional
             handle_elifndef, &
             is_active
 
-    !> State of a single conditional block
-    !! <h2  class="groupheader">Constructors</h2>
-    !! Initializes a new instance of the @ref cond_state type
-    !! <h3>cond_state(logical, logical)</h3>
-    !! @verbatim type(cond_state) function cond_state(logical active, logical has_met) @endverbatim
+    !> State associated with a single conditional nesting level.
     !!
-    !! @param[in] active whether code in this block should be emitted
-    !! @param[in] has_met whether a true branch has already been taken at this nesting level
+    !! Each `#if` directive pushes one instance of this type onto
+    !! `cond_stack`, and the corresponding `#endif` removes it.
     !!
-    !! @return The constructed @ref cond_state object.
+    !! The combination of `active` and `has_met` implements the
+    !! standard first-match semantics of conditional preprocessing.
     !!
-    !! <h2  class="groupheader">Remarks</h2>
+    !! @section cond_state_constructors Constructors
+    !!
+    !! @b Constructor
+    !! @code{.f90} type(cond_state) function cond_state(logical active, logical has_met) @endcode
+    !! @param[in] active
+    !!   Whether the current branch is active and should emit code.
+    !! @param[in] has_met
+    !!   Whether a previous branch in the same conditional group
+    !!   has already evaluated to true.
+    !! @return A newly constructed conditional state object.
     !! @ingroup group_conditional
     type, public :: cond_state
-        logical, public :: active  !< Indicate whether the condition is active
-        logical, public :: has_met  !< Indicates whether the condition has been met
+        logical, public :: active
+        logical, public :: has_met
     end type
 
     !> @brief Global stack of conditional states (depth-limited)
@@ -104,10 +177,19 @@ module fpx_conditional
 
 contains
 
-    !> Determine if current line is inside an active conditional block
-    !! @return .true. if all enclosing #if/#elif/#else branches are active
+    !> Determine whether the current source position is active.
     !!
-    !! @b Remarks
+    !! Traverses all enclosing conditional levels and returns `.true.`
+    !! only if every surrounding conditional branch is active.
+    !!
+    !! This routine is used throughout the preprocessing pipeline to
+    !! decide whether directives should be executed and whether
+    !! ordinary source lines should be emitted.
+    !!
+    !! @return
+    !! `.true.` if the current line belongs to an active branch;
+    !! `.false.` otherwise.
+    !!
     !! @ingroup group_conditional
     logical function is_active() result(res)
         integer :: i

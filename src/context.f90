@@ -1,100 +1,115 @@
 !> @file
 !! @defgroup group_context Context
-!! Source context tracking for diagnostics and error reporting in fpx.
+!! Source context information used for diagnostics and error reporting.
 !!
-!! This small but critical module defines the `context` type used throughout the fpx
-!! preprocessor to attach precise location information to every diagnostic message,
-!! label, or error report.
+!! This module defines the lightweight @ref fpx_context::context type used throughout
+!! the FPX preprocessor to associate source-location information with
+!! diagnostics, warnings, notes, and error messages.
 !!
-!! Every time the preprocessor encounters a problem (undefined macro, include not found,
-!! invalid `#if` expression, unmatched `#endif`, etc.), it creates or reuses a `context`
-!! object that carries:
-!! - The full line content (for showing source snippets)
-!! - The 1-based line number
-!! - The full file path (for `-->` arrows in diagnostics)
-!! - The base filename (for concise reporting when path is long)
+!! Every diagnostic emitted by FPX is accompanied by a context object
+!! describing where the event occurred. This enables the generation of
+!! modern compiler-style messages containing file names, line numbers,
+!! source snippets, and caret annotations.
 !!
-!! This information is then used by the `fpx_logging` module to produce modern,
-!! rustc/clang-style error messages with line numbers, caret highlights (^), and
-!! file references.
+!! A context captures:
 !!
-!! Without accurate context, diagnostics would be vague ("macro not defined").
-!! With `context`, users see exactly where the problem happened:
+!! - the original source line,
+!! - the corresponding 1-based line number,
+!! - the path of the source file being processed.
 !!
-!! ```
+!! The information stored in a context is consumed primarily by the
+!! @link fpx_logging fpx_logging @endlink module to produce precise and user-friendly diagnostics.
+!!
+!! For example:
+!!
+!! @code
 !! error: Undefined macro 'DEBUG'
-!!   --> src/main.F90:42:10-15
+!! --> src/main.F90:42
 !!    |
-!! 42 |   #ifdef DEBUG
-!!    |          ^^^^^ 'DEBUG' not defined
-!! ```
+!! 42 | #ifdef DEBUG
+!!    | ^^^^^ not defined
+!! @endcode
+!!
+!! Accurate context information becomes particularly important when
+!! processing nested #include files, evaluating conditional directives,
+!! or reporting errors originating from macro expansions.
 !!
 !! @section context_examples Examples
 !!
-!! 1. Creating context when reading a new file:
+!! 1. Creating a context object:
 !! @code{.f90}
-!!    type(context) :: ctx
+!! type(context) :: ctx
 !!
-!!    ctx%path     = "/home/user/project/src/utils.F90"
-!!    ctx%line     = 27
-!!    ctx%content  = "real :: x = PI * r**2"
-!!
-!!    ! Now pass ctx to logging functions
-!!    call report_undefined_macro("PI", ctx)
+!! ctx = context( &
+!! content='real :: x = PI*r**2', &
+!! line=27, &
+!! path='src/utils.F90')
+!! ...
 !! @endcode
 !!
-!! 2. Updating context during recursive #include processing:
+!! 2. Using context when reporting diagnostics:
 !! @code{.f90}
-!!    ! In handle_include
-!!    type(context) :: included_ctx
-!!
-!!    included_ctx%path     = resolved_include_path
-!!    included_ctx%line     = 1   ! reset for new file
-!!    included_ctx%content  = first_line_of_included_file
-!!
-!!    ! Then use included_ctx for diagnostics inside the included file
+!! call printf(render(diagnostic_report( &
+!! LEVEL_ERROR, &
+!! message='Undefined macro', &
+!! source=ctx%path), &
+!! ctx%content, ctx%line))
+!! ...
 !! @endcode
 !!
-!! 3. Attaching context to a diagnostic label:
+!! 3. Updating context during #include processing:
 !! @code{.f90}
-!!    type(label_type) :: lbl
-!!
-!!    lbl = label_type(LEVEL_ERROR, "expected expression", &
-!!                     line=ctx%line, first=8, last=12, primary=.true.)
-!!
-!!    diag = diagnostic_report(LEVEL_ERROR, "Invalid #if condition", ctx%path, [lbl])
+!! included_ctx = context( &
+!! content=first_line, &
+!! line=1, &
+!! path=resolved_include_path)
+!! ...
 !! @endcode
 module fpx_context
     implicit none; private
 
-    !> Source location and content snapshot for precise diagnostics
-    !! Instances of this type are created for every source file (including nested
-    !! #include files) and passed along with every warning, error, note, or info
-    !! message to provide accurate line numbers, file names, and code snippets.
+    !> Snapshot of a source location within the preprocessing stream. 
+    !! 
+    !! Instances of this type accompany diagnostics throughout FPX and 
+    !! provide the information required to identify where an event 
+    !! occurred in the original source. 
+    !! 
+    !! The stored line content is typically displayed alongside 
+    !! highlighted regions when rendering diagnostics. 
+    !! 
+    !! @section context_type_examples Examples 
+    !! @code{.f90} 
+    !! type(context) :: ctx 
+    !! 
+    !! ctx = context('lorem ipsum', 42, 'example.F90')
+    !! ...
+    !! @endcode 
+    !! 
+    !! @section context_type_remarks Remarks
+    !! - A new context is typically created for each processed source line. 
+    !! - Entering an `#include` file naturally creates contexts referring 
+    !! to the included file. 
+    !! - Context objects are lightweight and inexpensive to copy. 
+    !! - They form the foundation of FPX's compiler-style diagnostics. 
+    !! 
+    !! @section context_type_constructors Constructors
+    !! 
+    !! Initializes a new instance of the @ref context type. 
     !!
-    !! <h2  class="groupheader">Examples</h2>
-    !! @code{.f90}
-    !!    type(context) :: ctx
-    !!    ctx = context('lorem ipsum', __LINE__, 'myfile.f90')
-    !!    ...
-    !! @endcode
-    !! <h2  class="groupheader">Remarks</h2>
-    !! - Usually one `context` exists per currently processed file.
-    !! - When entering an `#include`, a new context is created for the included file.
-    !! - Helps produce high-quality, IDE-friendly error messages.
-    !!
-    !! <h2  class="groupheader">Constructors</h2>
-    !! Initializes a new instance of the @ref context class
-    !! <h3>context(character(*),  integer, character(*))</h3>
-    !! @verbatim type(context) function context(character(*) content, integer line, character(*) path) @endverbatim
-    !!
-    !! @param[in] content The actual line of source code where the issue occurred
-    !! @param[in] line 1-based line number in the current file
-    !! @param[in] path Full absolute or relative path to the file
-    !!
-    !! @return The constructed datetime object.
-    !!
-    !! <h2  class="groupheader">Remarks</h2>
+    !! @b Constructor
+    !! @code{.f90} 
+    !! type(context) function context(character(*) content, integer line, character(*) path) 
+    !! @endcode 
+    !! 
+    !! @param[in] content 
+    !!   Source line associated with the diagnostic. 
+    !! @param[in] line 
+    !!   One-based line number within the source file. 
+    !! @param[in] path 
+    !!   Relative or absolute path of the source file. 
+    !! 
+    !! @return Newly constructed context object. 
+    !! 
     !! @ingroup group_context
     type, public :: context
         character(:), allocatable   :: content

@@ -1,82 +1,116 @@
 !> @file
 !! @defgroup group_graph Graph
-!! Lightweight directed graph implementation for cycle detection in macro expansion
-!! This module provides a compact, allocation-efficient directed graph (@link fpx_graph::digraph digraph@endlink) specifically
-!! designed for detecting circular dependencies during macro expansion in the fpx preprocessor.
+!! Directed graph utilities used for macro dependency analysis.
 !!
-!! Features:
-!! - Fixed-size adjacency list using a dense 2D integer array (fast access, no pointers)
-!! - Dynamic edge insertion with automatic per-vertex size tracking
-!! - Depth-first search (DFS) based) cycle detection starting from any vertex
-!! - Automatic cleanup via finalizer
-!! - No dynamic memory fragmentation – ideal for frequent creation/destruction during preprocessing
+!! This module provides a lightweight directed graph implementation used
+!! internally by the FPX preprocessor to detect cyclic dependencies during
+!! macro expansion.
 !!
-!! Used internally by @link fpx_macro fpx_macro@endlink to prevent infinite recursion when a macro expands
-!! (directly or indirectly) to itself (e.g., `#define A B`, `#define B A`).
+!! Unlike general-purpose graph libraries, this implementation is optimized
+!! for the small graphs typically encountered during preprocessing:
+!!
+!! - Vertices are represented by 1-based integer identifiers.
+!! - Edges are stored in a dense adjacency structure for fast traversal.
+!! - Cycle detection uses depth-first search (DFS) with a recursion stack.
+!! - Invalid vertices are ignored gracefully.
+!! - Memory management is automatic through a finalizer.
+!!
+!! The primary use case is preventing infinite recursion caused by macros
+!! expanding, directly or indirectly, to themselves:
+!!
+!! @code{.f90}
+!!    #define A B
+!!    #define B C
+!!    #define C A
+!! ...
+!! @endcode
+!!
+!! Before expanding a macro, FPX records dependencies in a graph and checks
+!! whether introducing a new dependency would create a cycle.
 !!
 !! @section graph_examples Examples
 !!
-!! 1. Detect circular macro dependency:
+!! 1. Detecting a circular dependency:
 !! @code{.f90}
 !!    type(digraph) :: g
 !!    logical       :: cycle
 !!
-!!    g = digraph(3)            ! 3 macros indexed 1..3
-!!    call g%add_edge(1, 2)     ! macro1 depends on macro2
-!!    call g%add_edge(2, 3)     ! macro2 depends on macro3
-!!    call g%add_edge(3, 1)     ! macro3 depends on macro1 -> cycle!
+!!    g = digraph(3)
 !!
-!!    cycle = g%is_circular(1)  ! returns .true.
-!!    print *, 'Circular macro chain detected:', cycle
-!!    ...
+!!    call g%add_edge(1, 2)
+!!    call g%add_edge(2, 3)
+!!    call g%add_edge(3, 1)
+!!
+!!    cycle = g%is_circular(1)
+!!    print *, cycle      ! prints .true.
+!! ...
 !! @endcode
 !!
-!! 2. Safe expansion (used inside @link fpx_macro fpx_macro@endlink):
+!! 2. Detecting an acyclic dependency chain:
 !! @code{.f90}
-!!    type(digraph) :: expansion_graph
-!!    expansion_graph = digraph(size(macros))
-!!    call expansion_graph%add_edge(current_macro_idx, referenced_macro_idx)
-!!    if (expansion_graph%is_circular(referenced_macro_idx)) then
-!!       ! Skip expansion to prevent infinite loop
+!!    type(digraph) :: g
+!!
+!!    g = digraph(4)
+!!
+!!    call g%add_edge(1, 2)
+!!    call g%add_edge(2, 3)
+!!    call g%add_edge(3, 4)
+!!
+!!    print *, g%is_circular(1)   ! .false.
+!! ...
+!! @endcode
+!!
+!! 3. Internal usage during macro expansion:
+!! @code{.f90}
+!!    call graph%add_edge(current_macro, referenced_macro)
+!!
+!!    if (graph%is_circular(referenced_macro)) then
+!!        ! Prevent recursive expansion
 !!    end if
-!!    ...
+!! ...
 !! @endcode
 module fpx_graph
     implicit none; private
 
-    !> Directed graph with fixed vertex count and efficient cycle detection
-    !! Stores edges in a dense adjacency matrix slice per vertex.
-    !! Only the actually used portion of each row is tracked via `list_sizes`.
-    !! <h2  class="groupheader">Examples</h2>
+    !> Directed graph supporting efficient cycle detection.
+    !!
+    !! The graph stores a fixed number of vertices identified by
+    !! integers in the range `[1, vertices]`.
+    !!
+    !! Edges are represented internally using a dense adjacency
+    !! structure together with per-vertex occupancy counters.
+    !! This approach avoids repeated allocations and is well suited
+    !! to the relatively small dependency graphs encountered by fpx.
+    !!
+    !! @section digraph_type_examples Examples
     !! @code{.f90}
     !!    type(digraph) :: g
-    !!    logical       :: cycle
     !!
-    !!    g = digraph(3)            ! 3 macros indexed 1..3
-    !!    call g%add_edge(1, 2)     ! macro1 depends on macro2
-    !!    call g%add_edge(2, 3)     ! macro2 depends on macro3
-    !!    call g%add_edge(3, 1)     ! macro3 depends on macro1 -> cycle!
+    !!    g = digraph(2)
+    !!    call g%add_edge(1, 2)
     !!
-    !!    cycle = g%is_circular(1)  ! returns .true.
-    !!    print *, 'Circular macro chain detected:', cycle
-    !!    ...
+    !!    print *, g%is_circular(1)
+    !! ...
     !! @endcode
-    !! <h2  class="groupheader">Constructors</h2>
-    !! Initializes a new instance of the @ref digraph class
-    !! <h3>digraph(integer)</h3>
-    !! @verbatim type(digraph) function digraph(integer vertices) @endverbatim
     !!
-    !! @param[in] vertices Number of vertices (usually number of currently defined macros)
+    !! @section digraph_type_constructors Constructors
+    !! Initializes a new directed graph.
     !!
-    !! @b Examples
+    !! @b Constructor
     !! @code{.f90}
-    !! type(digraph) :: g
-    !! g = digraph(3)
+    !! type(digraph) function digraph(integer vertices)
     !! @endcode
-    !! @return The constructed digraph object.
     !!
+    !! @param[in] vertices 
+    !!   Number of vertices in the graph.
     !!
-    !! <h2  class="groupheader">Remarks</h2>
+    !! @return A newly constructed directed graph.
+    !!
+    !! @section digraph_type_remarks Remarks
+    !! - Vertices are numbered from 1.
+    !! - The number of vertices is fixed after construction.
+    !! - Intended primarily for internal use by the macro expander.
+    !!
     !! @ingroup group_graph
     type, public :: digraph
         integer, private :: vertices  !< Number of vertices
@@ -89,9 +123,16 @@ module fpx_graph
         final :: graph_final
     end type
 
-    !> Constructor interface for @ref digraph type
+    !> Construct a directed graph with a fixed number of vertices.
     !!
-    !! @b Remarks
+    !! Allocates the internal adjacency structures and initializes
+    !! the graph without any edges.
+    !!
+    !! @param[in] vertices 
+    !!   Number of vertices.
+    !!
+    !! @return Newly initialized graph.
+    !!
     !! @ingroup group_graph
     interface digraph
         !! @cond
@@ -101,7 +142,6 @@ module fpx_graph
 
 contains
 
-    !> Constructor
     type(digraph) function graph_new(vertices) result(that)
         integer, intent(in) :: vertices
         integer :: i
@@ -111,19 +151,26 @@ contains
         allocate(that%list_sizes(vertices), source=0)
     end function
 
-    !> Add a directed edge from source -> destination
-    !! Silently ignores invalid indices. Optional `exists` flag indicates if edge was already present.
-    !! @param[inout] this digraph object
-    !! @param[in]    source      Source vertex (1-based)
-    !! @param[in]    destination Target vertex (1-based)
-    !! @param[out]   exists      (optional) .true. if edge already existed
+    !> Add a directed edge to the graph.
     !!
-    !! @b Remarks
-    subroutine graph_add_edge(this, source, destination, exists)
+    !! Inserts an edge from `source` to `destination`.
+    !! If either vertex lies outside the valid range,
+    !! the request is ignored.
+    !!
+    !! @param[inout] this        Graph instance.
+    !! @param[in]    source      Source vertex (1-based).
+    !! @param[in]    destination Destination vertex (1-based).
+    !! @param[out]   overflow    Optional flag indicating whether the
+    !!                           insertion position was already occupied.
+    !!
+    !! @note Duplicate edges are not explicitly filtered.
+    !!
+    !! @ingroup group_graph
+    subroutine graph_add_edge(this, source, destination, overflow)
         class(digraph), intent(inout)   :: this
         integer, intent(in)             :: source
         integer, intent(in)             :: destination
-        logical, intent(out), optional  :: exists
+        logical, intent(out), optional  :: overflow
 
         if (source < 1 .or. source > this%vertices .or. &
                 destination < 1 .or. destination > this%vertices) then
@@ -132,18 +179,26 @@ contains
 
         this%list_sizes(source) = this%list_sizes(source) + 1
         if (this%list_sizes(source) <= this%vertices) then
-            if (present(exists)) exists = this%adjacency_list(source, this%list_sizes(source)) /= 0
+            if (present(overflow)) overflow = this%adjacency_list(source, this%list_sizes(source)) /= 0
             this%adjacency_list(source, this%list_sizes(source)) = destination
         end if
     end subroutine
 
-    !> Check whether a cycle exists in the graph reachable from start_vertex
-    !! Uses standard DFS with recursion stack (back-edge detection).
-    !! @param[in] this digraph object
-    !! @param[in] start_vertex Vertex from which to begin cycle search
-    !! @return .true. if a cycle is found in the component reachable from start_vertex
+    !> Determine whether a cycle is reachable from a vertex.
     !!
-    !! @b Remarks
+    !! Performs a depth-first traversal starting from
+    !! `start_vertex` and detects back edges using a
+    !! recursion stack.
+    !!
+    !! @param[in] this
+    !!   Graph instance.
+    !! @param[in] start_vertex
+    !!   Vertex from which the search begins.
+    !!
+    !! @return `.true.` if a cycle exists in the reachable component;
+    !!         `.false.` otherwise.
+    !!
+    !! @ingroup group_graph
     logical function graph_has_cycle_dfs(this, start_vertex) result(has_cycle)
         class(digraph), intent(in) :: this
         integer, intent(in) :: start_vertex
@@ -163,7 +218,12 @@ contains
         deallocate(visited, recursion_stack)
     end function
 
-    !> Internal recursive DFS worker for cycle detection
+    !> Recursive DFS worker used for cycle detection.
+    !!
+    !! This routine implements the actual traversal algorithm used
+    !! by @ref graph_has_cycle_dfs. It maintains both a visited set
+    !! and a recursion stack in order to identify back edges.
+    !!
     !! @ingroup group_graph
     recursive logical function dfs_recursive(this, vertex, visited, recursion_stack) result(has_cycle)
         class(digraph), intent(in) :: this
@@ -192,7 +252,12 @@ contains
         has_cycle = .false.
     end function
 
-    !> Finalizer – automatically deallocate internal arrays when graph goes out of scope
+    !> Finalizer for the directed graph.
+    !!
+    !! Releases all dynamically allocated storage associated with
+    !! the graph when it leaves scope.
+    !!
+    !! @ingroup group_graph
     subroutine graph_final(this)
         type(digraph), intent(inout) :: this
         if (allocated(this%adjacency_list)) deallocate(this%adjacency_list)

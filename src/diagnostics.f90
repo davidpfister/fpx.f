@@ -1,26 +1,74 @@
 !> @file
 !! @defgroup group_diagnostics Diagnostics
-!! Processing of #warning and #error preprocessor directives
-!! This module implements the core logic for handling messages (either as
-!! warning or errors).
+!! Diagnostic directives for the FPX preprocessor.
+!!
+!! This module implements the handling of the preprocessor directives
+!! `#error` and `#warning`, allowing source files to emit user-defined
+!! diagnostics during preprocessing.
+!!
+!! These directives are commonly used to enforce configuration requirements,
+!! reject unsupported platforms, report deprecated features, or notify users
+!! about assumptions made during compilation.
+!!
+!! Supported directives:
+!!
+!! - `#error`
+!!   Emits a fatal diagnostic and immediately terminates preprocessing.
+!!
+!! - `#warning`
+!!   Emits a non-fatal diagnostic message while allowing preprocessing to
+!!   continue normally.
+!!
+!! The diagnostic text consists of the remainder of the directive line
+!! following the keyword itself.
+!!
+!! @note
+!! The routines implemented in this module do not perform macro expansion on
+!! the diagnostic message. Any expansion must have been completed before the
+!! directive handler is invoked.
 !!
 !! @section diagnostics_examples Examples
 !!
-!! 1. Break preprocessing on error:
+!! 1. Reject unsupported platforms:
 !! @code{.f90}
-!!    #ifdef __vax__
-!!    #error "VAX not supported"
+!!    #ifdef __VAX__
+!!    #error "VAX systems are not supported."
 !!    #endif
-!!    ...
+!! ...
 !! @endcode
 !!
-!! 2. Warn version mismatch:
+!! 2. Enforce configuration requirements:
 !! @code{.f90}
-!!    #if __STDF__ > 1
-!!    #warning "The version of the Fortran language is greater than 1"
+!!    #ifndef MPI_VERSION
+!!    #error "MPI support must be enabled."
 !!    #endif
-!!    ...
+!! ...
 !! @endcode
+!!
+!! 3. Warn about deprecated functionality:
+!! @code{.f90}
+!!    #ifdef USE_LEGACY_SOLVER
+!!    #warning "USE_LEGACY_SOLVER is deprecated and will be removed."
+!!    #endif
+!! ...
+!! @endcode
+!!
+!! 4. Notify users of unusual configurations:
+!! @code{.f90}
+!!    #if PRECISION > 64
+!!    #warning "Using extended precision may affect performance."
+!!    #endif
+!! ...
+!! @endcode
+!!
+!! 5. Emit custom informational messages:
+!! @code{.f90}
+!!    #warning "Building experimental version."
+!! ...
+!! @endcode
+!!
+!! @see fpx_logging
+!! @see fpx_context
 module fpx_diagnostics
     use, intrinsic :: iso_fortran_env, only: stdout => output_unit
     use fpx_logging
@@ -36,15 +84,21 @@ module fpx_diagnostics
 
 contains
 
-    !> Process a #error directive. It causes the preprocessor to report a
-    !! fatal error that stops the preprocessor. The string forming the rest
-    !! of the line following ‘#error' is printed in the standard error.
+    !> Process a `#error` directive.
     !!
-    !! @param[in]    ctx     Context source line containing the #define
-    !! @param[inout] macros  Current macro table (updated in-place)
-    !! @param[in]    token   Usually 'DEFINE' – keyword matched in lowercase
+    !! Extracts the message following the directive keyword and immediately
+    !! terminates preprocessing using an `error stop` statement.
     !!
-    !! @b Remarks
+    !! This directive is intended for unrecoverable situations such as
+    !! unsupported targets, invalid configurations, or missing prerequisites.
+    !!
+    !! @param[in]    ctx
+    !!   Source context containing the complete `#error` directive.
+    !! @param[inout] macros
+    !!   Active macro table. Present for interface consistency and not modified.
+    !! @param[in]    token
+    !!   Directive keyword, typically `"error"`.
+    !!
     !! @ingroup group_diagnostics
     subroutine handle_error(ctx, macros, token)
         type(context), intent(in)                   :: ctx
@@ -57,14 +111,21 @@ contains
         error stop trim(adjustl(ctx%content(pos + 1:)))
     end subroutine
 
-    !> Process a #warning directive. It causes the preprocessor to report a
-    !! warning that does not stop the preprocessor. The string forming the rest
-    !! of the line following ‘#warning' is printed in the standard output.
-    !! @param[in]    ctx     Context source line containing the #undef
-    !! @param[inout] macros  Current macro table (updated in-place)
-    !! @param[in]    token   Usually 'UNDEF' – keyword matched in lowercase
+    !> Process a `#warning` directive.
     !!
-    !! @b Remarks
+    !! Extracts the message following the directive keyword and writes it to
+    !! the standard output stream without interrupting preprocessing.
+    !!
+    !! This directive is intended for non-fatal conditions such as deprecated
+    !! features, unusual build settings, or informational notices.
+    !!
+    !! @param[in]    ctx
+    !!   Source context containing the complete `#warning` directive.
+    !! @param[inout] macros
+    !!   Active macro table. Present for interface consistency and not modified.
+    !! @param[in]    token
+    !!   Directive keyword, typically `"warning"`.
+    !!
     !! @ingroup group_diagnostics
     subroutine handle_warning(ctx, macros, token)
         type(context), intent(in)                   :: ctx

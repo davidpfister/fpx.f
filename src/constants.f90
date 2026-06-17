@@ -1,36 +1,134 @@
 !> @file
 !! @defgroup group_constants Constants
-!! Module defining constants for the FPX library
-!! This module provides a set of public integer constants used to enforce limits
-!! in the FPX library, such as maximum line lengths, depths, and parameter counts.
+!! Compile-time constants used throughout the FPX preprocessor.
+!!
+!! This module centralizes all numerical limits and fixed configuration
+!! values required by the implementation. These parameters define the
+!! maximum sizes of internal buffers and the allowed nesting depth of
+!! various preprocessing constructs.
+!!
+!! The chosen values aim to balance flexibility and robustness:
+!!
+!! - large enough to accommodate realistic scientific Fortran code,
+!! - small enough to avoid excessive memory consumption,
+!! - fixed at compile time to simplify implementation and improve performance.
+!!
+!! The constants are used across multiple modules, including macro
+!! expansion, conditional compilation, tokenization, and the extended
+!! #for directive implementation.
+!!
+!! @section constants_examples Examples
+!!
+!! 1. Limiting nested conditional directives:
+!! @code{.f90}
+!! #if A
+!! #if B
+!! #if C
+!! !some code
+!! #endif
+!! #endif
+!! #endif
+!! ...
+!! @endcode
+!!
+!! Nesting is permitted up to @link fpx_constants::max_cond_depth MAX_COND_DEPTH @endlink levels.
+!!
+!! 2. Nested #for loops:
+!! @code{.f90}
+!! #for T in [integer, real]
+!! #for K in [32, 64]
+!! !some code
+!! #endfor
+!! #endfor
+!! ...
+!! @endcode
+!!
+!! Loop nesting is limited by @link fpx_constants::max_for_depth MAX_FOR_DEPTH @endlink.
+!!
+!! 3. Long macro expansions:
+!! @code{.f90}
+!! #define MESSAGE "very long text ..."
+!! ...
+!! @endcode
+!!
+!! Intermediate buffers are sized according to @link fpx_constants::max_line_len MAX_LINE_LEN @endlink.
 module fpx_constants
     implicit none; private
 
-    !> @brief Maximum allowed line length in characters, set to 1000000 to handle large input strings or files
+    !> Maximum permitted length of an input or generated line. 
+    !! 
+    !! This limit applies to raw source lines, continued lines, 
+    !! and intermediate results produced during macro expansion. 
+    !! 
+    !! The value should be sufficiently large for practically all 
+    !! modern Fortran source files while preventing unbounded memory use. 
+    !! 
     !! @ingroup group_constants
     integer, parameter, public :: MAX_LINE_LEN = 4096
 
-    !> @brief Maximum nesting depth for structures, set to 50 to balance flexibility and stack safety
+    !> Maximum nesting depth of generic parser structures. 
+    !! 
+    !! Used internally whenever recursive parser constructs require 
+    !! bounded stack-like storage. 
+    !! 
     !! @ingroup group_constants
     integer, parameter, public :: MAX_DEPTH = 50
 
-    !> @brief Maximum nesting depth for conditional statements, set to 50 to prevent overly complex logic
+    !> Maximum nesting depth of conditional compilation directives. 
+    !! 
+    !! Applies to constructs such as: 
+    !! - `#if` 
+    !! - `#ifdef` 
+    !! - `#ifndef` 
+    !! - `#elif` 
+    !! - `#else` 
+    !! 
+    !! Excessive nesting beyond this limit results in diagnostics. 
+    !! 
     !! @ingroup group_constants
     integer, parameter, public :: MAX_COND_DEPTH = 50
 
-    !> @brief Maximum nesting depth for loops statements, set to 50 to prevent overly complex logic
+    !> Maximum nesting depth of `#for` loops. 
+    !! 
+    !! Applies to the FPX extension: 
+    !! @code 
+    !! #for ...
+    !! !some code
+    !! #endfor
+    !! ...
+    !! @endcode 
+    !! 
+    !! Nested loops exceeding this limit generate an error. 
+    !! 
     !! @ingroup group_constants
     integer, parameter, public :: MAX_FOR_DEPTH = 50
 
-    !> @brief Maximum number of tokens per line, set to 100 for efficient tokenization
+    !> Maximum number of tokens generated during tokenization. 
+    !! 
+    !! This value bounds the temporary token buffers used by 
+    !! expression parsing and macro processing. 
+    !! 
     !! @ingroup group_constants
     integer, parameter, public :: MAX_TOKENS = 100
 
-    !> @brief Maximum number of parameters in a signature, set to 10 to ensure manageable interfaces
+    !> Maximum number of parameters accepted by a macro definition. 
+    !! 
+    !! Applies to function-like macros: 
+    !! @code 
+    !! #define F(a,b,c) ...
+    !! ...
+    !! @endcode 
+    !! 
+    !! Variadic arguments count toward this limit. 
+    !! 
     !! @ingroup group_constants
     integer, parameter, public :: MAX_PARAMS = 10
 
-    !> @brief Maximum chunk size
+    !> Default chunk size used for internal buffering operations. 
+    !! 
+    !! This value is primarily used when processing data incrementally 
+    !! to avoid frequent reallocations. 
+    !! 
     !! @ingroup group_constants
     integer, parameter, public :: CHKSIZE = 72
 end module
