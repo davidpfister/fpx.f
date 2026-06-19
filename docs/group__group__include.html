@@ -126,7 +126,7 @@ $(function(){initNavTree('group__group__include.html','',''); });
 <li>Proper search order: quotes search source dir first, angle brackets skip source dir</li>
 <li>Relative paths resolved against the directory of the parent source file</li>
 <li>Search in user-defined include directories (<span class="tt">globalincludedir</span>)</li>
-<li>Search in system PATH environment variable directories</li>
+<li>Search in system INCLUDE environment variable directories</li>
 <li>Fallback to current working directory</li>
 <li>Proper error reporting with file name and line number context</li>
 <li>Recursion safety through integration with the main preprocessor loop</li>
@@ -146,7 +146,9 @@ For <span class="tt">#include &lt;file&gt;</span>:<ol type="1">
 <li>Directories in INCLUDE environment variable</li>
 <li>Current working directory</li>
 </ol>
-</dd></dl>
+</dd>
+<dd>
+Nested includes are supported. Relative paths inside included files are resolved relative to the directory containing the including file.</dd></dl>
 <h1 class="doxsection"><a class="anchor" id="include_examples"></a>
 Examples</h1>
 <ol type="1">
@@ -154,7 +156,7 @@ Examples</h1>
 <div class="line"><span class="preprocessor"></span><span class="comment">!&gt; fpx will look for ./config.h relative to the current source file first</span></div>
 </div><!-- fragment --></li>
 <li>Include a system header using angle brackets: <div class="fragment"><div class="line"><span class="preprocessor">#include &lt;stdlib.h&gt;</span></div>
-<div class="line"><span class="preprocessor"></span><span class="comment">!&gt; fpx will skip the source directory and search -I paths, then PATH</span></div>
+<div class="line"><span class="preprocessor"></span><span class="comment">!&gt; fpx will skip the source directory and search -I paths, then INCLUDE</span></div>
 </div><!-- fragment --></li>
 <li>Using from the driver program (adding include paths): <div class="fragment"><div class="line">global%includedir = [<span class="stringliteral">&#39;/usr/include&#39;</span>, <span class="stringliteral">&#39;./include&#39;</span>, <span class="stringliteral">&#39;./headers&#39;</span>]</div>
 <div class="line"><span class="keyword">call </span>preprocess(<span class="stringliteral">&#39;main.F90&#39;</span>, <span class="stringliteral">&#39;main.f90&#39;</span>)<span class="comment"></span></div>
@@ -168,7 +170,7 @@ Examples</h1>
 <tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Data Types</h2></td></tr>
 <tr class="memitem:read_5Funit" id="r_read_5Funit"><td class="memItemLeft">interface &#160;</td><td class="memItemRight"><a class="el" href="interfacefpx__macro_1_1read__unit.html">read_unit</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Abstract interface for the main preprocessing routine (used for recursion) Allows handle_include to recursively call the top-level preprocess_unit routine without creating circular module dependencies.  <a href="interfacefpx__macro_1_1read__unit.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Abstract interface to the top-level preprocessing routine.  <a href="interfacefpx__macro_1_1read__unit.html#details">More...</a><br /></td></tr>
 </table>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Methods</h2>
 <a id="gaa2164306cb7e02304b8f602a63658787" name="gaa2164306cb7e02304b8f602a63658787"></a>
@@ -207,8 +209,8 @@ Data Types</h2></td></tr>
 
 <p>Process a include directive encountered during preprocessing Resolves the include file name (quoted or angle-bracketed), searches for the file using standard C preprocessor rules: </p>
 <ul>
-<li>Quoted includes search: parent directory, -I paths, PATH, cwd</li>
-<li>Angle bracket includes search: -I paths, PATH, cwd (skips parent directory) Opens the file and recursively preprocesses its contents into the output unit.</li>
+<li>Quoted includes search: parent directory, -I paths, INCLUDE, cwd</li>
+<li>Angle bracket includes search: -I paths, INCLUDE, cwd (skips parent directory) Opens the file and recursively preprocesses its contents into the output unit.</li>
 </ul>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -216,13 +218,12 @@ Data Types</h2></td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">ounit</td><td>Output unit where preprocessed content is written </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">preprocess</td><td>Procedure pointer to the main line-by-line preprocessor </td></tr>
     <tr><td class="paramdir">[in,out]</td><td class="paramname">macros</td><td>Current macro table (shared across recursion levels) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">token</td><td>Usually 'include' – the directive keyword</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">token</td><td>Usually 'include' - the directive keyword </td></tr>
   </table>
   </dd>
 </dl>
-<p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="include_8f90_source.html#l00100">100</a> of file <a class="el" href="include_8f90_source.html">include.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="include_8f90_source.html#l00104">104</a> of file <a class="el" href="include_8f90_source.html">include.f90</a>.</p>
 
 </div>
 </div>

@@ -122,12 +122,13 @@ $(function(){initNavTree('group__group__path.html','',''); });
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Definition</h2>
 <div class="textblock"><p>A modern, portable Fortran module for path manipulation and basic directory operations. This module provides a clean interface for working with file system paths in a platform-independent way. It correctly handles both Unix ('/') and Windows ('\') path separators through conditional compilation and offers deferred-length character results for maximum flexibility. </p>
 <p>The module builds upon the <a class="el" href="">fpx_string </a> module for <a class="el" href="structfpx__string_1_1string.html">string </a> type support and provides overloads of key procedures to accept either intrinsic <span class="tt">character(*)</span> or <span class="tt">type(string)</span> arguments.</p>
-<p>Features</p><ul>
-<li>Detection of absolute and rooted paths on Windows and Unix-like systems</li>
-<li>Safe path joining that avoids duplicate separators</li>
-<li>Extraction of directory part, filename (with or without extension)</li>
-<li>Path splitting into head/tail components</li>
-<li>Retrieval of the current working directory (<span class="tt">cwd</span>)</li>
+<p>Features include:</p><ul>
+<li>Detection of absolute and rooted paths</li>
+<li>Cross-platform path joining</li>
+<li>Extraction of directory and filename components</li>
+<li>Splitting paths into head/tail elements</li>
+<li>Retrieval and modification of the current working directory</li>
+<li>Support for both intrinsic CHARACTER and type(string) arguments</li>
 <li>Changing the current working directory (<span class="tt">chdir</span>)</li>
 </ul>
 <dl class="section note"><dt>Note</dt><dd>All path-returning functions return allocatable deferred-length characters. </dd>
@@ -155,17 +156,17 @@ Examples</h1>
 <tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Data Types</h2></td></tr>
 <tr class="memitem:join" id="r_join"><td class="memItemLeft">interface &#160;</td><td class="memItemRight"><a class="el" href="interfacefpx__path_1_1join.html">join</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generic interface for joining two path components Supports all combinations of character and string arguments.  <a href="interfacefpx__path_1_1join.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Join path components using the platform separator.  <a href="interfacefpx__path_1_1join.html#details">More...</a><br /></td></tr>
 </table>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Methods</h2>
-<a id="ga74b739840306a7c17c0542fec9ca23c6" name="ga74b739840306a7c17c0542fec9ca23c6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga74b739840306a7c17c0542fec9ca23c6">&#9670;&#160;</a></span>chdir()</h2>
+<a id="ga75f09aeef195fd8649bafaee43421ae1" name="ga75f09aeef195fd8649bafaee43421ae1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga75f09aeef195fd8649bafaee43421ae1">&#9670;&#160;</a></span>chdir()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">subroutine chdir </td>
+          <td class="memname">subroutine, public chdir </td>
           <td>(</td>
           <td class="paramtype">character(*), intent(in)</td>          <td class="paramname"><span class="paramname"><em>path</em></span>, </td>
         </tr>
@@ -177,152 +178,52 @@ Data Types</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Changes the current working directory. </p>
+<p>Changes the current working directory. This is a thin wrapper around the underlying C runtime <span class="tt">chdir()</span> implementation. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">path</td><td>Directory to change to </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">err</td><td>Optional integer error code (0 = success, non-zero = failure) <div class="fragment"><div class="line"><span class="keywordtype">integer</span> :: ierr</div>
 <div class="line"><span class="keyword">call </span>chdir(<span class="stringliteral">&#39;/tmp&#39;</span>, ierr)</div>
 <div class="line"><span class="keywordflow">if</span> (ierr /= 0) stop <span class="stringliteral">&#39;Failed to change directory&#39;</span></div>
-</div><!-- fragment --></td></tr>
+</div><!-- fragment --> </td></tr>
   </table>
   </dd>
 </dl>
-<p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="path_8f90_source.html#l00423">423</a> of file <a class="el" href="path_8f90_source.html">path.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="path_8f90_source.html#l00456">456</a> of file <a class="el" href="path_8f90_source.html">path.f90</a>.</p>
 
 </div>
 </div>
-<a id="gaee1434d13417f0b481ab61549867aba7" name="gaee1434d13417f0b481ab61549867aba7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gaee1434d13417f0b481ab61549867aba7">&#9670;&#160;</a></span>cwd()</h2>
+<a id="ga3dacbbb5b88aa8f8c772ddbcbff36077" name="ga3dacbbb5b88aa8f8c772ddbcbff36077"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga3dacbbb5b88aa8f8c772ddbcbff36077">&#9670;&#160;</a></span>cwd()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">character(:) function, allocatable cwd</td>
+          <td class="memname">character(:) function, allocatable, public cwd</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Returns the current working directory as a deferred-length character string. Returns empty string on failure. </p>
+<p>Returns the current working directory as a deferred-length character string. Returns an empty string if the current directory cannot be determined. </p>
 <dl class="section return"><dt>Returns</dt><dd>res Current working directory <div class="fragment"><div class="line"><span class="keywordtype">character(:)</span>, <span class="keywordtype">allocatable</span> :: here</div>
 <div class="line">here = cwd()</div>
 <div class="line">print *, <span class="stringliteral">&#39;We are in: &#39;</span>, here</div>
-</div><!-- fragment --></dd></dl>
-<p><b>Remarks</b> </p>
+</div><!-- fragment --> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="path_8f90_source.html#l00393">393</a> of file <a class="el" href="path_8f90_source.html">path.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="path_8f90_source.html#l00425">425</a> of file <a class="el" href="path_8f90_source.html">path.f90</a>.</p>
 
 </div>
 </div>
-<a id="ga877a2e8a80f597511da1c306a49523da" name="ga877a2e8a80f597511da1c306a49523da"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga877a2e8a80f597511da1c306a49523da">&#9670;&#160;</a></span>dirname()</h2>
+<a id="ga50eef041eb787bd6a02b4a8f576505c5" name="ga50eef041eb787bd6a02b4a8f576505c5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga50eef041eb787bd6a02b4a8f576505c5">&#9670;&#160;</a></span>is_absolute()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">pure character(:) function, allocatable dirname </td>
-          <td>(</td>
-          <td class="paramtype">character(*), intent(in)</td>          <td class="paramname"><span class="paramname"><em>filepath</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Returns the base name (filename) part of a path. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">filepath</td><td>Path to analyse </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>res Base name component</dd></dl>
-<div class="fragment"><div class="line">print *, dirname(<span class="stringliteral">&#39;/home/user/file.txt&#39;</span>)  ! <span class="stringliteral">&#39;file.txt&#39;</span></div>
-</div><!-- fragment --><p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="path_8f90_source.html#l00314">314</a> of file <a class="el" href="path_8f90_source.html">path.f90</a>.</p>
-
-</div>
-</div>
-<a id="gae5c7c7a17e6ec9a4bdbf7762f34b1e70" name="gae5c7c7a17e6ec9a4bdbf7762f34b1e70"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gae5c7c7a17e6ec9a4bdbf7762f34b1e70">&#9670;&#160;</a></span>dirpath()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">pure character(:) function, allocatable dirpath </td>
-          <td>(</td>
-          <td class="paramtype">character(*), intent(in)</td>          <td class="paramname"><span class="paramname"><em>filepath</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Returns the directory part of a path (everything before the last separator). </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">filepath</td><td>Path to analyse </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>res Directory component</dd></dl>
-<div class="fragment"><div class="line">print *, dirpath(<span class="stringliteral">&#39;/home/user/file.txt&#39;</span>)  ! <span class="stringliteral">&#39;/home/user&#39;</span></div>
-</div><!-- fragment --><p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="path_8f90_source.html#l00295">295</a> of file <a class="el" href="path_8f90_source.html">path.f90</a>.</p>
-
-</div>
-</div>
-<a id="gadbdf2e5f22321e67f88ced1c26ebad95" name="gadbdf2e5f22321e67f88ced1c26ebad95"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gadbdf2e5f22321e67f88ced1c26ebad95">&#9670;&#160;</a></span>filename()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">pure character(:) function, allocatable filename </td>
-          <td>(</td>
-          <td class="paramtype">character(*), intent(in)</td>          <td class="paramname"><span class="paramname"><em>filepath</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">logical, intent(in), optional</td>          <td class="paramname"><span class="paramname"><em>keepext</em></span>&#160;)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Extracts the filename part of a path. By default the extension is stripped. If keepext=.true. the full filename including extension is returned. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">filepath</td><td>Full or relative path </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">keepext</td><td>Optional; keep extension when .true. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>res Filename (without path)</dd></dl>
-<div class="fragment"><div class="line">{.90} </div>
-<div class="line">           print *, filename(<span class="stringliteral">&#39;dir/file.txt&#39;</span>)        <span class="comment">! &#39;file&#39;</span></div>
-<div class="line">           print *, filename(<span class="stringliteral">&#39;dir/file.txt&#39;</span>,.true.) <span class="comment">! &#39;file.txt&#39;</span></div>
-<div class="line">           print *, filename(<span class="stringliteral">&#39;archive.tar.gz&#39;</span>)      ! <span class="stringliteral">&#39;archive.tar&#39;</span></div>
-</div><!-- fragment --><p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="path_8f90_source.html#l00180">180</a> of file <a class="el" href="path_8f90_source.html">path.f90</a>.</p>
-
-</div>
-</div>
-<a id="gafc78d35964a533e133a57e4b841f7834" name="gafc78d35964a533e133a57e4b841f7834"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gafc78d35964a533e133a57e4b841f7834">&#9670;&#160;</a></span>is_absolute()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">pure logical function is_absolute </td>
+          <td class="memname">pure logical function, public is_absolute </td>
           <td>(</td>
           <td class="paramtype">character(*), intent(in)</td>          <td class="paramname"><span class="paramname"><em>filepath</em></span></td><td>)</td>
           <td></td>
@@ -342,20 +243,19 @@ Data Types</h2></td></tr>
 <div class="line">print *, is_absolute(<span class="stringliteral">&#39;C:\\Temp&#39;</span>)     <span class="comment">! .true.  (Windows)</span></div>
 <div class="line">print *, is_absolute(<span class="stringliteral">&#39;docs/..&#39;</span>)      <span class="comment">! .false.</span></div>
 
-</div><!-- fragment --><p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="path_8f90_source.html#l00128">128</a> of file <a class="el" href="path_8f90_source.html">path.f90</a>.</p>
+</div><!-- fragment --> 
+<p class="definition">Definition at line <a class="el" href="path_8f90_source.html#l00166">166</a> of file <a class="el" href="path_8f90_source.html">path.f90</a>.</p>
 
 </div>
 </div>
-<a id="gad078c4cc1b67c2165a367d9a3e141adf" name="gad078c4cc1b67c2165a367d9a3e141adf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gad078c4cc1b67c2165a367d9a3e141adf">&#9670;&#160;</a></span>is_rooted()</h2>
+<a id="ga2e42aece5ef439ad80581b44ff0f179d" name="ga2e42aece5ef439ad80581b44ff0f179d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga2e42aece5ef439ad80581b44ff0f179d">&#9670;&#160;</a></span>is_rooted()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">pure logical function is_rooted </td>
+          <td class="memname">pure logical function, public is_rooted </td>
           <td>(</td>
           <td class="paramtype">character(*), intent(in)</td>          <td class="paramname"><span class="paramname"><em>filepath</em></span></td><td>)</td>
           <td></td>
@@ -370,21 +270,180 @@ Data Types</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>res .true. if filepath is rooted</dd></dl>
-<p><b>Remarks</b> </p>
+<dl class="section return"><dt>Returns</dt><dd>res .true. if filepath is rooted </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="path_8f90_source.html#l00151">151</a> of file <a class="el" href="path_8f90_source.html">path.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="path_8f90_source.html#l00188">188</a> of file <a class="el" href="path_8f90_source.html">path.f90</a>.</p>
 
 </div>
 </div>
-<a id="ga9497f5b034af937c25b5caaec88f0465" name="ga9497f5b034af937c25b5caaec88f0465"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga9497f5b034af937c25b5caaec88f0465">&#9670;&#160;</a></span>split_path()</h2>
+<a id="gae90f10f0b9c263751cdffdd11d57f5b0" name="gae90f10f0b9c263751cdffdd11d57f5b0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gae90f10f0b9c263751cdffdd11d57f5b0">&#9670;&#160;</a></span>join_character_character()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">pure subroutine split_path </td>
+          <td class="memname">pure character(:) function, allocatable join_character_character </td>
+          <td>(</td>
+          <td class="paramtype">character(*), intent(in)</td>          <td class="paramname"><span class="paramname"><em>path1</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">character(*), intent(in)</td>          <td class="paramname"><span class="paramname"><em>path2</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Implementation of <a class="el" href="interfacefpx__path_1_1join.html" title="join">join</a> for character arguments. </p>
+<p>The generic interface accepts any combination of intrinsic <span class="tt">character(*)</span> and <a class="el" href="structfpx__string_1_1string.html">string </a> arguments.</p>
+<p>Supported overloads:</p><ul>
+<li>join(character, character)</li>
+<li>join(character, string)</li>
+<li>join(string, character)</li>
+<li>join(string, string)</li>
+</ul>
+<p><b>Examples</b> </p><div class="fragment"><div class="line"><span class="keywordtype">character(:)</span>, <span class="keywordtype">allocatable</span> :: p</div>
+<div class="line"> </div>
+<div class="line">p = join(<span class="stringliteral">&#39;/usr&#39;</span>,<span class="stringliteral">&#39;bin&#39;</span>)</div>
+<div class="line"><span class="comment">! &#39;/usr/bin&#39;</span></div>
+<div class="line"> </div>
+<div class="line">p = join(string(<span class="stringliteral">&#39;/usr&#39;</span>),<span class="stringliteral">&#39;local&#39;</span>)</div>
+<div class="line"><span class="comment">! &#39;/usr/local&#39;</span></div>
+
+</div><!-- fragment -->    
+<p class="definition">Definition at line <a class="el" href="path_8f90_source.html#l00246">246</a> of file <a class="el" href="path_8f90_source.html">path.f90</a>.</p>
+
+</div>
+</div>
+<a id="ga80f7ef90f9330578901a31bc7c8611c0" name="ga80f7ef90f9330578901a31bc7c8611c0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga80f7ef90f9330578901a31bc7c8611c0">&#9670;&#160;</a></span>join_character_string()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">pure character(:) function, allocatable join_character_string </td>
+          <td>(</td>
+          <td class="paramtype">character(*), intent(in)</td>          <td class="paramname"><span class="paramname"><em>path1</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">type(<a class="el" href="structfpx__string_1_1string.html">string</a>), intent(in)</td>          <td class="paramname"><span class="paramname"><em>path2</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Implementation of <a class="el" href="interfacefpx__path_1_1join.html" title="join">join</a> for character arguments. </p>
+<p>The generic interface accepts any combination of intrinsic <span class="tt">character(*)</span> and <a class="el" href="structfpx__string_1_1string.html">string </a> arguments.</p>
+<p>Supported overloads:</p><ul>
+<li>join(character, character)</li>
+<li>join(character, string)</li>
+<li>join(string, character)</li>
+<li>join(string, string)</li>
+</ul>
+<p><b>Examples</b> </p><div class="fragment"><div class="line"><span class="keywordtype">character(:)</span>, <span class="keywordtype">allocatable</span> :: p</div>
+<div class="line"> </div>
+<div class="line">p = join(<span class="stringliteral">&#39;/usr&#39;</span>,<span class="stringliteral">&#39;bin&#39;</span>)</div>
+<div class="line"><span class="comment">! &#39;/usr/bin&#39;</span></div>
+<div class="line"> </div>
+<div class="line">p = join(string(<span class="stringliteral">&#39;/usr&#39;</span>),<span class="stringliteral">&#39;local&#39;</span>)</div>
+<div class="line"><span class="comment">! &#39;/usr/local&#39;</span></div>
+
+</div><!-- fragment -->    
+<p class="definition">Definition at line <a class="el" href="path_8f90_source.html#l00264">264</a> of file <a class="el" href="path_8f90_source.html">path.f90</a>.</p>
+
+</div>
+</div>
+<a id="gac548ef67858ca3cc318f5cecffd492ad" name="gac548ef67858ca3cc318f5cecffd492ad"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gac548ef67858ca3cc318f5cecffd492ad">&#9670;&#160;</a></span>join_string_character()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">pure character(:) function, allocatable join_string_character </td>
+          <td>(</td>
+          <td class="paramtype">type(<a class="el" href="structfpx__string_1_1string.html">string</a>), intent(in)</td>          <td class="paramname"><span class="paramname"><em>path1</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">character(*), intent(in)</td>          <td class="paramname"><span class="paramname"><em>path2</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Implementation of <a class="el" href="interfacefpx__path_1_1join.html" title="join">join</a> for character arguments. </p>
+<p>The generic interface accepts any combination of intrinsic <span class="tt">character(*)</span> and <a class="el" href="structfpx__string_1_1string.html">string </a> arguments.</p>
+<p>Supported overloads:</p><ul>
+<li>join(character, character)</li>
+<li>join(character, string)</li>
+<li>join(string, character)</li>
+<li>join(string, string)</li>
+</ul>
+<p><b>Examples</b> </p><div class="fragment"><div class="line"><span class="keywordtype">character(:)</span>, <span class="keywordtype">allocatable</span> :: p</div>
+<div class="line"> </div>
+<div class="line">p = join(<span class="stringliteral">&#39;/usr&#39;</span>,<span class="stringliteral">&#39;bin&#39;</span>)</div>
+<div class="line"><span class="comment">! &#39;/usr/bin&#39;</span></div>
+<div class="line"> </div>
+<div class="line">p = join(string(<span class="stringliteral">&#39;/usr&#39;</span>),<span class="stringliteral">&#39;local&#39;</span>)</div>
+<div class="line"><span class="comment">! &#39;/usr/local&#39;</span></div>
+
+</div><!-- fragment -->    
+<p class="definition">Definition at line <a class="el" href="path_8f90_source.html#l00282">282</a> of file <a class="el" href="path_8f90_source.html">path.f90</a>.</p>
+
+</div>
+</div>
+<a id="ga003662531cae6f864b1b05ca52502864" name="ga003662531cae6f864b1b05ca52502864"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga003662531cae6f864b1b05ca52502864">&#9670;&#160;</a></span>join_string_string()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">pure character(:) function, allocatable join_string_string </td>
+          <td>(</td>
+          <td class="paramtype">type(<a class="el" href="structfpx__string_1_1string.html">string</a>), intent(in)</td>          <td class="paramname"><span class="paramname"><em>path1</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">type(<a class="el" href="structfpx__string_1_1string.html">string</a>), intent(in)</td>          <td class="paramname"><span class="paramname"><em>path2</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Implementation of <a class="el" href="interfacefpx__path_1_1join.html" title="join">join</a> for character arguments. </p>
+<p>The generic interface accepts any combination of intrinsic <span class="tt">character(*)</span> and <a class="el" href="structfpx__string_1_1string.html">string </a> arguments.</p>
+<p>Supported overloads:</p><ul>
+<li>join(character, character)</li>
+<li>join(character, string)</li>
+<li>join(string, character)</li>
+<li>join(string, string)</li>
+</ul>
+<p><b>Examples</b> </p><div class="fragment"><div class="line"><span class="keywordtype">character(:)</span>, <span class="keywordtype">allocatable</span> :: p</div>
+<div class="line"> </div>
+<div class="line">p = join(<span class="stringliteral">&#39;/usr&#39;</span>,<span class="stringliteral">&#39;bin&#39;</span>)</div>
+<div class="line"><span class="comment">! &#39;/usr/bin&#39;</span></div>
+<div class="line"> </div>
+<div class="line">p = join(string(<span class="stringliteral">&#39;/usr&#39;</span>),<span class="stringliteral">&#39;local&#39;</span>)</div>
+<div class="line"><span class="comment">! &#39;/usr/local&#39;</span></div>
+
+</div><!-- fragment -->    
+<p class="definition">Definition at line <a class="el" href="path_8f90_source.html#l00300">300</a> of file <a class="el" href="path_8f90_source.html">path.f90</a>.</p>
+
+</div>
+</div>
+<a id="gad1d14775f471e84d2d96c2e29b6f8c6a" name="gad1d14775f471e84d2d96c2e29b6f8c6a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gad1d14775f471e84d2d96c2e29b6f8c6a">&#9670;&#160;</a></span>split_path()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">pure subroutine, public split_path </td>
           <td>(</td>
           <td class="paramtype">character(*), intent(in)</td>          <td class="paramname"><span class="paramname"><em>filepath</em></span>, </td>
         </tr>
@@ -401,18 +460,22 @@ Data Types</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Splits a path into head (directory) and tail (basename) components. </p>
-<dl class="params"><dt>Parameters</dt><dd>
+<p>Splits a path into head (directory) and tail (basename) components. Special cases: </p>
+<ul>
+<li>Empty paths return ('.','')</li>
+<li>Root directories return ('/','')</li>
+<li>Trailing separators are ignored <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">filepath</td><td>Input path </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname"><a class="el" href="group__group__string.html#gafaf25b317ddf986a177b9984e58b75ad" title="Returns the first non-blank character of a string.">head</a></td><td>Directory part (includes trailing separator when appropriate) </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname"><a class="el" href="group__group__string.html#ga5f1082a048d0e212c77896988f601304" title="Returns the last non-blank character of a string.">tail</a></td><td>Base name part</td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname"><a class="el" href="group__group__string.html#gafaf25b317ddf986a177b9984e58b75ad" title="Returns the first character of the trimmed string.">head</a></td><td>Directory part (includes trailing separator when appropriate) </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname"><a class="el" href="group__group__string.html#ga5f1082a048d0e212c77896988f601304" title="Returns the last non-blank character of a string.">tail</a></td><td>Base name part </td></tr>
   </table>
   </dd>
 </dl>
-<p><b>Remarks</b> </p>
+</li>
+</ul>
 
-<p class="definition">Definition at line <a class="el" href="path_8f90_source.html#l00330">330</a> of file <a class="el" href="path_8f90_source.html">path.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="path_8f90_source.html#l00363">363</a> of file <a class="el" href="path_8f90_source.html">path.f90</a>.</p>
 
 </div>
 </div>

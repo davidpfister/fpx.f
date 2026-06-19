@@ -3,7 +3,7 @@
 !! Directed graph utilities used for macro dependency analysis.
 !!
 !! This module provides a lightweight directed graph implementation used
-!! internally by the FPX preprocessor to detect cyclic dependencies during
+!! internally by the fpx preprocessor to detect cyclic dependencies during
 !! macro expansion.
 !!
 !! Unlike general-purpose graph libraries, this implementation is optimized
@@ -25,7 +25,7 @@
 !! ...
 !! @endcode
 !!
-!! Before expanding a macro, FPX records dependencies in a graph and checks
+!! Before expanding a macro, fpx records dependencies in a graph and checks
 !! whether introducing a new dependency would create a cycle.
 !!
 !! @section graph_examples Examples

@@ -120,7 +120,26 @@ $(function(){initNavTree('group__group__os.html','',''); });
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Definition</h2>
-<div class="textblock"><p>Operating system detection utilities for the fpx preprocessor This lightweight module provides reliable runtime detection of the current operating system on Unix-like platforms (Linux, macOS, FreeBSD, OpenBSD, Solaris) and Windows (including Cygwin, MSYS, and native Windows). Detection is performed only once per thread (using OpenMP threadprivate storage) and then cached for fast subsequent calls. The implementation first checks common environment variables (<span class="tt">OSTYPE</span>, <span class="tt">OS</span>), then falls back to the presence of OS-specific files. This makes it robust across native systems, containers, WSL, Cygwin, and cross-compilation environments. </p>
+<div class="textblock"><p>This module provides portable runtime operating-system detection facilities used throughout the fpx preprocessor. </p>
+<p>Supported platforms include:</p><ul>
+<li>Linux distributions</li>
+<li>macOS</li>
+<li>Native Microsoft Windows</li>
+<li>Cygwin</li>
+<li>Solaris/OpenSolaris</li>
+<li>FreeBSD</li>
+<li>OpenBSD</li>
+</ul>
+<p>Detection is performed lazily on first use and cached using OpenMP threadprivate storage, ensuring negligible overhead for repeated queries.</p>
+<p>The implementation relies primarily on environment variables, with fallback detection through the presence of well-known operating-system specific files.</p>
+<p>This strategy is designed to work reliably in native installations, containers, WSL environments, and most cross-compilation setups.</p>
+<dl class="section user"><dt>Detection Model</dt><dd>OS identification is attempted in the following order:<ol type="1">
+<li>Environment variable <span class="tt">OSTYPE</span></li>
+<li>Environment variable <span class="tt">OS</span></li>
+<li>Operating-system specific filesystem probes</li>
+<li>Fallback to OS_UNKNOWN</li>
+</ol>
+</dd></dl>
 <h1 class="doxsection"><a class="anchor" id="os_examples"></a>
 Examples</h1>
 <ol type="1">
@@ -141,9 +160,14 @@ Examples</h1>
 <div class="line">os_type = get_os_type()           <span class="comment">! detects and caches</span></div>
 <div class="line">print *, os_is_unix(os_type)      <span class="comment">! fast, no re-detection</span></div>
 
-</div><!-- fragment --> </li>
+</div><!-- fragment --></li>
+<li>Module constants</li>
 </ol>
-</div><a name="doc-var-members" id="doc-var-members"></a><h2 id="header-doc-var-members" class="groupheader">Variables</h2>
+<div class="fragment"><div class="line"><span class="keywordflow">if</span> (get_os_type() == os_windows) <span class="keywordflow">then</span></div>
+<div class="line">    ...</div>
+<div class="line"><span class="keywordflow">end if</span></div>
+
+</div><!-- fragment --> </div><a name="doc-var-members" id="doc-var-members"></a><h2 id="header-doc-var-members" class="groupheader">Variables</h2>
 <a id="gaea747ca4b17690fe52ab56cf44b0ef69" name="gaea747ca4b17690fe52ab56cf44b0ef69"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#gaea747ca4b17690fe52ab56cf44b0ef69">&#9670;&#160;</a></span>os_cygwin</h2>
 
@@ -158,7 +182,7 @@ Examples</h1>
 
 <p>Cygwin POSIX environment on Windows. </p>
 
-<p class="definition">Definition at line <a class="el" href="os_8f90_source.html#l00061">61</a> of file <a class="el" href="os_8f90_source.html">os.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="os_8f90_source.html#l00092">92</a> of file <a class="el" href="os_8f90_source.html">os.f90</a>.</p>
 
 </div>
 </div>
@@ -176,7 +200,7 @@ Examples</h1>
 
 <p>FreeBSD and its direct derivatives. </p>
 
-<p class="definition">Definition at line <a class="el" href="os_8f90_source.html#l00067">67</a> of file <a class="el" href="os_8f90_source.html">os.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="os_8f90_source.html#l00098">98</a> of file <a class="el" href="os_8f90_source.html">os.f90</a>.</p>
 
 </div>
 </div>
@@ -194,7 +218,7 @@ Examples</h1>
 
 <p>Linux (any distribution, including GNU/Linux). </p>
 
-<p class="definition">Definition at line <a class="el" href="os_8f90_source.html#l00052">52</a> of file <a class="el" href="os_8f90_source.html">os.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="os_8f90_source.html#l00083">83</a> of file <a class="el" href="os_8f90_source.html">os.f90</a>.</p>
 
 </div>
 </div>
@@ -212,7 +236,7 @@ Examples</h1>
 
 <p>macOS (Darwin-based Apple operating system) </p>
 
-<p class="definition">Definition at line <a class="el" href="os_8f90_source.html#l00055">55</a> of file <a class="el" href="os_8f90_source.html">os.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="os_8f90_source.html#l00086">86</a> of file <a class="el" href="os_8f90_source.html">os.f90</a>.</p>
 
 </div>
 </div>
@@ -230,7 +254,7 @@ Examples</h1>
 
 <p>OpenBSD. </p>
 
-<p class="definition">Definition at line <a class="el" href="os_8f90_source.html#l00070">70</a> of file <a class="el" href="os_8f90_source.html">os.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="os_8f90_source.html#l00101">101</a> of file <a class="el" href="os_8f90_source.html">os.f90</a>.</p>
 
 </div>
 </div>
@@ -248,7 +272,7 @@ Examples</h1>
 
 <p>Oracle Solaris / OpenSolaris derivatives. </p>
 
-<p class="definition">Definition at line <a class="el" href="os_8f90_source.html#l00064">64</a> of file <a class="el" href="os_8f90_source.html">os.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="os_8f90_source.html#l00095">95</a> of file <a class="el" href="os_8f90_source.html">os.f90</a>.</p>
 
 </div>
 </div>
@@ -266,7 +290,7 @@ Examples</h1>
 
 <p>Unknown / undetected operating system. </p>
 
-<p class="definition">Definition at line <a class="el" href="os_8f90_source.html#l00049">49</a> of file <a class="el" href="os_8f90_source.html">os.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="os_8f90_source.html#l00080">80</a> of file <a class="el" href="os_8f90_source.html">os.f90</a>.</p>
 
 </div>
 </div>
@@ -284,7 +308,7 @@ Examples</h1>
 
 <p>Microsoft Windows (native, 32-bit or 64-bit). </p>
 
-<p class="definition">Definition at line <a class="el" href="os_8f90_source.html#l00058">58</a> of file <a class="el" href="os_8f90_source.html">os.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="os_8f90_source.html#l00089">89</a> of file <a class="el" href="os_8f90_source.html">os.f90</a>.</p>
 
 </div>
 </div>
@@ -300,10 +324,11 @@ Examples</h1>
       </table>
 </div><div class="memdoc">
 
-<p>Microsoft Windows - explicitly 32-bit (x86) architecture. </p>
-<p>Mainly useful when different behavior is needed between 32-bit and 64-bit Windows </p>
+<p>Native Microsoft Windows running on 32-bit x86 architecture. </p>
+<p>This value is returned when the operating system is identified as Windows and the PROCESSOR_ARCHITECTURE environment variable indicates an x86 target.</p>
+<p>It can be used when architecture-specific behavior is required. </p>
 
-<p class="definition">Definition at line <a class="el" href="os_8f90_source.html#l00075">75</a> of file <a class="el" href="os_8f90_source.html">os.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="os_8f90_source.html#l00111">111</a> of file <a class="el" href="os_8f90_source.html">os.f90</a>.</p>
 
 </div>
 </div>
@@ -320,7 +345,8 @@ Examples</h1>
       </table>
 </div><div class="memdoc">
 
-<p>Determine the current operating system type Returns one of the OS_* constants. Detection is performed only on the first call and cached in threadprivate storage for subsequent fast access. </p>
+<p>Determine the current operating system type Returns one of the OS_* constants. </p>
+<dl class="section user"><dt>Thread Safety</dt><dd>The detected value is cached independently for each OpenMP thread using threadprivate storage. Concurrent calls therefore incur no synchronization overhead after the first query on each thread.</dd></dl>
 <p>Detection strategy:</p><ol type="1">
 <li>Environment variable <span class="tt">OSTYPE</span> (common on Unix-like systems)</li>
 <li>Environment variable <span class="tt">OS</span> (set on Windows)</li>
@@ -328,9 +354,16 @@ Examples</h1>
 </ol>
 <p>Returns OS_UNKNOWN if no reliable indicator is found.</p>
 <dl class="section return"><dt>Returns</dt><dd>OS identifier (OS_LINUX, OS_MACOS, OS_WINDOWS, ...)</dd></dl>
-<p><b>Remarks</b> </p>
+<p><b>Examples</b> </p>
+<div class="fragment"><div class="line"><span class="keywordflow">select case</span> (get_os_type())</div>
+<div class="line"><span class="keywordflow">case</span> (os_windows)</div>
+<div class="line">    print *, <span class="stringliteral">&#39;Windows&#39;</span></div>
+<div class="line"><span class="keywordflow">case</span> (os_linux)</div>
+<div class="line">    print *, <span class="stringliteral">&#39;Linux&#39;</span></div>
+<div class="line"><span class="keywordflow">end select</span></div>
 
-<p class="definition">Definition at line <a class="el" href="os_8f90_source.html#l00119">119</a> of file <a class="el" href="os_8f90_source.html">os.f90</a>.</p>
+</div><!-- fragment --> 
+<p class="definition">Definition at line <a class="el" href="os_8f90_source.html#l00188">188</a> of file <a class="el" href="os_8f90_source.html">os.f90</a>.</p>
 
 </div>
 </div>
@@ -357,9 +390,13 @@ Examples</h1>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>.true. if OS is not Windows, .false. otherwise</dd></dl>
-<p><b>Remarks</b> </p>
+<p><b>Examples</b> </p>
+<div class="fragment"><div class="line"><span class="keywordflow">if</span> (os_is_unix()) <span class="keywordflow">then</span></div>
+<div class="line">    <span class="keyword">call </span>execute_command_line(<span class="stringliteral">&#39;uname -a&#39;</span>)</div>
+<div class="line"><span class="keywordflow">end if</span></div>
 
-<p class="definition">Definition at line <a class="el" href="os_8f90_source.html#l00239">239</a> of file <a class="el" href="os_8f90_source.html">os.f90</a>.</p>
+</div><!-- fragment --> 
+<p class="definition">Definition at line <a class="el" href="os_8f90_source.html#l00316">316</a> of file <a class="el" href="os_8f90_source.html">os.f90</a>.</p>
 
 </div>
 </div>
@@ -378,17 +415,30 @@ Examples</h1>
       </table>
 </div><div class="memdoc">
 
-<p>Return a human-readable string describing the OS type flag Converts any of the OS_* integer constants into its corresponding name. Useful for logging, error messages, or user output. </p>
-<dl class="params"><dt>Parameters</dt><dd>
+<p>Return a human-readable string describing the OS type flag Converts any of the OS_* integer constants into its corresponding name. Accepted values include: </p>
+<ul>
+<li>OS_UNKNOWN</li>
+<li>OS_LINUX</li>
+<li>OS_MACOS</li>
+<li>OS_WINDOWS</li>
+<li>OS_WINDOWSx86</li>
+<li>OS_CYGWIN</li>
+<li>OS_SOLARIS</li>
+<li>OS_FREEBSD</li>
+<li>OS_OPENBSD Useful for logging, error messages, or user output. <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">os</td><td>OS identifier from get_os_type() </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Allocated character string with the OS name</dd></dl>
-<p><b>Remarks</b> </p>
+<b>Examples</b> </li>
+</ul>
+<div class="fragment"><div class="line">print *, os_name(os_linux)<span class="comment"></span></div>
+<div class="line"><span class="comment">!&gt; prints: Linux</span></div>
 
-<p class="definition">Definition at line <a class="el" href="os_8f90_source.html#l00087">87</a> of file <a class="el" href="os_8f90_source.html">os.f90</a>.</p>
+</div><!-- fragment --> 
+<p class="definition">Definition at line <a class="el" href="os_8f90_source.html#l00140">140</a> of file <a class="el" href="os_8f90_source.html">os.f90</a>.</p>
 
 </div>
 </div>

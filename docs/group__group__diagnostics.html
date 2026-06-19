@@ -120,21 +120,45 @@ $(function(){initNavTree('group__group__diagnostics.html','',''); });
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Definition</h2>
-<div class="textblock"><p>Processing of warning and error preprocessor directives This module implements the core logic for handling messages (either as warning or errors). </p>
+<div class="textblock"><p>Diagnostic directives for the fpx preprocessor. </p>
+<p>This module implements the handling of the preprocessor directives <span class="tt">#error</span> and <span class="tt">#warning</span>, allowing source files to emit user-defined diagnostics during preprocessing.</p>
+<p>These directives are commonly used to enforce configuration requirements, reject unsupported platforms, report deprecated features, or notify users about assumptions made during compilation.</p>
+<p>Supported directives:</p>
+<ul>
+<li><span class="tt">#error</span> Emits a fatal diagnostic and immediately terminates preprocessing.</li>
+<li><span class="tt">#warning</span> Emits a non-fatal diagnostic message while allowing preprocessing to continue normally.</li>
+</ul>
+<p>The diagnostic text consists of the remainder of the directive line following the keyword itself.</p>
+<dl class="section note"><dt>Note</dt><dd>The routines implemented in this module do not perform macro expansion on the diagnostic message. Any expansion must have been completed before the directive handler is invoked.</dd></dl>
 <h1 class="doxsection"><a class="anchor" id="diagnostics_examples"></a>
 Examples</h1>
 <ol type="1">
-<li>Break preprocessing on error: <div class="fragment"><div class="line"><span class="preprocessor">#ifdef __vax__</span></div>
-<div class="line"><span class="preprocessor"></span><span class="preprocessor">#error </span></div>
-<div class="line"><span class="preprocessor"></span><span class="preprocessor">#endif</span></div>
+<li>Reject unsupported platforms: <div class="fragment"><div class="line">   <span class="preprocessor">#ifdef __VAX__</span></div>
+<div class="line"><span class="preprocessor"></span>   <span class="preprocessor">#error </span></div>
+<div class="line"><span class="preprocessor"></span>   <span class="preprocessor">#endif</span></div>
 
 </div><!-- fragment --></li>
-<li>Warn version mismatch: <div class="fragment"><div class="line"><span class="preprocessor">#if __STDF__ &gt; 1</span></div>
-<div class="line"><span class="preprocessor"></span><span class="preprocessor">#warning </span></div>
-<div class="line"><span class="preprocessor"></span><span class="preprocessor">#endif</span></div>
+<li>Enforce configuration requirements: <div class="fragment"><div class="line">   <span class="preprocessor">#ifndef MPI_VERSION</span></div>
+<div class="line"><span class="preprocessor"></span>   <span class="preprocessor">#error </span></div>
+<div class="line"><span class="preprocessor"></span>   <span class="preprocessor">#endif</span></div>
 
-</div><!-- fragment --> </li>
+</div><!-- fragment --></li>
+<li>Warn about deprecated functionality: <div class="fragment"><div class="line">   <span class="preprocessor">#ifdef USE_LEGACY_SOLVER</span></div>
+<div class="line"><span class="preprocessor"></span>   <span class="preprocessor">#warning </span></div>
+<div class="line"><span class="preprocessor"></span>   <span class="preprocessor">#endif</span></div>
+
+</div><!-- fragment --></li>
+<li>Notify users of unusual configurations: <div class="fragment"><div class="line">   <span class="preprocessor">#if PRECISION &gt; 64</span></div>
+<div class="line"><span class="preprocessor"></span>   <span class="preprocessor">#warning </span></div>
+<div class="line"><span class="preprocessor"></span>   <span class="preprocessor">#endif</span></div>
+
+</div><!-- fragment --></li>
+<li>Emit custom informational messages: <div class="fragment"><div class="line">   <span class="preprocessor">#warning </span></div>
+
+</div><!-- fragment --></li>
 </ol>
+<dl class="section see"><dt>See also</dt><dd><a href="~/group__group__logging.html">logging</a> <br  />
+<a href="~/group__group__context.html">context</a> </dd></dl>
 </div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Methods</h2>
 <a id="gaa4ec80ff50a60b7b1d6e43531a84e0a3" name="gaa4ec80ff50a60b7b1d6e43531a84e0a3"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#gaa4ec80ff50a60b7b1d6e43531a84e0a3">&#9670;&#160;</a></span>handle_error()</h2>
@@ -160,18 +184,19 @@ Examples</h1>
       </table>
 </div><div class="memdoc">
 
-<p>Process a error directive. It causes the preprocessor to report a fatal error that stops the preprocessor. The string forming the rest of the line following â€˜::error' is printed in the standard error. </p>
+<p>Process a <span class="tt">#error</span> directive. </p>
+<p>Extracts the message following the directive keyword and immediately terminates preprocessing using an <span class="tt">error stop</span> statement.</p>
+<p>This directive is intended for unrecoverable situations such as unsupported targets, invalid configurations, or missing prerequisites.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">ctx</td><td>Context source line containing the define </td></tr>
-    <tr><td class="paramdir">[in,out]</td><td class="paramname">macros</td><td>Current macro table (updated in-place) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">token</td><td>Usually 'DEFINE' â€“ keyword matched in lowercase</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">ctx</td><td>Source context containing the complete <span class="tt">#error</span> directive. </td></tr>
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">macros</td><td>Active macro table. Present for interface consistency and not modified. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">token</td><td>Directive keyword, typically <span class="tt">"error"</span>. </td></tr>
   </table>
   </dd>
 </dl>
-<p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="diagnostics_8f90_source.html#l00049">49</a> of file <a class="el" href="diagnostics_8f90_source.html">diagnostics.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="diagnostics_8f90_source.html#l00104">104</a> of file <a class="el" href="diagnostics_8f90_source.html">diagnostics.f90</a>.</p>
 
 </div>
 </div>
@@ -199,18 +224,19 @@ Examples</h1>
       </table>
 </div><div class="memdoc">
 
-<p>Process a warning directive. It causes the preprocessor to report a warning that does not stop the preprocessor. The string forming the rest of the line following â€˜::warning' is printed in the standard output. </p>
+<p>Process a <span class="tt">#warning</span> directive. </p>
+<p>Extracts the message following the directive keyword and writes it to the standard output stream without interrupting preprocessing.</p>
+<p>This directive is intended for non-fatal conditions such as deprecated features, unusual build settings, or informational notices.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">ctx</td><td>Context source line containing the undef </td></tr>
-    <tr><td class="paramdir">[in,out]</td><td class="paramname">macros</td><td>Current macro table (updated in-place) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">token</td><td>Usually 'UNDEF' â€“ keyword matched in lowercase</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">ctx</td><td>Source context containing the complete <span class="tt">#warning</span> directive. </td></tr>
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">macros</td><td>Active macro table. Present for interface consistency and not modified. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">token</td><td>Directive keyword, typically <span class="tt">"warning"</span>. </td></tr>
   </table>
   </dd>
 </dl>
-<p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="diagnostics_8f90_source.html#l00069">69</a> of file <a class="el" href="diagnostics_8f90_source.html">diagnostics.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="diagnostics_8f90_source.html#l00131">131</a> of file <a class="el" href="diagnostics_8f90_source.html">diagnostics.f90</a>.</p>
 
 </div>
 </div>

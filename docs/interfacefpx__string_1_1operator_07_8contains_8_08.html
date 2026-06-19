@@ -1,4 +1,4 @@
-<!-- HTML header for doxygen 1.9.1-->
+﻿<!-- HTML header for doxygen 1.9.1-->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" class="dark-mode">
   <head>
@@ -120,10 +120,39 @@ $(function(){initNavTree('interfacefpx__string_1_1operator_07_8contains_8_08.htm
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Definition</h2>
-<div class="textblock"><p>Check whether a string belongs to a list or not. </p>
-<p><b>Remarks</b> </p>
+<div class="textblock"><p>Test whether a value is present in an array. </p>
+<p>The <span class="tt">.contains.</span> operator provides convenient membership testing between arrays of intrinsic characters and arrays of <a class="el" href="structfpx__string_1_1string.html" title="string">string</a> objects.</p>
+<p>Supported combinations are:</p><ul>
+<li><span class="tt">string(:) .contains. string</span></li>
+<li><span class="tt">string(:) .contains. character(*)</span></li>
+<li><span class="tt">character(:) .contains. string</span></li>
+<li><span class="tt">character(:) .contains. character(*)</span></li>
+</ul>
+<p>The comparison uses the overloaded equality operator (<span class="tt">==</span>) associated with the involved types.</p>
+<h1 class="doxsection"><a class="anchor" id="contains_examples"></a>
+Examples</h1>
+<p>Arrays of string: </p><div class="fragment"><div class="line"><span class="keywordtype">type</span>(string) :: fruits(3)</div>
+<div class="line"> </div>
+<div class="line">fruits = [ string(<span class="stringliteral">&#39;apple&#39;</span>), &amp;</div>
+<div class="line">           string(<span class="stringliteral">&#39;banana&#39;</span>), &amp;</div>
+<div class="line">           string(<span class="stringliteral">&#39;cherry&#39;</span>) ]</div>
+<div class="line"> </div>
+<div class="line">print *, fruits .contains. <span class="stringliteral">&#39;banana&#39;</span>      <span class="comment">! .true.</span></div>
+<div class="line">print *, fruits .contains. <span class="stringliteral">&#39;orange&#39;</span>      <span class="comment">! .false.</span></div>
 
-<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00169">169</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
+</div><!-- fragment --><p>Mixed character/string usage: </p><div class="fragment"><div class="line"><span class="keywordtype">character(10)</span> :: names(2)</div>
+<div class="line"> </div>
+<div class="line">names = [<span class="stringliteral">&#39;foo       &#39;</span>, <span class="stringliteral">&#39;bar       &#39;</span>]</div>
+<div class="line"> </div>
+<div class="line">print *, names .contains. string(<span class="stringliteral">&#39;foo&#39;</span>)  <span class="comment">! .true.</span></div>
+
+</div><!-- fragment --><p>Empty arrays: </p><div class="fragment"><div class="line"><span class="keywordtype">type</span>(string) :: values(0)</div>
+<div class="line"> </div>
+<div class="line">print *, values .contains. <span class="stringliteral">&#39;x&#39;</span>           <span class="comment">! .false.</span></div>
+
+</div><!-- fragment --><dl class="section return"><dt>Returns</dt><dd><span class="tt">.true.</span> if the searched value is present, <span class="tt">.false.</span> otherwise. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00323">323</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
 </div><hr/>The documentation for this interface was generated from the following file:<ul>
 <li><a class="el" href="string_8f90_source.html">string.f90</a></li>
 </ul>
@@ -155,10 +184,9 @@ $(function(){initNavTree('interfacefpx__string_1_1operator_07_8contains_8_08.htm
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>.true. if rhs is present in lhs</dd></dl>
-<p><b>Remarks</b> </p>
+<dl class="section return"><dt>Returns</dt><dd>.true. if rhs is present in lhs </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00764">764</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00972">972</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
 
 </div>
 </div>
@@ -189,10 +217,9 @@ $(function(){initNavTree('interfacefpx__string_1_1operator_07_8contains_8_08.htm
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>.true. if rhs is present in lhs</dd></dl>
-<p><b>Remarks</b> </p>
+<dl class="section return"><dt>Returns</dt><dd>.true. if rhs is present in lhs </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00785">785</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00993">993</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
 
 </div>
 </div>
@@ -223,10 +250,9 @@ $(function(){initNavTree('interfacefpx__string_1_1operator_07_8contains_8_08.htm
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>.true. if rhs is present in lhs</dd></dl>
-<p><b>Remarks</b> </p>
+<dl class="section return"><dt>Returns</dt><dd>.true. if rhs is present in lhs </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00743">743</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00951">951</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
 
 </div>
 </div>
@@ -257,10 +283,9 @@ $(function(){initNavTree('interfacefpx__string_1_1operator_07_8contains_8_08.htm
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>.true. if rhs is present in lhs</dd></dl>
-<p><b>Remarks</b> </p>
+<dl class="section return"><dt>Returns</dt><dd>.true. if rhs is present in lhs </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00722">722</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00930">930</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
 
 </div>
 </div>

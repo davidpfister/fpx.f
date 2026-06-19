@@ -125,22 +125,22 @@ $(function(){initNavTree('logging_8f90.html','',''); });
 <tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Data Types</h2></td></tr>
 <tr class="memitem:render" id="r_render"><td class="memItemLeft">interface &#160;</td><td class="memItemRight"><a class="el" href="interfacefpx__logging_1_1render.html">render</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Interface to render diagnostic messages and labels.  <a href="interfacefpx__logging_1_1render.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generic renderer for diagnostics and source excerpts.  <a href="interfacefpx__logging_1_1render.html#details">More...</a><br /></td></tr>
 <tr class="memitem:label_5Ftype" id="r_label_5Ftype"><td class="memItemLeft">interface &#160;</td><td class="memItemRight"><a class="el" href="structfpx__logging_1_1label__type.html">label_type</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Represents text as a sequence of ASCII code units. The derived type wraps an allocatable character array.  <a href="structfpx__logging_1_1label__type.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Diagnostic label identifying a region of source text.  <a href="structfpx__logging_1_1label__type.html#details">More...</a><br /></td></tr>
 <tr class="memitem:diagnostic_5Freport" id="r_diagnostic_5Freport"><td class="memItemLeft">interface &#160;</td><td class="memItemRight"><a class="el" href="structfpx__logging_1_1diagnostic__report.html">diagnostic_report</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Definition of diagnostic message.  <a href="structfpx__logging_1_1diagnostic__report.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Structured compiler diagnostic.  <a href="structfpx__logging_1_1diagnostic__report.html#details">More...</a><br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
 Functions/Subroutines</h2></td></tr>
 <tr class="memitem:af3c6ea45fb74f9a12f010b01f9b875a0" id="r_af3c6ea45fb74f9a12f010b01f9b875a0"><td class="memItemLeft">pure character(:) function, allocatable&#160;</td><td class="memItemRight"><a class="el" href="#af3c6ea45fb74f9a12f010b01f9b875a0">colorize</a> (string, foreground, background, style)</td></tr>
 <tr class="memdesc:af3c6ea45fb74f9a12f010b01f9b875a0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Colorize and stylize strings, DEFAULT kind.  <br /></td></tr>
 <tr class="memitem:a7cdffd50478be878dd6f99948bee303e" id="r_a7cdffd50478be878dd6f99948bee303e"><td class="memItemLeft">subroutine, public&#160;</td><td class="memItemRight"><a class="el" href="#a7cdffd50478be878dd6f99948bee303e">printf</a> (str, fmt, unit)</td></tr>
-<tr class="memdesc:a7cdffd50478be878dd6f99948bee303e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Conditional print of the error/warning message.  <br /></td></tr>
+<tr class="memdesc:a7cdffd50478be878dd6f99948bee303e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Conditionally print a message when verbose logging is enabled.  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-var-members" class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:gae355b6081c8a7c696837dd711719c998" id="r_gae355b6081c8a7c696837dd711719c998"><td class="memItemLeft">logical, public&#160;</td><td class="memItemRight"><a class="el" href="group__group__logging.html#gae355b6081c8a7c696837dd711719c998">verbose</a></td></tr>
+<tr class="memitem:gae355b6081c8a7c696837dd711719c998" id="r_gae355b6081c8a7c696837dd711719c998"><td class="memItemLeft">logical, public&#160;</td><td class="memItemRight"><a class="el" href="group__group__logging.html#gae355b6081c8a7c696837dd711719c998">verbose</a> = .false.</td></tr>
 <tr class="memdesc:gae355b6081c8a7c696837dd711719c998"><td class="mdescLeft">&#160;</td><td class="mdescRight">Master switch for verbose diagnostic output Default value is <span class="tt">.false.</span> (quiet mode). Set to <span class="tt">.true.</span> to get detailed step-by-step information about preprocessing actions. Safe to modify at any time � the change takes effect immediately for all subsequent operations.  <br /></td></tr>
 <tr class="memitem:ga67be2c033c55d2320d783d10dfb709ab" id="r_ga67be2c033c55d2320d783d10dfb709ab"><td class="memItemLeft">logical, public&#160;</td><td class="memItemRight"><a class="el" href="group__group__logging.html#ga67be2c033c55d2320d783d10dfb709ab">nocolor</a> = .false.</td></tr>
 <tr class="memdesc:ga67be2c033c55d2320d783d10dfb709ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Switch for controling the ANSI color output Default value is <span class="tt">.true.</span> (color mode on). Set to <span class="tt">.false.</span> to get raw string output.  <br /></td></tr>

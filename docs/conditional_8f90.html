@@ -125,28 +125,28 @@ $(function(){initNavTree('conditional_8f90.html','',''); });
 <tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Data Types</h2></td></tr>
 <tr class="memitem:cond_5Fstate" id="r_cond_5Fstate"><td class="memItemLeft">type &#160;</td><td class="memItemRight"><a class="el" href="structfpx__conditional_1_1cond__state.html">cond_state</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">State of a single conditional block.  <a href="structfpx__conditional_1_1cond__state.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">State associated with a single conditional nesting level.  <a href="structfpx__conditional_1_1cond__state.html#details">More...</a><br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
 Functions/Subroutines</h2></td></tr>
 <tr class="memitem:ga6733787b20b37cdfce6e84d1e7765f53" id="r_ga6733787b20b37cdfce6e84d1e7765f53"><td class="memItemLeft">logical function, public&#160;</td><td class="memItemRight"><a class="el" href="group__group__conditional.html#ga6733787b20b37cdfce6e84d1e7765f53">is_active</a> ()</td></tr>
-<tr class="memdesc:ga6733787b20b37cdfce6e84d1e7765f53"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determine if current line is inside an active conditional block.  <br /></td></tr>
+<tr class="memdesc:ga6733787b20b37cdfce6e84d1e7765f53"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determine whether the current source position is active.  <br /></td></tr>
 <tr class="memitem:gadf3d0ad89e7eaadb062dd5b497779a50" id="r_gadf3d0ad89e7eaadb062dd5b497779a50"><td class="memItemLeft">subroutine, public&#160;</td><td class="memItemRight"><a class="el" href="group__group__conditional.html#gadf3d0ad89e7eaadb062dd5b497779a50">handle_if</a> (ctx, macros, token)</td></tr>
 <tr class="memdesc:gadf3d0ad89e7eaadb062dd5b497779a50"><td class="mdescLeft">&#160;</td><td class="mdescRight">Process a if directive with constant expression evaluation Evaluates the expression after if using <span class="tt">evaluate_expression()</span> and pushes a new state onto the conditional stack.  <br /></td></tr>
 <tr class="memitem:ga78eb08619da61fb3fc630d6dfb928c60" id="r_ga78eb08619da61fb3fc630d6dfb928c60"><td class="memItemLeft">subroutine, public&#160;</td><td class="memItemRight"><a class="el" href="group__group__conditional.html#ga78eb08619da61fb3fc630d6dfb928c60">handle_ifdef</a> (ctx, macros, token)</td></tr>
-<tr class="memdesc:ga78eb08619da61fb3fc630d6dfb928c60"><td class="mdescLeft">&#160;</td><td class="mdescRight">Process ifdef – test if a macro is defined.  <br /></td></tr>
+<tr class="memdesc:ga78eb08619da61fb3fc630d6dfb928c60"><td class="mdescLeft">&#160;</td><td class="mdescRight">Process ifdef - test if a macro is defined.  <br /></td></tr>
 <tr class="memitem:ga1d1cf3aa06ba41d8b04085f038bb7555" id="r_ga1d1cf3aa06ba41d8b04085f038bb7555"><td class="memItemLeft">subroutine, public&#160;</td><td class="memItemRight"><a class="el" href="group__group__conditional.html#ga1d1cf3aa06ba41d8b04085f038bb7555">handle_ifndef</a> (ctx, macros, token)</td></tr>
-<tr class="memdesc:ga1d1cf3aa06ba41d8b04085f038bb7555"><td class="mdescLeft">&#160;</td><td class="mdescRight">Process ifndef – test if a macro is NOT defined.  <br /></td></tr>
+<tr class="memdesc:ga1d1cf3aa06ba41d8b04085f038bb7555"><td class="mdescLeft">&#160;</td><td class="mdescRight">Process ifndef - test if a macro is NOT defined.  <br /></td></tr>
 <tr class="memitem:ga912ae461f58529d799b8ad2455c78491" id="r_ga912ae461f58529d799b8ad2455c78491"><td class="memItemLeft">subroutine, public&#160;</td><td class="memItemRight"><a class="el" href="group__group__conditional.html#ga912ae461f58529d799b8ad2455c78491">handle_elif</a> (ctx, macros, token)</td></tr>
-<tr class="memdesc:ga912ae461f58529d799b8ad2455c78491"><td class="mdescLeft">&#160;</td><td class="mdescRight">Process elif – alternative branch after if/elif Only activates if no previous branch in the group was taken.  <br /></td></tr>
+<tr class="memdesc:ga912ae461f58529d799b8ad2455c78491"><td class="mdescLeft">&#160;</td><td class="mdescRight">Process elif - alternative branch after if/elif Only activates if no previous branch in the group was taken.  <br /></td></tr>
 <tr class="memitem:gae350be9571cf5e4ebba32981a9420a59" id="r_gae350be9571cf5e4ebba32981a9420a59"><td class="memItemLeft">subroutine, public&#160;</td><td class="memItemRight"><a class="el" href="group__group__conditional.html#gae350be9571cf5e4ebba32981a9420a59">handle_elifdef</a> (ctx, macros, token)</td></tr>
-<tr class="memdesc:gae350be9571cf5e4ebba32981a9420a59"><td class="mdescLeft">&#160;</td><td class="mdescRight">Process elifdef – test if a macro is defined.  <br /></td></tr>
+<tr class="memdesc:gae350be9571cf5e4ebba32981a9420a59"><td class="mdescLeft">&#160;</td><td class="mdescRight">Process elifdef - test if a macro is defined.  <br /></td></tr>
 <tr class="memitem:gac193f6006f80922cc9bc1435ea38d355" id="r_gac193f6006f80922cc9bc1435ea38d355"><td class="memItemLeft">subroutine, public&#160;</td><td class="memItemRight"><a class="el" href="group__group__conditional.html#gac193f6006f80922cc9bc1435ea38d355">handle_elifndef</a> (ctx, macros, token)</td></tr>
-<tr class="memdesc:gac193f6006f80922cc9bc1435ea38d355"><td class="mdescLeft">&#160;</td><td class="mdescRight">Process elifndef – test if a macro is not defined.  <br /></td></tr>
+<tr class="memdesc:gac193f6006f80922cc9bc1435ea38d355"><td class="mdescLeft">&#160;</td><td class="mdescRight">Process elifndef - test if a macro is not defined.  <br /></td></tr>
 <tr class="memitem:gac91aa66155fda9573cb28a6c009ba248" id="r_gac91aa66155fda9573cb28a6c009ba248"><td class="memItemLeft">subroutine, public&#160;</td><td class="memItemRight"><a class="el" href="group__group__conditional.html#gac91aa66155fda9573cb28a6c009ba248">handle_else</a> (ctx)</td></tr>
-<tr class="memdesc:gac91aa66155fda9573cb28a6c009ba248"><td class="mdescLeft">&#160;</td><td class="mdescRight">Process else – final fallback branch Activates only if no previous if/elif branch was true.  <br /></td></tr>
+<tr class="memdesc:gac91aa66155fda9573cb28a6c009ba248"><td class="mdescLeft">&#160;</td><td class="mdescRight">Process else - final fallback branch Activates only if no previous if/elif branch was true.  <br /></td></tr>
 <tr class="memitem:gaf4f99569b4cda29c93ee782f8e1ad024" id="r_gaf4f99569b4cda29c93ee782f8e1ad024"><td class="memItemLeft">subroutine, public&#160;</td><td class="memItemRight"><a class="el" href="group__group__conditional.html#gaf4f99569b4cda29c93ee782f8e1ad024">handle_endif</a> (ctx)</td></tr>
-<tr class="memdesc:gaf4f99569b4cda29c93ee782f8e1ad024"><td class="mdescLeft">&#160;</td><td class="mdescRight">Process endif – end of conditional block Pops the top state from the stack. Reports error on unmatched endif.  <br /></td></tr>
+<tr class="memdesc:gaf4f99569b4cda29c93ee782f8e1ad024"><td class="mdescLeft">&#160;</td><td class="mdescRight">Process endif - end of conditional block Pops the top state from the stack. Reports error on unmatched endif.  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-var-members" class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>

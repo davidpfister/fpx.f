@@ -116,12 +116,15 @@ $(function(){initNavTree('interfacefpx__macro_1_1preprocess__line.html','','inte
 </div>
 
 <div class="header">
-  <div class="headertitle"><div class="title">preprocess_line</div></div>
+  <div class="headertitle"><div class="title">preprocess_line<div class="ingroups"><a class="el" href="group__group__macro.html">Macro</a></div></div></div>
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Definition</h2>
-<div class="textblock">
-<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00184">184</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
+<div class="textblock"><p>Abstract interface for line preprocessing callbacks. </p>
+<p>Implementations process a single source line after directive handling and macro substitution.</p>
+<p>The callback mechanism is primarily used by nested constructs such as <span class="tt">#for</span> expansion, allowing generated lines to re-enter the main preprocessing pipeline. </p>
+
+<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00258">258</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
 </div><hr/>The documentation for this interface was generated from the following file:<ul>
 <li><a class="el" href="macro_8f90_source.html">macro.f90</a></li>
 </ul>

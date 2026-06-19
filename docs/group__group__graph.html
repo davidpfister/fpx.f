@@ -120,36 +120,54 @@ $(function(){initNavTree('group__group__graph.html','',''); });
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Definition</h2>
-<div class="textblock"><p>Lightweight directed graph implementation for cycle detection in macro expansion This module provides a compact, allocation-efficient directed graph (<a class="el" href="structfpx__graph_1_1digraph.html">digraph</a>) specifically designed for detecting circular dependencies during macro expansion in the fpx preprocessor. </p>
-<p>Features:</p><ul>
-<li>Fixed-size adjacency list using a dense 2D integer array (fast access, no pointers)</li>
-<li>Dynamic edge insertion with automatic per-vertex size tracking</li>
-<li>Depth-first search (DFS) based) cycle detection starting from any vertex</li>
-<li>Automatic cleanup via finalizer</li>
-<li>No dynamic memory fragmentation â€“ ideal for frequent creation/destruction during preprocessing</li>
+<div class="textblock"><p>Directed graph utilities used for macro dependency analysis. </p>
+<p>This module provides a lightweight directed graph implementation used internally by the fpx preprocessor to detect cyclic dependencies during macro expansion.</p>
+<p>Unlike general-purpose graph libraries, this implementation is optimized for the small graphs typically encountered during preprocessing:</p>
+<ul>
+<li>Vertices are represented by 1-based integer identifiers.</li>
+<li>Edges are stored in a dense adjacency structure for fast traversal.</li>
+<li>Cycle detection uses depth-first search (DFS) with a recursion stack.</li>
+<li>Invalid vertices are ignored gracefully.</li>
+<li>Memory management is automatic through a finalizer.</li>
 </ul>
-<p>Used internally by <a class="el" href="">fpx_macro</a> to prevent infinite recursion when a macro expands (directly or indirectly) to itself (e.g., <span class="tt">#define A B</span>, <span class="tt">#define B A</span>).</p>
+<p>The primary use case is preventing infinite recursion caused by macros expanding, directly or indirectly, to themselves:</p>
+<div class="fragment"><div class="line">   <span class="preprocessor">#define A B</span></div>
+<div class="line"><span class="preprocessor"></span>   <span class="preprocessor">#define B C</span></div>
+<div class="line"><span class="preprocessor"></span>   <span class="preprocessor">#define C A</span></div>
+
+</div><!-- fragment --><p>Before expanding a macro, fpx records dependencies in a graph and checks whether introducing a new dependency would create a cycle.</p>
 <h1 class="doxsection"><a class="anchor" id="graph_examples"></a>
 Examples</h1>
 <ol type="1">
-<li>Detect circular macro dependency: <div class="fragment"><div class="line"><span class="keywordtype">type</span>(digraph) :: g</div>
-<div class="line"><span class="keywordtype">logical</span>       :: cycle</div>
+<li>Detecting a circular dependency: <div class="fragment"><div class="line">   <span class="keywordtype">type</span>(digraph) :: g</div>
+<div class="line">   <span class="keywordtype">logical</span>       :: cycle</div>
 <div class="line"> </div>
-<div class="line">g = digraph(3)            <span class="comment">! 3 macros indexed 1..3</span></div>
-<div class="line"><span class="keyword">call </span>g%add_edge(1, 2)     <span class="comment">! macro1 depends on macro2</span></div>
-<div class="line"><span class="keyword">call </span>g%add_edge(2, 3)     <span class="comment">! macro2 depends on macro3</span></div>
-<div class="line"><span class="keyword">call </span>g%add_edge(3, 1)     <span class="comment">! macro3 depends on macro1 -&gt; cycle!</span></div>
+<div class="line">   g = digraph(3)</div>
 <div class="line"> </div>
-<div class="line">cycle = g%is_circular(1)  <span class="comment">! returns .true.</span></div>
-<div class="line">print *, <span class="stringliteral">&#39;Circular macro chain detected:&#39;</span>, cycle</div>
+<div class="line">   <span class="keyword">call </span>g%add_edge(1, 2)</div>
+<div class="line">   <span class="keyword">call </span>g%add_edge(2, 3)</div>
+<div class="line">   <span class="keyword">call </span>g%add_edge(3, 1)</div>
+<div class="line"> </div>
+<div class="line">   cycle = g%is_circular(1)</div>
+<div class="line">   print *, cycle      <span class="comment">! prints .true.</span></div>
 
 </div><!-- fragment --></li>
-<li>Safe expansion (used inside <a class="el" href="">fpx_macro</a>): <div class="fragment"><div class="line"><span class="keywordtype">type</span>(digraph) :: expansion_graph</div>
-<div class="line">expansion_graph = digraph(<span class="keyword">size</span>(macros))</div>
-<div class="line"><span class="keyword">call </span>expansion_graph%add_edge(current_macro_idx, referenced_macro_idx)</div>
-<div class="line"><span class="keywordflow">if</span> (expansion_graph%is_circular(referenced_macro_idx)) <span class="keywordflow">then</span></div>
-<div class="line">   <span class="comment">! Skip expansion to prevent infinite loop</span></div>
-<div class="line"><span class="keywordflow">end if</span></div>
+<li>Detecting an acyclic dependency chain: <div class="fragment"><div class="line">   <span class="keywordtype">type</span>(digraph) :: g</div>
+<div class="line"> </div>
+<div class="line">   g = digraph(4)</div>
+<div class="line"> </div>
+<div class="line">   <span class="keyword">call </span>g%add_edge(1, 2)</div>
+<div class="line">   <span class="keyword">call </span>g%add_edge(2, 3)</div>
+<div class="line">   <span class="keyword">call </span>g%add_edge(3, 4)</div>
+<div class="line"> </div>
+<div class="line">   print *, g%is_circular(1)   <span class="comment">! .false.</span></div>
+
+</div><!-- fragment --></li>
+<li>Internal usage during macro expansion: <div class="fragment"><div class="line">   <span class="keyword">call </span>graph%add_edge(current_macro, referenced_macro)</div>
+<div class="line"> </div>
+<div class="line">   <span class="keywordflow">if</span> (graph%is_circular(referenced_macro)) <span class="keywordflow">then</span></div>
+<div class="line">       <span class="comment">! Prevent recursive expansion</span></div>
+<div class="line"><span class="keywordflow">   end if</span></div>
 
 </div><!-- fragment --> </li>
 </ol>
@@ -157,7 +175,7 @@ Examples</h1>
 <tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Data Types</h2></td></tr>
 <tr class="memitem:digraph" id="r_digraph"><td class="memItemLeft">interface &#160;</td><td class="memItemRight"><a class="el" href="structfpx__graph_1_1digraph.html">digraph</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Directed graph with fixed vertex count and efficient cycle detection Stores edges in a dense adjacency matrix slice per vertex. Only the actually used portion of each row is tracked via <span class="tt">list_sizes</span>.  <a href="structfpx__graph_1_1digraph.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Directed graph supporting efficient cycle detection.  <a href="structfpx__graph_1_1digraph.html#details">More...</a><br /></td></tr>
 </table>
 </div><!-- contents -->
 </div><!-- doc-content -->

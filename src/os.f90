@@ -184,8 +184,6 @@ contains
     !! ...
     !! @endcode
     !!
-    !! @see OS_NAME
-    !! @see os_is_unix
     !! @ingroup group_os
     integer function get_os_type() result(r)
         character(len=255) :: val
@@ -314,7 +312,6 @@ contains
     !! ...
     !! @endcode
     !!
-    !! @see get_os_type
     !! @ingroup group_os
     logical function os_is_unix(os)
         integer, intent(in), optional :: os

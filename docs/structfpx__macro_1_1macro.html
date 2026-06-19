@@ -1,4 +1,4 @@
-<!-- HTML header for doxygen 1.9.1-->
+﻿<!-- HTML header for doxygen 1.9.1-->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" class="dark-mode">
   <head>
@@ -122,27 +122,52 @@ $(function(){initNavTree('structfpx__macro_1_1macro.html','','structfpx__macro_1
 
 <p>Inherits <a class="el" href="structfpx__string_1_1string.html">string</a>.</p>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Definition</h2>
-<div class="textblock"><p>Derived type representing a single preprocessor macro Extends <a class="el" href="structfpx__string_1_1string.html">string </a> with macro-specific fields: replacement value, parameters, variadic flag, and cyclic self-reference detection. </p>
-<p>Constructor interface for macro type.</p>
-<h2 class="groupheader">Examples</h2>
-<div class="fragment"><div class="line"><span class="keywordtype">type</span>(macro), <span class="keywordtype">allocatable</span> :: macros(:)</div>
-<div class="line"><span class="keyword">call </span>add(macros, macro(<span class="stringliteral">&#39;PI&#39;</span>, <span class="stringliteral">&#39;3.1415926535&#39;</span>))</div>
-</div><!-- fragment --> <h2 class="groupheader">Constructors</h2>
-<p>Initializes a new instance of the <a class="el" href="macro.html" title="Macro Expansion">Macro Expansion</a> class </p><h3>macro(character(*), character(*))</h3>
-<pre class="fragment">type(macro) function macro(character(*) name, (optional) character(*) val) </pre><dl class="params"><dt>Parameters</dt><dd>
+<div class="textblock"><p>Representation of a preprocessor macro. </p>
+<p>Construct a new macro definition.</p>
+<p>A macro stores its identifier together with the metadata required during expansion:</p><ul>
+<li>replacement text,</li>
+<li>formal parameter list,</li>
+<li>variadic status,</li>
+<li>cycle detection flags,</li>
+<li>temporary activation state.</li>
+</ul>
+<p>The type extends <a class="el" href="structfpx__string_1_1string.html">string </a> so that the macro name itself behaves as a string value.</p>
+<h1 class="doxsection"><a class="anchor" id="macro_type_examples"></a>
+Examples</h1>
+<p>Object-like macro: </p><div class="fragment"><div class="line">   <span class="keywordtype">type</span>(macro) :: m</div>
+<div class="line">   m = macro(<span class="stringliteral">&#39;PI&#39;</span>, <span class="stringliteral">&#39;3.1415926535&#39;</span>)</div>
+
+</div><!-- fragment --><p>Function-like macro: </p><div class="fragment"><div class="line">   <span class="keywordtype">type</span>(macro) :: m</div>
+<div class="line">   m = macro(<span class="stringliteral">&#39;SQR(x)&#39;</span>, <span class="stringliteral">&#39;((x)*(x))&#39;</span>)</div>
+
+</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="macro_type_constructor"></a>
+Constructors</h1>
+<p>Initializes a new instance of the <a class="el" href="macro.html" title="Macro Expansion">Macro Expansion</a> class</p>
+<p><b>Constructor</b> </p><div class="fragment"><div class="line"><span class="keywordtype">type</span>(macro) function macro(<span class="keywordtype">character(*)</span> name, (optional) <span class="keywordtype">character(*)</span> val) </div>
+</div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">name</td><td>macro name </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">val</td><td>(optional) value of the macro</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">val</td><td><br  />
+ (optional) value of the macro</td></tr>
   </table>
   </dd>
 </dl>
 <p><b>Examples</b> </p><div class="fragment"><div class="line"><span class="keywordtype">type</span>(macro) :: m</div>
 <div class="line">m = macro(<span class="stringliteral">&#39;_WIN32&#39;</span>)</div>
-</div><!-- fragment --> <dl class="section return"><dt>Returns</dt><dd>The constructed macro object.</dd></dl>
-<h2 class="groupheader">Remarks</h2>
-<p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00098">98</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
+</div><!-- fragment --> <dl class="section return"><dt>Returns</dt><dd>The constructed macro object.</dd></dl>
+<p>Creates an initialized <a class="el" href="macro.html" title="Macro Expansion">Macro Expansion</a> object with the specified name and optional replacement text.</p>
+<p>Parameter lists are initialized to empty, variadic expansion is disabled, and direct self-references are marked as cyclic.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">name</td><td>Macro identifier. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">val</td><td>Replacement text (default: empty).</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Initialized macro object. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00135">135</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
 </div><hr/>The documentation for this interface was generated from the following file:<ul>
 <li><a class="el" href="macro_8f90_source.html">macro.f90</a></li>
 </ul>

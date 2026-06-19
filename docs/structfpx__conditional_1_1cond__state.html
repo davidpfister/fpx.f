@@ -120,31 +120,25 @@ $(function(){initNavTree('structfpx__conditional_1_1cond__state.html','','struct
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Definition</h2>
-<div class="textblock"><p>State of a single conditional block. </p>
-<h2 class="groupheader">Constructors</h2>
-<p>Initializes a new instance of the <a class="el" href="structfpx__conditional_1_1cond__state.html" title="cond_state">cond_state</a> type </p><h3>cond_state(logical, logical)</h3>
-<pre class="fragment">type(cond_state) function cond_state(logical active, logical has_met) </pre><dl class="params"><dt>Parameters</dt><dd>
+<div class="textblock"><p>State associated with a single conditional nesting level. </p>
+<p>Each <span class="tt">#if</span> directive pushes one instance of this type onto <span class="tt">cond_stack</span>, and the corresponding <span class="tt">#endif</span> removes it.</p>
+<p>The combination of <span class="tt">active</span> and <span class="tt">has_met</span> implements the standard first-match semantics of conditional preprocessing.</p>
+<h1 class="doxsection"><a class="anchor" id="cond_state_constructors"></a>
+Constructors</h1>
+<p><b>Constructor</b> </p><div class="fragment"><div class="line"><span class="keywordtype">type</span>(cond_state) function cond_state(<span class="keywordtype">logical</span> active, <span class="keywordtype">logical</span> has_met) </div>
+</div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname"><a class="el" href="#a32e43fc3c010c17d45a9e924564d2498" title="Indicate whether the condition is active.">active</a></td><td>whether code in this block should be emitted </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname"><a class="el" href="#a12abe438a51b9d211aad68da38129336" title="Indicates whether the condition has been met.">has_met</a></td><td>whether a true branch has already been taken at this nesting level</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">active</td><td>Whether the current branch is active and should emit code. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">has_met</td><td>Whether a previous branch in the same conditional group has already evaluated to true. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>The constructed <a class="el" href="structfpx__conditional_1_1cond__state.html" title="cond_state">cond_state</a> object.</dd></dl>
-<h2 class="groupheader">Remarks</h2>
+<dl class="section return"><dt>Returns</dt><dd>A newly constructed conditional state object. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="conditional_8f90_source.html#l00092">92</a> of file <a class="el" href="conditional_8f90_source.html">conditional.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="conditional_8f90_source.html#l00165">165</a> of file <a class="el" href="conditional_8f90_source.html">conditional.f90</a>.</p>
 </div><hr/>The documentation for this type was generated from the following file:<ul>
 <li><a class="el" href="conditional_8f90_source.html">conditional.f90</a></li>
 </ul>
-<table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
-Variables</h2></td></tr>
-<tr class="memitem:a32e43fc3c010c17d45a9e924564d2498" id="r_a32e43fc3c010c17d45a9e924564d2498"><td class="memItemLeft">logical, public&#160;</td><td class="memItemRight"><a class="el" href="#a32e43fc3c010c17d45a9e924564d2498">active</a></td></tr>
-<tr class="memdesc:a32e43fc3c010c17d45a9e924564d2498"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indicate whether the condition is active.  <br /></td></tr>
-<tr class="memitem:a12abe438a51b9d211aad68da38129336" id="r_a12abe438a51b9d211aad68da38129336"><td class="memItemLeft">logical, public&#160;</td><td class="memItemRight"><a class="el" href="#a12abe438a51b9d211aad68da38129336">has_met</a></td></tr>
-<tr class="memdesc:a12abe438a51b9d211aad68da38129336"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indicates whether the condition has been met.  <br /></td></tr>
-</table>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <div id="page-nav" class="page-nav-panel">

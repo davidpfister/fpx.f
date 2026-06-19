@@ -1,4 +1,4 @@
-<!-- HTML header for doxygen 1.9.1-->
+﻿<!-- HTML header for doxygen 1.9.1-->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" class="dark-mode">
   <head>
@@ -120,7 +120,41 @@ $(function(){initNavTree('group__group__constants.html','',''); });
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Definition</h2>
-<div class="textblock"><p>Module defining constants for the FPX library This module provides a set of public integer constants used to enforce limits in the FPX library, such as maximum line lengths, depths, and parameter counts. </p>
+<div class="textblock"><p>Compile-time constants used throughout the fpx preprocessor. </p>
+<p>This module centralizes all numerical limits and fixed configuration values required by the implementation. These parameters define the maximum sizes of internal buffers and the allowed nesting depth of various preprocessing constructs.</p>
+<p>The chosen values aim to balance flexibility and robustness:</p>
+<ul>
+<li>large enough to accommodate realistic scientific Fortran code,</li>
+<li>small enough to avoid excessive memory consumption,</li>
+<li>fixed at compile time to simplify implementation and improve performance.</li>
+</ul>
+<p>The constants are used across multiple modules, including macro expansion, conditional compilation, tokenization, and the extended for directive implementation.</p>
+<h1 class="doxsection"><a class="anchor" id="constants_examples"></a>
+Examples</h1>
+<ol type="1">
+<li><p class="startli">Limiting nested conditional directives: </p><div class="fragment"><div class="line"><span class="preprocessor">#if A</span></div>
+<div class="line"><span class="preprocessor"></span><span class="preprocessor">#if B</span></div>
+<div class="line"><span class="preprocessor"></span><span class="preprocessor">#if C</span></div>
+<div class="line"><span class="preprocessor"></span><span class="comment">!some code</span></div>
+<div class="line"><span class="preprocessor">#endif</span></div>
+<div class="line"><span class="preprocessor"></span><span class="preprocessor">#endif</span></div>
+<div class="line"><span class="preprocessor"></span><span class="preprocessor">#endif</span></div>
+
+</div><!-- fragment --><p class="startli">Nesting is permitted up to <a class="el" href="#gac4ff9f6877693278fc810b9aab345630">MAX_COND_DEPTH </a> levels.</p>
+</li>
+<li><p class="startli">Nested for loops: </p><div class="fragment"><div class="line"><span class="preprocessor">#for T in [integer, real]</span></div>
+<div class="line"><span class="preprocessor"></span><span class="preprocessor">#for K in [32, 64]</span></div>
+<div class="line"><span class="preprocessor"></span><span class="comment">!some code</span></div>
+<div class="line"><span class="preprocessor">#endfor</span></div>
+<div class="line"><span class="preprocessor"></span><span class="preprocessor">#endfor</span></div>
+
+</div><!-- fragment --><p class="startli">Loop nesting is limited by <a class="el" href="#ga4f43d79a727cb76627ec4cdede0b20f0">MAX_FOR_DEPTH </a>.</p>
+</li>
+<li><p class="startli">Long macro expansions: </p><div class="fragment"><div class="line"><span class="preprocessor">#define MESSAGE </span></div>
+
+</div><!-- fragment --><p class="startli">Intermediate buffers are sized according to <a class="el" href="#gab5a717360891a02e951e875b734a32a8">MAX_LINE_LEN </a>. </p>
+</li>
+</ol>
 </div><a name="doc-var-members" id="doc-var-members"></a><h2 id="header-doc-var-members" class="groupheader">Variables</h2>
 <a id="ga38b42c16100fcac33e76ef949c38f0fe" name="ga38b42c16100fcac33e76ef949c38f0fe"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga38b42c16100fcac33e76ef949c38f0fe">&#9670;&#160;</a></span>chksize</h2>
@@ -134,9 +168,10 @@ $(function(){initNavTree('group__group__constants.html','',''); });
       </table>
 </div><div class="memdoc">
 
-<p>Maximum chunk size. </p>
+<p>Default chunk size used for internal buffering operations. </p>
+<p>This value is primarily used when processing data incrementally to avoid frequent reallocations. </p>
 
-<p class="definition">Definition at line <a class="el" href="constants_8f90_source.html#l00035">35</a> of file <a class="el" href="constants_8f90_source.html">constants.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="constants_8f90_source.html#l00133">133</a> of file <a class="el" href="constants_8f90_source.html">constants.f90</a>.</p>
 
 </div>
 </div>
@@ -152,9 +187,17 @@ $(function(){initNavTree('group__group__constants.html','',''); });
       </table>
 </div><div class="memdoc">
 
-<p>Maximum nesting depth for conditional statements, set to 50 to prevent overly complex logic. </p>
+<p>Maximum nesting depth of conditional compilation directives. </p>
+<p>Applies to constructs such as:</p><ul>
+<li><span class="tt">#if</span></li>
+<li><span class="tt">#ifdef</span></li>
+<li><span class="tt">#ifndef</span></li>
+<li><span class="tt">#elif</span></li>
+<li><span class="tt">#else</span></li>
+</ul>
+<p>Excessive nesting beyond this limit results in diagnostics. </p>
 
-<p class="definition">Definition at line <a class="el" href="constants_8f90_source.html#l00019">19</a> of file <a class="el" href="constants_8f90_source.html">constants.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="constants_8f90_source.html#l00089">89</a> of file <a class="el" href="constants_8f90_source.html">constants.f90</a>.</p>
 
 </div>
 </div>
@@ -170,9 +213,10 @@ $(function(){initNavTree('group__group__constants.html','',''); });
       </table>
 </div><div class="memdoc">
 
-<p>Maximum nesting depth for structures, set to 50 to balance flexibility and stack safety. </p>
+<p>Maximum nesting depth of generic parser structures. </p>
+<p>Used internally whenever recursive parser constructs require bounded stack-like storage. </p>
 
-<p class="definition">Definition at line <a class="el" href="constants_8f90_source.html#l00015">15</a> of file <a class="el" href="constants_8f90_source.html">constants.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="constants_8f90_source.html#l00075">75</a> of file <a class="el" href="constants_8f90_source.html">constants.f90</a>.</p>
 
 </div>
 </div>
@@ -188,9 +232,14 @@ $(function(){initNavTree('group__group__constants.html','',''); });
       </table>
 </div><div class="memdoc">
 
-<p>Maximum nesting depth for loops statements, set to 50 to prevent overly complex logic. </p>
+<p>Maximum nesting depth of <span class="tt">#for</span> loops. </p>
+<p>Applies to the fpx extension: </p><div class="fragment"><div class="line"><span class="preprocessor">#for ...</span></div>
+<div class="line"><span class="preprocessor"></span><span class="comment">!some code</span></div>
+<div class="line"><span class="preprocessor">#endfor</span></div>
 
-<p class="definition">Definition at line <a class="el" href="constants_8f90_source.html#l00023">23</a> of file <a class="el" href="constants_8f90_source.html">constants.f90</a>.</p>
+</div><!-- fragment --><p>Nested loops exceeding this limit generate an error. </p>
+
+<p class="definition">Definition at line <a class="el" href="constants_8f90_source.html#l00104">104</a> of file <a class="el" href="constants_8f90_source.html">constants.f90</a>.</p>
 
 </div>
 </div>
@@ -206,9 +255,11 @@ $(function(){initNavTree('group__group__constants.html','',''); });
       </table>
 </div><div class="memdoc">
 
-<p>Maximum allowed line length in characters, set to 1000000 to handle large input strings or files. </p>
+<p>Maximum permitted length of an input or generated line. </p>
+<p>This limit applies to raw source lines, continued lines, and intermediate results produced during macro expansion.</p>
+<p>The value should be sufficiently large for practically all modern Fortran source files while preventing unbounded memory use. </p>
 
-<p class="definition">Definition at line <a class="el" href="constants_8f90_source.html#l00011">11</a> of file <a class="el" href="constants_8f90_source.html">constants.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="constants_8f90_source.html#l00067">67</a> of file <a class="el" href="constants_8f90_source.html">constants.f90</a>.</p>
 
 </div>
 </div>
@@ -224,9 +275,12 @@ $(function(){initNavTree('group__group__constants.html','',''); });
       </table>
 </div><div class="memdoc">
 
-<p>Maximum number of parameters in a signature, set to 10 to ensure manageable interfaces. </p>
+<p>Maximum number of parameters accepted by a macro definition. </p>
+<p>Applies to function-like macros: </p><div class="fragment"><div class="line"><span class="preprocessor">#define F(a,b,c) ...</span></div>
 
-<p class="definition">Definition at line <a class="el" href="constants_8f90_source.html#l00031">31</a> of file <a class="el" href="constants_8f90_source.html">constants.f90</a>.</p>
+</div><!-- fragment --><p>Variadic arguments count toward this limit. </p>
+
+<p class="definition">Definition at line <a class="el" href="constants_8f90_source.html#l00125">125</a> of file <a class="el" href="constants_8f90_source.html">constants.f90</a>.</p>
 
 </div>
 </div>
@@ -242,9 +296,10 @@ $(function(){initNavTree('group__group__constants.html','',''); });
       </table>
 </div><div class="memdoc">
 
-<p>Maximum number of tokens per line, set to 100 for efficient tokenization. </p>
+<p>Maximum number of tokens generated during tokenization. </p>
+<p>This value bounds the temporary token buffers used by expression parsing and macro processing. </p>
 
-<p class="definition">Definition at line <a class="el" href="constants_8f90_source.html#l00027">27</a> of file <a class="el" href="constants_8f90_source.html">constants.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="constants_8f90_source.html#l00112">112</a> of file <a class="el" href="constants_8f90_source.html">constants.f90</a>.</p>
 
 </div>
 </div>

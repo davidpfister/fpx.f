@@ -133,6 +133,12 @@ $(function(){initNavTree('group__group__macro.html','',''); });
 </ul>
 <p>The design allows safe, repeated expansion while preventing infinite recursion. All operations are container-agnostic using allocatable dynamic arrays.</p>
 <dl class="section user"><dt>Expansion Model</dt><dd>Macros are expanded recursively. Circular dependencies are detected through dependency graph analysis. Macro lookup is currently linear in the number of defined macros.</dd></dl>
+<dl class="section user"><dt>Expansion Pipeline</dt><dd>Macro processing occurs in two stages:<ul>
+<li><a class="el" href="#ga28c2658615e83c6ca921d93a3dbee370">expand_macros </a> performs recursive expansion of user-defined macros, including function-like macros, variadic substitutions, token pasting, stringification, and cycle detection.</li>
+<li><a class="el" href="#gab51fdaa32665f1141e292d2330a48dbc">expand_all </a> subsequently substitutes predefined macros such as <span class="tt">__FILE__</span>, <span class="tt">__LINE__</span>, <span class="tt">__DATE__</span>, and related extensions.</li>
+</ul>
+</dd></dl>
+<p>This separation allows internal preprocessing routines to reuse the core expansion engine while selectively enabling predefined tokens.</p>
 <h1 class="doxsection"><a class="anchor" id="macro_examples"></a>
 Examples</h1>
 <ol type="1">
@@ -155,19 +161,21 @@ Examples</h1>
 <tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Data Types</h2></td></tr>
 <tr class="memitem:macro" id="r_macro"><td class="memItemLeft">interface &#160;</td><td class="memItemRight"><a class="el" href="structfpx__macro_1_1macro.html">macro</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Derived type representing a single preprocessor macro Extends <a class="el" href="structfpx__string_1_1string.html">string </a> with macro-specific fields: replacement value, parameters, variadic flag, and cyclic self-reference detection.  <a href="structfpx__macro_1_1macro.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Representation of a preprocessor macro.  <a href="structfpx__macro_1_1macro.html#details">More...</a><br /></td></tr>
 <tr class="memitem:add" id="r_add"><td class="memItemLeft">interface &#160;</td><td class="memItemRight"><a class="el" href="interfacefpx__macro_1_1add.html">add</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add one or more macros to a dynamic table.  <a href="interfacefpx__macro_1_1add.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Append macros to a macro table.  <a href="interfacefpx__macro_1_1add.html#details">More...</a><br /></td></tr>
 <tr class="memitem:clear" id="r_clear"><td class="memItemLeft">interface &#160;</td><td class="memItemRight"><a class="el" href="interfacefpx__macro_1_1clear.html">clear</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove all macros from a table.  <a href="interfacefpx__macro_1_1clear.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove all macro definitions from a table.  <a href="interfacefpx__macro_1_1clear.html#details">More...</a><br /></td></tr>
 <tr class="memitem:get" id="r_get"><td class="memItemLeft">interface &#160;</td><td class="memItemRight"><a class="el" href="interfacefpx__macro_1_1get.html">get</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieve a macro by index.  <a href="interfacefpx__macro_1_1get.html#details">More...</a><br /></td></tr>
 <tr class="memitem:insert" id="r_insert"><td class="memItemLeft">interface &#160;</td><td class="memItemRight"><a class="el" href="interfacefpx__macro_1_1insert.html">insert</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Insert more macro to a dynamic table.  <a href="interfacefpx__macro_1_1insert.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Insert a macro at a specified position.  <a href="interfacefpx__macro_1_1insert.html#details">More...</a><br /></td></tr>
 <tr class="memitem:remove" id="r_remove"><td class="memItemLeft">interface &#160;</td><td class="memItemRight"><a class="el" href="interfacefpx__macro_1_1remove.html">remove</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove a macro at given index.  <a href="interfacefpx__macro_1_1remove.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove a macro definition from a table.  <a href="interfacefpx__macro_1_1remove.html#details">More...</a><br /></td></tr>
 <tr class="memitem:size_5Fof" id="r_size_5Fof"><td class="memItemLeft">interface &#160;</td><td class="memItemRight"><a class="el" href="interfacefpx__macro_1_1size__of.html">size_of</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return current number of stored macros.  <a href="interfacefpx__macro_1_1size__of.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of stored macro definitions.  <a href="interfacefpx__macro_1_1size__of.html#details">More...</a><br /></td></tr>
+<tr class="memitem:preprocess_5Fline" id="r_preprocess_5Fline"><td class="memItemLeft">interface &#160;</td><td class="memItemRight"><a class="el" href="interfacefpx__macro_1_1preprocess__line.html">preprocess_line</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Abstract interface for line preprocessing callbacks.  <a href="interfacefpx__macro_1_1preprocess__line.html#details">More...</a><br /></td></tr>
 </table>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Methods</h2>
 <a id="gab51fdaa32665f1141e292d2330a48dbc" name="gab51fdaa32665f1141e292d2330a48dbc"></a>
@@ -209,22 +217,39 @@ Data Types</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Fully expand a line including predefined macros (<b>FILE</b>, <b>LINE</b>, etc.) First performs normal macro expansion via expand_macros(), then substitutes standard predefined tokens with current file/line/date information. </p>
+<p>Expand a source line including predefined macros. </p>
+<p>This routine represents the complete user-visible expansion phase.</p>
+<p>Expansion proceeds in two steps:</p><ol type="1">
+<li>User-defined macros are expanded recursively through <a class="el" href="#ga28c2658615e83c6ca921d93a3dbee370" title="expand_macros">expand_macros</a>.</li>
+<li>Built-in predefined macros are substituted using the current preprocessing context.</li>
+</ol>
+<p>Supported predefined macros include:</p><ul>
+<li><span class="tt">__FILE__</span></li>
+<li><span class="tt">__LINE__</span></li>
+<li><span class="tt">__DATE__</span></li>
+<li><span class="tt">__TIME__</span></li>
+<li><span class="tt">__FUNC__</span></li>
+<li><span class="tt">__FILENAME__</span> (extension)</li>
+<li><span class="tt">__TIMESTAMP__</span> (extension)</li>
+</ul>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">ctx</td><td>Context </td></tr>
-    <tr><td class="paramdir">[in,out]</td><td class="paramname">macros</td><td>Current macro table </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">stitch</td><td>Set to .true.true. if result ends with '&amp;' (Fortran continuation) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">has_extra</td><td>Has extra macros (non-standard) like <b>FILENAME</b> and <b>TIMESTAMP</b> </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">ctx</td><td><br  />
+ Context </td></tr>
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">macros</td><td><br  />
+ Current macro table </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">stitch</td><td><br  />
+ Set to .true.true. if result ends with '&amp;' (Fortran continuation) </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">has_extra</td><td><br  />
+ Has extra macros (non-standard) like <b>FILENAME</b> and <b>TIMESTAMP</b> </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">implicit_conti</td><td>If .true., implicit continuation is permitted </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">dollar_insert</td><td>If .true., the syntax ${} is supported for macro insertion </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Expanded line with all macros and predefined tokens replaced</dd></dl>
-<p><b>Remarks</b> </p>
+<dl class="section return"><dt>Returns</dt><dd>Expanded line with all macros and predefined tokens replaced </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00230">230</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00325">325</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
 
 </div>
 </div>
@@ -267,30 +292,37 @@ Data Types</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Core recursive macro expander (handles function-like, variadic, #, ##). </p>
-<p>Performs actual macro replacement with full support for:</p><ul>
-<li>Function-like macros with argument collection</li>
-<li>Stringification (<span class="tt">#param</span>)</li>
-<li>Token pasting (<span class="tt">##</span>)</li>
-<li>Variadic macros and <span class="tt">__VA_ARGS__</span>, <span class="tt">__VA_OPT__</span></li>
-<li>Recursion with cycle detection via digraph</li>
-<li>Proper handling of nested parentheses and quoted strings</li>
+<p>Recursively expand user-defined macros. </p>
+<p>Implements the core expansion engine used throughout fpx.</p>
+<p>Supported features include:</p><ul>
+<li>object-like macros,</li>
+<li>function-like macros,</li>
+<li>variadic macros,</li>
+<li><span class="tt">__VA_ARGS__</span>,</li>
+<li><span class="tt">__VA_OPT__</span>,</li>
+<li>parameter stringification,</li>
+<li>token pasting,</li>
+<li>nested expansion,</li>
+<li>optional <span class="tt">${...}</span> substitutions,</li>
+<li>circular dependency detection.</li>
 </ul>
+<p>Recursive expansion terminates automatically when cyclic dependencies are detected.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">line</td><td>Line to be expanded </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">line</td><td><br  />
+ Line to be expanded </td></tr>
     <tr><td class="paramdir">[in,out]</td><td class="paramname">macros</td><td>Current macro table </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">stitch</td><td>.true. if final line ends with '&amp;' </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">implicit_conti</td><td>If .true., implicit continuation is permitted </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">dollar_insert</td><td>If .true., ${} macro substitution is supported </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">ctx</td><td>Context </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">ctx</td><td><br  />
+ Context </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Line with user-defined macros expanded (predefined tokens untouched)</dd></dl>
-<p><b>Remarks</b> </p>
+<dl class="section return"><dt>Returns</dt><dd>Line with user-defined macros expanded (predefined tokens untouched) </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00343">343</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00452">452</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
 
 </div>
 </div>
@@ -318,19 +350,22 @@ Data Types</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Check if a macro with given name exists in table. </p>
+<p>Determine whether a macro is currently defined. </p>
+<p>Performs a linear search through the macro table and optionally returns the corresponding index.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">name</td><td>Macro name to test </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">macros</td><td>Current macro table </td></tr>
-    <tr><td class="paramdir">[in,out]</td><td class="paramname">idx</td><td>Optional: returns index (1-based) if found </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">name</td><td><br  />
+ Macro identifier. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">macros</td><td><br  />
+ Macro table. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">idx</td><td><br  />
+ Position of the matching entry, if present. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>.true. if macro is defined</dd></dl>
-<p><b>Remarks</b> </p>
+<dl class="section return"><dt>Returns</dt><dd><span class="tt">.true.</span> if the macro exists. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00709">709</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00824">824</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
 
 </div>
 </div>

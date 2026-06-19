@@ -131,7 +131,7 @@ module fpx_string
     !> Return the length of a @ref string object.
     !!
     !! This generic interface extends the intrinsic Fortran `len` function
-    !! to support the FPX @ref string type.
+    !! to support the fpx @ref string type.
     !!
     !! The returned value corresponds to the full length of the underlying
     !! character storage, including trailing blanks.
@@ -168,7 +168,7 @@ module fpx_string
     !> Return the trimmed length of a @ref string object.
     !!
     !! This generic interface extends the intrinsic Fortran `len_trim`
-    !! function to support the FPX @ref string type.
+    !! function to support the fpx @ref string type.
     !!
     !! The returned value corresponds to the number of characters after
     !! removing trailing blanks.
@@ -205,7 +205,7 @@ module fpx_string
     !> Remove trailing blanks from a @ref string object.
     !!
     !! This generic interface extends the intrinsic Fortran `trim`
-    !! function to support the FPX @ref string type.
+    !! function to support the fpx @ref string type.
     !!
     !! The result is returned as a deferred-length intrinsic character
     !! expression with trailing blanks removed.
@@ -330,7 +330,7 @@ module fpx_string
     !> Locate the position of a substring.
     !!
     !! This generic interface extends the intrinsic Fortran `index`
-    !! function to support the FPX @ref string type.
+    !! function to support the fpx @ref string type.
     !!
     !! Supported combinations are:
     !! - `index(string, string)`

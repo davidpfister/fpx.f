@@ -1,4 +1,4 @@
-<!-- HTML header for doxygen 1.9.1-->
+﻿<!-- HTML header for doxygen 1.9.1-->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" class="dark-mode">
   <head>
@@ -120,10 +120,27 @@ $(function(){initNavTree('interfacefpx__string_1_1trim.html','','interfacefpx__s
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Definition</h2>
-<div class="textblock"><p>Return the trimmed string. </p>
-<p><b>Remarks</b> </p>
+<div class="textblock"><p>Remove trailing blanks from a <a class="el" href="structfpx__string_1_1string.html" title="string">string</a> object. </p>
+<p>This generic interface extends the intrinsic Fortran <span class="tt">trim</span> function to support the fpx <a class="el" href="structfpx__string_1_1string.html" title="string">string</a> type.</p>
+<p>The result is returned as a deferred-length intrinsic character expression with trailing blanks removed.</p>
+<p>If the string is not allocated, an empty character string is returned.</p>
+<h1 class="doxsection"><a class="anchor" id="trim_examples"></a>
+Examples</h1>
+<p>Basic usage: </p><div class="fragment"><div class="line"><span class="keywordtype">type</span>(string) :: s</div>
+<div class="line"><span class="keywordtype">character(:)</span>, <span class="keywordtype">allocatable</span> :: c</div>
+<div class="line"> </div>
+<div class="line">s = <span class="stringliteral">&#39;hello   &#39;</span></div>
+<div class="line"> </div>
+<div class="line">c = trim(s)</div>
+<div class="line">print *, <span class="stringliteral">&#39;&#39;</span>      <span class="comment">! </span></div>
 
-<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00151">151</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
+</div><!-- fragment --><p>Unallocated strings: </p><div class="fragment"><div class="line"><span class="keywordtype">type</span>(string) :: s</div>
+<div class="line"> </div>
+<div class="line">print *, len(trim(s))         <span class="comment">! 0</span></div>
+
+</div><!-- fragment --><dl class="section return"><dt>Returns</dt><dd>Deferred-length character string without trailing blanks. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00240">240</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
 </div><hr/>The documentation for this interface was generated from the following file:<ul>
 <li><a class="el" href="string_8f90_source.html">string.f90</a></li>
 </ul>
@@ -150,10 +167,9 @@ $(function(){initNavTree('interfacefpx__string_1_1trim.html','','interfacefpx__s
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Trimmed character string (deferred length).</dd></dl>
-<p><b>Remarks</b> </p>
+<dl class="section return"><dt>Returns</dt><dd>Trimmed character string (deferred length). </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00285">285</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00500">500</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
 
 </div>
 </div>

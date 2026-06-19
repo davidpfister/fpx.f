@@ -1,9 +1,9 @@
 !> @file
 !! @defgroup group_date Date
-!! Lightweight date and time utilities used by the FPX preprocessor.
+!! Lightweight date and time utilities used by the fpx preprocessor.
 !!
 !! This module provides a compact `datetime` type together with a small set
-!! of date/time operations required by FPX. Its primary purpose is to support
+!! of date/time operations required by fpx. Its primary purpose is to support
 !! expansion of the predefined macros:
 !!
 !! - `__DATE__`
@@ -21,7 +21,7 @@
 !!
 !! The implementation deliberately remains lightweight and dependency-free.
 !! It is not intended to replace dedicated date/time libraries, but instead
-!! provides exactly the capabilities required by FPX while remaining portable
+!! provides exactly the capabilities required by fpx while remaining portable
 !! across standard-conforming Fortran compilers.
 !!
 !! @section date_examples Examples

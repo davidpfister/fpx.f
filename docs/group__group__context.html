@@ -1,4 +1,4 @@
-<!-- HTML header for doxygen 1.9.1-->
+﻿<!-- HTML header for doxygen 1.9.1-->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" class="dark-mode">
   <head>
@@ -120,55 +120,53 @@ $(function(){initNavTree('group__group__context.html','',''); });
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Definition</h2>
-<div class="textblock"><p>Source context tracking for diagnostics and error reporting in fpx. </p>
-<p>This small but critical module defines the <span class="tt">context</span> type used throughout the fpx preprocessor to attach precise location information to every diagnostic message, label, or error report.</p>
-<p>Every time the preprocessor encounters a problem (undefined macro, include not found, invalid <span class="tt">#if</span> expression, unmatched <span class="tt">#endif</span>, etc.), it creates or reuses a <span class="tt">context</span> object that carries:</p><ul>
-<li>The full line content (for showing source snippets)</li>
-<li>The 1-based line number</li>
-<li>The full file path (for <span class="tt">--&gt;</span> arrows in diagnostics)</li>
-<li>The base filename (for concise reporting when path is long)</li>
+<div class="textblock"><p>Source context information used for diagnostics and error reporting. </p>
+<p>This module defines the lightweight <a class="el" href="structfpx__context_1_1context.html" title="context">context</a> type used throughout the fpx preprocessor to associate source-location information with diagnostics, warnings, notes, and error messages.</p>
+<p>Every diagnostic emitted by fpx is accompanied by a context object describing where the event occurred. This enables the generation of modern compiler-style messages containing file names, line numbers, source snippets, and caret annotations.</p>
+<p>A context captures:</p>
+<ul>
+<li>the original source line,</li>
+<li>the corresponding 1-based line number,</li>
+<li>the path of the source file being processed.</li>
 </ul>
-<p>This information is then used by the <span class="tt">fpx_logging</span> module to produce modern, rustc/clang-style error messages with line numbers, caret highlights (^), and file references.</p>
-<p>Without accurate context, diagnostics would be vague ("macro not defined"). With <span class="tt">context</span>, users see exactly where the problem happened:</p>
+<p>The information stored in a context is consumed primarily by the <a class="el" href="">fpx_logging </a> module to produce precise and user-friendly diagnostics.</p>
+<p>For example:</p>
 <div class="fragment"><div class="line">error: undefined macro <span class="stringliteral">&#39;DEBUG&#39;</span></div>
-<div class="line">  --&gt; src/main.f90:42:10-15</div>
+<div class="line">--&gt; src/main.f90:42</div>
 <div class="line">   |</div>
-<div class="line">42 |   <span class="preprocessor">#ifdef DEBUG</span></div>
-<div class="line"><span class="preprocessor"></span>   |          ^^^^^ <span class="stringliteral">&#39;DEBUG&#39;</span> not defined</div>
-</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="context_examples"></a>
+<div class="line">42 | <span class="preprocessor">#ifdef DEBUG</span></div>
+<div class="line"><span class="preprocessor"></span>   | ^^^^^ not defined</div>
+</div><!-- fragment --><p>Accurate context information becomes particularly important when processing nested include files, evaluating conditional directives, or reporting errors originating from macro expansions.</p>
+<h1 class="doxsection"><a class="anchor" id="context_examples"></a>
 Examples</h1>
 <ol type="1">
-<li>Creating context when reading a new file: <div class="fragment"><div class="line"><span class="keywordtype">type</span>(context) :: ctx</div>
+<li>Creating a context object: <div class="fragment"><div class="line"><span class="keywordtype">type</span>(context) :: ctx</div>
 <div class="line"> </div>
-<div class="line">ctx%path     = </div>
-<div class="line">ctx%line     = 27</div>
-<div class="line">ctx%content  = </div>
-<div class="line"> </div>
-<div class="line"><span class="comment">! Now pass ctx to logging functions</span></div>
-<div class="line"><span class="keyword">call </span>report_undefined_macro(, ctx)</div>
+<div class="line">ctx = context( &amp;</div>
+<div class="line">content=<span class="stringliteral">&#39;real :: x = PI*r**2&#39;</span>, &amp;</div>
+<div class="line">line=27, &amp;</div>
+<div class="line">path=<span class="stringliteral">&#39;src/utils.F90&#39;</span>)</div>
+
 </div><!-- fragment --></li>
-<li>Updating context during recursive include processing: <div class="fragment"><div class="line"><span class="comment">! In handle_include</span></div>
-<div class="line"><span class="keywordtype">type</span>(context) :: included_ctx</div>
-<div class="line"> </div>
-<div class="line">included_ctx%path     = resolved_include_path</div>
-<div class="line">included_ctx%line     = 1   <span class="comment">! reset for new file</span></div>
-<div class="line">included_ctx%content  = first_line_of_included_file</div>
-<div class="line"> </div>
-<div class="line">! <span class="keywordflow">Then</span> <span class="keywordtype">use </span>included_ctx for diagnostics inside the included file</div>
+<li>Using context when reporting diagnostics: <div class="fragment"><div class="line"><span class="keyword">call </span>printf(render(diagnostic_report( &amp;</div>
+<div class="line">level_error, &amp;</div>
+<div class="line">message=<span class="stringliteral">&#39;Undefined macro&#39;</span>, &amp;</div>
+<div class="line">source=ctx%path), &amp;</div>
+<div class="line">ctx%content, ctx%line))</div>
+
 </div><!-- fragment --></li>
-<li>Attaching context to a diagnostic label: <div class="fragment"><div class="line"><span class="keywordtype">type</span>(label_type) :: lbl</div>
-<div class="line"> </div>
-<div class="line">lbl = label_type(level_error, , &amp;</div>
-<div class="line">                 line=ctx%line, first=8, last=12, primary=.true.)</div>
-<div class="line"> </div>
-<div class="line">diag = diagnostic_report(level_error, , ctx%path, [lbl])</div>
+<li>Updating context during include processing: <div class="fragment"><div class="line">included_ctx = context( &amp;</div>
+<div class="line">content=first_line, &amp;</div>
+<div class="line">line=1, &amp;</div>
+<div class="line">path=resolved_include_path)</div>
+
 </div><!-- fragment --> </li>
 </ol>
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Data Types</h2></td></tr>
 <tr class="memitem:context" id="r_context"><td class="memItemLeft">type &#160;</td><td class="memItemRight"><a class="el" href="structfpx__context_1_1context.html">context</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Source location and content snapshot for precise diagnostics Instances of this type are created for every source file (including nested include files) and passed along with every warning, error, note, or info message to provide accurate line numbers, file names, and code snippets.  <a href="structfpx__context_1_1context.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Snapshot of a source location within the preprocessing stream.  <a href="structfpx__context_1_1context.html#details">More...</a><br /></td></tr>
 </table>
 </div><!-- contents -->
 </div><!-- doc-content -->

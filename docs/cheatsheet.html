@@ -146,11 +146,11 @@ Most Common Directives</h1>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><span class="tt">#undef NAME</span>  </td><td class="markdownTableBodyNone">Remove a macro  </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><span class="tt">#ifdef NAME</span> â€¦ <span class="tt">#endif</span>  </td><td class="markdownTableBodyNone">If NAME is defined  </td></tr>
+<td class="markdownTableBodyNone"><span class="tt">#ifdef NAME</span> ... <span class="tt">#endif</span>  </td><td class="markdownTableBodyNone">If NAME is defined  </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><span class="tt">#ifndef NAME</span> â€¦ <span class="tt">#endif</span>  </td><td class="markdownTableBodyNone">Classic header guard (most common)  </td></tr>
+<td class="markdownTableBodyNone"><span class="tt">#ifndef NAME</span> ... <span class="tt">#endif</span>  </td><td class="markdownTableBodyNone">Classic header guard (most common)  </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><span class="tt">#if DEBUG &gt;= 2</span> â€¦  </td><td class="markdownTableBodyNone">Full expressions allowed (<span class="tt">&amp;&amp;</span>, <span class="tt">!</span>, <span class="tt">defined(NAME)</span>)  </td></tr>
+<td class="markdownTableBodyNone"><span class="tt">#if DEBUG &gt;= 2</span> ...  </td><td class="markdownTableBodyNone">Full expressions allowed (<span class="tt">&amp;&amp;</span>, <span class="tt">!</span>, <span class="tt">defined(NAME)</span>)  </td></tr>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><span class="tt">#include "file.inc"</span>  </td><td class="markdownTableBodyNone">Local include (quotes)  </td></tr>
 <tr class="markdownTableRowOdd">
@@ -160,7 +160,7 @@ Most Common Directives</h1>
 Built-in Predefined Macros</h1>
 <center></center><center><table class="markdownTable">
 <tr class="markdownTableHead">
-<th class="markdownTableHeadNone">Macro  </th><th class="markdownTableHeadNone">Expands toâ€¦  </th></tr>
+<th class="markdownTableHeadNone">Macro  </th><th class="markdownTableHeadNone">Expands to...  </th></tr>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><span class="tt">__FILE__</span>  </td><td class="markdownTableBodyNone">"full/path/to/file.F90"  </td></tr>
 <tr class="markdownTableRowEven">
@@ -173,6 +173,8 @@ Built-in Predefined Macros</h1>
 <td class="markdownTableBodyNone"><span class="tt">__TIME__</span>  </td><td class="markdownTableBodyNone">"14:35:27"  </td></tr>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><span class="tt">__TIMESTAMP__</span>  </td><td class="markdownTableBodyNone">"Tue Aug 12 2025 14:35:27"  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><span class="tt">__FUNC__</span>  </td><td class="markdownTableBodyNone">Current function/subroutine name  </td></tr>
 </table>
 </center><center></center><h1 class="doxsection"><a class="anchor" id="autotoc_md16"></a>
 Advanced Macro Tricks</h1>
@@ -207,13 +209,24 @@ Common Patterns</h1>
 <div class="line"><span class="preprocessor">#endif</span></div>
 
 </div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md18"></a>
+fpx extensions</h1>
+<div class="fragment"><div class="line">   <span class="preprocessor">#for T in [integer, real, complex]</span></div>
+<div class="line"><span class="preprocessor"></span>      <span class="keywordtype">type</span>(T) :: value</div>
+<div class="line">   <span class="preprocessor">#endfor</span></div>
+<div class="line"><span class="preprocessor"></span> </div>
+<div class="line">   <span class="comment">! Expands to:</span></div>
+<div class="line">   <span class="keywordtype">type</span>(integer) :: value</div>
+<div class="line">   <span class="keywordtype">type</span>(real)    :: value</div>
+<div class="line">   <span class="keywordtype">type</span>(complex) :: value</div>
+
+</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md19"></a>
 Using fpx as a Library (in your own code)</h1>
 <p>Add include paths </p><div class="fragment"><div class="line"><span class="keywordtype">use </span>fpx_parser</div>
 <div class="line"><span class="keywordtype">use </span>fpx_global</div>
 <div class="line"> </div>
 <div class="line"><a class="code hl_variable" href="group__group__global.html#ga8b8524880886f61f8c961589cffa7640">global</a>%includedir = [<span class="stringliteral">&#39;./inc&#39;</span>, <span class="stringliteral">&#39;../common&#39;</span>]</div>
 
-<div class="ttc" id="agroup__group__global_html_ga8b8524880886f61f8c961589cffa7640"><div class="ttname"><a href="group__group__global.html#ga8b8524880886f61f8c961589cffa7640">fpx_global::global</a></div><div class="ttdeci">type(global_settings), public global</div><div class="ttdoc">The single global instance used throughout fpx Initialized automatically with sensible defaults value...</div><div class="ttdef"><b>Definition</b> <a href="global_8f90_source.html#l00096">global.f90:96</a></div></div>
+<div class="ttc" id="agroup__group__global_html_ga8b8524880886f61f8c961589cffa7640"><div class="ttname"><a href="group__group__global.html#ga8b8524880886f61f8c961589cffa7640">fpx_global::global</a></div><div class="ttdeci">type(global_settings), public global</div><div class="ttdoc">Global preprocessor configuration instance.</div><div class="ttdef"><b>Definition</b> <a href="global_8f90_source.html#l00192">global.f90:192</a></div></div>
 </div><!-- fragment --><p>Add predefined macros &amp; preprocess</p>
 <div class="fragment"><div class="line"><span class="keywordtype">use </span>fpx_parser</div>
 <div class="line"><span class="keywordtype">use </span>fpx_global</div>
@@ -224,7 +237,7 @@ Using fpx as a Library (in your own code)</h1>
 <div class="line"><span class="comment">!preprocess</span></div>
 <div class="line"><span class="keyword">call </span><a class="code hl_interface" href="interfacefpx__parser_1_1preprocess.html">preprocess</a>(<span class="stringliteral">&#39;src/main.F90&#39;</span>, <span class="stringliteral">&#39;build/main.f90&#39;</span>)</div>
 
-<div class="ttc" id="ainterfacefpx__parser_1_1preprocess_html"><div class="ttname"><a href="interfacefpx__parser_1_1preprocess.html">fpx_parser::preprocess</a></div><div class="ttdoc">Generic interface to start preprocessing from various sources/sinks.</div><div class="ttdef"><b>Definition</b> <a href="parser_8f90_source.html#l00084">parser.f90:84</a></div></div>
+<div class="ttc" id="ainterfacefpx__parser_1_1preprocess_html"><div class="ttname"><a href="interfacefpx__parser_1_1preprocess.html">fpx_parser::preprocess</a></div><div class="ttdoc">Generic interface to start preprocessing from various sources/sinks.</div><div class="ttdef"><b>Definition</b> <a href="parser_8f90_source.html#l00137">parser.f90:137</a></div></div>
 </div><!-- fragment --> </div></div><!-- contents -->
 </div><!-- PageDoc -->
 </div><!-- doc-content -->

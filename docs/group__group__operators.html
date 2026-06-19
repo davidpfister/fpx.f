@@ -1,4 +1,4 @@
-<!-- HTML header for doxygen 1.9.1-->
+﻿<!-- HTML header for doxygen 1.9.1-->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" class="dark-mode">
   <head>
@@ -139,12 +139,43 @@ $(function(){initNavTree('group__group__operators.html','',''); });
 <li>The special <span class="tt">defined</span> operator yields 1 or 0 depending on whether the identifier exists.</li>
 </ul>
 <p class="startli">The parser is fully re-entrant and has no global state.</p>
-<p class="startli">Public interface:</p><ul>
-<li><a class="el" href="interfacefpx__operators_1_1evaluate__expression.html">evaluate_expression </a>: high-level function that tokenizes and evaluates in one call</li>
-<li><a class="el" href="#gafd20ae82cdc3834e353f2e45521f6258">parse_expression </a>: low-level entry point for already-tokenized input</li>
-</ul>
-<p class="startli">This design guarantees correct operator precedence without the need for an explicit abstract syntax tree or stack-based shunting-yard algorithm, while remaining easy to read, maintain, and extend. </p>
 </li>
+</ol>
+<p>Public entry points:</p><ul>
+<li><a class="el" href="interfacefpx__operators_1_1evaluate__expression.html">evaluate_expression </a>: tokenize and evaluate an expression in one call.</li>
+<li><p class="startli"><a class="el" href="#gafd20ae82cdc3834e353f2e45521f6258">parse_expression </a>: evaluate an already-tokenized expression.</p>
+<p class="startli">This design guarantees correct operator precedence without the need for an explicit abstract syntax tree or stack-based shunting-yard algorithm, while remaining easy to read, maintain, and extend.</p>
+</li>
+</ul>
+<h1 class="doxsection"><a class="anchor" id="operator_examples"></a>
+Examples</h1>
+<ol type="1">
+<li>Evaluate a simple expression: <div class="fragment"><div class="line">   <span class="keywordtype">logical</span> :: ok</div>
+<div class="line">   <span class="keywordtype">integer</span> :: value</div>
+<div class="line"> </div>
+<div class="line">   ok = evaluate_expression(<span class="stringliteral">&#39;1 + 2 * 3&#39;</span>, macros, <span class="keywordtype">value</span>)</div>
+<div class="line"> </div>
+<div class="line">   <span class="comment">! value = 7</span></div>
+
+</div><!-- fragment --></li>
+<li>Use the <span class="tt">defined</span> operator: <div class="fragment"><div class="line">   <span class="keyword">call </span>add(macros, <span class="stringliteral">&#39;DEBUG&#39;</span>)</div>
+<div class="line"> </div>
+<div class="line">   <span class="keywordflow">if</span> (evaluate_expression(<span class="stringliteral">&#39;defined(DEBUG)&#39;</span>, macros)) <span class="keywordflow">then</span></div>
+<div class="line">      ...</div>
+<div class="line"><span class="keywordflow">   end if</span></div>
+
+</div><!-- fragment --></li>
+<li>Evaluate expressions involving macros: <div class="fragment"><div class="line">   <span class="keyword">call </span>add(macros, <span class="stringliteral">&#39;LEVEL&#39;</span>, <span class="stringliteral">&#39;2&#39;</span>)</div>
+<div class="line"> </div>
+<div class="line">   <span class="keywordflow">if</span> (evaluate_expression(<span class="stringliteral">&#39;LEVEL &gt;= 2&#39;</span>, macros)) <span class="keywordflow">then</span></div>
+<div class="line">      ...</div>
+<div class="line"><span class="keywordflow">   end if</span></div>
+
+</div><!-- fragment --></li>
+<li>Conditional operator: <div class="fragment"><div class="line">   <span class="keyword">call </span>evaluate_expression(<span class="stringliteral">&#39;1 ? 10 : 20&#39;</span>, macros, <span class="keywordtype">value</span>)</div>
+<div class="line">   <span class="comment">! value = 10</span></div>
+
+</div><!-- fragment --> </li>
 </ol>
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
@@ -194,7 +225,8 @@ Data Types</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Parses a sequence of tokens starting at position <span class="tt">pos</span> as a full expression. Entry point for the recursive descent parser. Delegates to parse_or(). </p>
+<p>Parse and evaluate an already-tokenized expression. </p>
+<p>This routine implements the top-level non-terminal of the recursive descent parser. It is primarily intended for internal use by <span class="tt">evaluate_expression</span>, but remains public to allow external users to reuse the parser on custom token streams.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">expr</td><td>Expression to be processed </td></tr>
@@ -206,10 +238,9 @@ Data Types</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Integer value of the parsed expression</dd></dl>
-<p><b>Remarks</b> </p>
+<dl class="section return"><dt>Returns</dt><dd>Integer value of the parsed expression </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="operators_8f90_source.html#l00195">195</a> of file <a class="el" href="operators_8f90_source.html">operators.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="operators_8f90_source.html#l00265">265</a> of file <a class="el" href="operators_8f90_source.html">operators.f90</a>.</p>
 
 </div>
 </div>

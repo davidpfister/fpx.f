@@ -120,7 +120,7 @@ $(function(){initNavTree('group__group__for.html','',''); });
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Definition</h2>
-<div class="textblock"><p>Fortran Preprocessor (fpx) â€“ compile-time loop expansion support. </p>
+<div class="textblock"><p>Fortran Preprocessor (fpx) - compile-time loop expansion support. </p>
 <p>This module implements the non-standard <span class="tt">#for</span> / <span class="tt">#endfor</span> directive pair used by fpx to generate repeated source code from a list of values.</p>
 <p>Features:</p><ul>
 <li>Simple iteration over explicit lists: <span class="tt">#for T in [integer, real, complex]</span></li>
@@ -167,8 +167,22 @@ Examples</h1>
 <div class="line">   <span class="preprocessor">#endfor</span></div>
 
 </div><!-- fragment --></li>
+<li>Cartesian product generation: <div class="fragment"><div class="line">   <span class="preprocessor">#for T in [real, complex]</span></div>
+<div class="line"><span class="preprocessor"></span>   <span class="preprocessor">#for K in [32, 64]</span></div>
+<div class="line"><span class="preprocessor"></span>      <span class="keywordtype">type</span>(T(K)) :: value</div>
+<div class="line">   <span class="preprocessor">#endfor</span></div>
+<div class="line"><span class="preprocessor"></span>   <span class="preprocessor">#endfor</span></div>
+<div class="line"><span class="preprocessor"></span> </div>
+<div class="line">   <span class="comment">! Generates:</span></div>
+<div class="line">   <span class="comment">! type(real(32))    :: value</span></div>
+<div class="line">   <span class="comment">! type(real(64))    :: value</span></div>
+<div class="line">   <span class="comment">! type(complex(32)) :: value</span></div>
+<div class="line">   <span class="comment">! type(complex(64)) :: value</span></div>
+
+</div><!-- fragment --></li>
 </ol>
-<p>Loop variables behave like temporary macros and participate in normal macro expansion rules. </p>
+<p>Loop variables behave exactly like temporary object-like macros and therefore participate in all normal macro expansion rules, including nested expansion and token pasting.</p>
+<dl class="section note"><dt>Note</dt><dd>When nested loops are active, generated lines are appended to the enclosing loop body rather than written immediately. This guarantees inside-out expansion semantics. </dd></dl>
 </div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Methods</h2>
 <a id="ga6079af1c12adf54ac2f0bccc9701e16a" name="ga6079af1c12adf54ac2f0bccc9701e16a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga6079af1c12adf54ac2f0bccc9701e16a">&#9670;&#160;</a></span>add_to_loop()</h2>
@@ -185,17 +199,16 @@ Examples</h1>
       </table>
 </div><div class="memdoc">
 
-<p>Append a source line to the currently active loop body. </p>
-<p>Lines are stored verbatim and expanded only when the matching <span class="tt">#endfor</span> directive is encountered.</p>
+<p>Append a source line to the innermost active loop body. </p>
+<p>Lines are stored verbatim without macro expansion. Expansion is deferred until the corresponding <span class="tt">#endfor</span> directive is processed.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">line</td><td>Source line to store</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">line</td><td>Source line to store </td></tr>
   </table>
   </dd>
 </dl>
-<p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="loop_8f90_source.html#l00346">346</a> of file <a class="el" href="loop_8f90_source.html">loop.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="loop_8f90_source.html#l00383">383</a> of file <a class="el" href="loop_8f90_source.html">loop.f90</a>.</p>
 
 </div>
 </div>
@@ -235,6 +248,12 @@ Examples</h1>
 
 <p>Finalize a loop and emit all expanded iterations. </p>
 <p>The collected loop body is expanded once for every value contained in the loop variable parameter list. Nested loops are handled recursively by forwarding generated lines to the enclosing loop body when present.</p>
+<p>For each iteration value:</p><ul>
+<li>the loop variable macro is activated,</li>
+<li>the stored body is macro-expanded,</li>
+<li>generated lines are reprocessed by the normal preprocessing engine,</li>
+<li>output is either emitted directly or forwarded to an enclosing loop.</li>
+</ul>
 <p>When the outermost loop terminates, all temporary loop state is released automatically.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -242,13 +261,12 @@ Examples</h1>
     <tr><td class="paramdir">[in]</td><td class="paramname">ounit</td><td>Output unit </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">p</td><td>preprocessor function pointer </td></tr>
     <tr><td class="paramdir">[in,out]</td><td class="paramname">macros</td><td>Active macro table </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">token</td><td>Directive keyword (<span class="tt">endfor</span>)</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">token</td><td>Directive keyword (<span class="tt">endfor</span>) </td></tr>
   </table>
   </dd>
 </dl>
-<p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="loop_8f90_source.html#l00251">251</a> of file <a class="el" href="loop_8f90_source.html">loop.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="loop_8f90_source.html#l00289">289</a> of file <a class="el" href="loop_8f90_source.html">loop.f90</a>.</p>
 
 </div>
 </div>
@@ -277,24 +295,25 @@ Examples</h1>
 </div><div class="memdoc">
 
 <p>Process a <span class="tt">#for</span> directive and initialize a new loop context. </p>
-<p>Parses directives of the form: </p><div class="fragment"><div class="line">   <span class="preprocessor">#for variable in [item1, item2, ...]</span></div>
-
-</div><!-- fragment --><p>or</p>
-<div class="fragment"><div class="line">   <span class="preprocessor">#for variable in MACRO_NAME</span></div>
-
+<p>The directive header is parsed immediately, but the loop body is not expanded at this stage. Instead, subsequent source lines are collected until the matching <span class="tt">#endfor</span> directive is encountered.</p>
+<p>The loop variable behaves as a temporary object-like macro whose value changes for each iteration.</p>
+<p>Supported syntax:</p>
+<div class="fragment"><div class="line"><span class="preprocessor">#for identifier in [value1, value2, ...]</span></div>
+<div class="line"><span class="preprocessor"></span>#for identifier in macro_name</div>
 </div><!-- fragment --><p>where <span class="tt">MACRO_NAME</span> expands to a bracketed list.</p>
-<p>A temporary macro representing the loop variable is created and the iteration values are stored internally until the matching <span class="tt">#endfor</span> is reached.</p>
+<dl class="section note"><dt>Note</dt><dd><span class="tt">#for</span> and <span class="tt">#endfor</span> are fpx extensions and are not part of the ISO C preprocessor specification.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">ctx</td><td>Current parsing context </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">ctx</td><td><br  />
+ Current parsing context </td></tr>
     <tr><td class="paramdir">[in,out]</td><td class="paramname">macros</td><td>Active macro table </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">token</td><td>Directive keyword (<span class="tt">for</span>)</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">token</td><td><br  />
+ Directive keyword (<span class="tt">for</span>) </td></tr>
   </table>
   </dd>
 </dl>
-<p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="loop_8f90_source.html#l00128">128</a> of file <a class="el" href="loop_8f90_source.html">loop.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="loop_8f90_source.html#l00161">161</a> of file <a class="el" href="loop_8f90_source.html">loop.f90</a>.</p>
 
 </div>
 </div>
@@ -310,11 +329,10 @@ Examples</h1>
       </table>
 </div><div class="memdoc">
 
-<p>Query whether parsing is currently inside a <span class="tt">#for</span> block. </p>
-<dl class="section return"><dt>Returns</dt><dd><span class="tt">.true.</span> when one or more loop contexts are active, <span class="tt">.false.</span> otherwise.</dd></dl>
-<p><b>Remarks</b> </p>
+<p>Query whether parsing is currently inside a <span class="tt">#for</span> block. This routine is typically used by the main preprocessing engine to determine whether incoming source lines should be emitted directly or collected for later expansion. </p>
+<dl class="section return"><dt>Returns</dt><dd><span class="tt">.true.</span> when one or more loop contexts are active, <span class="tt">.false.</span> otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="loop_8f90_source.html#l00359">359</a> of file <a class="el" href="loop_8f90_source.html">loop.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="loop_8f90_source.html#l00397">397</a> of file <a class="el" href="loop_8f90_source.html">loop.f90</a>.</p>
 
 </div>
 </div>

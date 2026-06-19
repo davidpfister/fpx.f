@@ -1,6 +1,6 @@
 !> @file
 !! @defgroup group_global Global
-!! Global configuration and shared runtime state for the FPX preprocessor.
+!! Global configuration and shared runtime state for the fpx preprocessor.
 !!
 !! This module defines the central configuration object used throughout the
 !! entire preprocessing session. A single public instance,
@@ -16,7 +16,7 @@
 !! - Behavioural settings affecting parsing and expansion.
 !! - Runtime flags used by interactive preprocessing sessions.
 !!
-!! All FPX components access the same global state, avoiding the need to pass
+!! All fpx components access the same global state, avoiding the need to pass
 !! configuration objects through every procedure call.
 !!
 !! The design assumes the traditional single-threaded preprocessing model.
@@ -106,7 +106,7 @@
 !! ...
 !! @endcode
 !!
-!! 4. Enable FPX extensions:
+!! 4. Enable fpx extensions:
 !! @code{.f90}
 !!    global%support_forloop      = .true.
 !!    global%support_dollar_insert = .true.
@@ -124,9 +124,10 @@
 !! ...
 !! @endcode
 !!
-!! @see fpx_macro
-!! @see fpx_parser
-!! @see fpx_include
+!! @see 
+!! <a href="./group__group__macro.html">macro</a>
+!! <a href="./group__group__parser.html">parser</a>
+!! <a href="./group__group__include.html">include</a>
 module fpx_global
     use fpx_constants
     use fpx_string
@@ -137,7 +138,7 @@ module fpx_global
     !> Global preprocessor configuration and shared runtime state.
     !!
     !! This type encapsulates all user-configurable options controlling the
-    !! behaviour of the FPX preprocessor.
+    !! behaviour of the fpx preprocessor.
     !!
     !! A single public instance, @ref global, is provided and used throughout
     !! the library. Applications may modify its components before starting
@@ -182,7 +183,7 @@ module fpx_global
     !> Global preprocessor configuration instance.
     !!
     !! This singleton is automatically initialized with sensible default
-    !! values and is shared by all FPX modules during preprocessing.
+    !! values and is shared by all fpx modules during preprocessing.
     !!
     !! Applications typically customize this object before invoking
     !! `preprocess(...)`.

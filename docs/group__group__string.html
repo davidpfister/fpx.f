@@ -167,17 +167,17 @@ Data Types</h2></td></tr>
 <tr class="memitem:string" id="r_string"><td class="memItemLeft">type &#160;</td><td class="memItemRight"><a class="el" href="structfpx__string_1_1string.html">string</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Represents text as a sequence of ASCII code units. The derived type wraps an allocatable character array.  <a href="structfpx__string_1_1string.html#details">More...</a><br /></td></tr>
 <tr class="memitem:len" id="r_len"><td class="memItemLeft">interface &#160;</td><td class="memItemRight"><a class="el" href="interfacefpx__string_1_1len.html">len</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the length of a string.  <a href="interfacefpx__string_1_1len.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the length of a <a class="el" href="structfpx__string_1_1string.html" title="string">string</a> object.  <a href="interfacefpx__string_1_1len.html#details">More...</a><br /></td></tr>
 <tr class="memitem:len_5Ftrim" id="r_len_5Ftrim"><td class="memItemLeft">interface &#160;</td><td class="memItemRight"><a class="el" href="interfacefpx__string_1_1len__trim.html">len_trim</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the trimmed length of a string.  <a href="interfacefpx__string_1_1len__trim.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the trimmed length of a <a class="el" href="structfpx__string_1_1string.html" title="string">string</a> object.  <a href="interfacefpx__string_1_1len__trim.html#details">More...</a><br /></td></tr>
 <tr class="memitem:trim" id="r_trim"><td class="memItemLeft">interface &#160;</td><td class="memItemRight"><a class="el" href="interfacefpx__string_1_1trim.html">trim</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the trimmed string.  <a href="interfacefpx__string_1_1trim.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove trailing blanks from a <a class="el" href="structfpx__string_1_1string.html" title="string">string</a> object.  <a href="interfacefpx__string_1_1trim.html#details">More...</a><br /></td></tr>
 <tr class="memitem:operator_28_2F_2F_29" id="r_operator_28_2F_2F_29"><td class="memItemLeft">interface &#160;</td><td class="memItemRight"><a class="el" href="interfacefpx__string_1_1operator_07_2_2_08.html">operator(//)</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Concatenation operator.  <a href="interfacefpx__string_1_1operator_07_2_2_08.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Concatenate string and character expressions.  <a href="interfacefpx__string_1_1operator_07_2_2_08.html#details">More...</a><br /></td></tr>
 <tr class="memitem:operator_28_2Econtains_2E_29" id="r_operator_28_2Econtains_2E_29"><td class="memItemLeft">interface &#160;</td><td class="memItemRight"><a class="el" href="interfacefpx__string_1_1operator_07_8contains_8_08.html">operator(.contains.)</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check whether a string belongs to a list or not.  <a href="interfacefpx__string_1_1operator_07_8contains_8_08.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Test whether a value is present in an array.  <a href="interfacefpx__string_1_1operator_07_8contains_8_08.html#details">More...</a><br /></td></tr>
 <tr class="memitem:index" id="r_index"><td class="memItemLeft">interface &#160;</td><td class="memItemRight"><a class="el" href="interfacefpx__string_1_1index.html">index</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Index operator.  <a href="interfacefpx__string_1_1index.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Locate the position of a substring.  <a href="interfacefpx__string_1_1index.html#details">More...</a><br /></td></tr>
 </table>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Methods</h2>
 <a id="gadb259182cf539d22a0de67734b243059" name="gadb259182cf539d22a0de67734b243059"></a>
@@ -207,10 +207,9 @@ Data Types</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Concatenated string with proper continuation handling</dd></dl>
-<p><b>Remarks</b> </p>
+<dl class="section return"><dt>Returns</dt><dd>Concatenated string with proper continuation handling </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00550">550</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00762">762</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
 
 </div>
 </div>
@@ -229,17 +228,16 @@ Data Types</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Returns the first non-blank character of a string. </p>
+<p>Returns the first character of the trimmed string. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">str</td><td>input string </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>First character (space if empty)</dd></dl>
-<p><b>Remarks</b> </p>
+<dl class="section return"><dt>Returns</dt><dd>First character (space if empty) </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00517">517</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00731">731</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
 
 </div>
 </div>
@@ -270,9 +268,8 @@ Data Types</h2></td></tr>
 <div class="line"><span class="keywordtype">character(:)</span>, <span class="keywordtype">allocatable</span> :: output</div>
 <div class="line">output = lowercase(input)</div>
 <div class="line"><span class="keywordflow">if</span> (output == <span class="stringliteral">&#39;test&#39;</span>) print*, <span class="stringliteral">&#39;OK&#39;</span></div>
-</div><!-- fragment --><p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00641">641</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
+</div><!-- fragment --> 
+<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00851">851</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
 
 </div>
 </div>
@@ -303,10 +300,9 @@ Data Types</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Previous non-blank character</dd></dl>
-<p><b>Remarks</b> </p>
+<dl class="section return"><dt>Returns</dt><dd>Previous non-blank character </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00700">700</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00908">908</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
 
 </div>
 </div>
@@ -359,9 +355,8 @@ Data Types</h2></td></tr>
 <div class="line">ok = starts_with(line, <span class="stringliteral">&#39;world&#39;</span>)               <span class="comment">! -&gt; .false.</span></div>
 <div class="line">ok = starts_with(<span class="stringliteral">&#39;  test123  &#39;</span>, <span class="stringliteral">&#39;test&#39;</span>)       <span class="comment">! -&gt; .true.</span></div>
 
-</div><!-- fragment --><p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00499">499</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
+</div><!-- fragment --> 
+<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00714">714</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
 
 </div>
 </div>
@@ -387,10 +382,9 @@ Data Types</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Last character (space if empty)</dd></dl>
-<p><b>Remarks</b> </p>
+<dl class="section return"><dt>Returns</dt><dd>Last character (space if empty) </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00532">532</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00745">745</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
 
 </div>
 </div>
@@ -421,9 +415,8 @@ Data Types</h2></td></tr>
 <div class="line"><span class="keywordtype">character(:)</span>, <span class="keywordtype">allocatable</span> :: output</div>
 <div class="line">output = uppercase(input)</div>
 <div class="line"><span class="keywordflow">if</span> (output == <span class="stringliteral">&#39;TEST&#39;</span>) print*, <span class="stringliteral">&#39;OK&#39;</span></div>
-</div><!-- fragment --><p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00597">597</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
+</div><!-- fragment --> 
+<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00808">808</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
 
 </div>
 </div>
@@ -450,13 +443,12 @@ Data Types</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">unit</td><td>logical unit </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">str</td><td>string to write</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">str</td><td>string to write </td></tr>
   </table>
   </dd>
 </dl>
-<p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00677">677</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00886">886</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
 
 </div>
 </div>

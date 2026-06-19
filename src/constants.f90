@@ -1,6 +1,6 @@
 !> @file
 !! @defgroup group_constants Constants
-!! Compile-time constants used throughout the FPX preprocessor.
+!! Compile-time constants used throughout the fpx preprocessor.
 !!
 !! This module centralizes all numerical limits and fixed configuration
 !! values required by the implementation. These parameters define the
@@ -19,39 +19,39 @@
 !!
 !! @section constants_examples Examples
 !!
-!! 1. Limiting nested conditional directives:
-!! @code{.f90}
-!! #if A
-!! #if B
-!! #if C
-!! !some code
-!! #endif
-!! #endif
-!! #endif
-!! ...
-!! @endcode
+!! -# Limiting nested conditional directives:
+!!      @code{.f90}
+!!      #if A
+!!      #if B
+!!      #if C
+!!      !some code
+!!      #endif
+!!      #endif
+!!      #endif
+!!      ...
+!!      @endcode
 !!
-!! Nesting is permitted up to @link fpx_constants::max_cond_depth MAX_COND_DEPTH @endlink levels.
+!!      Nesting is permitted up to @link fpx_constants::max_cond_depth MAX_COND_DEPTH @endlink levels.
 !!
-!! 2. Nested #for loops:
-!! @code{.f90}
-!! #for T in [integer, real]
-!! #for K in [32, 64]
-!! !some code
-!! #endfor
-!! #endfor
-!! ...
-!! @endcode
+!! -# Nested #for loops:
+!!      @code{.f90}
+!!      #for T in [integer, real]
+!!      #for K in [32, 64]
+!!      !some code
+!!      #endfor
+!!      #endfor
+!!      ...
+!!      @endcode
 !!
-!! Loop nesting is limited by @link fpx_constants::max_for_depth MAX_FOR_DEPTH @endlink.
+!!      Loop nesting is limited by @link fpx_constants::max_for_depth MAX_FOR_DEPTH @endlink.
 !!
-!! 3. Long macro expansions:
-!! @code{.f90}
-!! #define MESSAGE "very long text ..."
-!! ...
-!! @endcode
+!! -# Long macro expansions:
+!!      @code{.f90}
+!!      #define MESSAGE "very long text ..."
+!!      ...
+!!      @endcode
 !!
-!! Intermediate buffers are sized according to @link fpx_constants::max_line_len MAX_LINE_LEN @endlink.
+!!      Intermediate buffers are sized according to @link fpx_constants::max_line_len MAX_LINE_LEN @endlink.
 module fpx_constants
     implicit none; private
 
@@ -90,7 +90,7 @@ module fpx_constants
 
     !> Maximum nesting depth of `#for` loops. 
     !! 
-    !! Applies to the FPX extension: 
+    !! Applies to the fpx extension: 
     !! @code 
     !! #for ...
     !! !some code

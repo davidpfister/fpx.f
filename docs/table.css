@@ -1,4 +1,4 @@
-/* custom-modern.css – Directory / File list improvements (GitHub-style) */
+/* custom-modern.css - Directory / File list improvements (GitHub-style) */
 
 .directory table {
   width: 100% !important;
@@ -42,7 +42,7 @@
   font-size: 0.9rem;
 }
 
-/* First column (icon + arrow + name) – takes remaining space */
+/* First column (icon + arrow + name) - takes remaining space */
 .directory td.entry {
   font-weight: 500;
   display: flex;
@@ -50,7 +50,7 @@
   gap: 6px;
 }
 
-/* Icons – larger, cleaner, no old icons left */
+/* Icons - larger, cleaner, no old icons left */
 .directory .iconfolder,
 .directory .icondoc {
   display: inline-flex;

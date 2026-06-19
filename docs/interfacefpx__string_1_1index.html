@@ -1,4 +1,4 @@
-<!-- HTML header for doxygen 1.9.1-->
+﻿<!-- HTML header for doxygen 1.9.1-->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" class="dark-mode">
   <head>
@@ -120,10 +120,50 @@ $(function(){initNavTree('interfacefpx__string_1_1index.html','','interfacefpx__
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Definition</h2>
-<div class="textblock"><p>Index operator. </p>
-<p><b>Remarks</b> </p>
+<div class="textblock"><p>Locate the position of a substring. </p>
+<p>This generic interface extends the intrinsic Fortran <span class="tt">index</span> function to support the fpx <a class="el" href="structfpx__string_1_1string.html" title="string">string</a> type.</p>
+<p>Supported combinations are:</p><ul>
+<li><span class="tt">index(string, string)</span></li>
+<li><span class="tt">index(string, character(*))</span></li>
+<li><span class="tt">index(character(*), string)</span></li>
+</ul>
+<p>The optional argument <span class="tt">back</span> behaves exactly as in the intrinsic Fortran procedure:</p><ul>
+<li>if absent or <span class="tt">.false.</span>, the first occurrence is returned;</li>
+<li>if <span class="tt">.true.</span>, the last occurrence is returned.</li>
+</ul>
+<p>The function returns zero if the substring is not found.</p>
+<h1 class="doxsection"><a class="anchor" id="index_examples"></a>
+Examples</h1>
+<p>String and character: </p><div class="fragment"><div class="line"><span class="keywordtype">type</span>(string) :: s</div>
+<div class="line"> </div>
+<div class="line">s = <span class="stringliteral">&#39;banana&#39;</span></div>
+<div class="line"> </div>
+<div class="line">print *, index(s, <span class="stringliteral">&#39;na&#39;</span>)               <span class="comment">! 3</span></div>
+<div class="line">print *, index(s, <span class="stringliteral">&#39;xy&#39;</span>)               <span class="comment">! 0</span></div>
 
-<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00180">180</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
+</div><!-- fragment --><p>String and string: </p><div class="fragment"><div class="line"><span class="keywordtype">type</span>(string) :: text</div>
+<div class="line"><span class="keywordtype">type</span>(string) :: sub</div>
+<div class="line"> </div>
+<div class="line">text = <span class="stringliteral">&#39;banana&#39;</span></div>
+<div class="line">sub  = <span class="stringliteral">&#39;na&#39;</span></div>
+<div class="line"> </div>
+<div class="line">print *, index(text, sub)             <span class="comment">! 3</span></div>
+
+</div><!-- fragment --><p>Search from the end: </p><div class="fragment"><div class="line"><span class="keywordtype">type</span>(string) :: s</div>
+<div class="line"> </div>
+<div class="line">s = <span class="stringliteral">&#39;banana&#39;</span></div>
+<div class="line"> </div>
+<div class="line">print *, index(s, <span class="stringliteral">&#39;na&#39;</span>, back=.true.)  <span class="comment">! 5</span></div>
+
+</div><!-- fragment --><p>Mixed usage: </p><div class="fragment"><div class="line"><span class="keywordtype">type</span>(string) :: sub</div>
+<div class="line"> </div>
+<div class="line">sub = <span class="stringliteral">&#39;ana&#39;</span></div>
+<div class="line"> </div>
+<div class="line">print *, index(<span class="stringliteral">&#39;banana&#39;</span>, sub)         <span class="comment">! 2</span></div>
+
+</div><!-- fragment --><dl class="section return"><dt>Returns</dt><dd>Position of the matching substring, or zero if not found. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00395">395</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
 </div><hr/>The documentation for this interface was generated from the following file:<ul>
 <li><a class="el" href="string_8f90_source.html">string.f90</a></li>
 </ul>

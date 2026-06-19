@@ -1,4 +1,4 @@
-<!-- HTML header for doxygen 1.9.1-->
+﻿<!-- HTML header for doxygen 1.9.1-->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" class="dark-mode">
   <head>
@@ -121,30 +121,44 @@ $(function(){initNavTree('interfacefpx__operators_1_1evaluate__expression.html',
 <div class="contents">
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Definition</h2>
 <div class="textblock"><p>Evaluates a preprocessor-style expression with macro substitution. Tokenizes the input expression, expands macros where appropriate, parses it according to operator precedence, and computes the integer result. Returns .true. if evaluation succeeded and the result is non-zero. </p>
-<h3>evaluate(character(*), type(macros)(:), integer)</h3>
-<pre class="fragment">logical function evaluate(expr, macros, val) </pre><dl class="params"><dt>Parameters</dt><dd>
+<h1 class="doxsection"><a class="anchor" id="evaluate_expression_examples"></a>
+Examples</h1>
+<div class="fragment"><div class="line">   <span class="keywordtype">integer</span> :: value</div>
+<div class="line"> </div>
+<div class="line">   <span class="keyword">call </span>add(macros, <span class="stringliteral">&#39;SIZE&#39;</span>, <span class="stringliteral">&#39;64&#39;</span>)</div>
+<div class="line"> </div>
+<div class="line">   <span class="keywordflow">if</span> (evaluate_expression(<span class="stringliteral">&#39;SIZE &gt;= 32&#39;</span>, macros, <span class="keywordtype">value</span>)) <span class="keywordflow">then</span></div>
+<div class="line">      print *, <span class="keywordtype">value</span>      <span class="comment">! 1</span></div>
+<div class="line"><span class="keywordflow">   end if</span></div>
+
+</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="evaluate_expression_constructors"></a>
+Constructors</h1>
+<p><b>Constructor</b> </p><div class="fragment"><div class="line"><span class="keyword">logical </span><span class="keyword">function </span>evaluate(expr, macros, val) </div>
+</div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">expr</td><td>Expression string to evaluate </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">expr</td><td><br  />
+ Expression string to evaluate </td></tr>
     <tr><td class="paramdir">[in,out]</td><td class="paramname">macros</td><td>Array of defined macros for substitution and <span class="tt">defined()</span> checks </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">val</td><td>(optional) integer result of the evaluation </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>.true. if the expression evaluated successfully to non-zero, .false. otherwise</dd></dl>
-<h3>evaluate(character(*), type(macros)(:), type(context), integer)</h3>
-<pre class="fragment">logical function evaluate(expr, macros, ctx, val) </pre><dl class="params"><dt>Parameters</dt><dd>
+<p><b>Constructor</b> </p><div class="fragment"><div class="line"><span class="keyword">logical </span><span class="keyword">function </span>evaluate(expr, macros, ctx, val) </div>
+</div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">expr</td><td>Expression string to evaluate </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">expr</td><td><br  />
+ Expression string to evaluate </td></tr>
     <tr><td class="paramdir">[in,out]</td><td class="paramname">macros</td><td>Array of defined macros for substitution and <span class="tt">defined()</span> checks </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">ctx</td><td>Current context </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">val</td><td>(optional) integer result of the evaluation </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">val</td><td><br  />
+ (optional) integer result of the evaluation </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>.true. if the expression evaluated successfully to non-zero, .false. otherwise</dd></dl>
-<p><b>Remarks</b> </p>
+<dl class="section return"><dt>Returns</dt><dd>.true. if the expression evaluated successfully to non-zero, .false. otherwise </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="operators_8f90_source.html#l00105">105</a> of file <a class="el" href="operators_8f90_source.html">operators.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="operators_8f90_source.html#l00171">171</a> of file <a class="el" href="operators_8f90_source.html">operators.f90</a>.</p>
 </div><hr/>The documentation for this interface was generated from the following file:<ul>
 <li><a class="el" href="operators_8f90_source.html">operators.f90</a></li>
 </ul>
@@ -182,10 +196,9 @@ $(function(){initNavTree('interfacefpx__operators_1_1evaluate__expression.html',
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>.true. if the expression evaluated successfully to non-zero, .false. otherwise</dd></dl>
-<p><b>Remarks</b> </p>
+<dl class="section return"><dt>Returns</dt><dd>.true. if the expression evaluated successfully to non-zero, .false. otherwise </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="operators_8f90_source.html#l00124">124</a> of file <a class="el" href="operators_8f90_source.html">operators.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="operators_8f90_source.html#l00189">189</a> of file <a class="el" href="operators_8f90_source.html">operators.f90</a>.</p>
 
 </div>
 </div>
@@ -228,10 +241,9 @@ $(function(){initNavTree('interfacefpx__operators_1_1evaluate__expression.html',
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>.true. if the expression evaluated successfully to non-zero, .false. otherwise</dd></dl>
-<p><b>Remarks</b> </p>
+<dl class="section return"><dt>Returns</dt><dd>.true. if the expression evaluated successfully to non-zero, .false. otherwise </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="operators_8f90_source.html#l00148">148</a> of file <a class="el" href="operators_8f90_source.html">operators.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="operators_8f90_source.html#l00212">212</a> of file <a class="el" href="operators_8f90_source.html">operators.f90</a>.</p>
 
 </div>
 </div>

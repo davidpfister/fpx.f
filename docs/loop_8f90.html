@@ -129,9 +129,9 @@ Functions/Subroutines</h2></td></tr>
 <tr class="memitem:gaadc593eef44e3b6aaf4e76e2b0bc2d29" id="r_gaadc593eef44e3b6aaf4e76e2b0bc2d29"><td class="memItemLeft">subroutine, public&#160;</td><td class="memItemRight"><a class="el" href="group__group__for.html#gaadc593eef44e3b6aaf4e76e2b0bc2d29">handle_endfor</a> (ctx, ounit, p, macros, token)</td></tr>
 <tr class="memdesc:gaadc593eef44e3b6aaf4e76e2b0bc2d29"><td class="mdescLeft">&#160;</td><td class="mdescRight">Finalize a loop and emit all expanded iterations.  <br /></td></tr>
 <tr class="memitem:ga6079af1c12adf54ac2f0bccc9701e16a" id="r_ga6079af1c12adf54ac2f0bccc9701e16a"><td class="memItemLeft">subroutine, public&#160;</td><td class="memItemRight"><a class="el" href="group__group__for.html#ga6079af1c12adf54ac2f0bccc9701e16a">add_to_loop</a> (line)</td></tr>
-<tr class="memdesc:ga6079af1c12adf54ac2f0bccc9701e16a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Append a source line to the currently active loop body.  <br /></td></tr>
+<tr class="memdesc:ga6079af1c12adf54ac2f0bccc9701e16a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Append a source line to the innermost active loop body.  <br /></td></tr>
 <tr class="memitem:gada7f67ccf476be063a6b02c3e0ca49cb" id="r_gada7f67ccf476be063a6b02c3e0ca49cb"><td class="memItemLeft">logical function, public&#160;</td><td class="memItemRight"><a class="el" href="group__group__for.html#gada7f67ccf476be063a6b02c3e0ca49cb">is_in_forloop</a> ()</td></tr>
-<tr class="memdesc:gada7f67ccf476be063a6b02c3e0ca49cb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Query whether parsing is currently inside a <span class="tt">#for</span> block.  <br /></td></tr>
+<tr class="memdesc:gada7f67ccf476be063a6b02c3e0ca49cb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Query whether parsing is currently inside a <span class="tt">#for</span> block. This routine is typically used by the main preprocessing engine to determine whether incoming source lines should be emitted directly or collected for later expansion.  <br /></td></tr>
 </table>
 </div><!-- contents -->
 </div><!-- doc-content -->

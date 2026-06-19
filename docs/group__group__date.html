@@ -120,39 +120,52 @@ $(function(){initNavTree('group__group__date.html','',''); });
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Definition</h2>
-<div class="textblock"><p>Lightweight, high-performance date/time handling for the fpx preprocessor This module provides a compact <span class="tt">datetime</span> type and essential operations used primarily for expanding the standard predefined macros. </p>
+<div class="textblock"><p>Lightweight date and time utilities used by the fpx preprocessor. </p>
+<p>This module provides a compact <span class="tt">datetime</span> type together with a small set of date/time operations required by fpx. Its primary purpose is to support expansion of the predefined macros:</p>
 <ul>
-<li><span class="tt">__DATE__</span> -&gt; e.g. 'Aug-12-2025'</li>
-<li><span class="tt">__TIME__</span> -&gt; e.g. '14:35:27'</li>
-<li><span class="tt">__TIMESTAMP__</span> -&gt; e.g. 'Tue 12-Aug-2025 14:35:27'</li>
+<li><span class="tt">__DATE__</span></li>
+<li><span class="tt">__TIME__</span></li>
+<li><span class="tt">__TIMESTAMP__</span></li>
 </ul>
-<p>Features:</p><ul>
-<li><span class="tt">now()</span> returns current local date/time using <span class="tt">date_and_time()</span></li>
-<li>Flexible string formatting via <span class="tt">to_string(fmt)</span></li>
-<li>Parsing from common string formats (ISO, US, RFC-like)</li>
-<li>Day-of-week calculation via Zeller's congruence</li>
-<li>Elemental and pure functions where possible for performance</li>
-<li>Minimal memory footprint using small integer kinds (<span class="tt">int8</span>, <span class="tt">int16</span>)</li>
+<p>Rather than providing a complete calendaring framework, this module focuses on the functionality required by preprocessing tasks:</p>
+<ul>
+<li>Retrieval of the current local date and time using <span class="tt">date_and_time()</span></li>
+<li>Construction of datetime objects from numeric components or strings</li>
+<li>Parsing of commonly encountered date/time representations</li>
+<li>Flexible formatting through <span class="tt">to_string(fmt)</span></li>
+<li>Day-of-week computation using Zeller's congruence</li>
 </ul>
-<p>Used internally by <span class="tt">fpx_macro</span> during <span class="tt">__DATE__</span>, <span class="tt">__TIME__</span>, and <span class="tt">__TIMESTAMP__</span> expansion.</p>
+<p>The implementation deliberately remains lightweight and dependency-free. It is not intended to replace dedicated date/time libraries, but instead provides exactly the capabilities required by fpx while remaining portable across standard-conforming Fortran compilers.</p>
 <h1 class="doxsection"><a class="anchor" id="date_examples"></a>
 Examples</h1>
 <ol type="1">
-<li>Expand standard predefined macros (as done internally): <div class="fragment"><div class="line"><span class="keywordtype">type</span>(datetime) :: dt</div>
-<div class="line">dt = now()</div>
-<div class="line">print *, <span class="stringliteral">&#39;__DATE__      &gt;&gt; &#39;</span>, dt%to_string(<span class="stringliteral">&#39;MMM-dd-yyyy&#39;</span>)      <span class="comment">! __DATE__      &gt;&gt; &#39;Aug-12-2025&#39;</span></div>
-<div class="line">print *, <span class="stringliteral">&#39;__TIME__      &gt;&gt; &#39;</span>, dt%to_string(<span class="stringliteral">&#39;HH:mm:ss&#39;</span>)          <span class="comment">! &#39;__TIME__      &gt;&gt; 14:35:27&#39;</span></div>
-<div class="line">print *, <span class="stringliteral">&#39;__TIMESTAMP__ &gt;&gt; &#39;</span>, dt%to_string(<span class="stringliteral">&#39;ddd-MMM-yyyy HH:mm:ss&#39;</span>) <span class="comment">! &#39;__TIMESTAMP__ &gt;&gt; Tue 12-Aug-2025 14:35:27&#39;</span></div>
+<li>Expanding predefined macros: <div class="fragment"><div class="line">   <span class="keywordtype">type</span>(datetime) :: dt</div>
+<div class="line"> </div>
+<div class="line">   dt = now()</div>
+<div class="line"> </div>
+<div class="line">   print *, <span class="stringliteral">&#39;__DATE__      -&gt; &#39;</span>, dt%to_string(<span class="stringliteral">&#39;MMM-dd-yyyy&#39;</span>)</div>
+<div class="line">   print *, <span class="stringliteral">&#39;__TIME__      -&gt; &#39;</span>, dt%to_string(<span class="stringliteral">&#39;HH:mm:ss&#39;</span>)</div>
+<div class="line">   print *, <span class="stringliteral">&#39;__TIMESTAMP__ -&gt; &#39;</span>, dt%to_string(<span class="stringliteral">&#39;ddd-MMM-yyyy HH:mm:ss&#39;</span>)</div>
 
 </div><!-- fragment --></li>
-<li>Parse date from string: <div class="fragment"><div class="line"><span class="keywordtype">type</span>(datetime) :: build_time</div>
-<div class="line">build_time = datetime(<span class="stringliteral">&#39;2025-08-12 09:30:00&#39;</span>)</div>
-<div class="line">print *, <span class="stringliteral">&#39;build on: &#39;</span>, build_time%to_string(<span class="stringliteral">&#39;ddd-MMM-yyyy&#39;</span>)</div>
+<li>Constructing a datetime from a string: <div class="fragment"><div class="line">   <span class="keywordtype">type</span>(datetime) :: build_time</div>
+<div class="line"> </div>
+<div class="line">   build_time = datetime(<span class="stringliteral">&#39;2025-08-12 09:30:00&#39;</span>)</div>
+<div class="line"> </div>
+<div class="line">   print *, build_time%to_string(<span class="stringliteral">&#39;ddd-MMM-yyyy&#39;</span>)</div>
 
 </div><!-- fragment --></li>
-<li>Get current time for logging: <div class="fragment"><div class="line"><span class="keywordtype">type</span>(datetime) :: dt</div>
-<div class="line">dt = now()</div>
-<div class="line">print *, <span class="stringliteral">&#39;Preprocessing started at &#39;</span>, dt%to_string(<span class="stringliteral">&#39;HH:mm:ss&#39;</span>)</div>
+<li>Constructing a datetime from components: <div class="fragment"><div class="line">   <span class="keywordtype">type</span>(datetime) :: epoch</div>
+<div class="line"> </div>
+<div class="line">   epoch = datetime(1970, 1, 1)</div>
+<div class="line"> </div>
+<div class="line">   print *, epoch%to_string()</div>
+
+</div><!-- fragment --></li>
+<li>Timestamping preprocessing operations: <div class="fragment"><div class="line">   <span class="keywordtype">type</span>(datetime) :: dt</div>
+<div class="line"> </div>
+<div class="line">   dt = now()</div>
+<div class="line">   print *, <span class="stringliteral">&#39;Preprocessing started at &#39;</span>, dt%to_string(<span class="stringliteral">&#39;HH:mm:ss&#39;</span>)</div>
 
 </div><!-- fragment --> </li>
 </ol>
@@ -162,27 +175,6 @@ Data Types</h2></td></tr>
 <tr class="memitem:datetime" id="r_datetime"><td class="memItemLeft">interface &#160;</td><td class="memItemRight"><a class="el" href="structfpx__date_1_1datetime.html">datetime</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compact representation of date and time Stores all components in minimal integer kinds to reduce memory usage. All fields are public for easy access.  <a href="structfpx__date_1_1datetime.html#details">More...</a><br /></td></tr>
 </table>
-<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Methods</h2>
-<a id="ga018dde25548b5156908383c9020ac683" name="ga018dde25548b5156908383c9020ac683"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga018dde25548b5156908383c9020ac683">&#9670;&#160;</a></span>now()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">type(<a class="el" href="structfpx__date_1_1datetime.html">datetime</a>) function, public now</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Return current local date and time Uses intrinsic <span class="tt">date_and_time()</span> and populates all fields including milliseconds. </p>
-<dl class="section return"><dt>Returns</dt><dd>the datetime object corresponding to the current time</dd></dl>
-<p><b>Remarks</b> </p>
-
-<p class="definition">Definition at line <a class="el" href="date_8f90_source.html#l00164">164</a> of file <a class="el" href="date_8f90_source.html">date.f90</a>.</p>
-
-</div>
-</div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <div id="page-nav" class="page-nav-panel">

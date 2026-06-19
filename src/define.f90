@@ -1,6 +1,6 @@
 !> @file
 !! @defgroup group_define Define
-!! Macro definition and removal directives for the FPX preprocessor.
+!! Macro definition and removal directives for the fpx preprocessor.
 !!
 !! This module implements the `#define` and `#undef` directives used to create,
 !! update, and remove preprocessor macros during source preprocessing.
@@ -100,9 +100,10 @@
 !! produces a diagnostic because `defined` is reserved for conditional
 !! expressions.
 !!
-!! @see fpx_macro
-!! @see fpx_global
-!! @see fpx_context
+!! @see 
+!! <a href="./group__group__macro.html">macro</a> @n
+!! <a href="./group__group__global.html">global</a> @n
+!! <a href="./group__group__context.html">context</a> 
 module fpx_define
     use fpx_constants
     use fpx_logging

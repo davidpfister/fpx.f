@@ -120,10 +120,16 @@ $(function(){initNavTree('interfacefpx__logging_1_1render.html','','interfacefpx
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Definition</h2>
-<div class="textblock"><p>Interface to render diagnostic messages and labels. </p>
-<p><b>Remarks</b> </p>
+<div class="textblock"><p>Generic renderer for diagnostics and source excerpts. </p>
+<p>Supported overloads:</p><ul>
+<li>render(diagnostic_report, source)</li>
+<li>render(character)</li>
+<li>render(character, label_type)</li>
+<li>render(character, label_type(:))</li>
+</ul>
+<p>Returns a formatted character string suitable for printing. </p>
 
-<p class="definition">Definition at line <a class="el" href="logging_8f90_source.html#l00185">185</a> of file <a class="el" href="logging_8f90_source.html">logging.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="logging_8f90_source.html#l00208">208</a> of file <a class="el" href="logging_8f90_source.html">logging.f90</a>.</p>
 </div><hr/>The documentation for this interface was generated from the following file:<ul>
 <li><a class="el" href="logging_8f90_source.html">logging.f90</a></li>
 </ul>

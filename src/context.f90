@@ -3,10 +3,10 @@
 !! Source context information used for diagnostics and error reporting.
 !!
 !! This module defines the lightweight @ref fpx_context::context type used throughout
-!! the FPX preprocessor to associate source-location information with
+!! the fpx preprocessor to associate source-location information with
 !! diagnostics, warnings, notes, and error messages.
 !!
-!! Every diagnostic emitted by FPX is accompanied by a context object
+!! Every diagnostic emitted by fpx is accompanied by a context object
 !! describing where the event occurred. This enables the generation of
 !! modern compiler-style messages containing file names, line numbers,
 !! source snippets, and caret annotations.
@@ -70,7 +70,7 @@ module fpx_context
 
     !> Snapshot of a source location within the preprocessing stream. 
     !! 
-    !! Instances of this type accompany diagnostics throughout FPX and 
+    !! Instances of this type accompany diagnostics throughout fpx and 
     !! provide the information required to identify where an event 
     !! occurred in the original source. 
     !! 
@@ -90,7 +90,7 @@ module fpx_context
     !! - Entering an `#include` file naturally creates contexts referring 
     !! to the included file. 
     !! - Context objects are lightweight and inexpensive to copy. 
-    !! - They form the foundation of FPX's compiler-style diagnostics. 
+    !! - They form the foundation of fpx's compiler-style diagnostics. 
     !! 
     !! @section context_type_constructors Constructors
     !! 

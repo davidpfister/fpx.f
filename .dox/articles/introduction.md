@@ -6,7 +6,7 @@ Fortran has powered simulations of galaxies, weather systems, and quantum phenom
 
 Fortran, born in the 1950s for scientific and numerical computing, was designed for clarity and performance on early computers. Preprocessing was not part of its original vision. As Fortran evolved, the need for portability, code reuse, and conditional compilation grew, particularly in large-scale scientific projects. This led to the adoption of preprocessing tools, though their integration into Fortran's ecosystem has been uneven and controversial. Below is a concise history of preprocessing in Fortran, culminating in the notable attempt to standardize it with CoCo.
 
-### Early Days: Ad Hoc Preprocessing (1950s–1970s)
+### Early Days: Ad Hoc Preprocessing (1950s-1970s)
 In Fortran's infancy (Fortran I, II, IV), preprocessing was virtually nonexistent. Developers relied on manual code edits or rudimentary scripts to handle tasks like platform-specific tweaks. Early computers varied widely in architecture, so scientists often customized code by hand for each system a tedious process. Some used external tools, like simple text processors, to automate repetitive changes, but these were bespoke and non-standard. Fortran 66 and 77, with their rigid structure, offered no built-in preprocessing capabilities, leaving developers to cobble together solutions.
 
 ### Rise of External Preprocessors (1980s)
@@ -15,7 +15,7 @@ By the 1980s, Fortran 77 was the workhorse of scientific computing, and large pr
 ### Fortran 90/95: Reduced Need, Persistent Use (1990s)
 Fortran 90 introduced modules, parameterized types, and dynamic memory, giving developers native tools for modularity and portability. These features reduced reliance on preprocessing for tasks like code reuse or constant definition. For example, modules replaced many `#include` use cases, and `PARAMETER` statements handled constants better than `#define`. Still, preprocessing persisted in large codebases, especially for conditional compilation (e.g., enabling/disabling debug code) or legacy Fortran 77 projects. Tools like `cpp` and `fpp` remained common, though their use was often seen as a necessary evil due to debugging challenges and code obfuscation.
 
-### The CoCo Standardization Attempt (Late 1990s–Early 2000s)
+### The CoCo Standardization Attempt (Late 1990s-Early 2000s)
 By the late 1990s, the Fortran community recognized preprocessing's utility but also its chaos. Different preprocessors (`cpp`, `fpp`, custom tools) produced inconsistent behavior, and there was no standard way to write portable, preprocessable Fortran code. This led to the development of **CoCo** (Conditional Compilation), a proposed standard for Fortran preprocessing, spearheaded by the ISO/IEC Fortran committee (J3).
 
 CoCo aimed to integrate preprocessing directly into the Fortran language, defining a native syntax for directives like conditional compilation, macro expansion, and file inclusion. Unlike `cpp`, CoCo was designed with Fortran's structure in mind, respecting its free- and fixed-form source and avoiding C's pitfalls. Key goals included:
@@ -40,7 +40,7 @@ However, CoCo never made it into the Fortran standard. Several factors contribut
 
 By the early 2000s, CoCo faded as a proposal. The Fortran 2003 standard focused on object-oriented features and interoperability (e.g., with C), sidelining preprocessing standardization.
 
-### Modern Era: Preprocessing Today (2000s–2025)
+### Modern Era: Preprocessing Today (2000s-2025)
 Today, preprocessing in Fortran remains unstandardized but widely used. `cpp` and `fpp` are still common, especially in high-performance computing (HPC) projects like LAPACK, PETSc, or WRF, hosted on platforms like GitHub. Newer tools, like `fypp` (a Python-based preprocessor), have gained traction for their flexibility, particularly in projects like the Fortran Standard Library. Fortran 2008, 2018, and the upcoming 2023 standard introduced features like submodules and enhanced generics, further reducing preprocessing needs, but legacy code and cross-platform projects keep preprocessors relevant.
 
 The CoCo attempt left a legacy: it highlighted the community's ambivalence toward preprocessing. While some developers value its power, others see it as a last resort, preferring Fortran's native constructs. The lack of a standard means preprocessing remains a fragmented practice, with tools and conventions varying by project.

@@ -1,6 +1,6 @@
 !> @file
 !! @defgroup group_parser Parser
-!! Fortran Preprocessor (fpx) – core parsing and preprocessing module
+!! Fortran Preprocessor (fpx) - core parsing and preprocessing module
 !!
 !! This module implements a full-featured, modern Fortran preprocessor supporting:
 !! - C-style line continuations with `\` and `\\`
@@ -51,8 +51,8 @@
 !! - @ref group_for        for non-standard loop directives,
 !! - @ref group_diagnostics for reporting.
 !!
-!! @par FPX Extensions
-!! In addition to standard preprocessing facilities, FPX provides:
+!! @par fpx Extensions
+!! In addition to standard preprocessing facilities, fpx provides:
 !! - `#for` / `#endfor`
 !! - `${NAME}` macro insertion
 !! - implicit continuation support
@@ -133,7 +133,6 @@ module fpx_parser
     !! @code{.f90}preprocess(integer, character(*))@endcode
     !! Preprocess an already-open input unit to a file.
     !!
-    !! @see process_line
     !! @ingroup group_parser
     interface preprocess
         module procedure :: preprocess_file
@@ -419,7 +418,7 @@ contains
         end if
     end subroutine
 
-    !> Process a single (possibly continued) line – handles directives and macro expansion
+    !> Process a single (possibly continued) line - handles directives and macro expansion
     !! Responsibilities:
     !! - Strip or terminate C-style block comments (`/* ... */`)
     !! - Detect and delegate preprocessor directives (`#define`, `#include`, conditionals, etc.)
@@ -439,9 +438,11 @@ contains
     !! @param[out]   stch         Set to .true. if the expanded line ends with `&` (stitch next line)
     !! @return                    Processed line (directives removed, macros expanded)
     !!
-    !! @see expand_all
-    !! @see handle_define
-    !! @see handle_include
+    !! @see 
+    !! @link fpx_macro::expand_all expand_all @endlink
+    !! @link fpx_define::handle_define handle_define @endlink
+    !! @link fpx_include::handle_include handle_include @endlink
+    !!
     !! @ingroup group_parser
     recursive function process_line(current_line, ounit, filepath, linenum, macros, stch) result(rst)
         character(*), intent(in)                :: current_line

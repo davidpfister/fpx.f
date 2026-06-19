@@ -1,9 +1,9 @@
 !> @file
-!! @defgroup group_conditional Conditional Compilation
-!! Conditional compilation support for the FPX preprocessor.
+!! @defgroup group_conditional Conditional
+!! Conditional support for the fpx preprocessor.
 !!
 !! This module implements the complete conditional compilation machinery used
-!! by FPX. It provides functionality equivalent to the traditional C
+!! by fpx. It provides functionality equivalent to the traditional C
 !! preprocessor directives while also introducing a few convenience extensions.
 !!
 !! Supported directives include:
@@ -16,7 +16,7 @@
 !!   Test whether a macro has been defined.
 !!
 !! - `#elifdef` / `#elifndef`
-!!   FPX extensions combining `#elif` semantics with macro existence tests.
+!!   fpx extensions combining `#elif` semantics with macro existence tests.
 !!
 !! - `#else`
 !!   Select the fallback branch when no previous branch in the same
@@ -55,74 +55,74 @@
 !!
 !! @section conditional_examples Examples
 !!
-!! 1. Include guard pattern:
+!! -# Include guard pattern:
 !!
-!! @code{.f90}
-!! #ifndef MY_HEADER_H
-!! #define MY_HEADER_H
+!!      @code{.f90}
+!!      #ifndef MY_HEADER_H
+!!      #define MY_HEADER_H
 !!
-!!   ! Header contents
+!!          ! Header contents
 !!
-!! #endif
-!! ...
-!! @endcode
+!!      #endif
+!!      ...
+!!      @endcode
 !!
-!! 2. Feature selection using expression evaluation:
+!! -# Feature selection using expression evaluation:
 !!
-!! @code{.f90}
-!! #if DEBUG >= 2
-!!   print *, 'Verbose debugging'
-!! #elif DEBUG == 1
-!!   print *, 'Standard debugging'
-!! #else
-!!   ! Silent mode
-!! #endif
-!! ...
-!! @endcode
+!!      @code{.f90}
+!!      #if DEBUG >= 2
+!!          print *, 'Verbose debugging'
+!!      #elif DEBUG == 1
+!!          print *, 'Standard debugging'
+!!      #else
+!!          ! Silent mode
+!!      #endif
+!!      ...
+!!      @endcode
 !!
-!! 3. Platform-dependent compilation:
+!! -# Platform-dependent compilation:
 !!
-!! @code{.f90}
-!! #ifdef _OPENMP
-!!   use omp_lib
-!! #else
-!!   integer, parameter :: omp_get_thread_num = 0
-!! #endif
-!! ...
-!! @endcode
+!!      @code{.f90}
+!!      #ifdef _OPENMP
+!!          use omp_lib
+!!      #else
+!!          integer, parameter :: omp_get_thread_num = 0
+!!      #endif
+!!      ...
+!!      @endcode
 !!
-!! 4. Conditional compilation using macro existence:
+!! -# Conditional compilation using macro existence:
 !!
-!! @code{.f90}
-!! #if defined(USE_MPI) && (MPI_VERSION >= 3)
-!!   use mpi_f08
-!! #endif
-!! ...
-!! @endcode
+!!      @code{.f90}
+!!      #if defined(USE_MPI) && (MPI_VERSION >= 3)
+!!          use mpi_f08
+!!      #endif
+!!      ...
+!!      @endcode
 !!
-!! 5. Using the FPX extension `#elifdef`:
+!! -# Using the fpx extension `#elifdef`:
 !!
-!! @code{.f90}
-!! #ifdef USE_CUDA
-!!   call gpu_backend()
-!! #elifdef USE_OPENMP
-!!   call omp_backend()
-!! #else
-!!   call serial_backend()
-!! #endif
-!! ...
-!! @endcode
+!!      @code{.f90}
+!!      #ifdef USE_CUDA
+!!          call gpu_backend()
+!!      #elifdef USE_OPENMP
+!!          call omp_backend()
+!!      #else
+!!          call serial_backend()
+!!      #endif
+!!      ...
+!!      @endcode
 !!
-!! 6. Nested conditionals:
+!! -# Nested conditionals:
 !!
-!! @code{.f90}
-!! #ifdef DEBUG
-!!   #if DEBUG > 1
-!!     print *, 'Extra diagnostics'
-!!   #endif
-!! #endif
-!! ...
-!! @endcode
+!!      @code{.f90}
+!!      #ifdef DEBUG
+!!          #if DEBUG > 1
+!!          print *, 'Extra diagnostics'
+!!          #endif
+!!      #endif
+!!      ...
+!!      @endcode
 module fpx_conditional
     use fpx_constants
     use fpx_logging
@@ -236,7 +236,7 @@ contains
         cond_stack(cond_depth + 1)%has_met = result
     end subroutine
 
-    !> Process #ifdef – test if a macro is defined
+    !> Process #ifdef - test if a macro is defined
     !! @param[in] ctx       Context source line containing the directive
     !! @param[in] macros    Current macro table
     !! @param[in] token     Usually 'ifdef'
@@ -268,7 +268,7 @@ contains
         cond_stack(cond_depth + 1)%has_met = defined
     end subroutine
 
-    !> Process #ifndef – test if a macro is NOT defined
+    !> Process #ifndef - test if a macro is NOT defined
     !! @param[in] ctx       Context source line containing the directive
     !! @param[in] macros    Current macro table
     !! @param[in] token     Usually 'ifndef'
@@ -300,7 +300,7 @@ contains
         cond_stack(cond_depth + 1)%has_met = .not. defined
     end subroutine
 
-    !> Process #elif – alternative branch after #if/#elif
+    !> Process #elif - alternative branch after #if/#elif
     !! Only activates if no previous branch in the group was taken.
     !! @param[in] ctx       Context source line containing the directive
     !! @param[inout] macros    Current macro table
@@ -337,7 +337,7 @@ contains
         end if
     end subroutine
 
-    !> Process #elifdef – test if a macro is defined
+    !> Process #elifdef - test if a macro is defined
     !! @param[in] ctx       Context source line containing the directive
     !! @param[in] macros    Current macro table
     !! @param[in] token     Usually 'elifdef'
@@ -373,7 +373,7 @@ contains
         end if
     end subroutine
 
-    !> Process #elifndef – test if a macro is not defined
+    !> Process #elifndef - test if a macro is not defined
     !! @param[in] ctx       Context source line containing the directive
     !! @param[in] macros    Current macro table
     !! @param[in] token     Usually 'elifndef'
@@ -409,7 +409,7 @@ contains
         end if
     end subroutine
 
-    !> Process #else – final fallback branch
+    !> Process #else - final fallback branch
     !! Activates only if no previous #if/#elif branch was true.
     !! @param[in] ctx  Context (for error messages)
     !!
@@ -437,7 +437,7 @@ contains
         end if
     end subroutine
 
-    !> Process #endif – end of conditional block
+    !> Process #endif - end of conditional block
     !! Pops the top state from the stack. Reports error on unmatched #endif.
     !! @param[in] ctx  Context (for error messages)
     !!

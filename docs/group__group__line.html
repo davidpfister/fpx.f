@@ -1,4 +1,4 @@
-<!-- HTML header for doxygen 1.9.1-->
+﻿<!-- HTML header for doxygen 1.9.1-->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" class="dark-mode">
   <head>
@@ -120,35 +120,50 @@ $(function(){initNavTree('group__group__line.html','',''); });
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Definition</h2>
-<div class="textblock"><p>Standard <span class="tt">#line</span> directive support for the fpx Fortran preprocessor This module implements full support for the ISO C99/C11 <span class="tt">#line</span> directive, which is also widely used in Fortran preprocessors. </p>
-<p>The <span class="tt">#line</span> directive allows changing the logical line number and/or source filename reported by the preprocessor. It is particularly useful for:</p><ul>
-<li>Code generators</li>
-<li>Literate programming tools</li>
-<li>Macro-heavy generated code</li>
-<li>Accurate <span class="tt">__LINE__</span> and <span class="tt">__FILE__</span> expansion in included/generated files</li>
+<div class="textblock"><p>Standard-compliant handling of the <span class="tt">#line</span> directive. </p>
+<p>This module implements support for the ISO C preprocessor <span class="tt">#line</span> directive, allowing the logical source location used by the preprocessor to be modified during preprocessing.</p>
+<p>The directive affects the information stored in the active <a class="el" href="structfpx__context_1_1context.html">context </a> object and therefore influences:</p>
+<ul>
+<li>Diagnostic messages and source locations,</li>
+<li>Expansions of predefined macros such as <span class="tt">__LINE__</span>,</li>
+<li>Expansions of <span class="tt">__FILE__</span> and <span class="tt">__FILENAME__</span>,</li>
+<li>The apparent origin of generated or transformed source code.</li>
 </ul>
-<p>Supported forms (standard compliant):</p><ul>
+<p>This functionality is particularly useful for:</p>
+<ul>
+<li>Source-to-source translators,</li>
+<li>Code generators,</li>
+<li>Literate programming systems,</li>
+<li>Template engines,</li>
+<li>Tools that emit Fortran intended to preserve original source locations.</li>
+</ul>
+<p>The following standard forms are supported:</p>
+<ul>
 <li><span class="tt">#line &lt;number&gt;</span></li>
 <li><span class="tt">#line &lt;number&gt; "&lt;filename&gt;"</span></li>
 </ul>
-<p>When a <span class="tt">#line</span> directive is encountered, the current context (line number and filename) is updated immediately. This affects all subsequent diagnostics, <span class="tt">__LINE__</span>, <span class="tt">__FILE__</span>, and <span class="tt">__FILENAME__</span> macros.</p>
+<p>When encountered, the directive immediately updates the logical source position used for all subsequent processing.</p>
+<dl class="section note"><dt>Note</dt><dd>The specified line number refers to the line immediately following the directive itself, matching the behaviour of the ISO C preprocessor.</dd>
+<dd>
+Malformed directives generate warnings and are ignored.</dd></dl>
 <h1 class="doxsection"><a class="anchor" id="line_examples"></a>
 Examples</h1>
 <ol type="1">
-<li>Basic line number reset: <div class="fragment"><div class="line"><span class="preprocessor">#line 100</span></div>
-<div class="line"><span class="preprocessor"></span>print *, </div>
+<li>Reset the logical line number: <div class="fragment"><div class="line">   <span class="preprocessor">#line 100</span></div>
+<div class="line"><span class="preprocessor"></span>   print *, </div>
+
 </div><!-- fragment --></li>
-<li>Changing both line number and filename (common in generated code): <div class="fragment"><div class="line"><span class="preprocessor">#line 42 </span></div>
-<div class="line"><span class="preprocessor"></span><span class="keywordtype">integer</span> :: x = 1   ! this will appear as line 42 in generated_code.f90</div>
+<li>Change both line number and filename: <div class="fragment"><div class="line">   <span class="preprocessor">#line 42 </span></div>
+<div class="line"><span class="preprocessor"></span>   <span class="keywordtype">integer</span> :: x</div>
+<div class="line"> </div>
+<div class="line">   <span class="comment">! Diagnostics now refer to generated.f90:42</span></div>
+
 </div><!-- fragment --></li>
+<li>Improve diagnostics in generated code: <div class="fragment"><div class="line">   <span class="preprocessor">#line 215 </span></div>
+<div class="line"><span class="preprocessor"></span>   <span class="keyword">call </span>generated_procedure()</div>
+
+</div><!-- fragment --> </li>
 </ol>
-<dl class="section user"><dt>Remarks</dt><dd><ul>
-<li>The line number in <span class="tt">#line N</span> refers to the <b>next</b> line after the directive.</li>
-<li>Filename must be quoted if provided.</li>
-<li>Invalid line numbers or malformed directives emit a warning but are ignored.</li>
-<li>Updates the shared <span class="tt">context</span> object used by the logging and macro systems. </li>
-</ul>
-</dd></dl>
 </div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Methods</h2>
 <a id="ga769b3215f1c3814134afbf2d7c95f0ac" name="ga769b3215f1c3814134afbf2d7c95f0ac"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga769b3215f1c3814134afbf2d7c95f0ac">&#9670;&#160;</a></span>handle_line()</h2>
@@ -169,19 +184,23 @@ Examples</h1>
       </table>
 </div><div class="memdoc">
 
-<p>Handle the standard line directive Supports two standard forms: line &lt;number&gt; line &lt;number&gt; "&lt;filename&gt;". </p>
-<p>This updates the current line number (<span class="tt">ctxline</span>) and optionally the current filename (<span class="tt">ctxpath</span>) for subsequent diagnostics, <span class="tt">__LINE__</span>, and <span class="tt">__FILE__</span> expansions.</p>
-<p>Fully compliant with ISO C99 / C11 �6.10.4 and common Fortran preprocessor behavior.</p>
+<p>Process a <span class="tt">#line</span> directive. </p>
+<p>Parses the directive arguments, validates the requested logical line number, and updates the active <a class="el" href="structfpx__context_1_1context.html" title="context">context</a> object.</p>
+<p>Supported forms are:</p>
+<div class="fragment"><div class="line"><span class="preprocessor">#line &lt;number&gt;</span></div>
+<div class="line"><span class="preprocessor">#line &lt;number&gt; </span></div>
+</div><!-- fragment --><p>The specified line number becomes the number associated with the source line immediately following the directive.</p>
+<p>If a filename is supplied, subsequent diagnostics and predefined file-related macros use the new filename.</p>
+<p>Invalid directives produce warnings and leave the current context unchanged.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in,out]</td><td class="paramname">ctx</td><td>Context source line containing the line directive </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">token</td><td>Usually 'DEFINE' � keyword matched in lowercase</td></tr>
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">ctx</td><td>Current source context. Its logical line number and optional filename are updated in place. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">token</td><td>Directive keyword used to identify the <span class="tt">#line</span> directive, typically <span class="tt">"line"</span>. </td></tr>
   </table>
   </dd>
 </dl>
-<p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="line_8f90_source.html#l00068">68</a> of file <a class="el" href="line_8f90_source.html">line.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="line_8f90_source.html#l00104">104</a> of file <a class="el" href="line_8f90_source.html">line.f90</a>.</p>
 
 </div>
 </div>

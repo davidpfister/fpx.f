@@ -120,7 +120,7 @@ $(function(){initNavTree('group__group__parser.html','',''); });
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Definition</h2>
-<div class="textblock"><p>Fortran Preprocessor (fpx) â€“ core parsing and preprocessing module. </p>
+<div class="textblock"><p>Fortran Preprocessor (fpx) - core parsing and preprocessing module. </p>
 <p>This module implements a full-featured, modern Fortran preprocessor supporting:</p><ul>
 <li>C-style line continuations with <span class="tt">\</span> and <span class="tt">\\</span></li>
 <li>Fortran-style <span class="tt">&amp;</span> continuations</li>
@@ -135,6 +135,44 @@ $(function(){initNavTree('group__group__parser.html','',''); });
 <li>Support ${x} for substituting macro name</li>
 </ul>
 <p>The preprocessor is designed to be standards-conforming where possible while adding useful extensions (variadic macros, better diagnostics, include path handling).</p>
+<dl class="section user"><dt>Processing Pipeline</dt><dd>Source files are processed in several stages:</dd></dl>
+<ol type="1">
+<li>Input acquisition from files, units, or stdin</li>
+<li>C-style continuation handling (<span class="tt">\</span>, <span class="tt">\\</span>)</li>
+<li>Fortran continuation handling (<span class="tt">&amp;</span>)</li>
+<li>C-style block comment removal</li>
+<li>Directive recognition and execution</li>
+<li>Conditional compilation evaluation</li>
+<li>Macro expansion</li>
+<li>Emission to the output stream</li>
+</ol>
+<p>Include files recursively invoke the same processing pipeline.</p>
+<dl class="section user"><dt>Parser State</dt><dd>The parser maintains module-level state describing:<ul>
+<li>current source file,</li>
+<li>line continuation status,</li>
+<li>comment state,</li>
+<li>deferred reprocessing buffers,</li>
+<li>interactive mode output state.</li>
+</ul>
+</dd></dl>
+<p>This state is reset at the beginning of each top-level preprocessing run.</p>
+<p>The parser coordinates several specialized subsystems:</p>
+<ul>
+<li><a class="el" href="group__group__define.html" title="Define">Define</a> for macro definition directives,</li>
+<li><a class="el" href="group__group__include.html" title="Include">Include</a> for include processing,</li>
+<li><a class="el" href="group__group__macro.html" title="Macro">Macro</a> for macro expansion,</li>
+<li><a class="el" href="group__group__conditional.html" title="Conditional">Conditional</a> for conditional compilation,</li>
+<li><a class="el" href="group__group__for.html" title="For">For</a> for non-standard loop directives,</li>
+<li><a class="el" href="group__group__diagnostics.html" title="Diagnostics">Diagnostics</a> for reporting.</li>
+</ul>
+<dl class="section user"><dt>fpx Extensions</dt><dd>In addition to standard preprocessing facilities, fpx provides:<ul>
+<li><span class="tt">#for</span> / <span class="tt">#endfor</span></li>
+<li><span class="tt">${NAME}</span> macro insertion</li>
+<li>implicit continuation support</li>
+<li>interactive REPL mode</li>
+<li>enhanced diagnostics </li>
+</ul>
+</dd></dl>
 <h1 class="doxsection"><a class="anchor" id="parser_examples"></a>
 Examples</h1>
 <ol type="1">

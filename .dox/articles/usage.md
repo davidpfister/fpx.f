@@ -6,7 +6,7 @@ Perfect for Fortran projects that need `#include`, `#define`, `#ifdef`, macro ex
 
 ## Using fpx from the Command Line (CLI)
 
-After compiling the program (e.g. `gfortran -O3 *.f90 -o fpx`), you get an executable called `fpx`.
+After compiling the program (e.g. `fpm @build`), you get an executable called `fpx`.
 
 ### Basic usage
 
@@ -19,7 +19,7 @@ fpx [options] input.F90 [output.f90]
 |-------------------------------------------|--------------------------------------------------------|
 | `fpx src/main.F90`                        | Preprocess `main.F90` and print result to screen       |
 | `fpx src/main.F90 -o build/main.f90`      | Write preprocessed code to `build/main.f90`            |
-| `fpx` (no arguments)                      | Interactive REPL mode – type lines and see them expanded instantly |
+| `fpx` (no arguments)                      | Interactive REPL mode - type lines and see them expanded instantly |
 
 </center>
 
@@ -65,7 +65,7 @@ You can call the preprocessor directly from any Fortran program - ideal for buil
 
 Everything you need is in the module `fpx_parser`.
 
-### Minimal example – preprocess a file to another file
+### Minimal example - preprocess a file to another file
 
 ```fortran
 program demo_embed
@@ -77,7 +77,7 @@ program demo_embed
 end program
 ```
 
-### Full control – predefined macros, include paths, etc.
+### Full control - predefined macros, include paths, etc.
 
 ```fortran
 program my_builder

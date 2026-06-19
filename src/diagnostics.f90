@@ -1,6 +1,6 @@
 !> @file
 !! @defgroup group_diagnostics Diagnostics
-!! Diagnostic directives for the FPX preprocessor.
+!! Diagnostic directives for the fpx preprocessor.
 !!
 !! This module implements the handling of the preprocessor directives
 !! `#error` and `#warning`, allowing source files to emit user-defined
@@ -67,8 +67,9 @@
 !! ...
 !! @endcode
 !!
-!! @see fpx_logging
-!! @see fpx_context
+!! @see
+!! <a href="./group__group__logging.html">logging</a> @n
+!! <a href="./group__group__context.html">context</a>
 module fpx_diagnostics
     use, intrinsic :: iso_fortran_env, only: stdout => output_unit
     use fpx_logging

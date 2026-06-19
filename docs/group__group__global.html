@@ -120,43 +120,92 @@ $(function(){initNavTree('group__group__global.html','',''); });
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Definition</h2>
-<div class="textblock"><p>Central global configuration and shared state for the fpx Fortran preprocessor This module defines a single global instance <span class="tt">global</span> of type <span class="tt">global_settings</span> that holds all persistent, user-configurable state used across the entire preprocessing session. </p>
+<div class="textblock"><p>Global configuration and shared runtime state for the fpx preprocessor. </p>
+<p>This module defines the central configuration object used throughout the entire preprocessing session. A single public instance, <a class="el" href="#ga8b8524880886f61f8c961589cffa7640">global </a>, stores all persistent settings controlling the behavior of the preprocessor.</p>
+<p>The global configuration provides:</p>
 <ul>
-<li><span class="tt">macros(:)</span> : Dynamic table of all defined macros (object-like and function-like)</li>
-<li><span class="tt">undef(:)</span> : List of symbols explicitly undefined via <span class="tt">#undef</span></li>
-<li><span class="tt">includedir(:)</span> : User-specified include search directories for <span class="tt">#include &lt;...&gt;</span></li>
-<li><span class="tt">expand_macros</span> : Master switch to enable/disable macro expansion (default: .true.)</li>
-<li><span class="tt">exclude_comments</span> : When .true., strip C-style /*...*/ and Fortran ! comments from output</li>
+<li>User-defined macro definitions.</li>
+<li>Symbols explicitly excluded via <span class="tt">#undef</span>.</li>
+<li>Additional include search directories.</li>
+<li>Feature switches controlling optional extensions.</li>
+<li>Behavioural settings affecting parsing and expansion.</li>
+<li>Runtime flags used by interactive preprocessing sessions.</li>
 </ul>
-<p>The design uses a single public variable <span class="tt">global</span> so that all fpx modules can access and modify the same configuration without passing arguments everywhere. This is safe in single-threaded use (typical for preprocessing) and allows easy customization from driver programs or interactive sessions.</p>
+<p>All fpx components access the same global state, avoiding the need to pass configuration objects through every procedure call.</p>
+<p>The design assumes the traditional single-threaded preprocessing model. If multiple preprocessing jobs are executed concurrently, each instance should maintain its own independent configuration object.</p>
+<h1 class="doxsection"><a class="anchor" id="global_features"></a>
+Supported configuration options</h1>
+<p>The following settings are available:</p>
+<ul>
+<li><span class="tt">macros(:)</span> Collection of predefined macros available before preprocessing begins.</li>
+<li><span class="tt">undef(:)</span> Symbols protected from future redefinition through <span class="tt">#define</span>.</li>
+<li><span class="tt">includedir(:)</span> Additional directories searched by <span class="tt">#include</span>.</li>
+<li><span class="tt">expand_macros</span> Enables or disables macro expansion globally.</li>
+<li><span class="tt">exclude_comments</span> Controls whether comments are preserved in the generated output.</li>
+<li><span class="tt">implicit_continuation</span> Enables implicit continuation during macro expansion.</li>
+<li><span class="tt">line_break</span> Interprets a double backslash (<span class="tt">\\</span>) as an explicit line break.</li>
+<li><span class="tt">extra_macros</span> Enables non-standard predefined macros such as:<ul>
+<li><span class="tt">__FILE__</span></li>
+<li><span class="tt">__LINE__</span></li>
+<li><span class="tt">__FUNC__</span></li>
+<li><span class="tt">__TIMESTAMP__</span></li>
+</ul>
+</li>
+<li><span class="tt">interactive</span> Enables REPL-style interactive preprocessing.</li>
+<li><span class="tt">support_forloop</span> Enables support for the non-standard <span class="tt">#for</span> / <span class="tt">#endfor</span> directives.</li>
+<li><span class="tt">disable_continuation</span> Disables explicit Fortran continuation handling using trailing <span class="tt">&amp;</span>.</li>
+<li><span class="tt">support_dollar_insert</span> Enables <span class="tt">${NAME}</span> placeholder substitution during macro expansion.</li>
+</ul>
+<dl class="section note"><dt>Note</dt><dd>All settings can be modified at any time before invoking <span class="tt">preprocess(...)</span>.</dd></dl>
 <h1 class="doxsection"><a class="anchor" id="global_examples"></a>
 Examples</h1>
 <ol type="1">
-<li>Add custom include paths before preprocessing: <div class="fragment"><div class="line">global%includedir = [ <span class="stringliteral">&#39;./include&#39;</span>, <span class="stringliteral">&#39;/usr/local/include/fortran&#39;</span>, <span class="stringliteral">&#39;../common&#39;</span> ]</div>
-<div class="line"><span class="keyword">call </span>preprocess(<span class="stringliteral">&#39;main.F90&#39;</span>, <span class="stringliteral">&#39;main.f90&#39;</span>)</div>
-<div class="line">!#include &lt;file.h&gt; will search these directories</div>
-</div><!-- fragment --></li>
-<li>Predefine common macros (e.g. for conditional compilation): <div class="fragment"><div class="line"><span class="keyword">call </span>add(global%macros, macro(<span class="stringliteral">&#39;DEBUG&#39;</span>, <span class="stringliteral">&#39;1&#39;</span>))</div>
-<div class="line"><span class="keyword">call </span>add(global%macros, macro(<span class="stringliteral">&#39;MPI_VERSION&#39;</span>, <span class="stringliteral">&#39;3&#39;</span>))</div>
-<div class="line"><span class="keyword">call </span>add(global%macros, macro(<span class="stringliteral">&#39;USE_OPENMP&#39;</span>, <span class="stringliteral">&#39;1&#39;</span>))</div>
+<li>Add custom include paths: <div class="fragment"><div class="line">   <span class="keywordtype">use </span>fpx_global</div>
 <div class="line"> </div>
-<div class="line"><span class="keyword">call </span>preprocess(<span class="stringliteral">&#39;src/app.F90&#39;</span>)<span class="comment"></span></div>
-<div class="line"><span class="comment">!&gt; Code can now use #ifdef DEBUG, #if MPI_VERSION &gt;= 3, etc.</span></div>
+<div class="line">   <a class="code hl_variable" href="#ga8b8524880886f61f8c961589cffa7640">global</a>%includedir = [ &amp;</div>
+<div class="line">       string(<span class="stringliteral">&#39;./include&#39;</span>), &amp;</div>
+<div class="line">       string(<span class="stringliteral">&#39;../common&#39;</span>), &amp;</div>
+<div class="line">       string(<span class="stringliteral">&#39;/usr/local/include/fpx&#39;</span>) ]</div>
+<div class="line"> </div>
+<div class="line">   <span class="keyword">call </span>preprocess(<span class="stringliteral">&#39;main.F90&#39;</span>)</div>
+
+<div class="ttc" id="agroup__group__global_html_ga8b8524880886f61f8c961589cffa7640"><div class="ttname"><a href="#ga8b8524880886f61f8c961589cffa7640">fpx_global::global</a></div><div class="ttdeci">type(global_settings), public global</div><div class="ttdoc">Global preprocessor configuration instance.</div><div class="ttdef"><b>Definition</b> <a href="global_8f90_source.html#l00192">global.f90:192</a></div></div>
 </div><!-- fragment --></li>
-<li>Disable macro expansion temporarily (pass-through mode): <div class="fragment"><div class="line">global%expand_macros = .false.   <span class="comment">! Only handle #include and conditionals</span></div>
-<div class="line"><span class="keyword">call </span>preprocess(<span class="stringliteral">&#39;raw_source.F90&#39;</span>, <span class="stringliteral">&#39;clean.F90&#39;</span>)</div>
+<li>Predefine macros: <div class="fragment"><div class="line">   <span class="keywordtype">use </span>fpx_global</div>
+<div class="line">   <span class="keywordtype">use </span>fpx_macro</div>
+<div class="line"> </div>
+<div class="line">   <span class="keyword">call </span><a class="code hl_interface" href="interfacefpx__macro_1_1add.html">add</a>(<a class="code hl_variable" href="#ga8b8524880886f61f8c961589cffa7640">global</a>%macros, <a class="code hl_interface" href="structfpx__macro_1_1macro.html">macro</a>(<span class="stringliteral">&#39;DEBUG&#39;</span>,<span class="stringliteral">&#39;1&#39;</span>))</div>
+<div class="line">   <span class="keyword">call </span><a class="code hl_interface" href="interfacefpx__macro_1_1add.html">add</a>(<a class="code hl_variable" href="#ga8b8524880886f61f8c961589cffa7640">global</a>%macros, <a class="code hl_interface" href="structfpx__macro_1_1macro.html">macro</a>(<span class="stringliteral">&#39;MPI_VERSION&#39;</span>,<span class="stringliteral">&#39;4&#39;</span>))</div>
+<div class="line"> </div>
+<div class="line">   <span class="keyword">call </span>preprocess(<span class="stringliteral">&#39;solver.F90&#39;</span>)</div>
+
+<div class="ttc" id="ainterfacefpx__macro_1_1add_html"><div class="ttname"><a href="interfacefpx__macro_1_1add.html">fpx_macro::add</a></div><div class="ttdoc">Append macros to a macro table.</div><div class="ttdef"><b>Definition</b> <a href="macro_8f90_source.html#l00175">macro.f90:175</a></div></div>
+<div class="ttc" id="astructfpx__macro_1_1macro_html"><div class="ttname"><a href="structfpx__macro_1_1macro.html">fpx_macro::macro</a></div><div class="ttdoc">Representation of a preprocessor macro.</div><div class="ttdef"><b>Definition</b> <a href="macro_8f90_source.html#l00135">macro.f90:135</a></div></div>
+</div><!-- fragment --></li>
+<li>Disable macro expansion: <div class="fragment"><div class="line">   <a class="code hl_variable" href="#ga8b8524880886f61f8c961589cffa7640">global</a>%expand_macros = .false.</div>
+<div class="line"> </div>
+<div class="line">   <span class="keyword">call </span>preprocess(<span class="stringliteral">&#39;input.F90&#39;</span>, <span class="stringliteral">&#39;output.F90&#39;</span>)</div>
 
 </div><!-- fragment --></li>
-<li>Strip all comments from final output: <div class="fragment"><div class="line">global%exclude_comments = .true.</div>
-<div class="line"><span class="keyword">call </span>preprocess(<span class="stringliteral">&#39;messy.F90&#39;</span>, <span class="stringliteral">&#39;clean_no_comments.f90&#39;</span>)</div>
+<li>Enable fpx extensions: <div class="fragment"><div class="line">   <a class="code hl_variable" href="#ga8b8524880886f61f8c961589cffa7640">global</a>%support_forloop      = .true.</div>
+<div class="line">   <a class="code hl_variable" href="#ga8b8524880886f61f8c961589cffa7640">global</a>%support_dollar_insert = .true.</div>
+<div class="line">   <a class="code hl_variable" href="#ga8b8524880886f61f8c961589cffa7640">global</a>%extra_macros         = .true.</div>
+<div class="line"> </div>
+<div class="line">   <span class="keyword">call </span>preprocess(<span class="stringliteral">&#39;templates.F90&#39;</span>)</div>
 
-</div><!-- fragment --> </li>
+</div><!-- fragment --></li>
+<li>Start an interactive preprocessing session: <div class="fragment"><div class="line">   <a class="code hl_variable" href="#ga8b8524880886f61f8c961589cffa7640">global</a>%interactive = .true.</div>
+<div class="line"> </div>
+<div class="line">   <span class="keyword">call </span>preprocess(stdin, stdout)</div>
+
+</div><!-- fragment --></li>
 </ol>
+<dl class="section see"><dt>See also</dt><dd><a href="~/group__group__macro.html">macro</a> <a href="~/group__group__parser.html">parser</a> <a href="~/group__group__include.html">include</a> </dd></dl>
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Data Types</h2></td></tr>
 <tr class="memitem:global_5Fsettings" id="r_global_5Fsettings"><td class="memItemLeft">type &#160;</td><td class="memItemRight"><a class="el" href="structfpx__global_1_1global__settings.html">global_settings</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Global preprocessor configuration and shared runtime state All components of fpx read from and write to this single instance. Users can safely modify its public components at any time.  <a href="structfpx__global_1_1global__settings.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Global preprocessor configuration and shared runtime state.  <a href="structfpx__global_1_1global__settings.html#details">More...</a><br /></td></tr>
 </table>
 <a name="doc-var-members" id="doc-var-members"></a><h2 id="header-doc-var-members" class="groupheader">Variables</h2>
 <a id="ga8b8524880886f61f8c961589cffa7640" name="ga8b8524880886f61f8c961589cffa7640"></a>
@@ -171,9 +220,11 @@ Data Types</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>The single global instance used throughout fpx Initialized automatically with sensible defaults values. </p>
+<p>Global preprocessor configuration instance. </p>
+<p>This singleton is automatically initialized with sensible default values and is shared by all fpx modules during preprocessing.</p>
+<p>Applications typically customize this object before invoking <span class="tt">preprocess(...)</span>. </p>
 
-<p class="definition">Definition at line <a class="el" href="global_8f90_source.html#l00096">96</a> of file <a class="el" href="global_8f90_source.html">global.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="global_8f90_source.html#l00192">192</a> of file <a class="el" href="global_8f90_source.html">global.f90</a>.</p>
 
 </div>
 </div>

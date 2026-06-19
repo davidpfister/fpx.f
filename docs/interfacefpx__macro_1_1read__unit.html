@@ -120,10 +120,11 @@ $(function(){initNavTree('interfacefpx__macro_1_1read__unit.html','','interfacef
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Definition</h2>
-<div class="textblock"><p>Abstract interface for the main preprocessing routine (used for recursion) Allows handle_include to recursively call the top-level preprocess_unit routine without creating circular module dependencies. </p>
-<p><b>Remarks</b> </p>
+<div class="textblock"><p>Abstract interface to the top-level preprocessing routine. </p>
+<p>This callback allows modules such as the include handler to invoke recursive preprocessing of additional source units without creating circular module dependencies.</p>
+<p>Implementations are expected to preprocess the contents of the input unit and emit the resulting output to the specified unit. </p>
 
-<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00174">174</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="macro_8f90_source.html#l00238">238</a> of file <a class="el" href="macro_8f90_source.html">macro.f90</a>.</p>
 </div><hr/>The documentation for this interface was generated from the following file:<ul>
 <li><a class="el" href="macro_8f90_source.html">macro.f90</a></li>
 </ul>

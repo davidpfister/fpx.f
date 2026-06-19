@@ -1,4 +1,4 @@
-<!-- HTML header for doxygen 1.9.1-->
+﻿<!-- HTML header for doxygen 1.9.1-->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" class="dark-mode">
   <head>
@@ -120,10 +120,22 @@ $(function(){initNavTree('interfacefpx__string_1_1operator_07_2_2_08.html','','i
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Definition</h2>
-<div class="textblock"><p>Concatenation operator. </p>
-<p><b>Remarks</b> </p>
+<div class="textblock"><p>Concatenate string and character expressions. </p>
+<p>Supports all combinations of:</p><ul>
+<li>string // string</li>
+<li>string // character(*)</li>
+<li>character(*) // string</li>
+</ul>
+<p>The result is returned as a deferred-length character expression.</p>
+<p><b>Examples</b> </p><div class="fragment"><div class="line"><span class="keywordtype">type</span>(string) :: s</div>
+<div class="line"> </div>
+<div class="line">s = <span class="stringliteral">&#39;foo&#39;</span></div>
+<div class="line"> </div>
+<div class="line">print *, s // <span class="stringliteral">&#39;bar&#39;</span></div>
+<div class="line">print *, <span class="stringliteral">&#39;&gt;&gt;&#39;</span> // s</div>
 
-<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00159">159</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
+</div><!-- fragment --> 
+<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00265">265</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
 </div><hr/>The documentation for this interface was generated from the following file:<ul>
 <li><a class="el" href="string_8f90_source.html">string.f90</a></li>
 </ul>
@@ -155,10 +167,9 @@ $(function(){initNavTree('interfacefpx__string_1_1operator_07_2_2_08.html','','i
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>New concatenated string.</dd></dl>
-<p><b>Remarks</b> </p>
+<dl class="section return"><dt>Returns</dt><dd>New concatenated string. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00342">342</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00557">557</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
 
 </div>
 </div>
@@ -189,10 +200,9 @@ $(function(){initNavTree('interfacefpx__string_1_1operator_07_2_2_08.html','','i
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>New concatenated string.</dd></dl>
-<p><b>Remarks</b> </p>
+<dl class="section return"><dt>Returns</dt><dd>New concatenated string. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00324">324</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00539">539</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
 
 </div>
 </div>
@@ -223,10 +233,9 @@ $(function(){initNavTree('interfacefpx__string_1_1operator_07_2_2_08.html','','i
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>New concatenated string.</dd></dl>
-<p><b>Remarks</b> </p>
+<dl class="section return"><dt>Returns</dt><dd>New concatenated string. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00302">302</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="string_8f90_source.html#l00517">517</a> of file <a class="el" href="string_8f90_source.html">string.f90</a>.</p>
 
 </div>
 </div>

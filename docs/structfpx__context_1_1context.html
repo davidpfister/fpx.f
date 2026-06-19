@@ -120,31 +120,38 @@ $(function(){initNavTree('structfpx__context_1_1context.html','','structfpx__con
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Definition</h2>
-<div class="textblock"><p>Source location and content snapshot for precise diagnostics Instances of this type are created for every source file (including nested include files) and passed along with every warning, error, note, or info message to provide accurate line numbers, file names, and code snippets. </p>
-<h2 class="groupheader">Examples</h2>
-<div class="fragment"><div class="line"><span class="keywordtype">type</span>(context) :: ctx</div>
-<div class="line">ctx = context(<span class="stringliteral">&#39;lorem ipsum&#39;</span>, __line__, <span class="stringliteral">&#39;myfile.f90&#39;</span>)</div>
+<div class="textblock"><p>Snapshot of a source location within the preprocessing stream. </p>
+<p>Instances of this type accompany diagnostics throughout fpx and provide the information required to identify where an event occurred in the original source.</p>
+<p>The stored line content is typically displayed alongside highlighted regions when rendering diagnostics.</p>
+<h1 class="doxsection"><a class="anchor" id="context_type_examples"></a>
+Examples</h1>
+<div class="fragment"><div class="line"><span class="keywordtype">type</span>(context) :: ctx </div>
+<div class="line"> </div>
+<div class="line">ctx = context(<span class="stringliteral">&#39;lorem ipsum&#39;</span>, 42, <span class="stringliteral">&#39;example.F90&#39;</span>)</div>
 
-</div><!-- fragment --> <h2 class="groupheader">Remarks</h2>
+</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="context_type_remarks"></a>
+Remarks</h1>
 <ul>
-<li>Usually one <span class="tt">context</span> exists per currently processed file.</li>
-<li>When entering an <span class="tt">#include</span>, a new context is created for the included file.</li>
-<li>Helps produce high-quality, IDE-friendly error messages.</li>
+<li>A new context is typically created for each processed source line.</li>
+<li>Entering an <span class="tt">#include</span> file naturally creates contexts referring to the included file.</li>
+<li>Context objects are lightweight and inexpensive to copy.</li>
+<li>They form the foundation of fpx's compiler-style diagnostics.</li>
 </ul>
-<h2 class="groupheader">Constructors</h2>
-<p>Initializes a new instance of the <a class="el" href="structfpx__context_1_1context.html" title="context">context</a> class </p><h3>context(character(*), integer, character(*))</h3>
-<pre class="fragment">type(context) function context(character(*) content, integer line, character(*) path) </pre><dl class="params"><dt>Parameters</dt><dd>
+<h1 class="doxsection"><a class="anchor" id="context_type_constructors"></a>
+Constructors</h1>
+<p>Initializes a new instance of the <a class="el" href="structfpx__context_1_1context.html" title="context">context</a> type.</p>
+<p><b>Constructor</b> </p><div class="fragment"><div class="line"><span class="keywordtype">type</span>(context) function context(<span class="keywordtype">character(*)</span> content, <span class="keywordtype">integer</span> line, <span class="keywordtype">character(*)</span> path) </div>
+</div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">content</td><td>The actual line of source code where the issue occurred </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">line</td><td>1-based line number in the current file </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">path</td><td>Full absolute or relative path to the file</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">content</td><td>Source line associated with the diagnostic. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">line</td><td>One-based line number within the source file. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">path</td><td>Relative or absolute path of the source file.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>The constructed datetime object.</dd></dl>
-<h2 class="groupheader">Remarks</h2>
+<dl class="section return"><dt>Returns</dt><dd>Newly constructed context object. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="context_8f90_source.html#l00099">99</a> of file <a class="el" href="context_8f90_source.html">context.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8f90_source.html#l00114">114</a> of file <a class="el" href="context_8f90_source.html">context.f90</a>.</p>
 </div><hr/>The documentation for this type was generated from the following file:<ul>
 <li><a class="el" href="context_8f90_source.html">context.f90</a></li>
 </ul>

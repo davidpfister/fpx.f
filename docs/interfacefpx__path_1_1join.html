@@ -1,4 +1,4 @@
-<!-- HTML header for doxygen 1.9.1-->
+﻿<!-- HTML header for doxygen 1.9.1-->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" class="dark-mode">
   <head>
@@ -120,10 +120,24 @@ $(function(){initNavTree('interfacefpx__path_1_1join.html','','interfacefpx__pat
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Definition</h2>
-<div class="textblock"><p>Generic interface for joining two path components Supports all combinations of character and string arguments. </p>
-<p><b>Remarks</b> </p>
+<div class="textblock"><p>Join path components using the platform separator. </p>
+<p>The generic interface accepts any combination of intrinsic <span class="tt">character(*)</span> and <a class="el" href="structfpx__string_1_1string.html">string </a> arguments.</p>
+<p>Supported overloads:</p><ul>
+<li>join(character, character)</li>
+<li>join(character, string)</li>
+<li>join(string, character)</li>
+<li>join(string, string)</li>
+</ul>
+<p><b>Examples</b> </p><div class="fragment"><div class="line"><span class="keywordtype">character(:)</span>, <span class="keywordtype">allocatable</span> :: p</div>
+<div class="line"> </div>
+<div class="line">p = join(<span class="stringliteral">&#39;/usr&#39;</span>,<span class="stringliteral">&#39;bin&#39;</span>)</div>
+<div class="line"><span class="comment">! &#39;/usr/bin&#39;</span></div>
+<div class="line"> </div>
+<div class="line">p = join(string(<span class="stringliteral">&#39;/usr&#39;</span>),<span class="stringliteral">&#39;local&#39;</span>)</div>
+<div class="line"><span class="comment">! &#39;/usr/local&#39;</span></div>
 
-<p class="definition">Definition at line <a class="el" href="path_8f90_source.html#l00102">102</a> of file <a class="el" href="path_8f90_source.html">path.f90</a>.</p>
+</div><!-- fragment --> 
+<p class="definition">Definition at line <a class="el" href="path_8f90_source.html#l00141">141</a> of file <a class="el" href="path_8f90_source.html">path.f90</a>.</p>
 </div><hr/>The documentation for this interface was generated from the following file:<ul>
 <li><a class="el" href="path_8f90_source.html">path.f90</a></li>
 </ul>
@@ -147,18 +161,24 @@ $(function(){initNavTree('interfacefpx__path_1_1join.html','','interfacefpx__pat
       </table>
 </div><div class="memdoc">
 
-<p>Joins two path components with the correct platform separator. Removes duplicate separators and trailing/leading whitespace. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">path1</td><td>First path component </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">path2</td><td>Second path component </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>res Joined path</dd></dl>
-<p><b>Remarks</b> </p>
+<p>Implementation of <a class="el" href="interfacefpx__path_1_1join.html" title="join">join</a> for character arguments. </p>
+<p>The generic interface accepts any combination of intrinsic <span class="tt">character(*)</span> and <a class="el" href="structfpx__string_1_1string.html">string </a> arguments.</p>
+<p>Supported overloads:</p><ul>
+<li>join(character, character)</li>
+<li>join(character, string)</li>
+<li>join(string, character)</li>
+<li>join(string, string)</li>
+</ul>
+<p><b>Examples</b> </p><div class="fragment"><div class="line"><span class="keywordtype">character(:)</span>, <span class="keywordtype">allocatable</span> :: p</div>
+<div class="line"> </div>
+<div class="line">p = join(<span class="stringliteral">&#39;/usr&#39;</span>,<span class="stringliteral">&#39;bin&#39;</span>)</div>
+<div class="line"><span class="comment">! &#39;/usr/bin&#39;</span></div>
+<div class="line"> </div>
+<div class="line">p = join(string(<span class="stringliteral">&#39;/usr&#39;</span>),<span class="stringliteral">&#39;local&#39;</span>)</div>
+<div class="line"><span class="comment">! &#39;/usr/local&#39;</span></div>
 
-<p class="definition">Definition at line <a class="el" href="path_8f90_source.html#l00209">209</a> of file <a class="el" href="path_8f90_source.html">path.f90</a>.</p>
+</div><!-- fragment -->    
+<p class="definition">Definition at line <a class="el" href="path_8f90_source.html#l00246">246</a> of file <a class="el" href="path_8f90_source.html">path.f90</a>.</p>
 
 </div>
 </div>
@@ -181,18 +201,24 @@ $(function(){initNavTree('interfacefpx__path_1_1join.html','','interfacefpx__pat
       </table>
 </div><div class="memdoc">
 
-<p>Joins character path with string path component. Removes duplicate separators and trailing/leading whitespace. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">path1</td><td>First path component </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">path2</td><td>Second path component </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>res Joined path</dd></dl>
-<p><b>Remarks</b> </p>
+<p>Implementation of <a class="el" href="interfacefpx__path_1_1join.html" title="join">join</a> for character arguments. </p>
+<p>The generic interface accepts any combination of intrinsic <span class="tt">character(*)</span> and <a class="el" href="structfpx__string_1_1string.html">string </a> arguments.</p>
+<p>Supported overloads:</p><ul>
+<li>join(character, character)</li>
+<li>join(character, string)</li>
+<li>join(string, character)</li>
+<li>join(string, string)</li>
+</ul>
+<p><b>Examples</b> </p><div class="fragment"><div class="line"><span class="keywordtype">character(:)</span>, <span class="keywordtype">allocatable</span> :: p</div>
+<div class="line"> </div>
+<div class="line">p = join(<span class="stringliteral">&#39;/usr&#39;</span>,<span class="stringliteral">&#39;bin&#39;</span>)</div>
+<div class="line"><span class="comment">! &#39;/usr/bin&#39;</span></div>
+<div class="line"> </div>
+<div class="line">p = join(string(<span class="stringliteral">&#39;/usr&#39;</span>),<span class="stringliteral">&#39;local&#39;</span>)</div>
+<div class="line"><span class="comment">! &#39;/usr/local&#39;</span></div>
 
-<p class="definition">Definition at line <a class="el" href="path_8f90_source.html#l00230">230</a> of file <a class="el" href="path_8f90_source.html">path.f90</a>.</p>
+</div><!-- fragment -->    
+<p class="definition">Definition at line <a class="el" href="path_8f90_source.html#l00264">264</a> of file <a class="el" href="path_8f90_source.html">path.f90</a>.</p>
 
 </div>
 </div>
@@ -215,18 +241,24 @@ $(function(){initNavTree('interfacefpx__path_1_1join.html','','interfacefpx__pat
       </table>
 </div><div class="memdoc">
 
-<p>Joins string path with character path component. Removes duplicate separators and trailing/leading whitespace. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">path1</td><td>First path component </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">path2</td><td>Second path component </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>res Joined path</dd></dl>
-<p><b>Remarks</b> </p>
+<p>Implementation of <a class="el" href="interfacefpx__path_1_1join.html" title="join">join</a> for character arguments. </p>
+<p>The generic interface accepts any combination of intrinsic <span class="tt">character(*)</span> and <a class="el" href="structfpx__string_1_1string.html">string </a> arguments.</p>
+<p>Supported overloads:</p><ul>
+<li>join(character, character)</li>
+<li>join(character, string)</li>
+<li>join(string, character)</li>
+<li>join(string, string)</li>
+</ul>
+<p><b>Examples</b> </p><div class="fragment"><div class="line"><span class="keywordtype">character(:)</span>, <span class="keywordtype">allocatable</span> :: p</div>
+<div class="line"> </div>
+<div class="line">p = join(<span class="stringliteral">&#39;/usr&#39;</span>,<span class="stringliteral">&#39;bin&#39;</span>)</div>
+<div class="line"><span class="comment">! &#39;/usr/bin&#39;</span></div>
+<div class="line"> </div>
+<div class="line">p = join(string(<span class="stringliteral">&#39;/usr&#39;</span>),<span class="stringliteral">&#39;local&#39;</span>)</div>
+<div class="line"><span class="comment">! &#39;/usr/local&#39;</span></div>
 
-<p class="definition">Definition at line <a class="el" href="path_8f90_source.html#l00251">251</a> of file <a class="el" href="path_8f90_source.html">path.f90</a>.</p>
+</div><!-- fragment -->    
+<p class="definition">Definition at line <a class="el" href="path_8f90_source.html#l00282">282</a> of file <a class="el" href="path_8f90_source.html">path.f90</a>.</p>
 
 </div>
 </div>
@@ -249,18 +281,24 @@ $(function(){initNavTree('interfacefpx__path_1_1join.html','','interfacefpx__pat
       </table>
 </div><div class="memdoc">
 
-<p>Joins two string path components. Removes duplicate separators and trailing/leading whitespace. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">path1</td><td>First path component </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">path2</td><td>Second path component </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>res Joined path</dd></dl>
-<p><b>Remarks</b> </p>
+<p>Implementation of <a class="el" href="interfacefpx__path_1_1join.html" title="join">join</a> for character arguments. </p>
+<p>The generic interface accepts any combination of intrinsic <span class="tt">character(*)</span> and <a class="el" href="structfpx__string_1_1string.html">string </a> arguments.</p>
+<p>Supported overloads:</p><ul>
+<li>join(character, character)</li>
+<li>join(character, string)</li>
+<li>join(string, character)</li>
+<li>join(string, string)</li>
+</ul>
+<p><b>Examples</b> </p><div class="fragment"><div class="line"><span class="keywordtype">character(:)</span>, <span class="keywordtype">allocatable</span> :: p</div>
+<div class="line"> </div>
+<div class="line">p = join(<span class="stringliteral">&#39;/usr&#39;</span>,<span class="stringliteral">&#39;bin&#39;</span>)</div>
+<div class="line"><span class="comment">! &#39;/usr/bin&#39;</span></div>
+<div class="line"> </div>
+<div class="line">p = join(string(<span class="stringliteral">&#39;/usr&#39;</span>),<span class="stringliteral">&#39;local&#39;</span>)</div>
+<div class="line"><span class="comment">! &#39;/usr/local&#39;</span></div>
 
-<p class="definition">Definition at line <a class="el" href="path_8f90_source.html#l00272">272</a> of file <a class="el" href="path_8f90_source.html">path.f90</a>.</p>
+</div><!-- fragment -->    
+<p class="definition">Definition at line <a class="el" href="path_8f90_source.html#l00300">300</a> of file <a class="el" href="path_8f90_source.html">path.f90</a>.</p>
 
 </div>
 </div>

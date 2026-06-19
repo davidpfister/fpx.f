@@ -127,10 +127,18 @@ $(function(){initNavTree('structfpx__date_1_1datetime.html','','structfpx__date_
 <div class="line">bt = datetime(<span class="stringliteral">&#39;2025-08-12 09:30:00&#39;</span>)</div>
 <div class="line">print *, <span class="stringliteral">&#39;build on: &#39;</span>, bt%to_string(<span class="stringliteral">&#39;ddd-MMM-yyyy&#39;</span>)</div>
 
-</div><!-- fragment --> <h2 class="groupheader">Remarks</h2>
-<p>The date implementation proposed here is kept at the bare minimum of what is required by the library. There are many other implementations that can be found. </p><h2 class="groupheader">Constructors</h2>
-<p>Initializes a new instance of the <a class="el" href="structfpx__date_1_1datetime.html" title="datetime">datetime</a> class </p><h3>datetime(character(*), character(*))</h3>
-<pre class="fragment">type(datetime) function datetime(character(*) string, (optional) character(*) fmt) </pre><dl class="params"><dt>Parameters</dt><dd>
+</div><!-- fragment --> <h1 class="doxsection"><a class="anchor" id="datetime_type_remarks"></a>
+Remarks</h1>
+<p>This type intentionally provides only the functionality required by fpx. It is designed to be compact, portable, and efficient rather than serving as a comprehensive date/time framework.</p>
+<h1 class="doxsection"><a class="anchor" id="datetime_type_constructors"></a>
+Constructors</h1>
+<p>Initializes a new instance of the <a class="el" href="structfpx__date_1_1datetime.html" title="datetime">datetime</a> class. Two constructor forms are available:</p>
+<ul>
+<li>Construction from numeric components</li>
+<li>Construction from a character representation</li>
+</ul>
+<p><b>Constructor</b> </p><div class="fragment"><div class="line"><span class="keywordtype">type</span>(datetime) function datetime(<span class="keywordtype">character(*)</span> string, (optional) <span class="keywordtype">character(*)</span> fmt) </div>
+</div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">string</td><td>date as string </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">fmt</td><td>(optional) date format</td></tr>
@@ -139,8 +147,9 @@ $(function(){initNavTree('structfpx__date_1_1datetime.html','','structfpx__date_
 </dl>
 <p><b>Examples</b> </p><div class="fragment"><div class="line"><span class="keywordtype">type</span>(datetime) :: d</div>
 <div class="line">d = datetime(<span class="stringliteral">&#39;2025-08-12 09:30:00&#39;</span>)</div>
-</div><!-- fragment --> <h3>datetime(integer, integer, integer, integer, integer, integer, integer)</h3>
-<pre class="fragment">type(datetime) function datetime((optional) integer year, (optional) integer month, ...) </pre><dl class="params"><dt>Parameters</dt><dd>
+
+</div><!-- fragment --><p><b>Constructor</b> </p><div class="fragment"><div class="line"><span class="keywordtype">type</span>(datetime) function datetime((optional) <span class="keywordtype">integer</span> year, (optional) <span class="keywordtype">integer</span> month, ...) </div>
+</div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname"><a class="el" href="#ab31da52ea429141ab33e05070392e360" title="Year.">year</a></td><td>(optional) </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname"><a class="el" href="#ace49b7b9bce457afc711e152a0b05e48" title="Month.">month</a></td><td>(optional) </td></tr>
@@ -154,11 +163,10 @@ $(function(){initNavTree('structfpx__date_1_1datetime.html','','structfpx__date_
 </dl>
 <p><b>Examples</b> </p><div class="fragment"><div class="line"><span class="keywordtype">type</span>(datetime) :: d</div>
 <div class="line">d = datetime(1970, 1, 1)</div>
-</div><!-- fragment --> <dl class="section return"><dt>Returns</dt><dd>The constructed datetime object.</dd></dl>
-<h2 class="groupheader">Remarks</h2>
-<p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="date_8f90_source.html#l00100">100</a> of file <a class="el" href="date_8f90_source.html">date.f90</a>.</p>
+</div><!-- fragment --><dl class="section return"><dt>Returns</dt><dd>The constructed datetime object. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="date_8f90_source.html#l00144">144</a> of file <a class="el" href="date_8f90_source.html">date.f90</a>.</p>
 </div><hr/>The documentation for this interface was generated from the following file:<ul>
 <li><a class="el" href="date_8f90_source.html">date.f90</a></li>
 </ul>
@@ -228,11 +236,10 @@ Variables</h2></td></tr>
 <li>y: Year, no leading zero (e.g. 2015 would be 15)</li>
 <li>yy: Year, leading zero (e.g. 2015 would be 015)</li>
 <li>yyy: Year, (e.g. 2015)</li>
-<li>yyyy: Year, (e.g. 2015)</li>
+<li>yyyy: Year, (e.g. 2015) </li>
 </ul>
-<p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="date_8f90_source.html#l00111">111</a> of file <a class="el" href="date_8f90_source.html">date.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="date_8f90_source.html#l00155">155</a> of file <a class="el" href="date_8f90_source.html">date.f90</a>.</p>
 
 </div>
 </div>
@@ -256,9 +263,8 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Format datetime as string using flexible format codes Supports many common patterns including those required for <span class="tt">__DATE__</span> and <span class="tt">__TIMESTAMP__</span>. Default format: 'yyyy-MM-ddTHH:mm:ss'. </p>
-<p><b>Remarks</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="date_8f90_source.html#l00110">110</a> of file <a class="el" href="date_8f90_source.html">date.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="date_8f90_source.html#l00154">154</a> of file <a class="el" href="date_8f90_source.html">date.f90</a>.</p>
 
 </div>
 </div>

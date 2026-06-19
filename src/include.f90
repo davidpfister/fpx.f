@@ -1,6 +1,6 @@
 !> @file
 !! @defgroup group_include Include
-!! Include file handling and resolution for the FPX Fortran preprocessor
+!! Include file handling and resolution for the fpx Fortran preprocessor
 !!
 !! This module implements robust and standard-compliant processing of `#include` directives
 !! with full support for:
@@ -98,7 +98,7 @@ contains
     !! @param[in] ounit        Output unit where preprocessed content is written
     !! @param[in] preprocess   Procedure pointer to the main line-by-line preprocessor
     !! @param[inout] macros    Current macro table (shared across recursion levels)
-    !! @param[in] token        Usually 'include' – the directive keyword
+    !! @param[in] token        Usually 'include' - the directive keyword
     !!
     !! @ingroup group_include
     recursive subroutine handle_include(ctx, ounit, preprocess, macros, token)

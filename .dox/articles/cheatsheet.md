@@ -22,9 +22,9 @@ fpx -h                        -> show help
 |                           | `real :: y = FUNC(5.0)` -> `real :: y = 5.0*5.0`              |
 | `#define LOG(...) print *, __VA_ARGS__` | Variadic macro (C99-style)                     |
 | `#undef NAME`             | Remove a macro                                              |
-| `#ifdef NAME` … `#endif`  | If NAME is defined                                          |
-| `#ifndef NAME` … `#endif` | Classic header guard (most common)                          |
-| `#if DEBUG >= 2` …        | Full expressions allowed (`&&`, `!`, `defined(NAME)`) |
+| `#ifdef NAME` ... `#endif`  | If NAME is defined                                          |
+| `#ifndef NAME` ... `#endif` | Classic header guard (most common)                          |
+| `#if DEBUG >= 2` ...        | Full expressions allowed (`&&`, `!`, `defined(NAME)`) |
 | `#include "file.inc"`     | Local include (quotes)                                      |
 | `#include <iso_c_binding.h>` | System include (angle brackets)                          |
 
@@ -34,7 +34,7 @@ fpx -h                        -> show help
 
 <center>
 
-| Macro               | Expands to…                                          |
+| Macro               | Expands to...                                        |
 |---------------------|------------------------------------------------------|
 | `__FILE__`          | "full/path/to/file.F90"                              |
 | `__FILENAME__`      | "file.F90" (basename only)                           |
@@ -42,6 +42,7 @@ fpx -h                        -> show help
 | `__DATE__`          | "Aug 12 2025"                                        |
 | `__TIME__`          | "14:35:27"                                           |
 | `__TIMESTAMP__`     | "Tue Aug 12 2025 14:35:27"                           |
+| `__FUNC__`          | Current function/subroutine name                     |
 
 </center>
 
@@ -81,6 +82,20 @@ module my_module content
   print *, 'Debug mode active'
 #endif
 ...
+@endcode
+
+## fpx extensions
+
+@code{.f90}
+    #for T in [integer, real, complex]
+       type(T) :: value
+    #endfor
+
+    ! Expands to:
+    type(integer) :: value
+    type(real)    :: value
+    type(complex) :: value
+ ...
 @endcode
 
 ## Using fpx as a Library (in your own code)

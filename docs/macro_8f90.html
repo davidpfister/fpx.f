@@ -125,31 +125,32 @@ $(function(){initNavTree('macro_8f90.html','',''); });
 <tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Data Types</h2></td></tr>
 <tr class="memitem:macro" id="r_macro"><td class="memItemLeft">interface &#160;</td><td class="memItemRight"><a class="el" href="structfpx__macro_1_1macro.html">macro</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Derived type representing a single preprocessor macro Extends <a class="el" href="structfpx__string_1_1string.html">string </a> with macro-specific fields: replacement value, parameters, variadic flag, and cyclic self-reference detection.  <a href="structfpx__macro_1_1macro.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Representation of a preprocessor macro.  <a href="structfpx__macro_1_1macro.html#details">More...</a><br /></td></tr>
 <tr class="memitem:add" id="r_add"><td class="memItemLeft">interface &#160;</td><td class="memItemRight"><a class="el" href="interfacefpx__macro_1_1add.html">add</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add one or more macros to a dynamic table.  <a href="interfacefpx__macro_1_1add.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Append macros to a macro table.  <a href="interfacefpx__macro_1_1add.html#details">More...</a><br /></td></tr>
 <tr class="memitem:clear" id="r_clear"><td class="memItemLeft">interface &#160;</td><td class="memItemRight"><a class="el" href="interfacefpx__macro_1_1clear.html">clear</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove all macros from a table.  <a href="interfacefpx__macro_1_1clear.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove all macro definitions from a table.  <a href="interfacefpx__macro_1_1clear.html#details">More...</a><br /></td></tr>
 <tr class="memitem:get" id="r_get"><td class="memItemLeft">interface &#160;</td><td class="memItemRight"><a class="el" href="interfacefpx__macro_1_1get.html">get</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieve a macro by index.  <a href="interfacefpx__macro_1_1get.html#details">More...</a><br /></td></tr>
 <tr class="memitem:insert" id="r_insert"><td class="memItemLeft">interface &#160;</td><td class="memItemRight"><a class="el" href="interfacefpx__macro_1_1insert.html">insert</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Insert more macro to a dynamic table.  <a href="interfacefpx__macro_1_1insert.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Insert a macro at a specified position.  <a href="interfacefpx__macro_1_1insert.html#details">More...</a><br /></td></tr>
 <tr class="memitem:remove" id="r_remove"><td class="memItemLeft">interface &#160;</td><td class="memItemRight"><a class="el" href="interfacefpx__macro_1_1remove.html">remove</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove a macro at given index.  <a href="interfacefpx__macro_1_1remove.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove a macro definition from a table.  <a href="interfacefpx__macro_1_1remove.html#details">More...</a><br /></td></tr>
 <tr class="memitem:size_5Fof" id="r_size_5Fof"><td class="memItemLeft">interface &#160;</td><td class="memItemRight"><a class="el" href="interfacefpx__macro_1_1size__of.html">size_of</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return current number of stored macros.  <a href="interfacefpx__macro_1_1size__of.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of stored macro definitions.  <a href="interfacefpx__macro_1_1size__of.html#details">More...</a><br /></td></tr>
 <tr class="memitem:read_5Funit" id="r_read_5Funit"><td class="memItemLeft">interface &#160;</td><td class="memItemRight"><a class="el" href="interfacefpx__macro_1_1read__unit.html">read_unit</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Abstract interface for the main preprocessing routine (used for recursion) Allows handle_include to recursively call the top-level preprocess_unit routine without creating circular module dependencies.  <a href="interfacefpx__macro_1_1read__unit.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Abstract interface to the top-level preprocessing routine.  <a href="interfacefpx__macro_1_1read__unit.html#details">More...</a><br /></td></tr>
 <tr class="memitem:preprocess_5Fline" id="r_preprocess_5Fline"><td class="memItemLeft">interface &#160;</td><td class="memItemRight"><a class="el" href="interfacefpx__macro_1_1preprocess__line.html">preprocess_line</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Abstract interface for line preprocessing callbacks.  <a href="interfacefpx__macro_1_1preprocess__line.html#details">More...</a><br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
 Functions/Subroutines</h2></td></tr>
 <tr class="memitem:gab51fdaa32665f1141e292d2330a48dbc" id="r_gab51fdaa32665f1141e292d2330a48dbc"><td class="memItemLeft">character(:) function, allocatable, public&#160;</td><td class="memItemRight"><a class="el" href="group__group__macro.html#gab51fdaa32665f1141e292d2330a48dbc">expand_all</a> (ctx, macros, stitch, has_extra, implicit_conti, dollar_insert)</td></tr>
-<tr class="memdesc:gab51fdaa32665f1141e292d2330a48dbc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fully expand a line including predefined macros (<b>FILE</b>, <b>LINE</b>, etc.) First performs normal macro expansion via expand_macros(), then substitutes standard predefined tokens with current file/line/date information.  <br /></td></tr>
+<tr class="memdesc:gab51fdaa32665f1141e292d2330a48dbc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Expand a source line including predefined macros.  <br /></td></tr>
 <tr class="memitem:ga28c2658615e83c6ca921d93a3dbee370" id="r_ga28c2658615e83c6ca921d93a3dbee370"><td class="memItemLeft">character(:) function, allocatable, public&#160;</td><td class="memItemRight"><a class="el" href="group__group__macro.html#ga28c2658615e83c6ca921d93a3dbee370">expand_macros</a> (line, macros, stitch, implicit_conti, dollar_insert, ctx)</td></tr>
-<tr class="memdesc:ga28c2658615e83c6ca921d93a3dbee370"><td class="mdescLeft">&#160;</td><td class="mdescRight">Core recursive macro expander (handles function-like, variadic, #, ##).  <br /></td></tr>
+<tr class="memdesc:ga28c2658615e83c6ca921d93a3dbee370"><td class="mdescLeft">&#160;</td><td class="mdescRight">Recursively expand user-defined macros.  <br /></td></tr>
 <tr class="memitem:gad3bf37972bc247f25f116979e55ba74f" id="r_gad3bf37972bc247f25f116979e55ba74f"><td class="memItemLeft">logical function, public&#160;</td><td class="memItemRight"><a class="el" href="group__group__macro.html#gad3bf37972bc247f25f116979e55ba74f">is_defined</a> (name, macros, idx)</td></tr>
-<tr class="memdesc:gad3bf37972bc247f25f116979e55ba74f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if a macro with given name exists in table.  <br /></td></tr>
+<tr class="memdesc:gad3bf37972bc247f25f116979e55ba74f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determine whether a macro is currently defined.  <br /></td></tr>
 </table>
 </div><!-- contents -->
 </div><!-- doc-content -->

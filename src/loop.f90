@@ -1,9 +1,9 @@
 !> @file
 !! @defgroup group_for For
-!! Fortran Preprocessor (FPX) – compile-time loop expansion support
+!! Fortran Preprocessor (fpx) - compile-time loop expansion support
 !!
 !! This module implements the non-standard `#for` / `#endfor` directive pair
-!! used by FPX to generate repeated source code from a list of values.
+!! used by fpx to generate repeated source code from a list of values.
 !!
 !! Features:
 !! - Simple iteration over explicit lists:
@@ -147,7 +147,7 @@ contains
     !! where `MACRO_NAME` expands to a bracketed list.
     !!
     !! @note
-    !! `#for` and `#endfor` are FPX extensions and are not part of the
+    !! `#for` and `#endfor` are fpx extensions and are not part of the
     !! ISO C preprocessor specification.
     !!
     !! @param[in]    ctx     
