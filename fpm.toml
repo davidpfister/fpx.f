@@ -1,5 +1,5 @@
 name = "fpx"
-version = "1.2.1"
+version = "1.2.2"
 maintainer = "David Pfister"
 author = "David Pfister"
 description = "preprocessing app"
@@ -14,7 +14,7 @@ auto-examples = false
 
 [preprocess]
 cpp.suffixes = ["F90", "f90"]
-cpp.macros = ["_WIN32", "_FPM", "_VERSION='1.2.1'"]
+cpp.macros = ["_WIN32", "_FPM", "_VERSION='1.2.2'"]
 
 [library]
 source-dir = "src"

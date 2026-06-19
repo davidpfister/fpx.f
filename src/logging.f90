@@ -752,11 +752,6 @@ contains
     pure integer function integer_width(input) result(res)
         integer, value :: input
 
-        if (input == 0) then
-            res = 1
-            return
-        end if
-
         res = 0
         do while (input /= 0)
             input = input / 10

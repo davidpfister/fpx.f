@@ -99,7 +99,7 @@ TESTPROGRAM(test_logging)
                         message='Error opening input file: ' // __FILE__, &
                         source=__FILE__), &
                         '')
-        EXPECT_STREQ(errmsg, 'error: Error opening input file: '//__FILE__//nl//' --> '//__FILE__//':1:1-1'//nl//'  |'//nl//'  |')
+        EXPECT_STREQ(errmsg, 'error: Error opening input file: '//__FILE__//nl//' --> '//__FILE__//':1:1-1'//nl//'  |'//nl//'1 | '//nl//'  |  '//nl//'  |')
         
         errmsg = render(diagnostic_report(LEVEL_ERROR, &
                         message='Unclosed conditional block at end of file', &
