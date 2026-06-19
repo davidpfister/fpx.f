@@ -11,12 +11,13 @@
 !! overloads of key procedures to accept either intrinsic `character(*)` or `type(string)`
 !! arguments.
 !!
-!! Features
-!! - Detection of absolute and rooted paths on Windows and Unix-like systems
-!! - Safe path joining that avoids duplicate separators
-!! - Extraction of directory part, filename (with or without extension)
-!! - Path splitting into head/tail components
-!! - Retrieval of the current working directory (`cwd`)
+!! Features include:
+!! - Detection of absolute and rooted paths
+!! - Cross-platform path joining
+!! - Extraction of directory and filename components
+!! - Splitting paths into head/tail elements
+!! - Retrieval and modification of the current working directory
+!! - Support for both intrinsic CHARACTER and type(string) arguments
 !! - Changing the current working directory (`chdir`)
 !!
 !! @note All path-returning functions return allocatable deferred-length characters.
@@ -49,14 +50,33 @@ module fpx_path
     use, intrinsic :: iso_c_binding
     use fpx_string
 
-    ! allow(default-public-accessibility)
-    implicit none; public
+    public :: join, &
+          is_absolute, &
+          is_rooted, &
+          filename, &
+          dirpath, &
+          dirname, &
+          split_path, &
+          cwd, &
+          chdir
 
     !! @cond
 #ifdef _WIN32
+    !> Platform-dependent directory separator.
+    !!
+    !! '/' on Unix-like systems,
+    !! '\' on Windows.
+    !!
+    !! @ingroup group_path
     character, parameter    :: separator = '\'
     character(*), parameter :: alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
 #else
+    !> Platform-dependent directory separator.
+    !!
+    !! '/' on Unix-like systems,
+    !! '\' on Windows.
+    !!
+    !! @ingroup group_path
     character, parameter :: separator = '/'
 #endif
 
@@ -94,10 +114,29 @@ module fpx_path
     end interface
     !! @endcond
 
-    !> Generic interface for joining two path components
-    !! Supports all combinations of character and string arguments
+    !> Join path components using the platform separator.
     !!
-    !! @b Remarks
+    !! The generic interface accepts any combination of intrinsic
+    !! `character(*)` and @link fpx_string::string string @endlink
+    !! arguments.
+    !!
+    !! Supported overloads:
+    !! - join(character, character)
+    !! - join(character, string)
+    !! - join(string, character)
+    !! - join(string, string)
+    !!
+    !! @b Examples
+    !! @code{.f90}
+    !! character(:), allocatable :: p
+    !!
+    !! p = join('/usr','bin')
+    !! ! '/usr/bin'
+    !!
+    !! p = join(string('/usr'),'local')
+    !! ! '/usr/local'
+    !! ...
+    !! @endcode
     !! @ingroup group_path
     interface join
         module procedure :: join_character_character
@@ -123,7 +162,6 @@ contains
     !!    ...
     !! @endcode
     !!
-    !! @b Remarks
     !! @ingroup group_path
     pure logical function is_absolute(filepath) result(res)
         character(*), intent(in)        :: filepath
@@ -146,7 +184,6 @@ contains
     !! @param[in] filepath  Path to test
     !! @return res          .true. if filepath is rooted
     !!
-    !! @b Remarks
     !! @ingroup group_path
     pure logical function is_rooted(filepath) result(res)
         character(*), intent(in)        :: filepath
@@ -161,7 +198,11 @@ contains
 #endif
     end function
 
-    !> Extracts the filename part of a path.
+    !! Returns the filename component of a path.
+    !!
+    !! The directory portion is discarded. By default, the final
+    !! extension is removed; when `keepext=.true.` the full filename
+    !! is returned unchanged.
     !! By default the extension is stripped. If keepext=.true. the full filename
     !! including extension is returned.
     !!
@@ -169,13 +210,12 @@ contains
     !! @param[in] keepext    Optional; keep extension when .true.
     !! @return res           Filename (without path)
     !!
-    !! @code{.90}
+    !! @code{f.90}
     !!    print *, filename('dir/file.txt')        ! 'file'
     !!    print *, filename('dir/file.txt',.true.) ! 'file.txt'
     !!    print *, filename('archive.tar.gz')      ! 'archive.tar'
     !! @endcode
     !!
-    !! @b Remarks
     !! @ingroup group_path
     pure function filename(filepath, keepext) result(res)
         character(*), intent(in)        :: filepath
@@ -198,14 +238,11 @@ contains
         end if
     end function
 
-    !> Joins two path components with the correct platform separator.
-    !! Removes duplicate separators and trailing/leading whitespace.
+    !> Implementation of @ref join for character arguments.
     !!
-    !! @param[in] path1  First path component
-    !! @param[in] path2  Second path component
-    !! @return res       Joined path
+    !! @copydetails join
     !!
-    !! @b Remarks
+    !! @ingroup group_path
     pure function join_character_character(path1, path2) result(res)
         character(*), intent(in) :: path1
         character(*), intent(in) :: path2
@@ -219,14 +256,11 @@ contains
         res = temp // separator // trim(adjustl(path2))
     end function
 
-    !> Joins character path with string path component.
-    !! Removes duplicate separators and trailing/leading whitespace.
+    !> Implementation of @ref join for character arguments.
     !!
-    !! @param[in] path1  First path component
-    !! @param[in] path2  Second path component
-    !! @return res       Joined path
+    !! @copydetails join
     !!
-    !! @b Remarks
+    !! @ingroup group_path
     pure function join_character_string(path1, path2) result(res)
         character(*), intent(in) :: path1
         type(string), intent(in) :: path2
@@ -240,14 +274,11 @@ contains
         res = temp // separator // trim(adjustl(path2%chars))
     end function
 
-    !> Joins string path with character path component.
-    !! Removes duplicate separators and trailing/leading whitespace.
+    !> Implementation of @ref join for character arguments.
     !!
-    !! @param[in] path1  First path component
-    !! @param[in] path2  Second path component
-    !! @return res       Joined path
+    !! @copydetails join
     !!
-    !! @b Remarks
+    !! @ingroup group_path
     pure function join_string_character(path1, path2) result(res)
         type(string), intent(in) :: path1
         character(*), intent(in) :: path2
@@ -261,14 +292,11 @@ contains
         res = temp // separator // trim(adjustl(path2))
     end function
 
-    !> Joins two string path components.
-    !! Removes duplicate separators and trailing/leading whitespace.
+    !> Implementation of @ref join for character arguments.
     !!
-    !! @param[in] path1  First path component
-    !! @param[in] path2  Second path component
-    !! @return res       Joined path
+    !! @copydetails join
     !!
-    !! @b Remarks
+    !! @ingroup group_path
     pure function join_string_string(path1, path2) result(res)
         type(string), intent(in) :: path1
         type(string), intent(in) :: path2
@@ -282,7 +310,9 @@ contains
         res = temp // separator // trim(adjustl(path2%chars))
     end function
 
-    !> Returns the directory part of a path (everything before the last separator).
+    !! Returns the directory component of a filesystem path.
+    !!
+    !! This is equivalent to the "head" returned by split_path().
     !! @param[in] filepath  Path to analyse
     !! @return res          Directory component
     !!
@@ -290,7 +320,6 @@ contains
     !!    print *, dirpath('/home/user/file.txt')  ! '/home/user'
     !! @endcode
     !!
-    !! @b Remarks
     !! @ingroup group_path
     pure function dirpath(filepath) result(res)
         character(*), intent(in) :: filepath
@@ -301,7 +330,9 @@ contains
         call split_path(filepath, res, temp)
     end function
 
-    !> Returns the base name (filename) part of a path.
+    !! Returns the basename component of a filesystem path.
+    !!
+    !! This is equivalent to the "tail" returned by split_path().
     !! @param[in] filepath  Path to analyse
     !! @return res          Base name component
     !!
@@ -309,7 +340,6 @@ contains
     !!    print *, dirname('/home/user/file.txt')  ! 'file.txt'
     !! @endcode
     !!
-    !! @b Remarks
     !! @ingroup group_path
     pure function dirname(filepath) result(res)
         character(*), intent(in) :: filepath
@@ -321,11 +351,14 @@ contains
     end function
 
     !> Splits a path into head (directory) and tail (basename) components.
+    !! Special cases:
+    !! - Empty paths return ('.','')
+    !! - Root directories return ('/','')
+    !! - Trailing separators are ignored
     !! @param[in]  filepath  Input path
     !! @param[out] head      Directory part (includes trailing separator when appropriate)
     !! @param[out] tail      Base name part
     !!
-    !! @b Remarks
     !! @ingroup group_path
     pure subroutine split_path(filepath, head, tail)
         character(*), intent(in)                :: filepath
@@ -379,7 +412,7 @@ contains
     end subroutine
 
     !> Returns the current working directory as a deferred-length character string.
-    !! Returns empty string on failure.
+    !! Returns an empty string if the current directory cannot be determined.
     !!
     !! @return res  Current working directory
     !! @code{.f90}
@@ -388,7 +421,6 @@ contains
     !!    print *, 'We are in: ', here
     !! @endcode
     !!
-    !! @b Remarks
     !! @ingroup group_path
     function cwd() result(res)
         character(:), allocatable :: res
@@ -410,6 +442,8 @@ contains
     end function
 
     !> Changes the current working directory.
+    !! This is a thin wrapper around the underlying C runtime
+    !! `chdir()` implementation.
     !! @param[in]  path  Directory to change to
     !! @param[out] err   Optional integer error code (0 = success, non-zero = failure)
     !! @code{.f90}
@@ -418,7 +452,6 @@ contains
     !!    if (ierr /= 0) stop 'Failed to change directory'
     !! @endcode
     !!
-    !! @b Remarks
     !! @ingroup group_path
     subroutine chdir(path, err)
         character(*), intent(in)        :: path

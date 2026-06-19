@@ -20,6 +20,17 @@
 !! Circular dependencies are detected through dependency graph analysis.
 !! Macro lookup is currently linear in the number of defined macros.
 !!
+!! @par Expansion Pipeline
+!! Macro processing occurs in two stages:
+!! - @link fpx_macro::expand_macros expand_macros @endlink performs recursive expansion of user-defined macros,
+!!   including function-like macros, variadic substitutions, token
+!!   pasting, stringification, and cycle detection.
+!! - @link fpx_macro::expand_all expand_all @endlink subsequently substitutes predefined macros such as
+!!   `__FILE__`, `__LINE__`, `__DATE__`, and related extensions.
+!!
+!! This separation allows internal preprocessing routines to reuse the
+!! core expansion engine while selectively enabling predefined tokens.
+!!
 !! @section macro_examples Examples
 !!
 !! 1. Define and use simple macros:
@@ -70,30 +81,56 @@ module fpx_macro
             read_unit, &
             preprocess_line
 
-    !> Derived type representing a single preprocessor macro
-    !! Extends @link fpx_string::string string @endlink with macro-specific fields: replacement value, parameters,
-    !! variadic flag, and cyclic self-reference detection.
-    !! <h2 class="groupheader">Examples</h2>
-    !! @code{.f90}
-    !!    type(macro), allocatable :: macros(:)
-    !!    call add(macros, macro('PI', '3.1415926535'))
-    !! @endcode
-    !! <h2 class="groupheader">Constructors</h2>
-    !! Initializes a new instance of the @ref macro class
-    !! <h3>macro(character(*),  character(*))</h3>
-    !! @verbatim type(macro) function macro(character(*) name, (optional) character(*) val) @endverbatim
+    !> Representation of a preprocessor macro.
     !!
-    !! @param[in] name macro name
-    !! @param[in] val  (optional) value of the macro
+    !! A macro stores its identifier together with the metadata required
+    !! during expansion:
+    !! - replacement text,
+    !! - formal parameter list,
+    !! - variadic status,
+    !! - cycle detection flags,
+    !! - temporary activation state.
+    !!
+    !! The type extends @link fpx_string::string string @endlink so that the
+    !! macro name itself behaves as a string value.
+    !!
+    !! @section macro_type_examples Examples
+    !!
+    !! Object-like macro:
+    !! @code{.f90}
+    !!    type(macro) :: m
+    !!    m = macro('PI', '3.1415926535')
+    !! ...
+    !! @endcode
+    !!
+    !! Function-like macro:
+    !! @code{.f90}
+    !!    type(macro) :: m
+    !!    m = macro('SQR(x)', '((x)*(x))')
+    !! ...
+    !! @endcode
+    !!
+    !! @section macro_type_constructor Constructors
+    !! Initializes a new instance of the @ref macro class
+    !!
+    !! @b Constructor
+    !! @code{.f90}
+    !! type(macro) function macro(character(*) name, (optional) character(*) val) 
+    !! @endcode
+    !!
+    !! @param[in] name 
+    !!   macro name
+    !! @param[in] val  
+    !!   (optional) value of the macro
     !!
     !! @b Examples
     !! @code{.f90}
     !! type(macro) :: m
     !! m = macro('_WIN32')
+    !! ...
     !! @endcode
     !! @return The constructed macro object.
     !!
-    !! <h2  class="groupheader">Remarks</h2>
     !! @ingroup group_macro
     type, extends(string) :: macro
         character(:), allocatable :: value  !< Value of the macro
@@ -103,9 +140,19 @@ module fpx_macro
         logical :: active = .true.
     end type
 
-    !> @brief Constructor interface for macro type
+    !> Construct a new macro definition.
     !!
-    !! @b Remarks
+    !! Creates an initialized @ref macro object with the specified name
+    !! and optional replacement text.
+    !!
+    !! Parameter lists are initialized to empty, variadic expansion is
+    !! disabled, and direct self-references are marked as cyclic.
+    !!
+    !! @param[in] name Macro identifier.
+    !! @param[in] val  Replacement text (default: empty).
+    !!
+    !! @return Initialized macro object.
+    !!
     !! @ingroup group_macro
     interface macro
         !! @cond
@@ -113,9 +160,17 @@ module fpx_macro
         !! @endcond
     end interface
 
-    !> Add one or more macros to a dynamic table
+    !> Append macros to a macro table.
     !!
-    !! @b Remarks
+    !! Existing definitions with the same name are replaced, while new
+    !! definitions are appended to the dynamic array.
+    !!
+    !! Overloads support:
+    !! - insertion of a single @ref macro object,
+    !! - insertion by name only,
+    !! - insertion by name and replacement text,
+    !! - insertion of a range of macros.
+    !!
     !! @ingroup group_macro
     interface add
         module procedure :: add_item
@@ -124,9 +179,10 @@ module fpx_macro
         module procedure :: add_range
     end interface
 
-    !> Remove all macros from a table
+    !> Remove all macro definitions from a table.
     !!
-    !! @b Remarks
+    !! The table remains allocated as an empty array.
+    !!
     !! @ingroup group_macro
     interface clear
         module procedure  :: clear_item
@@ -134,41 +190,49 @@ module fpx_macro
 
     !> Retrieve a macro by index
     !!
-    !! @b Remarks
     !! @ingroup group_macro
     interface get
         module procedure  :: get_item
     end interface
 
-    !> Insert more macro to a dynamic table
+    !> Insert a macro at a specified position.
     !!
-    !! @b Remarks
+    !! Existing elements are shifted to preserve ordering.
+    !!
     !! @ingroup group_macro
     interface insert
         module procedure :: insert_item
     end interface
 
-    !> Remove a macro at given index
+    !> Remove a macro definition from a table.
     !!
-    !! @b Remarks
+    !! The array is compacted after removal and cyclic dependency
+    !! markers are recomputed.
+    !!
     !! @ingroup group_macro
     interface remove
         module procedure :: remove_item
     end interface
 
-    !> Return current number of stored macros
+    !> Return the number of stored macro definitions.
     !!
-    !! @b Remarks
+    !! Convenience wrapper around the intrinsic `size` function that
+    !! safely handles non allocated arrays.
+    !!
     !! @ingroup group_macro
     interface size_of
         module procedure  :: size_item
     end interface
 
-    !> Abstract interface for the main preprocessing routine (used for recursion)
-    !! Allows handle_include to recursively call the top-level preprocess_unit routine
-    !! without creating circular module dependencies.
+    !> Abstract interface to the top-level preprocessing routine.
     !!
-    !! @b Remarks
+    !! This callback allows modules such as the include handler to invoke
+    !! recursive preprocessing of additional source units without creating
+    !! circular module dependencies.
+    !!
+    !! Implementations are expected to preprocess the contents of the
+    !! input unit and emit the resulting output to the specified unit.
+    !!
     !! @ingroup group_include
     interface
         subroutine read_unit(iunit, ounit, macros, from_include)
@@ -180,6 +244,16 @@ module fpx_macro
         end subroutine
     end interface
 
+    !> Abstract interface for line preprocessing callbacks.
+    !!
+    !! Implementations process a single source line after directive
+    !! handling and macro substitution.
+    !!
+    !! The callback mechanism is primarily used by nested constructs such
+    !! as `#for` expansion, allowing generated lines to re-enter the main
+    !! preprocessing pipeline.
+    !!
+    !! @ingroup group_macro
     interface
         recursive function preprocess_line(current_line, ounit, filepath, linenum, macros, stch) result(rst)
             import macro; implicit none
@@ -214,18 +288,39 @@ contains
         that%active = .true.
     end function
 
-    !> Fully expand a line including predefined macros (__FILE__, __LINE__, etc.)
-    !! First performs normal macro expansion via expand_macros(), then substitutes
-    !! standard predefined tokens with current file/line/date information.
-    !! @param[in]  ctx  Context
-    !! @param[inout]  macros   Current macro table
-    !! @param[out] stitch   Set to .true.true. if result ends with '&' (Fortran continuation)
-    !! @param[in]  has_extra   Has extra macros (non-standard) like __FILENAME__ and __TIMESTAMP__
-    !! @param[in]  implicit_conti If .true., implicit continuation is permitted
-    !! @param[in]  dollar_insert If .true., the syntax ${} is supported for macro insertion
+    !> Expand a source line including predefined macros.
+    !!
+    !! This routine represents the complete user-visible expansion phase.
+    !!
+    !! Expansion proceeds in two steps:
+    !! 1. User-defined macros are expanded recursively through
+    !!    @ref expand_macros.
+    !! 2. Built-in predefined macros are substituted using the current
+    !!    preprocessing context.
+    !!
+    !! Supported predefined macros include:
+    !! - `__FILE__`
+    !! - `__LINE__`
+    !! - `__DATE__`
+    !! - `__TIME__`
+    !! - `__FUNC__`
+    !! - `__FILENAME__` (extension)
+    !! - `__TIMESTAMP__` (extension)
+    !!
+    !! @param[in]  ctx  
+    !!   Context
+    !! @param[inout]  macros   
+    !!   Current macro table
+    !! @param[out] stitch   
+    !!   Set to .true.true. if result ends with '&' (Fortran continuation)
+    !! @param[in]  has_extra   
+    !!   Has extra macros (non-standard) like __FILENAME__ and __TIMESTAMP__
+    !! @param[in]  implicit_conti 
+    !!   If .true., implicit continuation is permitted
+    !! @param[in]  dollar_insert 
+    !!   If .true., the syntax ${} is supported for macro insertion
     !! @return Expanded line with all macros and predefined tokens replaced
     !!
-    !! @b Remarks
     !! @ingroup group_macro
     function expand_all(ctx, macros, stitch, has_extra, implicit_conti, dollar_insert) result(expanded)
         type(context), intent(in)               :: ctx
@@ -320,25 +415,39 @@ contains
         end if
     end function
 
-    !> Core recursive macro expander (handles function-like, variadic, #, ##)
+    !> Recursively expand user-defined macros.
     !!
-    !! Performs actual macro replacement with full support for:
-    !! - Function-like macros with argument collection
-    !! - Stringification (`#param`)
-    !! - Token pasting (`##`)
-    !! - Variadic macros and `__VA_ARGS__`, `__VA_OPT__`
-    !! - Recursion with cycle detection via digraph
-    !! - Proper handling of nested parentheses and quoted strings
+    !! Implements the core expansion engine used throughout fpx.
     !!
-    !! @param[in]  line  Line to be expanded
-    !! @param[inout]  macros Current macro table
-    !! @param[out] stitch .true. if final line ends with '&'
-    !! @param[in]  implicit_conti If .true., implicit continuation is permitted
-    !! @param[in]  dollar_insert If .true., ${} macro substitution is supported
-    !! @param[in]  ctx  Context
+    !! Supported features include:
+    !! - object-like macros,
+    !! - function-like macros,
+    !! - variadic macros,
+    !! - `__VA_ARGS__`,
+    !! - `__VA_OPT__`,
+    !! - parameter stringification,
+    !! - token pasting,
+    !! - nested expansion,
+    !! - optional `${...}` substitutions,
+    !! - circular dependency detection.
+    !!
+    !! Recursive expansion terminates automatically when cyclic
+    !! dependencies are detected.
+    !!
+    !! @param[in]  line  
+    !!   Line to be expanded
+    !! @param[inout]  macros 
+    !!   Current macro table
+    !! @param[out] stitch 
+    !!   .true. if final line ends with '&'
+    !! @param[in]  implicit_conti 
+    !!   If .true., implicit continuation is permitted
+    !! @param[in]  dollar_insert 
+    !!   If .true., ${} macro substitution is supported
+    !! @param[in]  ctx  
+    !!   Context
     !! @return Line with user-defined macros expanded (predefined tokens untouched)
     !!
-    !! @b Remarks
     !! @ingroup group_macro
     function expand_macros(line, macros, stitch, implicit_conti, dollar_insert, ctx) result(expanded)
         character(*), intent(in)                :: line
@@ -698,13 +807,19 @@ contains
         end function
     end function
 
-    !> Check if a macro with given name exists in table
-    !! @param[in] name   Macro name to test
-    !! @param[in] macros Current macro table
-    !! @param[inout] idx Optional: returns index (1-based) if found
-    !! @return .true. if macro is defined
+    !> Determine whether a macro is currently defined.
     !!
-    !! @b Remarks
+    !! Performs a linear search through the macro table and optionally
+    !! returns the corresponding index.
+    !!
+    !! @param[in] name    
+    !!   Macro identifier.
+    !! @param[in] macros  
+    !!   Macro table.
+    !! @param[out] idx    
+    !!   Position of the matching entry, if present.
+    !! @return `.true.` if the macro exists.
+    !!
     !! @ingroup group_macro
     logical function is_defined(name, macros, idx) result(res)
         character(*), intent(in)            :: name
@@ -723,11 +838,13 @@ contains
         end do
     end function
 
-    !> Generic conversion of polymorphic value to string
-    !! Used internally during macro argument stringification and debugging.
-    !! Supports integers, reals, logicals, characters, and complex.
+    !> Convert a scalar value to its textual representation.
     !!
-    !! @b Remarks
+    !! Supports intrinsic integer, real, logical, character, and complex
+    !! values of common kinds.
+    !!
+    !! Primarily intended for internal diagnostics and macro processing.
+    !! @private
     !! @ingroup group_macro
     function tostring(any)
         class(*), intent(in) :: any
@@ -769,7 +886,6 @@ contains
     !! Adds a new macro to the allocatable array.
     !! Also detects direct self-references (A -> A) and marks both sides as cyclic.
     !!
-    !! @b Remarks
     subroutine add_to(array, val)
         type(macro), allocatable, intent(inout) :: array(:)
         type(macro), intent(in)                 :: val(..)
@@ -822,8 +938,6 @@ contains
     end subroutine
 
     !> Add a complete macro object to the table
-    !!
-    !! @b Remarks
     subroutine add_item(this, m)
         type(macro), intent(inout), allocatable :: this(:)
         type(macro), intent(in)                 :: m
@@ -832,8 +946,6 @@ contains
     end subroutine
 
     !> Add macro by name only (value = empty)
-    !!
-    !! @b Remarks
     subroutine add_item_from_name(this, name)
         type(macro), intent(inout), allocatable :: this(:)
         character(*), intent(in)                :: name
@@ -843,8 +955,6 @@ contains
     end subroutine
 
     !> Add macro with name and replacement text
-    !!
-    !! @b Remarks
     subroutine add_item_from_name_and_value(this, name, value)
         type(macro), intent(inout), allocatable :: this(:)
         character(*), intent(in)                :: name
@@ -855,8 +965,6 @@ contains
     end subroutine
 
     !> Add multiple macros at once
-    !!
-    !! @b Remarks
     subroutine add_range(this, m)
         type(macro), intent(inout), allocatable :: this(:)
         type(macro), intent(in)                 :: m(:)
@@ -866,8 +974,6 @@ contains
     end subroutine
 
     !> Remove all macros from table
-    !!
-    !! @b Remarks
     subroutine clear_item(this)
         type(macro), intent(inout), allocatable :: this(:)
 
@@ -876,8 +982,6 @@ contains
     end subroutine
 
     !> Retrieve macro by 1-based index
-    !!
-    !! @b Remarks
     function get_item(this, key) result(res)
         type(macro), intent(inout)  :: this(:)
         integer, intent(in)         :: key
@@ -892,8 +996,6 @@ contains
     end function
 
     !> Insert macro at specific position
-    !!
-    !! @b Remarks
     subroutine insert_item(this, i, m)
         type(macro), intent(inout), allocatable :: this(:)
         integer, intent(in)                     :: i
@@ -912,8 +1014,6 @@ contains
     end subroutine
 
     !> Return number of defined macros
-    !!
-    !! @b Remarks
     pure integer function size_item(x) result(res)
         class(*), dimension(..), intent(in), optional :: x
         res = 0
@@ -921,8 +1021,6 @@ contains
     end function
 
     !> Remove macro at given index
-    !!
-    !! @b Remarks
     subroutine remove_item(this, i)
         type(macro), intent(inout), allocatable :: this(:)
         integer, intent(in)                     :: i
@@ -972,10 +1070,14 @@ contains
     !! - `type(string) function baz() result(res)`
     !! - `module subroutine solve()`
     !!
-    !! @param[in]    line    Current source line after continuation handling
-    !! @param[inout] macros  Current macro table (updated in-place)
+    !! The macro value reflects the innermost active procedure and is
+    !! automatically cleared when leaving the corresponding scope.
     !!
-    !! @b Remarks
+    !! @param[in]    line    
+    !!   Current source line after continuation handling
+    !! @param[inout] macros  
+    !!   Current macro table (updated in-place)
+    !!
     !! @ingroup group_macro
     subroutine update_func_macro(line, macros)
         character(*), intent(in)                :: line
@@ -1029,11 +1131,11 @@ contains
     !! `end subroutine`, `endsubroutine`) are ignored and return
     !! an unallocated result.
     !!
-    !! @param[in] txt Source line to analyze
-    !! @return    Extracted procedure name, unallocated if no procedure
-    !!            declaration is found
+    !! @param[in] txt 
+    !!   Source line to analyze
+    !! @return Extracted procedure name, or an empty string when no
+    !!         procedure declaration is detected.
     !!
-    !! @b Remarks
     !! @ingroup group_macro
     function extract_proc_name(txt, leaving) result(name)
         character(*), intent(in)    :: txt
@@ -1110,7 +1212,7 @@ contains
         !! @return Position of the first valid token occurrence,
         !!         or zero if not found
         !!
-        !! @b Remarks
+        !! @private
         !! @ingroup group_macro
         integer function find_token(line, token) result(pos)
             character(*), intent(in) :: line
@@ -1159,10 +1261,11 @@ contains
         !! Used internally by token matching routines to verify identifier
         !! boundaries.
         !!
-        !! @param[in] ch Character to test
+        !! @param[in] ch 
+        !!   Character to test
         !! @return `.true.` if the character is a valid identifier character
         !!
-        !! @b Remarks
+        !! @private
         !! @ingroup group_macro
         logical function is_ident(ch)
             character(1), intent(in) :: ch

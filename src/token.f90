@@ -101,7 +101,6 @@ module fpx_token
     !! a = token('9', number)
     !! @endcode
     !!
-    !! <h2 class="groupheader">Remarks</h2>
     !! @ingroup group_token
     type, public :: token
         character(:), allocatable   :: value  !< Token value
@@ -137,7 +136,6 @@ module fpx_token
     !!  ! i = 123
     !! @endcode
     !!
-    !! <h2 class="groupheader"> Remarks </h2>
     !! @ingroup group_operators
     interface strtol
         !! @cond
@@ -156,7 +154,6 @@ contains
     !! @param[out] tokens   Allocated array receiving the tokens
     !! @param[out] ntokens  Number of tokens produced
     !!
-    !! @b Remarks
     !! @ingroup group_token
     subroutine tokenize(expr, tokens, ntokens)
         character(*), intent(in)                :: expr
@@ -304,7 +301,6 @@ contains
     !! @param[in] ch Character to test
     !! @return .true. if ch is a digit
     !!
-    !! @b Remarks
     !! @ingroup group_token
     logical elemental function is_digit(ch) result(res)
         character(*), intent(in) :: ch
@@ -318,7 +314,6 @@ contains
     !! @param[out] pos Length of the typeless constant (0 if not typeless)
     !! @return .true. if the prefix is a valid typeless constant in non-base-10
     !!
-    !! @b Remarks
     !! @ingroup group_token
     logical function is_typeless(str, pos) result(res)
         character(*), intent(in)    :: str

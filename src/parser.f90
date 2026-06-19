@@ -18,6 +18,46 @@
 !! The preprocessor is designed to be standards-conforming where possible while adding
 !! useful extensions (variadic macros, better diagnostics, include path handling).
 !!
+!! @par Processing Pipeline
+!! Source files are processed in several stages:
+!!
+!! 1. Input acquisition from files, units, or stdin
+!! 2. C-style continuation handling (`\`, `\\`)
+!! 3. Fortran continuation handling (`&`)
+!! 4. C-style block comment removal
+!! 5. Directive recognition and execution
+!! 6. Conditional compilation evaluation
+!! 7. Macro expansion
+!! 8. Emission to the output stream
+!!
+!! Include files recursively invoke the same processing pipeline.
+!!
+!! @par Parser State
+!! The parser maintains module-level state describing:
+!! - current source file,
+!! - line continuation status,
+!! - comment state,
+!! - deferred reprocessing buffers,
+!! - interactive mode output state.
+!!
+!! This state is reset at the beginning of each top-level preprocessing run.
+!!
+!! The parser coordinates several specialized subsystems:
+!!
+!! - @ref group_define     for macro definition directives,
+!! - @ref group_include    for include processing,
+!! - @ref group_macro      for macro expansion,
+!! - @ref group_conditional for conditional compilation,
+!! - @ref group_for        for non-standard loop directives,
+!! - @ref group_diagnostics for reporting.
+!!
+!! @par FPX Extensions
+!! In addition to standard preprocessing facilities, FPX provides:
+!! - `#for` / `#endfor`
+!! - `${NAME}` macro insertion
+!! - implicit continuation support
+!! - interactive REPL mode
+!! - enhanced diagnostics
 !! @section parser_examples Examples
 !!
 !! 1. Preprocess a file to stdout:
@@ -79,7 +119,21 @@ module fpx_parser
     !! - unit to file
     !! - unit to unit (most flexible, used internally for #include)
     !!
-    !! @b Remarks
+    !! @section preprocess_overloads Overloads
+    !!
+    !! @code{.f90}preprocess(character(*))@endcode
+    !! Preprocess a source file and write to stdout.
+    !!
+    !! @code{.f90}preprocess(character(*), character(*))@endcode
+    !! Preprocess a source file and write to another file.
+    !!
+    !! @code{.f90}preprocess(integer, integer)@endcode
+    !! Preprocess an already-open input unit to an output unit.
+    !!
+    !! @code{.f90}preprocess(integer, character(*))@endcode
+    !! Preprocess an already-open input unit to a file.
+    !!
+    !! @see process_line
     !! @ingroup group_parser
     interface preprocess
         module procedure :: preprocess_file
@@ -109,7 +163,6 @@ contains
     !! @param[in] filepath   Path to the input source file
     !! @param[in] outputfile Optional path to the output file; if absent output goes to stdout
     !!
-    !! @b Remarks
     !! @ingroup group_parser
     subroutine preprocess_file(filepath, outputfile)
         character(*), intent(in)            :: filepath
@@ -156,7 +209,6 @@ contains
     !! @param[in] iunit Input unit (must already be open for reading)
     !! @param[in] ofile Output filename
     !!
-    !! @b Remarks
     !! @ingroup group_parser
     subroutine preprocess_unit_to_file(iunit, ofile)
         integer, intent(in)         :: iunit
@@ -187,7 +239,6 @@ contains
     !! @param[in] ifile Input filename
     !! @param[in] ounit Output unit (already open for writing)
     !!
-    !! @b Remarks
     !! @ingroup group_parser
     subroutine preprocess_file_to_unit(ifile, ounit)
         character(*), intent(in)    :: ifile
@@ -218,10 +269,14 @@ contains
     !> Core preprocessing routine: read from iunit, write to ounit
     !! Sets up a clean macro environment for the top-level file,
     !! resets conditional compilation state, and calls the worker routine.
+    !!
+    !! A local copy of the global macro table is created so that
+    !! preprocessing sessions remain isolated while preserving
+    !! command-line definitions.
+    !!
     !! @param[in] iunit Input unit
     !! @param[in] ounit Output unit
     !!
-    !! @b Remarks
     !! @ingroup group_parser
     subroutine preprocess_unit_to_unit(iunit, ounit)
         integer, intent(in) :: iunit
@@ -247,18 +302,20 @@ contains
     end subroutine
 
     !> Worker routine that reads lines, handles continuations, comments and directives
-    !! This is the main loop that:
-    !! - reads lines with interactive prompt when iunit==stdin
-    !! - handles both `\` and `&` continuations
-    !! - strips or preserves comments appropriately
-    !! - calls process_line() for directive processing and macro expansion
-    !! - stitches lines when Fortran continuation (`&`) is active
+    !! @par Main Loop
+    !! The routine repeatedly:
+    !! - reads a physical line,
+    !! - merges continuations,
+    !! - processes directives,
+    !! - performs macro expansion,
+    !! - handles deferred Fortran continuation stitching,
+    !! - emits output.
+    !!
     !! @param[in]    iunit       Input unit
     !! @param[in]    ounit       Output unit
     !! @param[inout] macros(:)   Current macro table (passed by value between include levels)
     !! @param[in]    from_include True if called recursively from #include
     !!
-    !! @b Remarks
     !! @ingroup group_parser
     subroutine preprocess_unit(iunit, ounit, macros, from_include)
         integer, intent(in)                     :: iunit
@@ -368,6 +425,12 @@ contains
     !! - Detect and delegate preprocessor directives (`#define`, `#include`, conditionals, etc.)
     !! - Perform macro expansion when the line is in an active conditional block
     !! - Return whether the next line should be stitched (for Fortran `&` continuation inside macros)
+    !! This routine acts as the dispatcher for all preprocessing
+    !! directives and ordinary source lines.
+    !!
+    !! Directives are interpreted immediately, whereas ordinary
+    !! lines undergo macro expansion only when the current
+    !! conditional compilation state is active.
     !! @param[in]    current_line Input line (already continued and trimmed)
     !! @param[in]    ounit        Output unit (used only for diagnostics inside called routines)
     !! @param[in]    filepath     Current file name (for error messages)
@@ -376,7 +439,9 @@ contains
     !! @param[out]   stch         Set to .true. if the expanded line ends with `&` (stitch next line)
     !! @return                    Processed line (directives removed, macros expanded)
     !!
-    !! @b Remarks
+    !! @see expand_all
+    !! @see handle_define
+    !! @see handle_include
     !! @ingroup group_parser
     recursive function process_line(current_line, ounit, filepath, linenum, macros, stch) result(rst)
         character(*), intent(in)                :: current_line

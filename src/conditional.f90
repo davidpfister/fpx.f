@@ -209,7 +209,6 @@ contains
     !! @param[inout] macros    Current macro table
     !! @param[in] token     Usually 'if'
     !!
-    !! @b Remarks
     !! @ingroup group_conditional
     subroutine handle_if(ctx, macros, token)
         type(context), intent(in)               :: ctx
@@ -242,7 +241,6 @@ contains
     !! @param[in] macros    Current macro table
     !! @param[in] token     Usually 'ifdef'
     !!
-    !! @b Remarks
     !! @ingroup group_conditional
     subroutine handle_ifdef(ctx, macros, token)
         type(context), intent(in)       :: ctx
@@ -275,7 +273,6 @@ contains
     !! @param[in] macros    Current macro table
     !! @param[in] token     Usually 'ifndef'
     !!
-    !! @b Remarks
     !! @ingroup group_conditional
     subroutine handle_ifndef(ctx, macros, token)
         type(context), intent(in)       :: ctx
@@ -309,7 +306,6 @@ contains
     !! @param[inout] macros    Current macro table
     !! @param[in] token     Usually 'elif'
     !!
-    !! @b Remarks
     !! @ingroup group_conditional
     subroutine handle_elif(ctx, macros, token)
         type(context), intent(in)               :: ctx
@@ -346,7 +342,6 @@ contains
     !! @param[in] macros    Current macro table
     !! @param[in] token     Usually 'elifdef'
     !!
-    !! @b Remarks
     !! @ingroup group_conditional
     subroutine handle_elifdef(ctx, macros, token)
         type(context), intent(in)       :: ctx
@@ -383,7 +378,6 @@ contains
     !! @param[in] macros    Current macro table
     !! @param[in] token     Usually 'elifndef'
     !!
-    !! @b Remarks
     !! @ingroup group_conditional
     subroutine handle_elifndef(ctx, macros, token)
         type(context), intent(in)       :: ctx
@@ -419,7 +413,6 @@ contains
     !! Activates only if no previous #if/#elif branch was true.
     !! @param[in] ctx  Context (for error messages)
     !!
-    !! @b Remarks
     !! @ingroup group_conditional
     subroutine handle_else(ctx)
         type(context), intent(in) :: ctx
@@ -448,7 +441,6 @@ contains
     !! Pops the top state from the stack. Reports error on unmatched #endif.
     !! @param[in] ctx  Context (for error messages)
     !!
-    !! @b Remarks
     !! @ingroup group_conditional
     subroutine handle_endif(ctx)
         type(context), intent(in) :: ctx

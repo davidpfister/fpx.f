@@ -100,7 +100,6 @@ contains
     !! @param[inout] macros    Current macro table (shared across recursion levels)
     !! @param[in] token        Usually 'include' – the directive keyword
     !!
-    !! @b Remarks
     !! @ingroup group_include
     recursive subroutine handle_include(ctx, ounit, preprocess, macros, token)
         type(context), intent(in)               :: ctx
@@ -275,7 +274,6 @@ contains
     !! Returns an array of directory paths found in INCLUDE
     !! @return Array of path strings, empty if INCLUDE not set
     !!
-    !! @b Remarks
     !! @ingroup group_include
     function get_system_paths() result(paths)
         character(:), allocatable :: paths(:)

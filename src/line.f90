@@ -1,43 +1,66 @@
 !> @file
 !! @defgroup group_line Line
-!! Standard `#line` directive support for the fpx Fortran preprocessor
-!! This module implements full support for the ISO C99/C11 `#line` directive,
-!! which is also widely used in Fortran preprocessors.
+!! Standard-compliant handling of the `#line` directive.
 !!
-!! The `#line` directive allows changing the logical line number and/or source
-!! filename reported by the preprocessor. It is particularly useful for:
-!! - Code generators
-!! - Literate programming tools
-!! - Macro-heavy generated code
-!! - Accurate `__LINE__` and `__FILE__` expansion in included/generated files
+!! This module implements support for the ISO C preprocessor `#line`
+!! directive, allowing the logical source location used by the preprocessor
+!! to be modified during preprocessing.
 !!
-!! Supported forms (standard compliant):
+!! The directive affects the information stored in the active
+!! @link fpx_context::context context @endlink object and therefore influences:
+!!
+!! - Diagnostic messages and source locations,
+!! - Expansions of predefined macros such as `__LINE__`,
+!! - Expansions of `__FILE__` and `__FILENAME__`,
+!! - The apparent origin of generated or transformed source code.
+!!
+!! This functionality is particularly useful for:
+!!
+!! - Source-to-source translators,
+!! - Code generators,
+!! - Literate programming systems,
+!! - Template engines,
+!! - Tools that emit Fortran intended to preserve original source locations.
+!!
+!! The following standard forms are supported:
+!!
 !! - `#line <number>`
 !! - `#line <number> "<filename>"`
 !!
-!! When a `#line` directive is encountered, the current context (line number and
-!! filename) is updated immediately. This affects all subsequent diagnostics,
-!! `__LINE__`, `__FILE__`, and `__FILENAME__` macros.
+!! When encountered, the directive immediately updates the logical
+!! source position used for all subsequent processing.
+!!
+!! @note
+!! The specified line number refers to the line immediately following
+!! the directive itself, matching the behaviour of the ISO C preprocessor.
+!!
+!! @note
+!! Malformed directives generate warnings and are ignored.
 !!
 !! @section line_examples Examples
 !!
-!! 1. Basic line number reset:
+!! 1. Reset the logical line number:
 !! @code{.f90}
 !!    #line 100
-!!    print *, "This line will be reported as line 100"
+!!    print *, "Reported as line 100"
+!! ...
 !! @endcode
 !!
-!! 2. Changing both line number and filename (common in generated code):
+!! 2. Change both line number and filename:
 !! @code{.f90}
-!!    #line 42 "generated_code.f90"
-!!    integer :: x = 1   ! This will appear as line 42 in generated_code.f90
+!!    #line 42 "generated.f90"
+!!    integer :: x
+!!
+!!    ! Diagnostics now refer to generated.f90:42
+!! ...
 !! @endcode
 !!
-!! @par Remarks
-!! - The line number in `#line N` refers to the **next** line after the directive.
-!! - Filename must be quoted if provided.
-!! - Invalid line numbers or malformed directives emit a warning but are ignored.
-!! - Updates the shared `context` object used by the logging and macro systems.
+!! 3. Improve diagnostics in generated code:
+!! @code{.f90}
+!!    #line 215 "input_template.f90"
+!!    call generated_procedure()
+!! ...
+!! @endcode
 module fpx_line
     use fpx_path
     use fpx_logging
@@ -49,28 +72,41 @@ module fpx_line
 
 contains
 
-    !> Handle the standard #line directive
-    !! Supports two standard forms:
-    !!   #line <number>
-    !!   #line <number> "<filename>"
+    !> Process a `#line` directive.
     !!
-    !! This updates the current line number (`ctx%line`) and optionally the current
-    !! filename (`ctx%path`) for subsequent diagnostics, `__LINE__`, and `__FILE__`
-    !! expansions.
+    !! Parses the directive arguments, validates the requested logical
+    !! line number, and updates the active @ref context object.
     !!
-    !! Fully compliant with ISO C99 / C11 �6.10.4 and common Fortran preprocessor behavior.
+    !! Supported forms are:
     !!
-    !! @param[inout] ctx     Context source line containing the #line directive
-    !! @param[in]    token   Usually 'DEFINE' � keyword matched in lowercase
+    !! @code{.txt}
+    !! #line <number>
+    !! #line <number> "<filename>"
+    !! @endcode
     !!
-    !! @b Remarks
+    !! The specified line number becomes the number associated with the
+    !! source line immediately following the directive.
+    !!
+    !! If a filename is supplied, subsequent diagnostics and predefined
+    !! file-related macros use the new filename.
+    !!
+    !! Invalid directives produce warnings and leave the current context
+    !! unchanged.
+    !!
+    !! @param[inout] ctx
+    !!    Current source context. Its logical line number and optional
+    !!    filename are updated in place.
+    !! @param[in] token
+    !!    Directive keyword used to identify the `#line` directive,
+    !!    typically `"line"`.
+    !!
     !! @ingroup group_line
     subroutine handle_line(ctx, token)
         type(context), intent(inout)    :: ctx
         character(*), intent(in)        :: token
         !private
         character(:), allocatable :: temp, num_str, fname
-        integer :: pos, iostat, new_line
+        integer :: pos, iostat, new_line, closing
         logical :: has_filename
 
         ! Skip #line keyword
@@ -107,6 +143,7 @@ contains
                     1, len(num_str)), &
                     source=ctx%path), &
                     trim(ctx%content), ctx%line))
+            return
         end if
 
         ! Update current line number (subtract 1 because the next line will be +1)
@@ -115,7 +152,16 @@ contains
         ! Update filename if provided (strip quotes)
         if (has_filename) then
             if (fname(1:1) == '"' .and. len(fname) > 1) then
-                fname = fname(2:index(fname(2:), '"'))
+                closing = index(fname(2:), '"')
+                if (closing == 0) then
+                    call printf(render(diagnostic_report(LEVEL_ERROR, &
+                        message='Malformed #line directive', &
+                        label=label_type('Missing closing quotation mark', &
+                        index(ctx%content,'"'),1), &
+                        source=trim(ctx%path)), &
+                        ctx%content, ctx%line))
+                end if
+                fname = fname(2:closing)
             end if
             if (len_trim(fname) > 0) then
                 ctx%path = trim(fname)

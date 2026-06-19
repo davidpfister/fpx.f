@@ -157,7 +157,6 @@ module fpx_date
 
     !> Constructor interface for @ref datetime type
     !!
-    !! @b Remarks
     !! @ingroup group_date
     interface datetime
         !! @cond
@@ -203,7 +202,7 @@ contains
     !! Uses intrinsic `date_and_time()` and populates all fields including milliseconds.
     !! @return the datetime object corresponding to the current time
     !!
-    !! @b Remarks
+
     !! @ingroup group_date
     function now() result(res)
         type(datetime)  :: res
@@ -231,7 +230,6 @@ contains
     !! - 5: Friday
     !! - 6: Saturday
     !!
-    !! @b Remarks
     !! @ingroup group_date
     pure elemental integer function weekday(this)
         class(datetime), intent(in) :: this
@@ -282,7 +280,6 @@ contains
     !! - yyy: Year, (e.g. 2015)
     !! - yyyy: Year, (e.g. 2015)
     !!
-    !! @b Remarks
     !! @ingroup group_date
     elemental subroutine datetime_parse(this, string, fmt)
         class(datetime), intent(inout)      :: this
@@ -396,7 +393,6 @@ contains
     !! Supports many common patterns including those required for `__DATE__` and `__TIMESTAMP__`.
     !! Default format: 'yyyy-MM-ddTHH:mm:ss'
     !!
-    !! @b Remarks
     !! @ingroup group_date
     function datetime_to_string(this, fmt) result(res)
         class(datetime), intent(in)          :: this

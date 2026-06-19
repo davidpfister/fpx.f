@@ -56,14 +56,55 @@
 !!
 !!    The parser is fully re-entrant and has no global state.
 !!
-!!    Public interface:
-!!    - @link fpx_operators::evaluate_expression evaluate_expression @endlink: high-level function that tokenizes and evaluates in
-!! one call
-!!    - @link fpx_operators::parse_expression parse_expression @endlink: low-level entry point for already-tokenized input
+!! Public entry points:
+!! - @link fpx_operators::evaluate_expression evaluate_expression @endlink:
+!!   tokenize and evaluate an expression in one call.
+!! - @link fpx_operators::parse_expression parse_expression @endlink:
+!!   evaluate an already-tokenized expression.
 !!
 !!    This design guarantees correct operator precedence without the need for an explicit
 !!    abstract syntax tree or stack-based shunting-yard algorithm, while remaining easy to
 !!    read, maintain, and extend.
+!!
+!! @section operator_examples Examples
+!!
+!! 1. Evaluate a simple expression:
+!! @code{.f90}
+!!    logical :: ok
+!!    integer :: value
+!!
+!!    ok = evaluate_expression('1 + 2 * 3', macros, value)
+!!
+!!    ! value = 7
+!! ...
+!! @endcode
+!!
+!! 2. Use the `defined` operator:
+!! @code{.f90}
+!!    call add(macros, 'DEBUG')
+!!
+!!    if (evaluate_expression('defined(DEBUG)', macros)) then
+!!       ...
+!!    end if
+!! ...
+!! @endcode
+!!
+!! 3. Evaluate expressions involving macros:
+!! @code{.f90}
+!!    call add(macros, 'LEVEL', '2')
+!!
+!!    if (evaluate_expression('LEVEL >= 2', macros)) then
+!!       ...
+!!    end if
+!! ...
+!! @endcode
+!!
+!! 4. Conditional operator:
+!! @code{.f90}
+!!    call evaluate_expression('1 ? 10 : 20', macros, value)
+!!    ! value = 10
+!! ...
+!! @endcode
 module fpx_operators
     use fpx_global
     use fpx_string
@@ -83,24 +124,49 @@ module fpx_operators
     !! parses it according to operator precedence, and computes the integer result.
     !! Returns .true. if evaluation succeeded and the result is non-zero.
     !!
-    !! <h3>evaluate(character(*), type(macros)(:), integer)</h3>
-    !! @verbatim logical function evaluate(expr, macros, val) @endverbatim
+    !! @section evaluate_expression_examples Examples
     !!
-    !! @param[in] expr   Expression string to evaluate
-    !! @param[inout] macros Array of defined macros for substitution and `defined()` checks
-    !! @param[out] val   (optional) integer result of the evaluation
+    !! @code{.f90}
+    !!    integer :: value
+    !!
+    !!    call add(macros, 'SIZE', '64')
+    !!
+    !!    if (evaluate_expression('SIZE >= 32', macros, value)) then
+    !!       print *, value      ! 1
+    !!    end if
+    !! ...
+    !! @endcode
+    !!
+    !! @section evaluate_expression_constructors Constructors
+    !!
+    !! @b Constructor
+    !! @code{.f90} 
+    !! logical function evaluate(expr, macros, val) 
+    !! @endcode
+    !!
+    !! @param[in] expr   
+    !!   Expression string to evaluate
+    !! @param[inout] macros 
+    !!   Array of defined macros for substitution and `defined()` checks
+    !! @param[out] val
+    !!   (optional) integer result of the evaluation
     !! @return .true. if the expression evaluated successfully to non-zero, .false. otherwise
     !!
-    !! <h3>evaluate(character(*), type(macros)(:), type(context), integer)</h3>
-    !! @verbatim logical function evaluate(expr, macros, ctx, val) @endverbatim
+    !! @b Constructor
+    !! @code{.f90} 
+    !! logical function evaluate(expr, macros, ctx, val) 
+    !! @endcode
     !!
-    !! @param[in] expr   Expression string to evaluate
-    !! @param[inout] macros Array of defined macros for substitution and `defined()` checks
-    !! @param[in] ctx Current context
-    !! @param[out] val   (optional) integer result of the evaluation
+    !! @param[in] expr   
+    !!   Expression string to evaluate
+    !! @param[inout] macros 
+    !!   Array of defined macros for substitution and `defined()` checks
+    !! @param[in] ctx 
+    !!   Current context
+    !! @param[out] val   
+    !!   (optional) integer result of the evaluation
     !! @return .true. if the expression evaluated successfully to non-zero, .false. otherwise
     !!
-    !! @b Remarks
     !! @ingroup group_operators
     interface evaluate_expression
         module procedure :: evaluate_expression_default
@@ -119,7 +185,6 @@ contains
     !! @param[out] val   (optional) integer result of the evaluation
     !! @return .true. if the expression evaluated successfully to non-zero, .false. otherwise
     !!
-    !! @b Remarks
     !! @ingroup group_operators
     logical function evaluate_expression_default(expr, macros, val) result(res)
         character(*), intent(in)                :: expr
@@ -143,7 +208,6 @@ contains
     !! @param[out] val   (optional) integer result of the evaluation
     !! @return .true. if the expression evaluated successfully to non-zero, .false. otherwise
     !!
-    !! @b Remarks
     !! @ingroup group_operators
     logical function evaluate_expression_with_context(expr, macros, ctx, val) result(res)
         character(*), intent(in)                :: expr
@@ -180,8 +244,15 @@ contains
         if (present(val)) val = result
     end function
 
-    !> Parses a sequence of tokens starting at position `pos` as a full expression.
-    !! Entry point for the recursive descent parser. Delegates to parse_or().
+    !! @name Expression parsing hierarchy
+    !! @{
+    !> Parse and evaluate an already-tokenized expression.
+    !!
+    !! This routine implements the top-level non-terminal of the recursive
+    !! descent parser. It is primarily intended for internal use by
+    !! `evaluate_expression`, but remains public to allow external users to
+    !! reuse the parser on custom token streams.
+    !!
     !! @param[in] expr Expression to be processed
     !! @param[in] tokens    Array of tokens to parse
     !! @param[in] ntokens   Number of valid tokens in the array
@@ -190,7 +261,6 @@ contains
     !! @param[in] ctx Context
     !! @return Integer value of the parsed expression
     !!
-    !! @b Remarks
     !! @ingroup group_operators
     recursive integer function parse_expression(expr, tokens, ntokens, pos, macros, ctx) result(val)
         character(*), intent(in)                :: expr
@@ -212,7 +282,6 @@ contains
     !! @param[in] ctx Context
     !! @return Integer value of the parsed expression
     !!
-    !! @b Remarks
     !! @ingroup group_operators
     recursive integer function parse_conditional(expr, tokens, ntokens, pos, macros, ctx) result(val)
         character(*), intent(in)                :: expr
@@ -269,7 +338,6 @@ contains
     !! @param[in] ctx Context
     !! @return Integer value of the parsed expression
     !!
-    !! @b Remarks
     !! @ingroup group_operators
     recursive integer function parse_or(expr, tokens, ntokens, pos, macros, ctx) result(val)
         character(*), intent(in)                :: expr
@@ -303,7 +371,6 @@ contains
     !! @param[in] ctx Context
     !! @return Integer value of the parsed expression
     !!
-    !! @b Remarks
     !! @ingroup group_operators
     recursive integer function parse_and(expr, tokens, ntokens, pos, macros, ctx) result(val)
         character(*), intent(in)                :: expr
@@ -337,7 +404,6 @@ contains
     !! @param[in] ctx Context
     !! @return Integer value of the parsed expression
     !!
-    !! @b Remarks
     !! @ingroup group_operators
     recursive integer function parse_bitwise_or(expr, tokens, ntokens, pos, macros, ctx) result(val)
         character(*), intent(in)                :: expr
@@ -371,7 +437,6 @@ contains
     !! @param[in] ctx Context
     !! @return Integer value of the parsed expression
     !!
-    !! @b Remarks
     !! @ingroup group_operators
     recursive integer function parse_bitwise_xor(expr, tokens, ntokens, pos, macros, ctx) result(val)
         character(*), intent(in)                :: expr
@@ -405,7 +470,6 @@ contains
     !! @param[in] ctx Context
     !! @return Integer value of the parsed expression
     !!
-    !! @b Remarks
     !! @ingroup group_operators
     recursive integer function parse_bitwise_and(expr, tokens, ntokens, pos, macros, ctx) result(val)
         character(*), intent(in)                :: expr
@@ -439,7 +503,6 @@ contains
     !! @param[in] ctx Context
     !! @return Integer value of the parsed expression
     !!
-    !! @b Remarks
     !! @ingroup group_operators
     recursive integer function parse_equality(expr, tokens, ntokens, pos, macros, ctx) result(val)
         character(*), intent(in)                :: expr
@@ -480,7 +543,6 @@ contains
     !! @param[in] ctx Context
     !! @return Integer value of the parsed expression
     !!
-    !! @b Remarks
     !! @ingroup group_operators
     recursive integer function parse_relational(expr, tokens, ntokens, pos, macros, ctx) result(val)
         character(*), intent(in)                :: expr
@@ -530,7 +592,6 @@ contains
     !! @param[in] ctx Context
     !! @return Integer value of the parsed expression
     !!
-    !! @b Remarks
     !! @ingroup group_operators
     recursive integer function parse_shifting(expr, tokens, ntokens, pos, macros, ctx) result(val)
         character(*), intent(in)                :: expr
@@ -571,7 +632,6 @@ contains
     !! @param[in] ctx Context
     !! @return Integer value of the parsed expression
     !!
-    !! @b Remarks
     !! @ingroup group_operators
     recursive integer function parse_additive(expr, tokens, ntokens, pos, macros, ctx) result(val)
         character(*), intent(in)                :: expr
@@ -612,7 +672,6 @@ contains
     !! @param[in] ctx    Context
     !! @return Integer value of the parsed expression
     !!
-    !! @b Remarks
     !! @ingroup group_operators
     recursive integer function parse_multiplicative(expr, tokens, ntokens, pos, macros, ctx) result(val)
         character(*), intent(in)                :: expr
@@ -657,7 +716,6 @@ contains
     !! @param[in] ctx    Context
     !! @return Integer value of the parsed expression
     !!
-    !! @b Remarks
     !! @ingroup group_operators
     recursive integer function parse_power(expr, tokens, ntokens, pos, macros, ctx) result(val)
         character(*), intent(in)                :: expr
@@ -693,7 +751,6 @@ contains
     !! @param[in] ctx    Context
     !! @return Integer value of the parsed expression
     !!
-    !! @b Remarks
     !! @ingroup group_operators
     recursive integer function parse_unary(expr, tokens, ntokens, pos, macros, ctx) result(val)
         character(*), intent(in)                :: expr
@@ -729,7 +786,6 @@ contains
     !! @param[in] ctx    Context
     !! @return Integer value of the parsed expression
     !!
-    !! @b Remarks
     !! @ingroup group_operators
     recursive integer function parse_atom(expr, tokens, ntokens, pos, macros, ctx) result(val)
         character(*), intent(in)                :: expr
@@ -792,4 +848,5 @@ contains
             pos = pos + 1
         end if
     end function
+    !! @}
 end module

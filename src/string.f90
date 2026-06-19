@@ -128,33 +128,139 @@ module fpx_string
         generic, public :: write(formatted) => write_formatted
     end type
 
-    !> Return the length of a string
+    !> Return the length of a @ref string object.
     !!
-    !! @b Remarks
+    !! This generic interface extends the intrinsic Fortran `len` function
+    !! to support the FPX @ref string type.
+    !!
+    !! The returned value corresponds to the full length of the underlying
+    !! character storage, including trailing blanks.
+    !!
+    !! If the string is not allocated, the returned value is zero.
+    !!
+    !! @section len_examples Examples
+    !!
+    !! Basic usage:
+    !! @code{.f90}
+    !! type(string) :: s
+    !!
+    !! s = 'foo'
+    !! print *, len(s)          ! 3
+    !!
+    !! s = 'foo '
+    !! print *, len(s)          ! 4
+    !! ...
+    !! @endcode
+    !!
+    !! Unallocated strings:
+    !! @code{.f90}
+    !! type(string) :: s
+    !!
+    !! print *, len(s)          ! 0
+    !! ...
+    !! @endcode
+    !!
     !! @ingroup group_string
     interface len
         module procedure :: string_len
     end interface
 
-    !> Return the trimmed length of a string
+    !> Return the trimmed length of a @ref string object.
     !!
-    !! @b Remarks
+    !! This generic interface extends the intrinsic Fortran `len_trim`
+    !! function to support the FPX @ref string type.
+    !!
+    !! The returned value corresponds to the number of characters after
+    !! removing trailing blanks.
+    !!
+    !! If the string is not allocated, the returned value is zero.
+    !!
+    !! @section len_trim_examples Examples
+    !!
+    !! Basic usage:
+    !! @code{.f90}
+    !! type(string) :: s
+    !!
+    !! s = 'foo'
+    !! print *, len_trim(s)     ! 3
+    !!
+    !! s = 'foo '
+    !! print *, len_trim(s)     ! 3
+    !! ...
+    !! @endcode
+    !!
+    !! Unallocated strings:
+    !! @code{.f90}
+    !! type(string) :: s
+    !!
+    !! print *, len_trim(s)     ! 0
+    !! ...
+    !! @endcode
+    !!
     !! @ingroup group_string
     interface len_trim
         module procedure :: string_len_trim
     end interface
 
-    !> Return the trimmed string
+    !> Remove trailing blanks from a @ref string object.
     !!
-    !! @b Remarks
+    !! This generic interface extends the intrinsic Fortran `trim`
+    !! function to support the FPX @ref string type.
+    !!
+    !! The result is returned as a deferred-length intrinsic character
+    !! expression with trailing blanks removed.
+    !!
+    !! If the string is not allocated, an empty character string is returned.
+    !!
+    !! @section trim_examples Examples
+    !!
+    !! Basic usage:
+    !! @code{.f90}
+    !! type(string) :: s
+    !! character(:), allocatable :: c
+    !!
+    !! s = 'hello   '
+    !!
+    !! c = trim(s)
+    !! print *, '"' // c // '"'      ! "hello"
+    !! ...
+    !! @endcode
+    !!
+    !! Unallocated strings:
+    !! @code{.f90}
+    !! type(string) :: s
+    !!
+    !! print *, len(trim(s))         ! 0
+    !! ...
+    !! @endcode
+    !!
+    !! @return Deferred-length character string without trailing blanks.
+    !!
     !! @ingroup group_string
     interface trim
         module procedure :: string_trim
     end interface
 
-    !> Concatenation operator
+    !> Concatenate string and character expressions.
     !!
-    !! @b Remarks
+    !! Supports all combinations of:
+    !! - string // string
+    !! - string // character(*)
+    !! - character(*) // string
+    !!
+    !! The result is returned as a deferred-length character expression.
+    !!
+    !! @b Examples
+    !! @code{.f90}
+    !! type(string) :: s
+    !!
+    !! s = 'foo'
+    !!
+    !! print *, s // 'bar'
+    !! print *, '>>' // s
+    !! ...
+    !! @endcode
+    !!
     !! @ingroup group_string
     interface operator(//)
         module procedure :: string_concat_string
@@ -162,9 +268,57 @@ module fpx_string
         module procedure :: character_concat_string
     end interface
 
-    !> Check whether a string belongs to a list or not
+    !> Test whether a value is present in an array.
     !!
-    !! @b Remarks
+    !! The `.contains.` operator provides convenient membership testing
+    !! between arrays of intrinsic characters and arrays of @ref string
+    !! objects.
+    !!
+    !! Supported combinations are:
+    !! - `string(:) .contains. string`
+    !! - `string(:) .contains. character(*)`
+    !! - `character(:) .contains. string`
+    !! - `character(:) .contains. character(*)`
+    !!
+    !! The comparison uses the overloaded equality operator (`==`)
+    !! associated with the involved types.
+    !!
+    !! @section contains_examples Examples
+    !!
+    !! Arrays of string:
+    !! @code{.f90}
+    !! type(string) :: fruits(3)
+    !!
+    !! fruits = [ string('apple'), &
+    !!            string('banana'), &
+    !!            string('cherry') ]
+    !!
+    !! print *, fruits .contains. 'banana'      ! .true.
+    !! print *, fruits .contains. 'orange'      ! .false.
+    !! ...
+    !! @endcode
+    !!
+    !! Mixed character/string usage:
+    !! @code{.f90}
+    !! character(10) :: names(2)
+    !!
+    !! names = ['foo       ', 'bar       ']
+    !!
+    !! print *, names .contains. string('foo')  ! .true.
+    !! ...
+    !! @endcode
+    !!
+    !! Empty arrays:
+    !! @code{.f90}
+    !! type(string) :: values(0)
+    !!
+    !! print *, values .contains. 'x'           ! .false.
+    !! ...
+    !! @endcode
+    !!
+    !! @return `.true.` if the searched value is present,
+    !!         `.false.` otherwise.
+    !!
     !! @ingroup group_string
     interface operator(.contains.)
         module procedure :: strings_contain_string
@@ -173,9 +327,70 @@ module fpx_string
         module procedure :: characters_contain_character
     end interface
 
-    !> Index operator
+    !> Locate the position of a substring.
     !!
-    !! @b Remarks
+    !! This generic interface extends the intrinsic Fortran `index`
+    !! function to support the FPX @ref string type.
+    !!
+    !! Supported combinations are:
+    !! - `index(string, string)`
+    !! - `index(string, character(*))`
+    !! - `index(character(*), string)`
+    !!
+    !! The optional argument `back` behaves exactly as in the intrinsic
+    !! Fortran procedure:
+    !! - if absent or `.false.`, the first occurrence is returned;
+    !! - if `.true.`, the last occurrence is returned.
+    !!
+    !! The function returns zero if the substring is not found.
+    !!
+    !! @section index_examples Examples
+    !!
+    !! String and character:
+    !! @code{.f90}
+    !! type(string) :: s
+    !!
+    !! s = 'banana'
+    !!
+    !! print *, index(s, 'na')               ! 3
+    !! print *, index(s, 'xy')               ! 0
+    !! ...
+    !! @endcode
+    !!
+    !! String and string:
+    !! @code{.f90}
+    !! type(string) :: text
+    !! type(string) :: sub
+    !!
+    !! text = 'banana'
+    !! sub  = 'na'
+    !!
+    !! print *, index(text, sub)             ! 3
+    !! ...
+    !! @endcode
+    !!
+    !! Search from the end:
+    !! @code{.f90}
+    !! type(string) :: s
+    !!
+    !! s = 'banana'
+    !!
+    !! print *, index(s, 'na', back=.true.)  ! 5
+    !! ...
+    !! @endcode
+    !!
+    !! Mixed usage:
+    !! @code{.f90}
+    !! type(string) :: sub
+    !!
+    !! sub = 'ana'
+    !!
+    !! print *, index('banana', sub)         ! 2
+    !! ...
+    !! @endcode
+    !!
+    !! @return Position of the matching substring, or zero if not found.
+    !!
     !! @ingroup group_string
     interface index
         module procedure :: index_string_string
@@ -196,7 +411,7 @@ contains
     !! s = 'foo'
     !! @endcode
     !!
-    !! @b Remarks
+    !! @ingroup group_string
     subroutine character_assign_string(lhs, rhs)
         class(string), intent(inout)   :: lhs
         character(*), intent(in)       :: rhs
@@ -219,7 +434,7 @@ contains
     !! ! The value of c is now 'foo'
     !! @endcode
     !!
-    !! @b Remarks
+    !! @ingroup group_string
     subroutine string_assign_character(lhs, rhs)
         character(:), allocatable, intent(inout) :: lhs
         class(string), intent(in)                :: rhs
@@ -241,7 +456,7 @@ contains
     !! @endcode
     !! @return An integer corresponding to the length of the string.
     !!
-    !! @b Remarks
+    !! @ingroup group_string
     elemental integer function string_len(this) result(res)
         class(string), intent(in) :: this
 
@@ -266,7 +481,7 @@ contains
     !! @endcode
     !! @return An integer corresponding to the trimmed length of the string.
     !!
-    !! @b Remarks
+    !! @ingroup group_string
     pure integer function string_len_trim(this) result(res)
         class(string), intent(in) :: this
 
@@ -281,7 +496,7 @@ contains
     !! @param[in] this string
     !! @return Trimmed character string (deferred length).
     !!
-    !! @b Remarks
+    !! @ingroup group_string
     pure function string_trim(this) result(res)
         class(string), intent(in) :: this
         character(:), allocatable :: res
@@ -298,7 +513,7 @@ contains
     !! @param[in] rhs right-hand side string
     !! @return New concatenated string.
     !!
-    !! @b Remarks
+    !! @ingroup group_string
     pure function string_concat_string(lhs, rhs) result(res)
         class(string), intent(in) :: lhs
         class(string), intent(in) :: rhs
@@ -320,7 +535,7 @@ contains
     !! @param[in] rhs character expression
     !! @return New concatenated string.
     !!
-    !! @b Remarks
+    !! @ingroup group_string
     pure function string_concat_character(lhs, rhs) result(res)
         class(string), intent(in)   :: lhs
         character(*), intent(in)    :: rhs
@@ -338,7 +553,7 @@ contains
     !! @param[in] rhs string
     !! @return New concatenated string.
     !!
-    !! @b Remarks
+    !! @ingroup group_string
     pure function character_concat_string(lhs, rhs) result(res)
         character(*), intent(in)    :: lhs
         class(string), intent(in)   :: rhs
@@ -356,14 +571,14 @@ contains
     !! @param[in] rhs right-hand side
     !! @return .true. if the strings are equal, .false. otherwise.
     !!
-    !! @b Remarks
+    !! @ingroup group_string
     elemental function string_eq_string(lhs, rhs) result(res)
         class(string), intent(in) :: lhs  !! Left hand side.
         class(string), intent(in) :: rhs  !! Right hand side.
-        logical                   :: res  !! Opreator test result.
+        logical :: res
 
         if (.not. allocated(lhs%chars)) then
-            res = allocated(rhs%chars)
+            res = .not. allocated(rhs%chars)
         else
             res = lhs%chars == rhs%chars
         end if
@@ -374,7 +589,7 @@ contains
     !! @param[in] rhs character expression
     !! @return .true. if equal, .false. otherwise.
     !!
-    !! @b Remarks
+    !! @ingroup group_string
     elemental function string_eq_character(lhs, rhs) result(res)
         class(string), intent(in) :: lhs  !! Left hand side.
         character(*), intent(in) :: rhs  !! Right hand side.
@@ -392,7 +607,7 @@ contains
     !! @param[in] rhs string
     !! @return .true. if equal, .false. otherwise.
     !!
-    !! @b Remarks
+    !! @ingroup group_string
     elemental function character_eq_string(lhs, rhs) result(res)
         character(*), intent(in) :: lhs  !! Left hand side.
         class(string), intent(in) :: rhs  !! Right hand side.
@@ -443,7 +658,7 @@ contains
     !! write(*, '(DT)') s              ! explicitly calls write_formatted
     !! @endcode
     !!
-    !! @b Remarks
+    !! @ingroup group_string
     ! allow(assumed-size-character-intent)
     subroutine write_formatted(dtv, unit, iotype, v_list, iostat, iomsg)
         class(string), intent(in)   :: dtv
@@ -494,7 +709,7 @@ contains
     !! ...
     !! @endcode
     !!
-    !! @b Remarks
+    !! @ingroup group_string
     !! @ingroup group_string
     logical function starts_with(str, arg1, idx) result(res)
         character(*), intent(in) :: str
@@ -508,11 +723,10 @@ contains
         if (present(idx)) idx = i
     end function
 
-    !> Returns the first non-blank character of a string.
+    !> Returns the first character of the trimmed string.
     !! @param[in] str input string
     !! @return First character (space if empty)
     !!
-    !! @b Remarks
     !! @ingroup group_string
     character function head(str) result(res)
         character(*), intent(in) :: str
@@ -527,7 +741,6 @@ contains
     !! @param[in] str input string
     !! @return Last character (space if empty)
     !!
-    !! @b Remarks
     !! @ingroup group_string
     character function tail(str) result(res)
         character(*), intent(in) :: str
@@ -545,7 +758,6 @@ contains
     !! @param[in] str2 second line
     !! @return Concatenated string with proper continuation handling
     !!
-    !! @b Remarks
     !! @ingroup group_string
     function concat(str1, str2) result(res)
         character(*), intent(in) :: str1
@@ -592,7 +804,6 @@ contains
     !! if (output == 'TEST') print*, 'OK'
     !! @endcode
     !!
-    !! @b Remarks
     !! @ingroup group_string
     pure function uppercase(str) result(res)
         character(*), intent(in) :: str
@@ -636,7 +847,6 @@ contains
     !! if (output == 'test') print*, 'OK'
     !! @endcode
     !!
-    !! @b Remarks
     !! @ingroup group_string
     pure function lowercase(str) result(res)
         character(*), intent(in) :: str
@@ -672,7 +882,6 @@ contains
     !! @param[in] unit logical unit
     !! @param[in] str  string to write
     !!
-    !! @b Remarks
     !! @ingroup group_string
     subroutine writechk(unit, str)
         integer, intent(in)         :: unit
@@ -695,7 +904,6 @@ contains
     !! @param[inout] pos  current position (moved backward)
     !! @return Previous non-blank character
     !!
-    !! @b Remarks
     !! @ingroup group_string
     character(1) function previous(line, pos) result(res)
         character(*), intent(in)    :: line
@@ -718,7 +926,7 @@ contains
     !! @param[in] rhs string to search for
     !! @return .true. if rhs is present in lhs
     !!
-    !! @b Remarks
+    !! @ingroup group_string
     logical function strings_contain_string(lhs, rhs) result(res)
         type(string), intent(in)    :: lhs(:)
         type(string), intent(in)    :: rhs
@@ -739,7 +947,7 @@ contains
     !! @param[in] rhs character expression to search for
     !! @return .true. if rhs is present in lhs
     !!
-    !! @b Remarks
+    !! @ingroup group_string
     logical function strings_contain_character(lhs, rhs) result(res)
         type(string), intent(in)    :: lhs(:)
         character(*), intent(in)    :: rhs
@@ -760,7 +968,7 @@ contains
     !! @param[in] rhs character expression to search for
     !! @return .true. if rhs is present in lhs
     !!
-    !! @b Remarks
+    !! @ingroup group_string
     logical function characters_contain_character(lhs, rhs) result(res)
         character(*), intent(in)    :: lhs(:)
         character(*), intent(in)    :: rhs
@@ -781,7 +989,7 @@ contains
     !! @param[in] rhs string to search for
     !! @return .true. if rhs is present in lhs
     !!
-    !! @b Remarks
+    !! @ingroup group_string
     logical function characters_contain_string(lhs, rhs) result(res)
         character(*), intent(in)    :: lhs(:)
         type(string), intent(in)    :: rhs

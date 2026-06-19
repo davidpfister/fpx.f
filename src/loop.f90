@@ -1,9 +1,9 @@
 !> @file
 !! @defgroup group_for For
-!! Fortran Preprocessor (fpx) – compile-time loop expansion support
+!! Fortran Preprocessor (FPX) – compile-time loop expansion support
 !!
 !! This module implements the non-standard `#for` / `#endfor` directive pair
-!! used by fpx to generate repeated source code from a list of values.
+!! used by FPX to generate repeated source code from a list of values.
 !!
 !! Features:
 !! - Simple iteration over explicit lists:
@@ -68,8 +68,30 @@
 !! ...
 !! @endcode
 !!
-!! Loop variables behave like temporary macros and participate in normal
-!! macro expansion rules.
+!! 5. Cartesian product generation:
+!! @code{.f90}
+!!    #for T in [real, complex]
+!!    #for K in [32, 64]
+!!       type(T(K)) :: value
+!!    #endfor
+!!    #endfor
+!!
+!!    ! Generates:
+!!    ! type(real(32))    :: value
+!!    ! type(real(64))    :: value
+!!    ! type(complex(32)) :: value
+!!    ! type(complex(64)) :: value
+!! ...
+!! @endcode
+!!
+!! Loop variables behave exactly like temporary object-like macros and
+!! therefore participate in all normal macro expansion rules, including
+!! nested expansion and token pasting.
+!!
+!! @note
+!! When nested loops are active, generated lines are appended to the
+!! enclosing loop body rather than written immediately. This guarantees
+!! inside-out expansion semantics.
 module fpx_for
     use, intrinsic :: iso_c_binding, only: c_funptr, c_f_procpointer
     use fpx_constants
@@ -86,44 +108,55 @@ module fpx_for
             is_in_forloop, &
             add_to_loop
 
+    !> Internal storage for deferred loop bodies.
+    !!
+    !! Source lines belonging to a `#for` block are collected until the
+    !! corresponding `#endfor` directive is encountered.
+    !!
+    !! @ingroup group_for
     type :: body
         integer :: nlines = 0
         type(string), allocatable :: lines(:)
     end type
 
+    !! @cond
     integer :: depth = 0
-    integer, parameter :: BODY_BUFFER = 50
+    integer, parameter :: BODY_BUFFER = 50 
     type(body) :: bodies(MAX_FOR_DEPTH)
     type(macro), allocatable :: fmacros(:)
+    !! @endcond
 
 contains
 
     !> Process a `#for` directive and initialize a new loop context.
     !!
-    !! Parses directives of the form:
-    !! @code
-    !!    #for variable in [item1, item2, ...]
-    !! ...
-    !! @endcode
+    !! The directive header is parsed immediately, but the loop body is
+    !! not expanded at this stage. Instead, subsequent source lines are
+    !! collected until the matching `#endfor` directive is encountered.
     !!
-    !! or
+    !! The loop variable behaves as a temporary object-like macro whose
+    !! value changes for each iteration.
+    !!
+    !! Supported syntax:
     !!
     !! @code
-    !!    #for variable in MACRO_NAME
-    !! ...
+    !! #for identifier in [value1, value2, ...]
+    !! #for identifier in MACRO_NAME
     !! @endcode
     !!
     !! where `MACRO_NAME` expands to a bracketed list.
     !!
-    !! A temporary macro representing the loop variable is created and the
-    !! iteration values are stored internally until the matching `#endfor`
-    !! is reached.
+    !! @note
+    !! `#for` and `#endfor` are FPX extensions and are not part of the
+    !! ISO C preprocessor specification.
     !!
-    !! @param[in]    ctx     Current parsing context
-    !! @param[inout] macros  Active macro table
-    !! @param[in]    token   Directive keyword (`for`)
+    !! @param[in]    ctx     
+    !!   Current parsing context
+    !! @param[inout] macros
+    !!   Active macro table
+    !! @param[in]    token   
+    !!   Directive keyword (`for`)
     !!
-    !! @b Remarks
     !! @ingroup group_for
     subroutine handle_for(ctx, macros, token)
         type(context), intent(in)                   :: ctx
@@ -237,6 +270,12 @@ contains
     !! the loop variable parameter list. Nested loops are handled recursively
     !! by forwarding generated lines to the enclosing loop body when present.
     !!
+    !! For each iteration value:
+    !! - the loop variable macro is activated,
+    !! - the stored body is macro-expanded,
+    !! - generated lines are reprocessed by the normal preprocessing engine,
+    !! - output is either emitted directly or forwarded to an enclosing loop.
+    !!
     !! When the outermost loop terminates, all temporary loop state is
     !! released automatically.
     !!
@@ -246,7 +285,6 @@ contains
     !! @param[inout] macros  Active macro table
     !! @param[in] token   Directive keyword (`endfor`)
     !!
-    !! @b Remarks
     !! @ingroup group_for
     subroutine handle_endfor(ctx, ounit, p, macros, token)
         type(context), intent(inout)    :: ctx
@@ -334,14 +372,13 @@ contains
         end if
     end subroutine
 
-    !> Append a source line to the currently active loop body.
+    !> Append a source line to the innermost active loop body.
     !!
-    !! Lines are stored verbatim and expanded only when the matching
-    !! `#endfor` directive is encountered.
+    !! Lines are stored verbatim without macro expansion. Expansion is
+    !! deferred until the corresponding `#endfor` directive is processed.
     !!
     !! @param[in] line Source line to store
     !!
-    !! @b Remarks
     !! @ingroup group_for
     subroutine add_to_loop(line)
         character(*), intent(in) :: line
@@ -350,11 +387,12 @@ contains
     end subroutine
 
     !> Query whether parsing is currently inside a `#for` block.
-    !!
+    !! This routine is typically used by the main preprocessing engine to
+    !! determine whether incoming source lines should be emitted directly
+    !! or collected for later expansion.
     !! @return `.true.` when one or more loop contexts are active,
     !!         `.false.` otherwise.
     !!
-    !! @b Remarks
     !! @ingroup group_for
     logical function is_in_forloop() result(res)
         res = depth > 0

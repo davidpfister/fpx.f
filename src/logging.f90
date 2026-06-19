@@ -15,15 +15,26 @@
 !!
 !! @section logging_examples Examples
 !!
-!! 1. Simple colored message (used internally for verbose logging):
+!! 1. Simple error message
+!! @code{.f90}
+!! print '(A)', render(diagnostic_report( &
+!!     LEVEL_ERROR, &
+!!     message='unexpected token', &
+!!     label=label_type('expected expression', 8, 3)), &
+!!     'a = +')
+!! ...
+!! @endcode
+!!
+!! 2. Colored message (used internally for verbose logging):
 !! @code{.f90}
 !!    use fpx_logging
 !!
 !!    verbose = .true.
 !!    print '(A)', render('Macro expanded: PI = 3.14159')
+!! ..
 !! @endcode
 !!
-!! 2. Full diagnostic report (like a compiler error):
+!! 3. Full diagnostic report (like a compiler error):
 !! @code{.f90}
 !!  character(*), parameter :: input = &
 !!  '# This is a TOML document.' // nl // &
@@ -59,6 +70,7 @@
 !!              label_type("first defined here", 2, 1, 5)]), &
 !!              input)
 !!    end
+!! ...
 !! @endcode
 !!
 !!    Output might look like (colored in terminal):
@@ -84,6 +96,8 @@
 !! - Background: same as foreground but prefixed with BG_
 !!
 !! @note This code is adapted from [pretty-diagnostics](https://github.com/awvwgk/pretty-diagnostics).
+!! The visual presentation is inspired by modern compiler diagnostics
+!! such as rustc and clang, while being adapted for Fortran workflows.
 module fpx_logging
     use iso_c_binding
 
@@ -105,7 +119,7 @@ module fpx_logging
     !! preprocessing actions. Safe to modify at any time � the change takes
     !! effect immediately for all subsequent operations.
     !! @ingroup group_logging
-    logical, public :: verbose
+    logical, public :: verbose = .false.
 
     !> @brief Switch for controling the ANSI color output
     !! Default value is `.true.` (color mode on).
@@ -113,6 +127,7 @@ module fpx_logging
     !! @ingroup group_logging
     logical, public :: nocolor = .false.
 
+    !! @cond
     character(1), parameter :: NL = new_line('a')  !< New line character.
     character(1), parameter :: ESCAPE = achar(27)  !< '\' character.
     character(2), parameter :: CODE_START = ESCAPE // '['  !< Start ansi code, "\[".
@@ -120,67 +135,75 @@ module fpx_logging
     character(4), parameter :: CODE_CLEAR = CODE_START // '0' // CODE_END  !< Clear all styles, "\[0m".
 
     character(17), parameter :: STYLES(1:2, 1:16) = reshape([ &
-            'BOLD_ON          ', '1                ', &  !  Bold on.
-            'ITALICS_ON       ', '3                ', &  !  Italics on.
-            'UNDERLINE_ON     ', '4                ', &  !  Underline on.
-            'INVERSE_ON       ', '7                ', &  !  Inverse on: reverse foreground and background colors.
-            'STRIKETHROUGH_ON ', '9                ', &  !  Strikethrough on.
-            'BOLD_OFF         ', '22               ', &  !  Bold off.
-            'ITALICS_OFF      ', '23               ', &  !  Italics off.
-            'UNDERLINE_OFF    ', '24               ', &  !  Underline off.
-            'INVERSE_OFF      ', '27               ', &  !  Inverse off: reverse foreground and background colors.
-            'STRIKETHROUGH_OFF', '29               ', &  !  Strikethrough off.
-            'FRAMED_ON        ', '51               ', &  !  Framed on.
-            'ENCIRCLED_ON     ', '52               ', &  !  Encircled on.
-            'OVERLINED_ON     ', '53               ', &  !  Overlined on.
-            'FRAMED_OFF       ', '54               ', &  !  Framed off.
-            'ENCIRCLED_OFF    ', '54               ', &  !  Encircled off.
-            'OVERLINED_OFF    ', '55               ' &  !  Overlined off.
+            'BOLD_ON          ', '1                ', &
+            'ITALICS_ON       ', '3                ', &
+            'UNDERLINE_ON     ', '4                ', &
+            'INVERSE_ON       ', '7                ', &
+            'STRIKETHROUGH_ON ', '9                ', &
+            'BOLD_OFF         ', '22               ', &
+            'ITALICS_OFF      ', '23               ', &
+            'UNDERLINE_OFF    ', '24               ', &
+            'INVERSE_OFF      ', '27               ', &
+            'STRIKETHROUGH_OFF', '29               ', &
+            'FRAMED_ON        ', '51               ', &
+            'ENCIRCLED_ON     ', '52               ', &
+            'OVERLINED_ON     ', '53               ', &
+            'FRAMED_OFF       ', '54               ', &
+            'ENCIRCLED_OFF    ', '54               ', &
+            'OVERLINED_OFF    ', '55               ' &
             ], [2, 16])  !< Styles.
-
+    
     character(15), parameter :: COLORS_FG(1:2, 1:17) = reshape([ &
-            'BLACK          ', '30             ', &  !  Black.
-            'RED            ', '31             ', &  !  Red.
-            'GREEN          ', '32             ', &  !  Green.
-            'YELLOW         ', '33             ', &  !  Yellow.
-            'BLUE           ', '34             ', &  !  Blue.
-            'MAGENTA        ', '35             ', &  !  Magenta.
-            'CYAN           ', '36             ', &  !  Cyan.
-            'WHITE          ', '37             ', &  !  White.
-            'DEFAULT        ', '39             ', &  !  Default (white).
-            'BLACK_INTENSE  ', '90             ', &  !  Black intense.
-            'RED_INTENSE    ', '91             ', &  !  Red intense.
-            'GREEN_INTENSE  ', '92             ', &  !  Green intense.
-            'YELLOW_INTENSE ', '93             ', &  !  Yellow intense.
-            'BLUE_INTENSE   ', '94             ', &  !  Blue intense.
-            'MAGENTA_INTENSE', '95             ', &  !  Magenta intense.
-            'CYAN_INTENSE   ', '96             ', &  !  Cyan intense.
-            'WHITE_INTENSE  ', '97             ' &  !  White intense.
+            'BLACK          ', '30             ', &
+            'RED            ', '31             ', &
+            'GREEN          ', '32             ', &
+            'YELLOW         ', '33             ', &
+            'BLUE           ', '34             ', &
+            'MAGENTA        ', '35             ', &
+            'CYAN           ', '36             ', &
+            'WHITE          ', '37             ', &
+            'DEFAULT        ', '39             ', &
+            'BLACK_INTENSE  ', '90             ', &
+            'RED_INTENSE    ', '91             ', &
+            'GREEN_INTENSE  ', '92             ', &
+            'YELLOW_INTENSE ', '93             ', &
+            'BLUE_INTENSE   ', '94             ', &
+            'MAGENTA_INTENSE', '95             ', &
+            'CYAN_INTENSE   ', '96             ', &
+            'WHITE_INTENSE  ', '97             ' & 
             ], [2, 17])  !< Foreground colors.
 
     character(15), parameter :: COLORS_BG(1:2, 1:17) = reshape([ &
-            'BLACK          ', '40             ', &  !  Black.
-            'RED            ', '41             ', &  !  Red.
-            'GREEN          ', '42             ', &  !  Green.
-            'YELLOW         ', '43             ', &  !  Yellow.
-            'BLUE           ', '44             ', &  !  Blue.
-            'MAGENTA        ', '45             ', &  !  Magenta.
-            'CYAN           ', '46             ', &  !  Cyan.
-            'WHITE          ', '47             ', &  !  White.
-            'DEFAULT        ', '49             ', &  !  Default (black).
-            'BLACK_INTENSE  ', '100            ', &  !  Black intense.
-            'RED_INTENSE    ', '101            ', &  !  Red intense.
-            'GREEN_INTENSE  ', '102            ', &  !  Green intense.
-            'YELLOW_INTENSE ', '103            ', &  !  Yellow intense.
-            'BLUE_INTENSE   ', '104            ', &  !  Blue intense.
-            'MAGENTA_INTENSE', '105            ', &  !  Magenta intense.
-            'CYAN_INTENSE   ', '106            ', &  !  Cyan intense.
-            'WHITE_INTENSE  ', '107            ' &  !  White intense.
+            'BLACK          ', '40             ', &
+            'RED            ', '41             ', &
+            'GREEN          ', '42             ', &
+            'YELLOW         ', '43             ', &
+            'BLUE           ', '44             ', &
+            'MAGENTA        ', '45             ', &
+            'CYAN           ', '46             ', &
+            'WHITE          ', '47             ', &
+            'DEFAULT        ', '49             ', &
+            'BLACK_INTENSE  ', '100            ', &
+            'RED_INTENSE    ', '101            ', &
+            'GREEN_INTENSE  ', '102            ', &
+            'YELLOW_INTENSE ', '103            ', &
+            'BLUE_INTENSE   ', '104            ', &
+            'MAGENTA_INTENSE', '105            ', &
+            'CYAN_INTENSE   ', '106            ', &
+            'WHITE_INTENSE  ', '107            ' &
             ], [2, 17])  !< Background colors.
+    !! @endcond
 
-    !> Interface to render diagnostic messages and labels
+    !> Generic renderer for diagnostics and source excerpts.
     !!
-    !! @b Remarks
+    !! Supported overloads:
+    !! - render(diagnostic_report, source)
+    !! - render(character)
+    !! - render(character, label_type)
+    !! - render(character, label_type(:))
+    !!
+    !! Returns a formatted character string suitable for printing.
+    !!
     !! @ingroup group_logging
     interface render
         module procedure :: render_diagnostic
@@ -197,50 +220,85 @@ module fpx_logging
         enumerator :: LEVEL_INFO = 4
     end enum
 
-    !> Represents text as a sequence of ASCII code units.
-    !!        The derived type wraps an allocatable character array.
+    !> Diagnostic label identifying a region of source text.
     !!
-    !! <h2 class="groupheader">Examples</h2>
+    !! A label highlights a specific character range within a source line
+    !! and may carry an explanatory message. Labels are used to produce
+    !! compiler-style diagnostics similar to those of rustc or clang.
+    !!
+    !! Labels may be primary or secondary:
+    !! - Primary labels identify the principal cause of the diagnostic.
+    !! - Secondary labels provide additional context.
+    !!
+    !! Primary labels determine the source location shown in the
+    !! diagnostic header and are rendered using '^' markers.
+    !!
+    !! Secondary labels are rendered using '-' markers and provide
+    !! supplementary context.
+    !! @note
+    !! Character positions are 1-based.
+    !! The highlighted range spans:
+    !!
+    !!    first <= position < finish
+    !!
+    !! where `finish` is exclusive.
+    !!
+    !! @section label_type_examples Examples
     !! @code{.f90}
     !! type(string) :: s
     !! s = 'foo'
+    !! ...
     !! @endcode
     !!
-    !! <h2 class="groupheader">Constructors</h2>
+    !! @section label_type_constructor Constructors
     !! Initializes a new instance of the label_type class
-    !! <h3>label_type(character(*), integer, integer, (optional) integer)</h3>
-    !! @verbatim type(string) function string(character(*) text, integer first, integer length, (optional) integer level) @endverbatim
+    !! @b Constructor
+    !! @code{.f90} 
+    !! type(label_type) function string(character(*) text, integer first, integer length, (optional) integer level) 
+    !! @endcode
     !!
-    !! @param[in] text Text displayed next to the label
-    !! @param[in] first Position of the label
-    !! @param[in] length Length of the label
-    !! @param[in] level (optional) Level of the label
+    !! @param[in] text 
+    !!   Text displayed next to the label
+    !! @param[in] first 
+    !!   Position of the label
+    !! @param[in] length 
+    !!   Length of the label
+    !! @param[in] level 
+    !!   (optional) Level of the label
     !!
     !! @b Examples
     !! @code{.f90}
     !! type(label_type) :: label
     !! label = label_type('Syntax error', 5, 7)
+    !! ...
     !! @endcode
     !! @return The constructed label_type object.
     !!
-    !! <h3>label_type(integer, character(*), integer, integer, (optional) integer, (optional) logical)</h3>
-    !! @verbatim type(string) function label_type(integer line, character(*) text, integer first, integer length, (optional) integer level, (optional) logical primary) @endverbatim
+    !! @b Constructor
+    !! @code{.f90} 
+    !! type(label_type) function label_type(integer line, character(*) text, integer first, integer length, (optional) integer level, (optional) logical primary) 
+    !! @endcode
     !!
-    !! @param[in] line line number for the label
-    !! @param[in] text Text displayed next to the label
-    !! @param[in] first Position of the label
-    !! @param[in] length Length of the label
-    !! @param[in] level (optional) Level of the label
-    !! @param[in] primary .true. if the label is the primary one
+    !! @param[in] line 
+    !!   line number for the label
+    !! @param[in] text 
+    !!   Text displayed next to the label
+    !! @param[in] first 
+    !!   Position of the label
+    !! @param[in] length 
+    !!   Length of the label
+    !! @param[in] level 
+    !!   (optional) Level of the label
+    !! @param[in] primary 
+    !!   .true. if the label is the primary one
     !!
     !! @b Examples
     !! @code{.f90}
     !! type(label_type) :: label
     !! label = label_type(1, 'Syntax error', 5, 7, LEVEL_ERROR, .true.)
+    !! ...
     !! @endcode
     !! @return The constructed label_type object.
-    !!
-    !! <h2 class="groupheader">Remarks</h2>
     !!
     !! @ingroup group_logging
     type label_type
@@ -253,11 +311,9 @@ module fpx_logging
         !> First character of message
         integer                     :: first
         !> Last character of message
-        integer                     :: last
+        integer                     :: finish
         !> Message text
         character(:), allocatable   :: text
-        !> Identifier of context
-        character(:), allocatable   :: source
     end type
 
     interface label_type
@@ -265,7 +321,19 @@ module fpx_logging
         module procedure :: label_new_with_line
     end interface
 
-    !> Definition of diagnostic message
+    !> Structured compiler diagnostic.
+    !!
+    !! A diagnostic report consists of:
+    !!
+    !! - a severity level,
+    !! - a primary message,
+    !! - one or more source labels,
+    !! - optional nested diagnostics.
+    !!
+    !! Reports can be rendered using the generic interface
+    !! `render(...)` to produce human-readable output.
+    !!
+    !! @ingroup group_logging
     type :: diagnostic_report
         !> Level of message
         integer :: level
@@ -285,7 +353,7 @@ module fpx_logging
 
     !! @private
     type :: line_token
-        integer :: first, last
+        integer :: first, finish
     end type
 
 contains
@@ -377,7 +445,7 @@ contains
         that%text = text
         that%line = 1
         that%first = max(1, first)
-        that%last = that%first + length
+        that%finish = that%first + length
         that%primary = .true.
         if (present(level)) that%level = level
     end function
@@ -393,7 +461,7 @@ contains
         that%text = text
         that%line = line
         that%first = max(1, first)
-        that%last = that%first + length
+        that%finish = that%first + length
         if (present(primary)) then
             that%primary = primary
         else
@@ -447,20 +515,25 @@ contains
         character(*), intent(in)        :: input
         type(line_token), allocatable :: res(:)
         !private
-        integer :: first, last
+        integer :: first, finish
 
-        first = 1
-        last = 0
+        if (len(input) == 0) then
+            allocate(res(1))
+            res(1)=line_token(1,0)
+            return
+        end if
+
+        first = 1; finish = 0
         allocate(res(0))
         do while (first <= len(input))
-            last = index(input(first + 1:), NL) + first - 1
-            if (last < first) then
-                last = len(input)
+            finish = index(input(first + 1:), NL) + first - 1
+            if (finish < first) then
+                finish = len(input)
             end if
 
-            res = [res, line_token(first, last)]
+            res = [res, line_token(first, finish)]
 
-            first = last + (1 + len(NL))
+            first = finish + (1 + len(NL))
         end do
     end function
 
@@ -503,21 +576,25 @@ contains
     pure function level_name(level) result(res)
         integer, intent(in) :: level
         character(:), allocatable :: res
+        !private
+        character(:), allocatable :: name, fg
 
-        select case (level)
+        select case(level)
         case (LEVEL_ERROR)
-            res = colorize('error', foreground='red', style='bold_on')
+            name='error';   fg='red'
         case (LEVEL_WARNING)
-            res = colorize('warning', foreground='yellow', style='bold_on')
+            name='warning'; fg='yellow'
         case (LEVEL_HELP)
-            res = colorize('help', foreground='cyan', style='bold_on')
+            name='help';    fg='cyan'
         case (LEVEL_NOTE)
-            res = colorize('note', foreground='blue', style='bold_on')
+            name='note';    fg='blue'
         case (LEVEL_INFO)
-            res = colorize('info', foreground='magenta', style='bold_on')
+            name='info';    fg='magenta'
         case default
-            res = colorize('unknown', foreground='blue', style='bold_on')
+            name='unknown'; fg='blue'
         end select
+
+        res = colorize(name, foreground=fg, style='bold_on')
     end function
 
     pure function render_source(source, offset) result(res)
@@ -549,7 +626,7 @@ contains
         end if
 
         do i = 1, size(token)
-            res = res // NL // render_line(input(token(i)%first:token(i)%last), to_string(iline + i - 1, offset))
+            res = res // NL // render_line(input(token(i)%first:token(i)%finish), to_string(iline + i - 1, offset))
         end do
         res = res // NL // repeat(' ', offset + 1) // colorize('|', foreground='blue')
     end function
@@ -571,13 +648,13 @@ contains
         integer, intent(in), optional       :: linemum
         character(:), allocatable :: res
         !private
-        integer :: i, j, offset, first, last, iline
+        integer :: i, j, offset, first, finish, iline
         type(line_token), allocatable :: token(:)
         logical, allocatable :: display(:)
 
         token = line_tokens(input)
         first = max(1, minval(labels%line) - 1)
-        last = min(size(token), maxval(labels%line) + 1)
+        finish = min(size(token), maxval(labels%line) + 1)
         iline = 1; if (present(linemum)) iline = linemum
         offset = integer_width(iline)
 
@@ -592,28 +669,30 @@ contains
         if (present(source)) then
             res = render_source(source, offset) // ':' // &
                     to_string(labels(i)%line) // ':' // &
-                    to_string(labels(i)%first) // '-' // to_string(labels(i)%last) // NL // &
+                    to_string(labels(i)%first) // '-' // to_string(labels(i)%finish) // NL // &
                     repeat(' ', offset + 1) // colorize('|', foreground='blue')
         else
             res = repeat(' ', offset + 1) // colorize('|', foreground='blue')
         end if
 
-        allocate(display(first:last), source=.false.)
+        allocate(display(first:finish), source=.false.)
         do j = 1, size(labels)
-            display(max(first, labels(j)%line - 1):min(last, labels(j)%line + 1)) = .true.
+            display(max(first, labels(j)%line - 1):min(finish, labels(j)%line + 1)) = .true.
         end do
 
-        do i = first, last
+        do i = first, finish
             if (.not. display(i)) then
-                if (display(i - 1)) then
-                    res = res // NL //&
-                            repeat(' ', offset + 1) // colorize(':', foreground='blue')
+                if (i > first) then
+                    if (display(i - 1)) then
+                        res = res // NL //&
+                                repeat(' ', offset + 1) // colorize(':', foreground='blue')
+                    end if
                 end if
                 cycle
             end if
 
             res = res // NL //&
-                    & render_line(input(token(i)%first:token(i)%last), &
+                    & render_line(input(token(i)%first:token(i)%finish), &
                     &             to_string(iline + i - 1, offset))
             if (any(i == labels%line)) then
                 do j = 1, size(labels)
@@ -633,39 +712,27 @@ contains
         !private
         integer :: width
         character(1) :: marker
-        character(:), allocatable :: this_color
+        character(:), allocatable :: this_color, fg
 
         marker = merge('^', '-', label%primary)
-        width = label%last - label%first
+        width = label%finish - label%first
+        fg = 'blue'
 
         if (allocated(label%level)) then
             select case (label%level)
             case (LEVEL_ERROR)
-                res = repeat(' ', label%first) // colorize(repeat(marker, width), foreground='red')
-                if (allocated(label%text)) then
-                    res = res // ' ' // colorize(label%text, foreground='red')
-                end if
+                fg = 'red'
             case (LEVEL_WARNING)
-                res = repeat(' ', label%first) // colorize(repeat(marker, width), foreground='yellow')
-                if (allocated(label%text)) then
-                    res = res // ' ' // colorize(label%text, foreground='yellow')
-                end if
+                fg = 'yellow'
             case (LEVEL_HELP)
-                res = repeat(' ', label%first) // colorize(repeat(marker, width), foreground='cyan')
-                if (allocated(label%text)) then
-                    res = res // ' ' // colorize(label%text, foreground='cyan')
-                end if
+                fg = 'cyan'
             case (LEVEL_INFO)
-                res = repeat(' ', label%first) // colorize(repeat(marker, width), foreground='magenta')
-                if (allocated(label%text)) then
-                    res = res // ' ' // colorize(label%text, foreground='magenta')
-                end if
-            case default
-                res = repeat(' ', label%first) // colorize(repeat(marker, width), foreground='blue')
-                if (allocated(label%text)) then
-                    res = res // ' ' // colorize(label%text, foreground='blue')
-                end if
+                fg = 'magenta'
             end select
+            res = repeat(' ', label%first) // colorize(repeat(marker, width), foreground=fg)
+            if (allocated(label%text)) then
+                res = res // ' ' // colorize(label%text, foreground=fg)
+            end if
         else
             res = repeat(' ', label%first) // repeat(marker, width)
             if (allocated(label%text)) then
@@ -684,6 +751,11 @@ contains
 
     pure integer function integer_width(input) result(res)
         integer, value :: input
+
+        if (input == 0) then
+            res = 1
+            return
+        end if
 
         res = 0
         do while (input /= 0)
@@ -730,7 +802,11 @@ contains
         end if
     end function
 
-    !> Conditional print of the error/warning message.
+    !> Conditionally print a message when verbose logging is enabled.
+    !!
+    !! This routine is intended for internal tracing and debugging output.
+    !! Compiler diagnostics should instead be constructed using
+    !! `diagnostic_report` and rendered explicitly.
     !! @param[in] str Input string.
     !! @param[in] fmt (optional) print format.
     subroutine printf(str, fmt, unit)
@@ -741,15 +817,15 @@ contains
         if (verbose) then
             if (present(fmt)) then
                 if (present(unit)) then
-                    write(*, fmt) str
-                else
                     write(unit, fmt) str
+                else
+                    write(*, fmt) str
                 end if
             else
                 if (present(unit)) then
-                    write(*, '(A)') str
-                else
                     write(unit, '(A)') str
+                else
+                    write(*, '(A)') str
                 end if
             end if
         end if

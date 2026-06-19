@@ -1,13 +1,35 @@
 !> @file
 !! @defgroup group_os OS
-!! Operating system detection utilities for the fpx preprocessor
-!! This lightweight module provides reliable runtime detection of the current operating
-!! system on Unix-like platforms (Linux, macOS, FreeBSD, OpenBSD, Solaris) and Windows
-!! (including Cygwin, MSYS, and native Windows). Detection is performed only once per
-!! thread (using OpenMP threadprivate storage) and then cached for fast subsequent calls.
-!! The implementation first checks common environment variables (`OSTYPE`, `OS`),
-!! then falls back to the presence of OS-specific files. This makes it robust across
-!! native systems, containers, WSL, Cygwin, and cross-compilation environments.
+!! This module provides portable runtime operating-system detection
+!! facilities used throughout the fpx preprocessor.
+!!
+!! Supported platforms include:
+!! - Linux distributions
+!! - macOS
+!! - Native Microsoft Windows
+!! - Cygwin
+!! - Solaris/OpenSolaris
+!! - FreeBSD
+!! - OpenBSD
+!!
+!! Detection is performed lazily on first use and cached using
+!! OpenMP threadprivate storage, ensuring negligible overhead for
+!! repeated queries.
+!!
+!! The implementation relies primarily on environment variables,
+!! with fallback detection through the presence of well-known
+!! operating-system specific files.
+!!
+!! This strategy is designed to work reliably in native
+!! installations, containers, WSL environments, and most
+!! cross-compilation setups.
+!!
+!! @par Detection Model
+!! OS identification is attempted in the following order:
+!! 1. Environment variable `OSTYPE`
+!! 2. Environment variable `OS`
+!! 3. Operating-system specific filesystem probes
+!! 4. Fallback to OS_UNKNOWN
 !!
 !! @section os_examples Examples
 !!
@@ -15,7 +37,7 @@
 !! @code{.f90}
 !!    integer :: my_os
 !!    my_os = get_os_type()
-!!    print *, 'Running on: ', OS_NAME(my_os)
+!!    print *, 'Running on: ', os_name(my_os)
 !!    !> prints e.g. 'Running on: Linux'
 !! @endcode
 !!
@@ -37,12 +59,21 @@
 !!    print *, os_is_unix(os_type)      ! fast, no re-detection
 !!    ...
 !! @endcode
+!!
+!! 4. Module constants
+!!
+!! @code{.f90}
+!! if (get_os_type() == OS_WINDOWS) then
+!!     ...
+!! end if
+!! ...
+!! @endcode
 module fpx_os
     implicit none; private
 
     public ::   get_os_type, &
             os_is_unix, &
-            OS_NAME
+            os_name
 
     !> @brief Unknown / undetected operating system
     !! @ingroup group_os
@@ -68,9 +99,14 @@ module fpx_os
     !> @brief OpenBSD
     !! @ingroup group_os
     integer, parameter, public :: OS_OPENBSD = 7
-    !> @brief Microsoft Windows - explicitly 32-bit (x86) architecture.
+    !> @brief Native Microsoft Windows running on 32-bit x86 architecture.
     !!
-    !! Mainly useful when different behavior is needed between 32-bit and 64-bit Windows
+    !! This value is returned when the operating system is identified
+    !! as Windows and the PROCESSOR_ARCHITECTURE environment variable
+    !! indicates an x86 target.
+    !!
+    !! It can be used when architecture-specific behavior is required.
+    !!
     !! @ingroup group_os
     integer, parameter, public :: OS_WINDOWSx86 = 8
 
@@ -78,13 +114,30 @@ contains
 
     !> Return a human-readable string describing the OS type flag
     !! Converts any of the OS_* integer constants into its corresponding name.
+    !! Accepted values include:
+    !! - OS_UNKNOWN
+    !! - OS_LINUX
+    !! - OS_MACOS
+    !! - OS_WINDOWS
+    !! - OS_WINDOWSx86
+    !! - OS_CYGWIN
+    !! - OS_SOLARIS
+    !! - OS_FREEBSD
+    !! - OS_OPENBSD
     !! Useful for logging, error messages, or user output.
     !! @param[in] os OS identifier from get_os_type()
     !! @return    Allocated character string with the OS name
     !!
-    !! @b Remarks
+    !! @b Examples
+    !!
+    !! @code{.f90}
+    !! print *, os_name(OS_LINUX)
+    !! !> prints: Linux
+    !! ...
+    !! @endcode
+    !!
     !! @ingroup group_os
-    pure function OS_NAME(os) result(res)
+    pure function os_name(os) result(res)
         integer, intent(in) :: os
         character(:), allocatable :: res
 
@@ -102,8 +155,12 @@ contains
     end function
 
     !> Determine the current operating system type
-    !! Returns one of the OS_* constants. Detection is performed only on the first call
-    !! and cached in threadprivate storage for subsequent fast access.
+    !! Returns one of the OS_* constants. 
+    !!
+    !! @par Thread Safety
+    !! The detected value is cached independently for each OpenMP thread
+    !! using threadprivate storage. Concurrent calls therefore incur no
+    !! synchronization overhead after the first query on each thread.
     !!
     !! Detection strategy:
     !! 1. Environment variable `OSTYPE` (common on Unix-like systems)
@@ -114,7 +171,21 @@ contains
     !!
     !! @return OS identifier (OS_LINUX, OS_MACOS, OS_WINDOWS, ...)
     !!
-    !! @b Remarks
+    !!
+    !! @b Examples
+    !!
+    !! @code{.f90}
+    !! select case (get_os_type())
+    !! case (OS_WINDOWS)
+    !!     print *, 'Windows'
+    !! case (OS_LINUX)
+    !!     print *, 'Linux'
+    !! end select
+    !! ...
+    !! @endcode
+    !!
+    !! @see OS_NAME
+    !! @see os_is_unix
     !! @ingroup group_os
     integer function get_os_type() result(r)
         character(len=255) :: val
@@ -234,7 +305,16 @@ contains
     !! @param[in] os Optional OS identifier; if absent get_os_type() is called
     !! @return   .true. if OS is not Windows, .false. otherwise
     !!
-    !! @b Remarks
+    !! @b Examples
+    !!
+    !! @code{.f90}
+    !! if (os_is_unix()) then
+    !!     call execute_command_line('uname -a')
+    !! end if
+    !! ...
+    !! @endcode
+    !!
+    !! @see get_os_type
     !! @ingroup group_os
     logical function os_is_unix(os)
         integer, intent(in), optional :: os
