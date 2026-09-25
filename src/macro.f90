@@ -38,21 +38,21 @@
 !!    type(macro), allocatable :: macros(:)
 !!    call add(macros, macro('PI', '3.1415926535'))
 !!    call add(macros, macro('MSG(x)', 'print *, ″Hello ″, x'))
-!!    print *, expand_all(context('area = PI * r**2', 10, './circle.F90', 'circle'), macros, stitch, .false., .false., .true.)
+!!    print *, expand_all(context('area = PI * r**2', 10, './circle.F90', 'circle'), macros, stitch, .false., .false., .true., .false.)
 !!    !> prints: area = 3.1415926535 * r**2
 !! @endcode
 !!
 !! 2. Variadic macro with stringification and pasting:
 !! @code{.f90}
 !!    call add(macros, macro('DEBUG_PRINT(...)', 'print *, ″DEBUG[″, __FILE__, ″:″, __LINE__, ″]: ″, __VA_ARGS__'))
-!!    print *, expand_all(context('DEBUG_PRINT(″value =″, x)', 42, 'test.F90', 'text'), macros, stitch, .false., .false., .true.)
+!!    print *, expand_all(context('DEBUG_PRINT(″value =″, x)', 42, 'test.F90', 'text'), macros, stitch, .false., .false., .true., .false.)
 !!    !> prints: print *, 'DEBUG[', 'test.F90', ':', 42, ']: ', 'value =', x
 !! @endcode
 !!
 !! 3. Token pasting with ##:
 !! @code{.f90}
 !!    call add(macros, macro('MAKE_VAR(name,num)', 'var_name_##num'))
-!!    print *, expand_all(context('real :: MAKE_VAR(temp,42)', 5, 'file.F90', 'file'), macros, stitch, .false., .false.)
+!!    print *, expand_all(context('real :: MAKE_VAR(temp,42)', 5, 'file.F90', 'file'), macros, stitch, .false., .false., .false.)
 !!    !> prints: real :: var_name_42
 !! @endcode
 module fpx_macro
@@ -64,6 +64,7 @@ module fpx_macro
     use fpx_date
     use fpx_logging
     use fpx_context
+    use fpx_compiler
 
     implicit none; private
 
@@ -322,13 +323,14 @@ contains
     !! @return Expanded line with all macros and predefined tokens replaced
     !!
     !! @ingroup group_macro
-    function expand_all(ctx, macros, stitch, has_extra, implicit_conti, dollar_insert) result(expanded)
+    function expand_all(ctx, macros, stitch, has_extra, implicit_conti, dollar_insert, is_standalone) result(expanded)
         type(context), intent(in)               :: ctx
         type(macro), allocatable, intent(inout) :: macros(:)
         logical, intent(out)                    :: stitch
         logical, intent(in)                     :: has_extra
         logical, intent(in)                     :: implicit_conti
         logical, intent(in)                     :: dollar_insert
+        logical, intent(in)                     :: is_standalone
         character(:), allocatable :: expanded
         !private
         integer :: pos, start, sep, dot, imacro
@@ -338,12 +340,16 @@ contains
             if (.not. is_defined('__FUNC__', macros, imacro)) then
                 call add(macros, '__FUNC__', '')
             end if
+            
+            if (.not. is_defined('__COMPILER__', macros, imacro)) then
+                call add(macros, '__COMPILER__', get_compiler(.false.))
+            end if
         end if
 
         expanded = expand_macros(ctx%content, macros, stitch, implicit_conti, dollar_insert, ctx)
 
         date = now()
-
+        
         ! Substitute __FILE__ (relative path to working directory)
         pos = 1
         do while (pos > 0)

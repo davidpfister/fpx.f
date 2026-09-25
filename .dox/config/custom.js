@@ -49,6 +49,23 @@ function injectVitePressHeader(navTree) {
 
     <nav class="vp-nav" id="vp-nav"></nav>
 
+    <button
+      id="vp-nav-toggle"
+      class="vp-icon-button"
+      type="button"
+      aria-label="Open navigation"
+      aria-expanded="false"
+      aria-controls="vp-nav-menu"
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="5" cy="12" r="1.8" fill="currentColor"/>
+          <circle cx="12" cy="12" r="1.8" fill="currentColor"/>
+          <circle cx="19" cy="12" r="1.8" fill="currentColor"/>
+      </svg>
+    </button>
+
+    <div id="vp-nav-menu" class="vp-nav-menu" hidden></div>
+
     <div class="vp-right">
     <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"><svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#FE9700"><rect fill="none" height="24" width="24"></rect><path d="M9.37,5.51C9.19,6.15,9.1,6.82,9.1,7.5c0,4.08,3.32,7.4,7.4,7.4c0.68,0,1.35-0.09,1.99-0.27 C17.45,17.19,14.93,19,12,19c-3.86,0-7-3.14-7-7C5,9.07,6.81,6.55,9.37,5.51z" opacity=".3"></path><path d="M9.37,5.51C9.19,6.15,9.1,6.82,9.1,7.5c0,4.08,3.32,7.4,7.4,7.4c0.68,0,1.35-0.09,1.99-0.27C17.45,17.19,14.93,19,12,19 c-3.86,0-7-3.14-7-7C5,9.07,6.81,6.55,9.37,5.51z M12,3c-4.97,0-9,4.03-9,9s4.03,9,9,9s9-4.03,9-9c0-0.46-0.04-0.92-0.1-1.36 c-0.98,1.37-2.58,2.26-4.4,2.26c-2.98,0-5.4-2.42-5.4-5.4c0-1.81,0.89-3.42,2.26-4.4C12.92,3.04,12.46,3,12,3L12,3z"></path></svg></doxygen-awesome-dark-mode-toggle>
       ${
@@ -61,7 +78,7 @@ function injectVitePressHeader(navTree) {
           </a>`
         : ""
     }
-      <button id="vp-toggle-sidebar" class="vp-icon-button" aria-label="Toggle sidebar">
+      <button id="vp-toggle-sidebar" class="vp-icon-button" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-tree">
         <svg viewBox="0 0 24 24">
             <path fill="currentColor"
                 d="M5 7h14v2H5zm0 5h14v2H5zm0 5h14v2H5z"/>
@@ -73,6 +90,7 @@ function injectVitePressHeader(navTree) {
   document.body.prepend(header);
 
   buildTopNavigation(navTree);
+  setupTopNavigationMenu();
   setupSidebarToggle();
   injectResizeHandle();
   restoreSidebarWidth();
@@ -151,16 +169,117 @@ function setupSidebarToggle() {
 
   if (!btn || !navTree) return;
 
-  btn.addEventListener("click", () => {
-    const collapsed = document.body.classList.toggle("vp-sidebar-collapsed");
+  const mobile = window.matchMedia("(max-width: 768px)");
 
-    localStorage.setItem("vp-sidebar-collapsed", collapsed);
+  function updateButton() {
+    const collapsed =
+      document.body.classList.contains("vp-sidebar-collapsed");
+
+    btn.setAttribute("aria-expanded", String(!collapsed));
+  }
+
+  function applyInitialState() {
+    if (mobile.matches) {
+      document.body.classList.add("vp-sidebar-collapsed");
+    } else if (localStorage.getItem("vp-sidebar-collapsed") === "true") {
+      document.body.classList.add("vp-sidebar-collapsed");
+    } else {
+      document.body.classList.remove("vp-sidebar-collapsed");
+    }
+
+    updateButton();
+  }
+
+  btn.addEventListener("click", () => {
+    const collapsed =
+      document.body.classList.toggle("vp-sidebar-collapsed");
+
+    if (!mobile.matches) {
+      localStorage.setItem("vp-sidebar-collapsed", collapsed);
+    }
+
+    updateButton();
   });
 
-  // restore state
-  if (localStorage.getItem("vp-sidebar-collapsed") === "true") {
-    document.body.classList.add("vp-sidebar-collapsed");
+  mobile.addEventListener("change", applyInitialState);
+
+  applyInitialState();
+}
+
+function setupTopNavigationMenu() {
+  const nav = document.getElementById("vp-nav");
+  const menu = document.getElementById("vp-nav-menu");
+  const button = document.getElementById("vp-nav-toggle");
+
+  if (!nav || !menu || !button) return;
+
+  /*
+   * Copy the generated navigation links into the dropdown.
+   */
+  menu.innerHTML = "";
+
+  nav.querySelectorAll("a").forEach(link => {
+    const item = document.createElement("a");
+
+    item.href = link.href;
+    item.textContent = link.textContent;
+    item.className = "vp-nav-menu-item";
+
+    menu.appendChild(item);
+  });
+
+  function closeMenu() {
+    menu.hidden = true;
+    button.setAttribute("aria-expanded", "false");
   }
+
+  function toggleMenu() {
+    const open = !menu.hidden;
+
+    menu.hidden = open;
+    button.setAttribute("aria-expanded", String(!open));
+  }
+
+  button.addEventListener("click", event => {
+    event.stopPropagation();
+    toggleMenu();
+  });
+
+  /*
+   * Close when clicking elsewhere.
+   */
+  document.addEventListener("click", event => {
+    if (
+      !menu.contains(event.target) &&
+      !button.contains(event.target)
+    ) {
+      closeMenu();
+    }
+  });
+
+  /*
+   * Close with Escape.
+   */
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape") {
+      closeMenu();
+      button.focus();
+    }
+  });
+
+  /*
+   * If the viewport becomes wide enough for the normal nav,
+   * make sure the dropdown is closed.
+   */
+  const media = window.matchMedia("(min-width: 1101px)");
+
+  function handleViewportChange() {
+    if (media.matches) {
+      closeMenu();
+    }
+  }
+
+  media.addEventListener("change", handleViewportChange);
 }
 
 function injectResizeHandle() {

@@ -9,5 +9,6 @@ var searchData=
   ['useful_20options_6',['Most useful options',['../usage.html#autotoc_md126',1,'']]],
   ['using_20fpx_20as_20a_20library_20in_20your_20own_20code_7',['Using fpx as a Library (in your own code)',['../cheatsheet.html#autotoc_md19',1,'']]],
   ['using_20fpx_20as_20an_20embedded_20library_20in_20your_20own_20fortran_20program_8',['Using fpx as an Embedded Library in Your Own Fortran Program',['../usage.html#autotoc_md128',1,'']]],
-  ['using_20fpx_20from_20the_20command_20line_20cli_9',['Using fpx from the Command Line (CLI)',['../usage.html#autotoc_md124',1,'']]]
+  ['using_20fpx_20from_20the_20command_20line_20cli_9',['Using fpx from the Command Line (CLI)',['../usage.html#autotoc_md124',1,'']]],
+  ['utilities_10',['utilities',['../group__group__process__posix.html',1,'POSIX process utilities'],['../group__group__process__windows.html',1,'Windows process utilities']]]
 ];

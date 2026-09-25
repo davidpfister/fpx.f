@@ -460,12 +460,17 @@ span.tagline {
   left: 0;
   right: 0;
   height: var(--top-height);
+
   display: flex;
   align-items: center;
+
+  box-sizing: border-box;
   padding: 0 16px;
-  background: var(--page-background);
-  color: var(--primary-text-color);
+
+  background: var(--page-background-color);
+  color: var(--page-foreground-color);
   border-bottom: 1px solid var(--separator-color);
+
   z-index: 9999;
 }
 
@@ -473,10 +478,14 @@ span.tagline {
   display: flex;
   align-items: center;
   gap: 10px;
+  flex: 0 1 auto;
+  min-width: 0;
 }
 
 .vp-logo {
   height: 24px;
+  width: auto;
+  flex: 0 0 auto;
 }
 
 .vp-title {
@@ -484,39 +493,283 @@ span.tagline {
 }
 
 .vp-center {
-  flex: 1;
-  display: flex;
-  margin-left: 12px;
-  margin-right: 12px;
-  justify-content: center;
+    flex: 1 1 400px;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 12px;
+    margin-right: 12px;
 }
 
-#vp-search {
-  width: 400px;
-  max-width: 60vw;
-  padding: 6px 10px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
+/*
+ * Let the search box actually shrink with its flex container.
+ */
+.vp-center #MSearchBox {
+  width: min(var(--searchbar-width), 100%) !important;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
-.vp-nav {
-  margin-left: auto;
-  display: flex;
-  gap: 18px;
-  font-size: 14px;
+/* =========================================================
+   TOP NAVIGATION
+   ========================================================= */
+
+/* Desktop: horizontal navigation */
+#vp-nav {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex: 0 0 auto;
+    min-width: 0;
 }
 
-.vp-nav a {
-  text-decoration: none;
-  color: inherit;
+#vp-nav a {
+    color: inherit;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+/* Three-dot fallback is hidden on desktop */
+#vp-nav-toggle {
+    display: none;
+    flex: 0 0 32px;
+    align-items: center;
+    justify-content: center;
+
+    width: 32px;
+    height: 32px;
+    padding: 0;
+
+    border: 1px solid var(--separator-color);
+    border-radius: var(--border-radius-small);
+    background: transparent;
+    color: var(--page-foreground-color);
+
+    cursor: pointer;
+}
+
+#vp-nav-toggle:hover {
+    background: var(--separator-color);
+}
+
+#vp-nav-toggle svg {
+    width: 18px;
+    height: 18px;
+}
+
+
+/* =========================================================
+   TOP NAVIGATION DROPDOWN
+   ========================================================= */
+
+#vp-nav-menu {
+    display: none;
+    position: fixed;
+
+    top: calc(var(--top-height) + 6px);
+    right: 12px;
+
+    width: 220px;
+    max-width: calc(100vw - 24px);
+
+    padding: 6px;
+
+    background: var(--page-background-color);
+    color: var(--page-foreground-color);
+
+    border: 1px solid var(--separator-color);
+    border-radius: var(--border-radius-medium);
+    box-shadow: var(--box-shadow);
+
+    z-index: 10001;
+}
+
+#vp-nav-menu:not([hidden]) {
+    display: flex;
+    flex-direction: column;
+}
+
+.vp-nav-menu-item {
+    display: block;
+
+    padding: 9px 12px;
+
+    color: var(--page-foreground-color);
+    text-decoration: none;
+
+    border-radius: var(--border-radius-small);
+}
+
+.vp-nav-menu-item:hover {
+    background: var(--fragment-background);
+}
+
+
+/* =========================================================
+   NARROW HEADER
+   ========================================================= */
+
+@media screen and (max-width: 900px) {
+
+    /*
+     * IMPORTANT:
+     * The horizontal navigation and the three-dot button
+     * are mutually exclusive.
+     */
+    #vp-nav {
+        display: none !important;
+    }
+
+    #vp-nav-toggle {
+        display: flex !important;
+    }
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media screen and (max-width: 768px) {
+
+    #vp-header {
+        padding: 0 8px;
+    }
+
+    .vp-left {
+        gap: 6px;
+    }
+
+    .vp-center {
+        margin-left: 6px;
+        margin-right: 6px;
+        min-width: 0;
+    }
+
+    .vp-right {
+        gap: 4px;
+        margin-left: 4px;
+    }
+
+    #projectnumber,
+    #projectbriefContainer {
+        display: none;
+    }
+
+    #vp-nav-menu {
+        right: 8px;
+        max-width: calc(100vw - 16px);
+    }
+}
+
+
+/* =========================================================
+   PHONE
+   ========================================================= */
+
+@media screen and (max-width: 480px) {
+
+    #vp-header {
+        padding: 0 6px;
+    }
+
+    .vp-left {
+        gap: 5px;
+        flex: 0 1 auto;
+    }
+
+    .vp-logo {
+        height: 22px;
+    }
+
+    .vp-center {
+        flex: 1 1 auto;
+        margin-left: 5px;
+        margin-right: 5px;
+        min-width: 0;
+    }
+
+    .vp-center #MSearchBox {
+        width: 100% !important;
+        max-width: 100%;
+    }
+
+    .vp-right {
+        gap: 2px;
+        margin-left: 2px;
+    }
+
+    #vp-nav-toggle {
+        width: 30px;
+        height: 30px;
+        flex-basis: 30px;
+    }
+
+    .vp-icon-button {
+        width: 30px;
+        height: 30px;
+    }
+
+    #vp-nav-menu {
+        top: calc(var(--top-height) + 4px);
+        right: 6px;
+        width: 210px;
+        max-width: calc(100vw - 12px);
+    }
+}
+
+/* Top navigation fallback */
+#vp-nav-toggle {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 1px solid var(--separator-color);
+    border-radius: var(--border-radius-small);
+    background: transparent;
+    color: var(--page-foreground-color);
+    cursor: pointer;
+}
+
+#vp-nav-toggle svg {
+    width: 18px;
+    height: 18px;
+}
+
+@media screen and (max-width: 768px) {
+  #vp-header {
+    padding: 0 8px;
+  }
+
+  .vp-left {
+    gap: 6px;
+  }
+
+  .vp-center {
+    min-width: 0;
+    margin: 0 6px;
+  }
+
+  .vp-right {
+    gap: 2px;
+    margin-left: 0;
+  }
+
+  #projectnumber,
+  #projectbriefContainer {
+    display: none;
+  }
 }
 
 .vp-right {
-  margin-left: 12px;
-  margin-right: 0;
   display: flex;
   align-items: center;
   gap: 12px;
+  flex: 0 0 auto;
+  margin-left: 12px;
 }
 
 #nav-tree.vp-hidden {
@@ -547,13 +800,15 @@ body.vp-sidebar-collapsed {
   --vp-side-width: 0px;
 }
 
-body.vp-sidebar-collapsed #nav-tree {
-  width: 0 !important;
-}
+@media screen and (min-width: 769px) {
+  body.vp-sidebar-collapsed #nav-tree {
+    width: 0 !important;
+  }
 
-body.vp-sidebar-collapsed #doc-content {
-  margin-left: 0 !important;
-  width: 100%;
+  body.vp-sidebar-collapsed #doc-content {
+    margin-left: 0 !important;
+    width: 100%;
+  }
 }
 
 #vp-resizer {
@@ -581,12 +836,13 @@ body.vp-resizing,body.vp-resizing * {
   cursor: col-resize !important;
 }
 
-#MSearchBox {
-  width: var(--searchbar-width) !important;
-}
-
 #MSearchField {
-  width: var(--searchbar-width) - calc(2 * var(--spacing-medium)) - 66px - var(--searchbar-height);
+  width: calc(
+    var(--searchbar-width)
+    - (2 * var(--spacing-medium))
+    - 66px
+    - var(--searchbar-height)
+  );
 }
 
 .vp-icon-button {

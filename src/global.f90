@@ -178,6 +178,7 @@ module fpx_global
         logical, public                     :: support_forloop = .true.  !< Enable support for `#for` and `#endfor`.
         logical, public                     :: disable_continuation = .false.  !< Disable explicit continuation using trailing `&`.
         logical, public                     :: support_dollar_insert = .true.  !< Enable `${NAME}` placeholder substitution.
+        logical, public                     :: is_standalone = .false. !< Enable fpx as standalone preprocessor. .false. if used as a library
     end type
 
     !> Global preprocessor configuration instance.

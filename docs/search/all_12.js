@@ -48,6 +48,7 @@ var searchData=
   ['is_5fdefined_45',['is_defined',['../group__group__macro.html#gad3bf37972bc247f25f116979e55ba74f',1,'fpx_macro']]],
   ['is_5fin_5fforloop_46',['is_in_forloop',['../group__group__for.html#gada7f67ccf476be063a6b02c3e0ca49cb',1,'fpx_for']]],
   ['is_5frooted_47',['is_rooted',['../group__group__path.html#ga2e42aece5ef439ad80581b44ff0f179d',1,'fpx_path']]],
-  ['is_5fvariadic_48',['is_variadic',['../structfpx__macro_1_1macro.html#a37758531fbfb275a28be321c849604f0',1,'fpx_macro::macro']]],
-  ['issues_49',['Known issues',['../integration.html#autotoc_md22',1,'']]]
+  ['is_5fstandalone_48',['is_standalone',['../structfpx__global_1_1global__settings.html#a517cf4b676b097edab4ceb0241815a36',1,'fpx_global::global_settings']]],
+  ['is_5fvariadic_49',['is_variadic',['../structfpx__macro_1_1macro.html#a37758531fbfb275a28be321c849604f0',1,'fpx_macro::macro']]],
+  ['issues_50',['Known issues',['../integration.html#autotoc_md22',1,'']]]
 ];

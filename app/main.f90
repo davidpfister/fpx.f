@@ -54,6 +54,8 @@ console(main)
        character(*), parameter :: version = '0.0.0'
 #endif
 
+        global%is_standalone = .true.
+        
         call add(global%macros, macro('__STDF__','1'))
         call add(global%macros, macro('__FPX__','1'))
         associate(os => get_os_type())

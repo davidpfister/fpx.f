@@ -1,5 +1,6 @@
 var topics =
 [
+    [ "Compiler", "group__group__fpx__compiler.html", null ],
     [ "Conditional", "group__group__conditional.html", "group__group__conditional" ],
     [ "Constants", "group__group__constants.html", "group__group__constants" ],
     [ "Context", "group__group__context.html", "group__group__context" ],
@@ -15,8 +16,10 @@ var topics =
     [ "Macro", "group__group__macro.html", "group__group__macro" ],
     [ "OS", "group__group__os.html", "group__group__os" ],
     [ "Operators", "group__group__operators.html", "group__group__operators" ],
+    [ "POSIX process utilities", "group__group__process__posix.html", "group__group__process__posix" ],
     [ "Parser", "group__group__parser.html", "group__group__parser" ],
     [ "Path", "group__group__path.html", "group__group__path" ],
     [ "String", "group__group__string.html", "group__group__string" ],
-    [ "Token", "group__group__token.html", "group__group__token" ]
+    [ "Token", "group__group__token.html", "group__group__token" ],
+    [ "Windows process utilities", "group__group__process__windows.html", null ]
 ];

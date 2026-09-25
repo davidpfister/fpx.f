@@ -527,7 +527,7 @@ contains
                 rst = trimmed_line
             else
                 rst = adjustl(expand_all(ctx, macros, stch, global%extra_macros, global%implicit_continuation, &
-                        global%implicit_continuation))
+                        global%implicit_continuation, global%is_standalone))
             end if
         end if
     end function
