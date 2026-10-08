@@ -878,12 +878,16 @@ contains
             type is (integer(kind=int64)); write(line, '(i0)') any
             type is (real(kind=real32)); write(line, '(1pg0)') any
             type is (real(kind=real64)); write(line, '(1pg0)') any
+#ifdef _R16
             type is (real(kind=real128)); write(line, '(1pg0)') any
+#endif
             type is (logical); write(line, '(1l)') any
             type is (character(*)); write(line, '(a)') any
             type is (complex(kind=real32)); write(line, '("(",1pg0,",",1pg0,")")') any
             type is (complex(kind=real64)); write(line, '("(",1pg0,",",1pg0,")")') any
+#ifdef _R16
             type is (complex(kind=real128)); write(line, '("(",1pg0,",",1pg0,")")') any
+#endif
             end select
         end subroutine
     end function
